@@ -107,7 +107,7 @@ return [
                 ],
             ],
             'mautic.install.configurator.step.email' => [
-                'class'     => \Mautic\InstallBundle\Configurator\Step\EmailStep::class,
+                'class'        => \Mautic\InstallBundle\Configurator\Step\EmailStep::class,
                 'tag'          => 'mautic.configurator.step',
                 'tagArguments' => [
                     'priority' => 3,
