@@ -64,6 +64,7 @@ return [
                 'arguments' => [
                     'translator',
                     'mautic.email.transport_type',
+                    'session',
                 ],
             ],
             \Mautic\InstallBundle\Configurator\Form\UserStepType::class => [
@@ -107,9 +108,6 @@ return [
             ],
             'mautic.install.configurator.step.email' => [
                 'class'     => \Mautic\InstallBundle\Configurator\Step\EmailStep::class,
-                'arguments' => [
-                    'session',
-                ],
                 'tag'          => 'mautic.configurator.step',
                 'tagArguments' => [
                     'priority' => 3,

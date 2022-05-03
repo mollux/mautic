@@ -12,9 +12,10 @@ use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 class EmailStepType extends AbstractType
 {
@@ -28,10 +29,13 @@ class EmailStepType extends AbstractType
      */
     private $transportType;
 
-    public function __construct(TranslatorInterface $translator, TransportType $transportType)
+    private SessionInterface $session;
+
+    public function __construct(TranslatorInterface $translator, TransportType $transportType, SessionInterface $session)
     {
         $this->translator    = $translator;
         $this->transportType = $transportType;
+        $this->session       = $session;
     }
 
     /**
@@ -39,12 +43,15 @@ class EmailStepType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $user = $this->session->get('mautic.installer.user');
+
         $builder->add(
             'mailer_from_name',
             TextType::class,
             [
                 'label'       => false,
                 'label_attr'  => ['class' => 'control-label'],
+                'data'        => $user ? $user->firstname.' '.$user->lastname : '',
                 'attr'        => [
                     'class'       => 'form-control',
                     'placeholder' => 'mautic.install.form.email.from_name',
@@ -66,6 +73,7 @@ class EmailStepType extends AbstractType
             [
                 'label'       => false,
                 'label_attr'  => ['class' => 'control-label'],
+                'data'        => $user ? $user->email : '',
                 'attr'        => [
                     'class'       => 'form-control',
                     'preaddon'    => 'fa fa-envelope',

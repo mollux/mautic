@@ -4,7 +4,6 @@ namespace Mautic\InstallBundle\Configurator\Step;
 
 use Mautic\CoreBundle\Configurator\Step\StepInterface;
 use Mautic\InstallBundle\Configurator\Form\EmailStepType;
-use Symfony\Component\HttpFoundation\Session\Session;
 
 class EmailStep implements StepInterface
 {
@@ -116,15 +115,6 @@ class EmailStep implements StepInterface
      * @var string
      */
     public $mailer_spool_path = '%kernel.project_dir%/var/spool';
-
-    public function __construct(Session $session)
-    {
-        $user = $session->get('mautic.installer.user');
-        if (!empty($user)) {
-            $this->mailer_from_email = $user->email;
-            $this->mailer_from_name  = $user->firstname.' '.$user->lastname;
-        }
-    }
 
     /**
      * {@inheritdoc}
