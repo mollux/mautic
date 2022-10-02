@@ -112,8 +112,8 @@ class CalendarSubscriber implements EventSubscriberInterface
                     'source'       => 'page',
                     'objectId'     => $object['page_id'],
                     'startDate'    => $date->toLocalString(),
-                ], true);
-                $object['viewUrl'] = $this->router->generate('mautic_page_action', ['objectAction' => 'view', 'objectId' => $object['page_id']], true);
+                ], \Symfony\Component\Routing\Generator\UrlGeneratorInterface::ABSOLUTE_URL);
+                $object['viewUrl'] = $this->router->generate('mautic_page_action', ['objectAction' => 'view', 'objectId' => $object['page_id']], \Symfony\Component\Routing\Generator\UrlGeneratorInterface::ABSOLUTE_URL);
                 $object['attr']    = [
                     'data-toggle' => 'ajaxmodal',
                     'data-target' => '#CalendarEditModal',

@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Rector\Caching\ValueObject\Storage\FileCacheStorage;
+use Rector\Symfony\Rector\MethodCall\ContainerGetToConstructorInjectionRector;
 
 return static function (Rector\Config\RectorConfig $rectorConfig): void {
     $rectorConfig->paths([__DIR__.'/app/bundles', __DIR__.'/plugins']);
@@ -16,6 +17,7 @@ return static function (Rector\Config\RectorConfig $rectorConfig): void {
             __DIR__.'/*.less.php',
             __DIR__.'/*.inc.php',
             __DIR__.'/*.js.php',
+            ContainerGetToConstructorInjectionRector::class,
         ]
     );
 
@@ -28,9 +30,7 @@ return static function (Rector\Config\RectorConfig $rectorConfig): void {
 
     // Define what rule sets will be applied
     $rectorConfig->sets([
-        \Rector\Symfony\Set\SymfonySetList::SYMFONY_40,
-        \Rector\Symfony\Set\SymfonySetList::SYMFONY_41,
-
+       \Rector\Symfony\Set\SymfonyLevelSetList::UP_TO_SYMFONY_42,
         // @todo implement the whole set. Start rule by rule below.
         // \Rector\Set\ValueObject\SetList::DEAD_CODE
     ]);
