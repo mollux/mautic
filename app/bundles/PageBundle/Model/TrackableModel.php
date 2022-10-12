@@ -41,16 +41,6 @@ class TrackableModel extends AbstractCommonModel
     protected $usingClickthrough = true;
 
     /**
-     * @var RedirectModel
-     */
-    protected $redirectModel;
-
-    /**
-     * @var LeadFieldRepository
-     */
-    private $leadFieldRepository;
-
-    /**
      * @var array|null
      */
     private $contactFieldUrlTokens;
@@ -58,10 +48,8 @@ class TrackableModel extends AbstractCommonModel
     /**
      * TrackableModel constructor.
      */
-    public function __construct(RedirectModel $redirectModel, LeadFieldRepository $leadFieldRepository)
+    public function __construct(protected RedirectModel $redirectModel, private LeadFieldRepository $leadFieldRepository)
     {
-        $this->redirectModel       = $redirectModel;
-        $this->leadFieldRepository = $leadFieldRepository;
     }
 
     /**
@@ -89,7 +77,7 @@ class TrackableModel extends AbstractCommonModel
      *
      * @return string
      */
-    public function generateTrackableUrl(Trackable $trackable, $clickthrough = [], $shortenUrl = false, $utmTags = [])
+    public function generateTrackableUrl(Trackable $trackable, $clickthrough = [], bool $shortenUrl = false, $utmTags = [])
     {
         if (!isset($clickthrough['channel'])) {
             $clickthrough['channel'] = [$trackable->getChannel() => $trackable->getChannelId()];
@@ -116,7 +104,7 @@ class TrackableModel extends AbstractCommonModel
         }
 
         // Ensure the URL saved to the database does not have encoded ampersands
-        while (false !== strpos($url, '&amp;')) {
+        while (str_contains($url, '&amp;')) {
             $url = str_replace('&amp;', '&', $url);
         }
 
@@ -226,15 +214,13 @@ class TrackableModel extends AbstractCommonModel
     /**
      * Extract URLs from content and return as trackables.
      *
-     * @param mixed      $content
      * @param null       $channel
      * @param null       $channelId
      * @param bool|false $usingClickthrough Set to false if not using a clickthrough parameter. This is to ensure that URLs are built correctly with ?
      *                                      or & for URLs tracked that include query parameters
-     *
      * @return array[mixed $content, array $trackables]
      */
-    public function parseContentForTrackables($content, array $contentTokens = [], $channel = null, $channelId = null, $usingClickthrough = true)
+    public function parseContentForTrackables(mixed $content, array $contentTokens = [], $channel = null, $channelId = null, bool $usingClickthrough = true)
     {
         $this->usingClickthrough = $usingClickthrough;
 
@@ -382,7 +368,7 @@ class TrackableModel extends AbstractCommonModel
 
         foreach ($allUrls as $url) {
             if ($preparedUrl = $this->prepareUrlForTracking($url)) {
-                list($urlKey, $urlValue) = $preparedUrl;
+                [$urlKey, $urlValue] = $preparedUrl;
                 $trackableUrls[$urlKey]  = $urlValue;
             }
         }
@@ -422,7 +408,7 @@ class TrackableModel extends AbstractCommonModel
         $url = trim($url);
 
         // Ensure these are & for the sake of parsing
-        while (false !== strpos($url, '&amp;')) {
+        while (str_contains($url, '&amp;')) {
             $url = str_replace('&amp;', '&', $url);
         }
 
@@ -574,10 +560,8 @@ class TrackableModel extends AbstractCommonModel
      * Find and extract tokens from the URL as this have to be processed outside of tracking tokens.
      *
      * @param $urlParts Array from parse_url
-     *
-     * @return array|false
      */
-    protected function extractTokensFromQuery(&$urlParts)
+    protected function extractTokensFromQuery(&$urlParts): array|false
     {
         $tokenizedParams = false;
 
@@ -594,7 +578,7 @@ class TrackableModel extends AbstractCommonModel
 
         // Check for tokens in the query
         if (!empty($urlParts['query'])) {
-            list($tokenizedParams, $untokenizedParams) = $this->parseTokenizedQuery($urlParts['query']);
+            [$tokenizedParams, $untokenizedParams] = $this->parseTokenizedQuery($urlParts['query']);
             if ($tokenizedParams) {
                 // Rebuild the query without the tokenized query params for now
                 $urlParts['query'] = $this->httpBuildQuery($untokenizedParams);
@@ -743,7 +727,7 @@ class TrackableModel extends AbstractCommonModel
                             unset($sBasePath);
                         }
 
-                        if (false !== strpos($url['path'], './')) {
+                        if (str_contains($url['path'], './')) {
                             // Remove any '../' and their directories
                             while (preg_match('/\w+\/\.\.\//', $url['path'])) {
                                 $url['path'] = preg_replace('/\w+\/\.\.\//', '', $url['path']);
@@ -791,9 +775,9 @@ class TrackableModel extends AbstractCommonModel
             return
                 ((isset($url['scheme'])) ? 'mailto' == $url['scheme'] ? $url['scheme'].':' : $url['scheme'].'://' : '')
                 .((isset($url['user'])) ? $url['user'].((isset($url['pass'])) ? ':'.$url['pass'] : '').'@' : '')
-                .((isset($url['host'])) ? $url['host'] : '')
+                .($url['host'] ?? '')
                 .((isset($url['port'])) ? ':'.$url['port'] : '')
-                .((isset($url['path'])) ? $url['path'] : '')
+                .($url['path'] ?? '')
                 .((!empty($url['query'])) ? '?'.$url['query'] : '')
                 .((!empty($url['fragment'])) ? '#'.$url['fragment'] : '');
         }
@@ -811,9 +795,7 @@ class TrackableModel extends AbstractCommonModel
         // http_build_query likely encoded tokens so that has to be fixed so they get replaced
         $query = preg_replace_callback(
             '/%7B(\S+?)%7D/i',
-            function ($matches) {
-                return urldecode($matches[0]);
-            },
+            fn($matches) => urldecode($matches[0]),
             $query
         );
 
@@ -827,7 +809,7 @@ class TrackableModel extends AbstractCommonModel
      */
     private function isContactFieldToken($token)
     {
-        return false !== strpos($token, '{contactfield') || false !== strpos($token, '{leadfield');
+        return str_contains($token, '{contactfield') || str_contains($token, '{leadfield');
     }
 
     /**

@@ -24,23 +24,11 @@ class ContactSegmentQueryBuilder
 {
     use LeadBatchLimiterTrait;
 
-    /** @var EntityManager */
-    private $entityManager;
-
-    /** @var RandomParameterName */
-    private $randomParameterName;
-
-    /** @var EventDispatcherInterface */
-    private $dispatcher;
-
     /** @var array Contains segment edges mapping */
-    private $dependencyMap = [];
+    private array $dependencyMap = [];
 
-    public function __construct(EntityManager $entityManager, RandomParameterName $randomParameterName, EventDispatcherInterface $dispatcher)
+    public function __construct(private EntityManager $entityManager, private RandomParameterName $randomParameterName, private EventDispatcherInterface $dispatcher)
     {
-        $this->entityManager       = $entityManager;
-        $this->randomParameterName = $randomParameterName;
-        $this->dispatcher          = $dispatcher;
     }
 
     /**
@@ -81,7 +69,7 @@ class ContactSegmentQueryBuilder
         foreach ($segmentFilters as $filter) {
             try {
                 $this->dispatchPluginFilteringEvent($filter, $queryBuilder);
-            } catch (PluginHandledFilterException $exception) {
+            } catch (PluginHandledFilterException) {
                 continue;
             }
 

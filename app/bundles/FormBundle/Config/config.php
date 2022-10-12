@@ -76,7 +76,7 @@ return [
                 'standard_entity' => true,
                 'name'            => 'forms',
                 'path'            => '/forms',
-                'controller'      => 'Mautic\FormBundle\Controller\Api\FormApiController',
+                'controller'      => \Mautic\FormBundle\Controller\Api\FormApiController::class,
             ],
             'mautic_api_formresults' => [
                 'path'       => '/forms/{formId}/submissions',

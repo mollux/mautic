@@ -14,22 +14,8 @@ use Symfony\Component\HttpKernel\KernelEvents;
 
 class ApiSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var CoreParametersHelper
-     */
-    private $coreParametersHelper;
-
-    /**
-     * @var Translator
-     */
-    private $translator;
-
-    public function __construct(
-        CoreParametersHelper $coreParametersHelper,
-        Translator $translator
-    ) {
-        $this->coreParametersHelper = $coreParametersHelper;
-        $this->translator           = $translator;
+    public function __construct(private CoreParametersHelper $coreParametersHelper, private Translator $translator)
+    {
     }
 
     /**
@@ -118,12 +104,12 @@ class ApiSubscriber implements EventSubscriberInterface
         // Ignore if this does not contain an error response
         $response = $event->getResponse();
         $content  = $response->getContent();
-        if (false === strpos($content, 'error')) {
+        if (!str_contains($content, 'error')) {
             return;
         }
 
         // Ignore if content is not json
-        if (!$data = json_decode($content, true)) {
+        if (!$data = json_decode($content, true, 512, JSON_THROW_ON_ERROR)) {
             return;
         }
 

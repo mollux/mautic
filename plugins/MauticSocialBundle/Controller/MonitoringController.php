@@ -100,10 +100,8 @@ class MonitoringController extends FormController
 
     /**
      * Generates new form and processes post data.
-     *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function newAction()
+    public function newAction(): \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         if (!$this->container->get('mautic.security')->isGranted('mauticSocial:monitoring:create')) {
             return $this->accessDenied();
@@ -222,10 +220,8 @@ class MonitoringController extends FormController
 
     /**
      * @param $objectId
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function editAction($objectId)
+    public function editAction($objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         if (!$this->container->get('mautic.security')->isGranted('mauticSocial:monitoring:edit')) {
             return $this->accessDenied();
@@ -375,10 +371,8 @@ class MonitoringController extends FormController
      * Loads a specific form into the detailed panel.
      *
      * @param int $objectId
-     *
-     * @return JsonResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function viewAction($objectId)
+    public function viewAction($objectId): \JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         if (!$this->get('mautic.security')->isGranted('mauticSocial:monitoring:view')) {
             return $this->accessDenied();
@@ -455,7 +449,7 @@ class MonitoringController extends FormController
                 'viewParameters' => [
                     'activeMonitoring' => $monitoringEntity,
                     'logs'             => $logs,
-                    'isEmbedded'       => $this->request->get('isEmbedded') ? $this->request->get('isEmbedded') : false,
+                    'isEmbedded'       => $this->request->get('isEmbedded') ?: false,
                     'tmpl'             => $tmpl,
                     'security'         => $security,
                     'leadStats'        => $chart->render(),
@@ -482,10 +476,8 @@ class MonitoringController extends FormController
      * Deletes the entity.
      *
      * @param int $objectId
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function deleteAction($objectId)
+    public function deleteAction($objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         if (!$this->get('mautic.security')->isGranted('mauticSocial:monitoring:delete')) {
             return $this->accessDenied();
@@ -549,10 +541,8 @@ class MonitoringController extends FormController
 
     /**
      * Deletes a group of entities.
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function batchDeleteAction()
+    public function batchDeleteAction(): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         if (!$this->container->get('mautic.security')->isGranted('mauticSocial:monitoring:delete')) {
             return $this->accessDenied();
@@ -577,7 +567,7 @@ class MonitoringController extends FormController
             /** @var \MauticPlugin\MauticSocialBundle\Model\MonitoringModel $model */
             $model = $this->getModel('social.monitoring');
 
-            $ids       = json_decode($this->request->query->get('ids', ''));
+            $ids       = json_decode($this->request->query->get('ids', ''), null, 512, JSON_THROW_ON_ERROR);
             $deleteIds = [];
 
             // Loop over the IDs to perform access checks pre-delete
@@ -624,10 +614,8 @@ class MonitoringController extends FormController
     /**
      * @param     $objectId
      * @param int $page
-     *
-     * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function contactsAction($objectId, $page = 1)
+    public function contactsAction($objectId, $page = 1): \JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Response
     {
         return $this->generateContactsGrid(
             $objectId,

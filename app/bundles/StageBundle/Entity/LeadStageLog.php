@@ -10,32 +10,20 @@ use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
  */
 class LeadStageLog
 {
-    /**
-     * @var Stage
-     **/
-    private $stage;
+    private ?\Mautic\StageBundle\Entity\Stage $stage = null;
 
-    /**
-     * @var \Mautic\LeadBundle\Entity\Lead
-     */
-    private $lead;
+    private ?\Mautic\LeadBundle\Entity\Lead $lead = null;
 
-    /**
-     * @var \Mautic\CoreBundle\Entity\IpAddress
-     */
-    private $ipAddress;
+    private ?\Mautic\CoreBundle\Entity\IpAddress $ipAddress = null;
 
-    /**
-     * @var \DateTime
-     **/
-    private $dateFired;
+    private ?\DateTime $dateFired = null;
 
     public static function loadMetadata(ORM\ClassMetadata $metadata)
     {
         $builder = new ClassMetadataBuilder($metadata);
 
         $builder->setTable('stage_lead_action_log')
-            ->setCustomRepositoryClass('Mautic\StageBundle\Entity\LeadStageLogRepository');
+            ->setCustomRepositoryClass(\Mautic\StageBundle\Entity\LeadStageLogRepository::class);
 
         $builder->createManyToOne('stage', 'Stage')
             ->isPrimaryKey()
@@ -60,10 +48,7 @@ class LeadStageLog
         return $this->dateFired;
     }
 
-    /**
-     * @param mixed $dateFired
-     */
-    public function setDateFired($dateFired)
+    public function setDateFired(mixed $dateFired)
     {
         $this->dateFired = $dateFired;
     }
@@ -76,10 +61,7 @@ class LeadStageLog
         return $this->ipAddress;
     }
 
-    /**
-     * @param mixed $ipAddress
-     */
-    public function setIpAddress($ipAddress)
+    public function setIpAddress(mixed $ipAddress)
     {
         $this->ipAddress = $ipAddress;
     }
@@ -92,10 +74,7 @@ class LeadStageLog
         return $this->lead;
     }
 
-    /**
-     * @param mixed $lead
-     */
-    public function setLead($lead)
+    public function setLead(mixed $lead)
     {
         $this->lead = $lead;
     }
@@ -108,10 +87,7 @@ class LeadStageLog
         return $this->stage;
     }
 
-    /**
-     * @param mixed $stage
-     */
-    public function setStage($stage)
+    public function setStage(mixed $stage)
     {
         $this->stage = $stage;
     }

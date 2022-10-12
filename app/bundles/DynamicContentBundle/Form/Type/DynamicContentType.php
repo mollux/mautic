@@ -38,8 +38,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class DynamicContentType extends AbstractType
 {
-    private $em;
-    private $translator;
     private $fieldChoices;
     private $countryChoices;
     private $regionChoices;
@@ -48,22 +46,15 @@ class DynamicContentType extends AbstractType
     private $deviceTypesChoices;
     private $deviceBrandsChoices;
     private $deviceOsChoices;
-    private $tagChoices = [];
-    /**
-     * @var LeadModel
-     */
-    private $leadModel;
+    private array $tagChoices = [];
 
     /**
      * DynamicContentType constructor.
      *
      * @throws \InvalidArgumentException
      */
-    public function __construct(EntityManager $entityManager, ListModel $listModel, TranslatorInterface $translator, LeadModel $leadModel)
+    public function __construct(private EntityManager $em, ListModel $listModel, private TranslatorInterface $translator, private LeadModel $leadModel)
     {
-        $this->em              = $entityManager;
-        $this->translator      = $translator;
-        $this->leadModel       = $leadModel;
         $this->fieldChoices    = $listModel->getChoiceFields();
         $this->timezoneChoices = FormFieldHelper::getTimezonesChoices();
         $this->countryChoices  = FormFieldHelper::getCountryChoices();
@@ -341,9 +332,7 @@ class DynamicContentType extends AbstractType
     {
         unset($this->fieldChoices['company']);
         $customFields               = $this->leadModel->getRepository()->getCustomFieldList('lead');
-        $this->fieldChoices['lead'] = array_filter($this->fieldChoices['lead'], function ($key) use ($customFields) {
-            return in_array($key, array_merge(array_keys($customFields[0]), ['date_added', 'date_modified', 'device_brand', 'device_model', 'device_os', 'device_type', 'tags']), true);
-        }, ARRAY_FILTER_USE_KEY);
+        $this->fieldChoices['lead'] = array_filter($this->fieldChoices['lead'], fn($key) => in_array($key, array_merge(array_keys($customFields[0]), ['date_added', 'date_modified', 'device_brand', 'device_model', 'device_os', 'device_type', 'tags']), true), ARRAY_FILTER_USE_KEY);
     }
 
     /**

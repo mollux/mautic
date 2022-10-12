@@ -88,7 +88,7 @@ class RoleModel extends FormModel
         }
 
         $users = $this->em->getRepository('MauticUserBundle:User')->findByRole($entity);
-        if (count($users)) {
+        if (is_countable($users) ? count($users) : 0) {
             throw new PreconditionRequiredHttpException($this->translator->trans('mautic.user.role.error.deletenotallowed', ['%name%' => $entity->getName()], 'flashes'));
         }
 

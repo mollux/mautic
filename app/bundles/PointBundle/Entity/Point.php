@@ -14,60 +14,27 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 class Point extends FormEntity
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var string
-     */
-    private $name;
+    private ?string $name = null;
 
-    /**
-     * @var string
-     */
-    private $description;
+    private ?string $description = null;
 
-    /**
-     * @var string
-     */
-    private $type;
+    private ?string $type = null;
 
-    /**
-     * @var bool
-     */
-    private $repeatable = false;
+    private bool $repeatable = false;
 
-    /**
-     * @var \DateTime
-     */
-    private $publishUp;
+    private ?\DateTime $publishUp = null;
 
-    /**
-     * @var \DateTime
-     */
-    private $publishDown;
+    private ?\DateTime $publishDown = null;
 
-    /**
-     * @var int
-     */
-    private $delta = 0;
+    private int $delta = 0;
 
-    /**
-     * @var array
-     */
-    private $properties = [];
+    private array $properties = [];
 
-    /**
-     * @var ArrayCollection
-     */
-    private $log;
+    private \Doctrine\Common\Collections\ArrayCollection $log;
 
-    /**
-     * @var Category
-     **/
-    private $category;
+    private ?\Mautic\CategoryBundle\Entity\Category $category = null;
 
     public function __clone()
     {
@@ -337,10 +304,7 @@ class Point extends FormEntity
         return $this->category;
     }
 
-    /**
-     * @param mixed $category
-     */
-    public function setCategory($category)
+    public function setCategory(mixed $category)
     {
         $this->category = $category;
     }
@@ -353,10 +317,7 @@ class Point extends FormEntity
         return $this->delta;
     }
 
-    /**
-     * @param mixed $delta
-     */
-    public function setDelta($delta)
+    public function setDelta(mixed $delta)
     {
         $this->delta = (int) $delta;
     }

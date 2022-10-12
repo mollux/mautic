@@ -13,28 +13,13 @@ class BroadcastQuery
 {
     use ContactLimiterTrait;
 
-    /**
-     * @var EntityManager
-     */
-    private $entityManager;
-
-    /**
-     * @var SmsModel
-     */
-    private $smsModel;
-
-    /**
-     * @var \Doctrine\DBAL\Query\QueryBuilder
-     */
-    private $query;
+    private ?\Doctrine\DBAL\Query\QueryBuilder $query = null;
 
     /**
      * BroadcastQuery constructor.
      */
-    public function __construct(EntityManager $entityManager, SmsModel $smsModel)
+    public function __construct(private EntityManager $entityManager, private SmsModel $smsModel)
     {
-        $this->entityManager = $entityManager;
-        $this->smsModel      = $smsModel;
     }
 
     /**
@@ -49,10 +34,7 @@ class BroadcastQuery
         return $query->execute()->fetchAll();
     }
 
-    /**
-     * @return bool|string
-     */
-    public function getPendingCount(Sms $sms)
+    public function getPendingCount(Sms $sms): bool|string
     {
         $query = $this->getBasicQuery($sms);
         $query->select('COUNT(DISTINCT l.id)');

@@ -44,9 +44,7 @@ class SubmissionRepository extends CommonRepository
             $args['viewOnlyFields'] = ['button', 'freetext', 'freehtml', 'pagebreak', 'captcha'];
         }
         $viewOnlyFields = array_map(
-            function ($value) {
-                return '"'.$value.'"';
-            },
+            fn($value) => '"'.$value.'"',
             $args['viewOnlyFields']
         );
 
@@ -375,7 +373,6 @@ class SubmissionRepository extends CommonRepository
      * same tracking ID as a form submission tracking ID and thus assumed happened in the same session.
      *
      * @param           $emailId
-     * @param \DateTime $fromDate
      *
      * @return mixed
      */
@@ -495,16 +492,11 @@ class SubmissionRepository extends CommonRepository
             ->setParameter('lead', (int) $lead)
             ->setParameter('form', (int) $form);
 
-        switch ($type) {
-            case 'boolean':
-            case 'number':
-            $q->andWhere($q->expr()->$operatorExpr('r.'.$field, $value));
-                break;
-            default:
-        $q->andWhere($q->expr()->$operatorExpr('r.'.$field, ':value'))
-            ->setParameter('value', $value);
-                break;
-        }
+        match ($type) {
+            'boolean', 'number' => $q->andWhere($q->expr()->$operatorExpr('r.'.$field, $value)),
+            default => $q->andWhere($q->expr()->$operatorExpr('r.'.$field, ':value'))
+                ->setParameter('value', $value),
+        };
 
         $result = $q->execute()->fetch();
 

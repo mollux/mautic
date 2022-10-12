@@ -204,7 +204,7 @@ class TwitterIntegration extends SocialIntegration
             'trim_user'       => 'true',
         ]);
 
-        if (!empty($data) && count($data)) {
+        if (!empty($data) && (is_countable($data) ? count($data) : 0)) {
             $socialCache['has']['activity'] = true;
             $socialCache['activity']        = [
                 'tweets' => [],
@@ -231,7 +231,7 @@ class TwitterIntegration extends SocialIntegration
                     foreach ($d['entities']['media'] as $m) {
                         if ('photo' == $m['type']) {
                             $photo = [
-                                'url' => (isset($m['media_url_https']) ? $m['media_url_https'] : $m['media_url']),
+                                'url' => ($m['media_url_https'] ?? $m['media_url']),
                             ];
 
                             $socialCache['activity']['photos'][] = $photo;
@@ -304,7 +304,7 @@ class TwitterIntegration extends SocialIntegration
             return $parsed;
         }
 
-        return json_decode($data, true);
+        return json_decode($data, true, 512, JSON_THROW_ON_ERROR);
     }
 
     /**

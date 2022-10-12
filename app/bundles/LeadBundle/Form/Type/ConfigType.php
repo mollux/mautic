@@ -52,7 +52,7 @@ class ConfigType extends AbstractType
             $orderColumns = [];
             if (!empty($currentColumns)) {
                 $orderColumns = array_values($currentColumns);
-                $order        = htmlspecialchars(json_encode($orderColumns), ENT_QUOTES, 'UTF-8');
+                $order        = htmlspecialchars(json_encode($orderColumns, JSON_THROW_ON_ERROR), ENT_QUOTES, 'UTF-8');
             }
             $form->add(
                 'contact_columns',
@@ -82,7 +82,7 @@ class ConfigType extends AbstractType
             FormEvents::PRE_SET_DATA,
             function (FormEvent $event) use ($formModifier) {
                 $data = $event->getData();
-                $columns = isset($data['contact_columns']) ? $data['contact_columns'] : [];
+                $columns = $data['contact_columns'] ?? [];
                 $formModifier($event->getForm(), $columns);
             }
         );
@@ -92,7 +92,7 @@ class ConfigType extends AbstractType
             FormEvents::PRE_SUBMIT,
             function (FormEvent $event) use ($formModifier) {
                 $data    = $event->getData();
-                $columns = isset($data['contact_columns']) ? $data['contact_columns'] : [];
+                $columns = $data['contact_columns'] ?? [];
                 $formModifier($event->getForm(), $columns);
             }
         );

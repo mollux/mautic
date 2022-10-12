@@ -67,7 +67,7 @@ return [
         ],
         'forms' => [
             'mautic.form.type.notification' => [
-                'class' => 'Mautic\NotificationBundle\Form\Type\NotificationType',
+                'class' => \Mautic\NotificationBundle\Form\Type\NotificationType::class,
             ],
             'mautic.form.type.mobile.notification' => [
                 'class' => \Mautic\NotificationBundle\Form\Type\MobileNotificationType::class,
@@ -79,17 +79,17 @@ return [
                 ],
             ],
             'mautic.form.type.notificationconfig' => [
-                'class' => 'Mautic\NotificationBundle\Form\Type\ConfigType',
+                'class' => \Mautic\NotificationBundle\Form\Type\ConfigType::class,
             ],
             'mautic.notification.config' => [
                 'class' => \Mautic\NotificationBundle\Form\Type\NotificationConfigType::class,
             ],
             'mautic.form.type.notificationsend_list' => [
-                'class'     => 'Mautic\NotificationBundle\Form\Type\NotificationSendType',
+                'class'     => \Mautic\NotificationBundle\Form\Type\NotificationSendType::class,
                 'arguments' => 'router',
             ],
             'mautic.form.type.notification_list' => [
-                'class' => 'Mautic\NotificationBundle\Form\Type\NotificationListType',
+                'class' => \Mautic\NotificationBundle\Form\Type\NotificationListType::class,
             ],
             'mautic.form.type.mobilenotificationsend_list' => [
                 'class'     => \Mautic\NotificationBundle\Form\Type\MobileNotificationSendType::class,
@@ -101,7 +101,7 @@ return [
         ],
         'helpers' => [
             'mautic.helper.notification' => [
-                'class'     => 'Mautic\NotificationBundle\Helper\NotificationHelper',
+                'class'     => \Mautic\NotificationBundle\Helper\NotificationHelper::class,
                 'alias'     => 'notification_helper',
                 'arguments' => [
                     'doctrine.orm.entity_manager',
@@ -127,7 +127,7 @@ return [
         ],
         'models' => [
             'mautic.notification.model.notification' => [
-                'class'     => 'Mautic\NotificationBundle\Model\NotificationModel',
+                'class'     => \Mautic\NotificationBundle\Model\NotificationModel::class,
                 'arguments' => [
                     'mautic.page.model.trackable',
                 ],
@@ -230,7 +230,7 @@ return [
                 'standard_entity' => true,
                 'name'            => 'notifications',
                 'path'            => '/notifications',
-                'controller'      => 'Mautic\NotificationBundle\Controller\Api\NotificationApiController',
+                'controller'      => \Mautic\NotificationBundle\Controller\Api\NotificationApiController::class,
             ],
         ],
     ],

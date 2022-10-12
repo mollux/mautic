@@ -11,20 +11,9 @@ use Mautic\CoreBundle\Helper\PathsHelper;
  */
 class ThemeHelper
 {
-    /**
-     * @var string
-     */
-    private $theme;
+    private string $themeDir;
 
-    /**
-     * @var string
-     */
-    private $themeDir;
-
-    /**
-     * @var string
-     */
-    private $themePath;
+    private string $themePath;
 
     /**
      * @var mixed
@@ -37,9 +26,8 @@ class ThemeHelper
      * @throws BadConfigurationException
      * @throws FileNotFoundException
      */
-    public function __construct(PathsHelper $pathsHelper, $theme)
+    public function __construct(PathsHelper $pathsHelper, private $theme)
     {
-        $this->theme     = $theme;
         $this->themeDir  = $pathsHelper->getSystemPath('themes').'/'.$this->theme;
         $this->themePath = $pathsHelper->getSystemPath('themes_root').'/'.$this->themeDir;
 
@@ -50,7 +38,7 @@ class ThemeHelper
 
         // get the config
         if (file_exists($this->themePath.'/config.json')) {
-            $this->config = json_decode(file_get_contents($this->themePath.'/config.json'), true);
+            $this->config = json_decode(file_get_contents($this->themePath.'/config.json'), true, 512, JSON_THROW_ON_ERROR);
         } else {
             throw new BadConfigurationException($this->theme.' is missing a required config file');
         }
@@ -99,7 +87,7 @@ class ThemeHelper
      */
     public function getSlots($type)
     {
-        return (isset($this->config['slots'][$type])) ? $this->config['slots'][$type] : [];
+        return $this->config['slots'][$type] ?? [];
     }
 
     /**
@@ -118,10 +106,8 @@ class ThemeHelper
      * Returns template.
      *
      * @param $code
-     *
-     * @return bool|string
      */
-    public function getErrorPageTemplate($code)
+    public function getErrorPageTemplate($code): bool|string
     {
         $errorPage = $this->getThemePath()."/error_{$code}.html.php";
         if (file_exists($errorPage)) {

@@ -16,16 +16,15 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class PublicController extends CommonFormController
 {
-    /**
-     * @var array
-     */
-    private $tokens = [];
+    private array $tokens = [];
 
     /**
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function submitAction()
+    public function submitAction(): \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
+        $postAction = null;
+        $query = null;
         if ('POST' !== $this->request->getMethod()) {
             return $this->accessDenied();
         }
@@ -34,17 +33,17 @@ class PublicController extends CommonFormController
         $post          = $this->request->request->get('mauticform');
         $messengerMode = (!empty($post['messenger']));
         $server        = $this->request->server->all();
-        $return        = (isset($post['return'])) ? $post['return'] : false;
+        $return        = $post['return'] ?? false;
 
         if (empty($return)) {
             //try to get it from the HTTP_REFERER
-            $return = (isset($server['HTTP_REFERER'])) ? $server['HTTP_REFERER'] : false;
+            $return = $server['HTTP_REFERER'] ?? false;
         }
 
         if (!empty($return)) {
             //remove mauticError and mauticMessage from the referer so it doesn't get sent back
             $return = InputHelper::url($return, null, null, null, ['mauticError', 'mauticMessage'], true);
-            $query  = (false === strpos($return, '?')) ? '?' : '&';
+            $query  = (!str_contains($return, '?')) ? '?' : '&';
         }
 
         $translator = $this->get('translator');
@@ -196,7 +195,7 @@ class PublicController extends CommonFormController
                 // Post via ajax so return a json response
                 return new JsonResponse($data);
             } else {
-                $response = json_encode($data);
+                $response = json_encode($data, JSON_THROW_ON_ERROR);
 
                 return $this->render('MauticFormBundle::messenger.html.php', ['response' => $response]);
             }

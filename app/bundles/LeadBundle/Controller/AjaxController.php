@@ -552,10 +552,8 @@ class AjaxController extends CommonAjaxController
 
     /**
      * Get the rows for new leads.
-     *
-     * @return array|\Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    protected function getNewLeadsAction(Request $request)
+    protected function getNewLeadsAction(Request $request): array|\Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         $dataArray = ['success' => 0];
         $maxId     = $request->get('maxId');
@@ -683,7 +681,7 @@ class AjaxController extends CommonAjaxController
     {
         /** @var \Mautic\LeadBundle\Model\LeadModel $leadModel */
         $leadModel   = $this->getModel('lead');
-        $post        = $request->request->get('lead_tags', [], true);
+        $post        = $request->request->get('lead_tags', []);
         $lead        = $leadModel->getEntity((int) $post['id']);
         $updatedTags = (!empty($post['tags']) && is_array($post['tags'])) ? $post['tags'] : [];
         $data        = ['success' => 0];
@@ -717,7 +715,7 @@ class AjaxController extends CommonAjaxController
     protected function addLeadTagsAction(Request $request)
     {
         $tags = $request->request->get('tags');
-        $tags = json_decode($tags, true);
+        $tags = json_decode($tags, true, 512, JSON_THROW_ON_ERROR);
 
         if (is_array($tags)) {
             $leadModel = $this->getModel('lead');
@@ -759,7 +757,7 @@ class AjaxController extends CommonAjaxController
     protected function addLeadUtmTagsAction(Request $request)
     {
         $utmTags = $request->request->get('utmtags');
-        $utmTags = json_decode($utmTags, true);
+        $utmTags = json_decode($utmTags, true, 512, JSON_THROW_ON_ERROR);
 
         if (is_array($utmTags)) {
             $newUtmTags = [];
@@ -890,9 +888,7 @@ class AjaxController extends CommonAjaxController
                 foreach ($dataArray['operators'] as $value => $label) {
                     $dataArray['operators'][$value] = $this->get('translator')->trans($label);
                 }
-
-                reset($dataArray['operators']);
-                $operator = key($dataArray['operators']);
+                $operator = array_key_first($dataArray['operators']);
             }
 
             $disabled = false;
@@ -920,6 +916,7 @@ class AjaxController extends CommonAjaxController
      */
     protected function setAsPrimaryCompanyAction(Request $request)
     {
+        $dataArray = [];
         $dataArray['success'] = 1;
         $companyId            = InputHelper::clean($request->request->get('companyId'));
         $leadId               = InputHelper::clean($request->request->get('leadId'));

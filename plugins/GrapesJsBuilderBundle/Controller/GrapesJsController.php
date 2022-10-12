@@ -46,7 +46,7 @@ class GrapesJsController extends CommonController
         }
 
         //permission check
-        if (false !== strpos($objectId, 'new')) {
+        if (str_contains($objectId, 'new')) {
             $isNew = true;
 
             if (!$this->get('mautic.security')->isGranted($aclToCheck.'create')) {
@@ -124,7 +124,7 @@ class GrapesJsController extends CommonController
             ]
         );
 
-        if (false !== strpos($renderedTemplate, '<mjml>')) {
+        if (str_contains($renderedTemplate, '<mjml>')) {
             $type = 'mjml';
         }
 
@@ -160,7 +160,7 @@ class GrapesJsController extends CommonController
                 $slotConfig = [];
             }
 
-            $value = isset($content[$slot]) ? $content[$slot] : '';
+            $value = $content[$slot] ?? '';
             $slotsHelper->set($slot, "<div data-slot=\"text\" id=\"slot-{$slot}\">{$value}</div>");
         }
 
@@ -205,11 +205,11 @@ class GrapesJsController extends CommonController
                 $slotConfig['placeholder'] = 'mautic.page.builder.addcontent';
             }
 
-            $value = isset($content[$slot]) ? $content[$slot] : '';
+            $value = $content[$slot] ?? '';
 
             if ('slideshow' == $slotConfig['type']) {
                 if (isset($content[$slot])) {
-                    $options = json_decode($content[$slot], true);
+                    $options = json_decode($content[$slot], true, 512, JSON_THROW_ON_ERROR);
                 } else {
                     $options = [
                         'width'            => '100%',
@@ -243,9 +243,7 @@ class GrapesJsController extends CommonController
                 // Order slides
                 usort(
                     $options['slides'],
-                    function ($a, $b) {
-                        return strcmp($a['order'], $b['order']);
-                    }
+                    fn($a, $b) => strcmp($a['order'], $b['order'])
                 );
 
                 $options['slot']   = $slot;

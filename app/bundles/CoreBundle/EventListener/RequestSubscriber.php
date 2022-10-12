@@ -14,29 +14,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class RequestSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var CsrfTokenManagerInterface
-     */
-    private $tokenManager;
-
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    /**
-     * @var TemplatingHelper
-     */
-    private $templating;
-
-    public function __construct(
-        CsrfTokenManagerInterface $tokenManager,
-        TranslatorInterface $translator,
-        TemplatingHelper $templating
-    ) {
-        $this->tokenManager = $tokenManager;
-        $this->translator   = $translator;
-        $this->templating   = $templating;
+    public function __construct(private CsrfTokenManagerInterface $tokenManager, private TranslatorInterface $translator, private TemplatingHelper $templating)
+    {
     }
 
     /**

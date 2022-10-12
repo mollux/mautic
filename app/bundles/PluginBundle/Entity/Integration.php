@@ -11,47 +11,26 @@ use Mautic\CoreBundle\Entity\CommonEntity;
  */
 class Integration extends CommonEntity
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var Plugin
-     */
-    private $plugin;
+    private ?\Mautic\PluginBundle\Entity\Plugin $plugin = null;
 
-    /**
-     * @var string
-     */
-    private $name;
+    private ?string $name = null;
 
-    /**
-     * @var bool
-     */
-    private $isPublished = false;
+    private bool $isPublished = false;
 
-    /**
-     * @var array
-     */
-    private $supportedFeatures = [];
+    private array $supportedFeatures = [];
 
-    /**
-     * @var array
-     */
-    private $apiKeys = [];
+    private array $apiKeys = [];
 
-    /**
-     * @var array
-     */
-    private $featureSettings = [];
+    private array $featureSettings = [];
 
     public static function loadMetadata(ORM\ClassMetadata $metadata)
     {
         $builder = new ClassMetadataBuilder($metadata);
 
         $builder->setTable('plugin_integration_settings')
-            ->setCustomRepositoryClass('Mautic\PluginBundle\Entity\IntegrationRepository');
+            ->setCustomRepositoryClass(\Mautic\PluginBundle\Entity\IntegrationRepository::class);
 
         $builder->createField('id', 'integer')
             ->isPrimaryKey()
@@ -101,11 +80,9 @@ class Integration extends CommonEntity
     }
 
     /**
-     * @param mixed $plugin
-     *
      * @return Integration
      */
-    public function setPlugin($plugin)
+    public function setPlugin(mixed $plugin)
     {
         $this->plugin = $plugin;
 
@@ -121,11 +98,9 @@ class Integration extends CommonEntity
     }
 
     /**
-     * @param mixed $name
-     *
      * @return Integration
      */
-    public function setName($name)
+    public function setName(mixed $name)
     {
         $this->isChanged('name', $name);
 
@@ -143,11 +118,9 @@ class Integration extends CommonEntity
     }
 
     /**
-     * @param mixed $isPublished
-     *
      * @return Integration
      */
-    public function setIsPublished($isPublished)
+    public function setIsPublished(mixed $isPublished)
     {
         $this->isChanged('isPublished', $isPublished);
 
@@ -165,11 +138,9 @@ class Integration extends CommonEntity
     }
 
     /**
-     * @param mixed $supportedFeatures
-     *
      * @return Integration
      */
-    public function setSupportedFeatures($supportedFeatures)
+    public function setSupportedFeatures(mixed $supportedFeatures)
     {
         $this->isChanged('supportedFeatures', $supportedFeatures);
 
@@ -187,11 +158,9 @@ class Integration extends CommonEntity
     }
 
     /**
-     * @param mixed $apiKeys
-     *
      * @return Integration
      */
-    public function setApiKeys($apiKeys)
+    public function setApiKeys(mixed $apiKeys)
     {
         $this->apiKeys = $apiKeys;
 
@@ -207,11 +176,9 @@ class Integration extends CommonEntity
     }
 
     /**
-     * @param mixed $featureSettings
-     *
      * @return Integration
      */
-    public function setFeatureSettings($featureSettings)
+    public function setFeatureSettings(mixed $featureSettings)
     {
         $this->isChanged('featureSettings', $featureSettings);
 

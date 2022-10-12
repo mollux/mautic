@@ -12,17 +12,11 @@ use Mautic\WebhookBundle\Entity\WebhookQueue;
 class WebhookQueueEvent extends CommonEvent
 {
     /**
-     * @var Webhook
-     */
-    protected $webhook;
-
-    /**
      * @param bool $isNew
      */
-    public function __construct(WebhookQueue $webhookQueue, Webhook $webhook, $isNew = false)
+    public function __construct(WebhookQueue $webhookQueue, protected Webhook $webhook, $isNew = false)
     {
         $this->entity  = $webhookQueue;
-        $this->webhook = $webhook;
         $this->isNew   = $isNew;
     }
 

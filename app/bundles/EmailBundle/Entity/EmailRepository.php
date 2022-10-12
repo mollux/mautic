@@ -145,8 +145,6 @@ class EmailRepository extends CommonRepository
      * @param int|null       $maxContactId
      * @param bool           $countWithMaxMin
      * @param \DateTime|null $maxDate
-     *
-     * @return QueryBuilder|int|array
      */
     public function getEmailPendingQuery(
         $emailId,
@@ -158,7 +156,7 @@ class EmailRepository extends CommonRepository
         $maxContactId = null,
         $countWithMaxMin = false,
         $maxDate = null
-    ) {
+    ): \Doctrine\DBAL\Query\QueryBuilder|int|array {
         // Do not include leads in the do not contact table
         $dncQb = $this->getEntityManager()->getConnection()->createQueryBuilder();
         $dncQb->select('dnc.lead_id')
@@ -279,8 +277,6 @@ class EmailRepository extends CommonRepository
      * @param int|null   $minContactId
      * @param int|null   $maxContactId
      * @param bool       $countWithMaxMin
-     *
-     * @return array|int
      */
     public function getEmailPendingLeads(
         $emailId,
@@ -291,7 +287,7 @@ class EmailRepository extends CommonRepository
         $minContactId = null,
         $maxContactId = null,
         $countWithMaxMin = false
-    ) {
+    ): array|int {
         $q = $this->getEmailPendingQuery(
             $emailId,
             $variantIds,
@@ -416,7 +412,7 @@ class EmailRepository extends CommonRepository
      */
     protected function addSearchCommandWhereClause($q, $filter)
     {
-        list($expr, $parameters) = $this->addStandardSearchCommandWhereClause($q, $filter);
+        [$expr, $parameters] = $this->addStandardSearchCommandWhereClause($q, $filter);
         if ($expr) {
             return [$expr, $parameters];
         }
@@ -496,7 +492,7 @@ class EmailRepository extends CommonRepository
      * @param string[]|string|int $relatedIds
      * @param string              $date
      */
-    public function resetVariants($relatedIds, $date)
+    public function resetVariants(array|string|int $relatedIds, $date)
     {
         if (!is_array($relatedIds)) {
             $relatedIds = [(string) $relatedIds];
@@ -521,9 +517,8 @@ class EmailRepository extends CommonRepository
      * @param int        $id
      * @param string     $type
      * @param int        $increaseBy
-     * @param bool|false $variant
      */
-    public function upCount($id, $type = 'sent', $increaseBy = 1, $variant = false)
+    public function upCount($id, $type = 'sent', $increaseBy = 1, bool $variant = false)
     {
         if (!$increaseBy) {
             return;

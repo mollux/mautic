@@ -15,32 +15,20 @@ namespace Mautic\CoreBundle\ErrorHandler {
     {
         public static $handler;
 
-        /**
-         * @var string
-         */
-        private static $environment;
+        private static ?string $environment = null;
 
         /**
          * @var LoggerInterface
          */
         private $debugLogger;
 
-        /**
-         * @var LoggerInterface
-         */
-        private $displayErrors;
+        private ?\Psr\Log\LoggerInterface $displayErrors = null;
 
-        /**
-         * @var LoggerInterface
-         */
-        private $logger;
+        private ?\Psr\Log\LoggerInterface $logger = null;
 
         private $mainLogger;
 
-        /**
-         * @var string
-         */
-        private static $root;
+        private static string $root;
 
         public function __construct()
         {
@@ -48,11 +36,10 @@ namespace Mautic\CoreBundle\ErrorHandler {
         }
 
         /**
-         * @param mixed               $log
          * @param string|array<mixed> $context
          * @param bool                $backtrace
          */
-        public static function logDebugEntry($log, $context = 'null', $backtrace = false)
+        public static function logDebugEntry(mixed $log, string|array $context = 'null', $backtrace = false)
         {
             if ($debugLogger = self::$handler->getDebugLogger()) {
                 if (!is_array($context)) {
@@ -179,7 +166,7 @@ namespace Mautic\CoreBundle\ErrorHandler {
 
             $content = $this->generateResponse($error, $inTemplate);
 
-            $message = isset($error['logMessage']) ? $error['logMessage'] : $error['message'];
+            $message = $error['logMessage'] ?? $error['message'];
             $this->log(LogLevel::ERROR, "$message - in file {$error['file']} - at line {$error['line']}", [], $error['trace']);
 
             if ($returnContent) {
@@ -190,7 +177,7 @@ namespace Mautic\CoreBundle\ErrorHandler {
 
             if (!empty($GLOBALS['MAUTIC_AJAX_DIRECT_RENDER'])) {
                 header('Content-Type: application/json');
-                $content = json_encode(['newContent' => $content]);
+                $content = json_encode(['newContent' => $content], JSON_THROW_ON_ERROR);
             }
 
             echo $content;
@@ -216,7 +203,7 @@ namespace Mautic\CoreBundle\ErrorHandler {
                         $handlingFatal = true;
                         $this->log(LogLevel::ERROR, "PHP $name: {$error['message']} - in file {$error['file']} - at line {$error['line']}");
 
-                        if (0 === strpos($error['message'], 'Allowed memory') || 0 === strpos($error['message'], 'Out of memory')) {
+                        if (str_starts_with($error['message'], 'Allowed memory') || str_starts_with($error['message'], 'Out of memory')) {
                             $exception = new OutOfMemoryException(
                                 $this->getErrorName($error['type']).': '.$error['message'],
                                 0,
@@ -275,7 +262,7 @@ namespace Mautic\CoreBundle\ErrorHandler {
                     $logMessage = $exception->getMessage();
 
                     if ('dev' === self::$environment) {
-                        $message = '<strong>'.get_class($exception).':</strong> '.$exception->getMessage();
+                        $message = '<strong>'.$exception::class.':</strong> '.$exception->getMessage();
                     }
                 }
             } elseif ($exception instanceof DatabaseConnectionException) {
@@ -343,11 +330,9 @@ namespace Mautic\CoreBundle\ErrorHandler {
         }
 
         /**
-         * @param mixed $displayErrors
-         *
          * @return ErrorHandler
          */
-        public function setDisplayErrors($displayErrors)
+        public function setDisplayErrors(mixed $displayErrors)
         {
             $this->displayErrors = $displayErrors;
 
@@ -379,11 +364,9 @@ namespace Mautic\CoreBundle\ErrorHandler {
         }
 
         /**
-         * @param mixed $mainLogger
-         *
          * @return ErrorHandler
          */
-        public function setMainLogger($mainLogger)
+        public function setMainLogger(mixed $mainLogger)
         {
             $this->mainLogger = $mainLogger;
 
@@ -426,6 +409,7 @@ namespace Mautic\CoreBundle\ErrorHandler {
          */
         private function generateResponse($error, $inTemplate = false)
         {
+            $error = [];
             // Get a trace
             if ('dev' == self::$environment) {
                 if (empty($error['trace'])) {
@@ -441,9 +425,7 @@ namespace Mautic\CoreBundle\ErrorHandler {
                     // Renumber backtrace items.
                     $error['trace'] = preg_replace_callback(
                         '/^#(\d+)/m',
-                        function ($matches) {
-                            return '#'.($matches[1] + 1).'&nbsp;&nbsp;';
-                        },
+                        fn($matches) => '#'.($matches[1] + 1).'&nbsp;&nbsp;',
                         $error['trace']
                     );
                 }
@@ -480,12 +462,12 @@ namespace Mautic\CoreBundle\ErrorHandler {
 
                 header('Content-Type: application/json');
 
-                return json_encode($dataArray);
+                return json_encode($dataArray, JSON_THROW_ON_ERROR);
             }
 
             if ('dev' == self::$environment || $this->displayErrors) {
                 $error['file'] = str_replace(self::$root, '', $error['file']);
-                $errorMessage  = (isset($error['logMessage'])) ? $error['logMessage'] : $error['message'];
+                $errorMessage  = $error['logMessage'] ?? $error['message'];
                 $message       = "$errorMessage - in file {$error['file']} - at line {$error['line']}";
             } else {
                 if (!empty($error['showExceptionMessage'])) {
@@ -522,28 +504,13 @@ namespace Mautic\CoreBundle\ErrorHandler {
          */
         private function getErrorName($bit)
         {
-            switch ($bit) {
-                case E_PARSE:
-                    return 'Parse Error';
-
-                case E_ERROR:
-                case E_USER_ERROR:
-                case E_CORE_ERROR:
-                case E_RECOVERABLE_ERROR:
-                    return 'Error';
-
-                case E_WARNING:
-                case E_USER_WARNING:
-                case E_CORE_WARNING:
-                    return 'Warning';
-
-                case E_DEPRECATED:
-                case E_USER_DEPRECATED:
-                    return 'Deprecation';
-
-                default:
-                    return 'Notice';
-            }
+            return match ($bit) {
+                E_PARSE => 'Parse Error',
+                E_ERROR, E_USER_ERROR, E_CORE_ERROR, E_RECOVERABLE_ERROR => 'Error',
+                E_WARNING, E_USER_WARNING, E_CORE_WARNING => 'Warning',
+                E_DEPRECATED, E_USER_DEPRECATED => 'Deprecation',
+                default => 'Notice',
+            };
         }
     }
 }

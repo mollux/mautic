@@ -14,16 +14,10 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class FormFieldTelType extends AbstractType
 {
     /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    /**
      * FormFieldTelType constructor.
      */
-    public function __construct(TranslatorInterface $translator)
+    public function __construct(private TranslatorInterface $translator)
     {
-        $this->translator = $translator;
     }
 
     /**
@@ -36,7 +30,7 @@ class FormFieldTelType extends AbstractType
             YesNoButtonGroupType::class,
             [
                 'label' => 'mautic.form.field.type.tel.international',
-                'data'  => isset($options['data']['international']) ? $options['data']['international'] : false,
+                'data'  => $options['data']['international'] ?? false,
             ]
         );
 

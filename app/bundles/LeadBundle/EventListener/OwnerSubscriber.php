@@ -12,20 +12,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class OwnerSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var string
-     */
-    private $ownerFieldSprintf = '{ownerfield=%s}';
-
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    /**
-     * @var LeadModel
-     */
-    private $leadModel;
+    private string $ownerFieldSprintf = '{ownerfield=%s}';
 
     /**
      * @var array
@@ -35,10 +22,8 @@ class OwnerSubscriber implements EventSubscriberInterface
     /**
      * OwnerSubscriber constructor.
      */
-    public function __construct(LeadModel $leadModel, TranslatorInterface $translator)
+    public function __construct(private LeadModel $leadModel, private TranslatorInterface $translator)
     {
-        $this->translator = $translator;
-        $this->leadModel  = $leadModel;
     }
 
     /**

@@ -23,17 +23,15 @@ class SmsListType extends AbstractType
                 'modal_header'        => 'mautic.sms.header.new',
                 'model'               => 'sms',
                 'model_lookup_method' => 'getLookupResults',
-                'lookup_arguments'    => function (Options $options) {
-                    return [
-                        'type'    => SmsType::class,
-                        'filter'  => '$data',
-                        'limit'   => 0,
-                        'start'   => 0,
-                        'options' => [
-                            'sms_type' => $options['sms_type'],
-                        ],
-                    ];
-                },
+                'lookup_arguments'    => fn(Options $options) => [
+                    'type'    => SmsType::class,
+                    'filter'  => '$data',
+                    'limit'   => 0,
+                    'start'   => 0,
+                    'options' => [
+                        'sms_type' => $options['sms_type'],
+                    ],
+                ],
                 'ajax_lookup_action' => function (Options $options) {
                     $query = [
                         'sms_type' => $options['sms_type'],

@@ -17,9 +17,7 @@ final class RandomHelper implements RandomHelperInterface
      */
     public function generate($length = 10, $charlist = '0-9a-z')
     {
-        $charlist = count_chars(preg_replace_callback('#.-.#', function (array $m) {
-            return implode('', range($m[0][0], $m[0][2]));
-        }, $charlist), 3);
+        $charlist = count_chars(preg_replace_callback('#.-.#', fn(array $m) => implode('', range($m[0][0], $m[0][2])), $charlist), 3);
         $chLen = strlen($charlist);
         if ($length < 1) {
             throw new \InvalidArgumentException('Length must be greater than zero.');

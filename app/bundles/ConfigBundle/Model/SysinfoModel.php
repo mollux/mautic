@@ -21,27 +21,8 @@ class SysinfoModel
      */
     protected $folders;
 
-    protected PathsHelper $pathsHelper;
-    protected CoreParametersHelper $coreParametersHelper;
-    protected Connection $connection;
-    private TranslatorInterface $translator;
-    private InstallService $installService;
-    private CheckStep $checkStep;
-
-    public function __construct(
-        PathsHelper $pathsHelper,
-        CoreParametersHelper $coreParametersHelper,
-        TranslatorInterface $translator,
-        Connection $connection,
-        InstallService $installService,
-        CheckStep $checkStep
-    ) {
-        $this->pathsHelper          = $pathsHelper;
-        $this->coreParametersHelper = $coreParametersHelper;
-        $this->translator           = $translator;
-        $this->connection           = $connection;
-        $this->installService       = $installService;
-        $this->checkStep            = $checkStep;
+    public function __construct(protected PathsHelper $pathsHelper, protected CoreParametersHelper $coreParametersHelper, private TranslatorInterface $translator, protected Connection $connection, private InstallService $installService, private CheckStep $checkStep)
+    {
     }
 
     /**
@@ -125,7 +106,7 @@ class SysinfoModel
 
         foreach ($importantFolders as $folder) {
             $folderPath = realpath($folder);
-            $folderKey  = ($folderPath) ? $folderPath : $folder;
+            $folderKey  = $folderPath ?: $folder;
             $isWritable = ($folderPath) ? is_writable($folderPath) : false;
 
             $this->folders[$folderKey] = $isWritable;
@@ -157,7 +138,7 @@ class SysinfoModel
         return [
             'version'  => $this->connection->executeQuery('SELECT VERSION()')->fetchColumn(),
             'driver'   => $this->connection->getDriver()->getName(),
-            'platform' => get_class($this->connection->getDatabasePlatform()),
+            'platform' => $this->connection->getDatabasePlatform()::class,
         ];
     }
 

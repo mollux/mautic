@@ -12,22 +12,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class DeduplicateCommand extends ModeratedCommand
 {
-    /**
-     * @var ContactDeduper
-     */
-    private $contactDeduper;
-
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    public function __construct(ContactDeduper $contactDeduper, TranslatorInterface $translator, PathsHelper $pathsHelper)
+    public function __construct(private ContactDeduper $contactDeduper, private TranslatorInterface $translator, PathsHelper $pathsHelper)
     {
         parent::__construct($pathsHelper);
-
-        $this->contactDeduper = $contactDeduper;
-        $this->translator     = $translator;
     }
 
     public function configure()

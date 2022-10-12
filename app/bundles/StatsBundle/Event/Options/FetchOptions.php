@@ -4,15 +4,9 @@ namespace Mautic\StatsBundle\Event\Options;
 
 class FetchOptions
 {
-    /**
-     * @var array
-     */
-    private $options = [];
+    private array $options = [];
 
-    /**
-     * @var int|null
-     */
-    private $itemId;
+    private ?int $itemId = null;
 
     /**
      * @param int $value
@@ -36,11 +30,10 @@ class FetchOptions
 
     /**
      * @param string $key
-     * @param mixed  $value
      *
      * @return $this
      */
-    public function setOption($key, $value)
+    public function setOption($key, mixed $value)
     {
         $this->options[$key] = $value;
 

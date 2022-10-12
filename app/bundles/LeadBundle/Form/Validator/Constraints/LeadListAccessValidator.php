@@ -8,14 +8,8 @@ use Symfony\Component\Validator\ConstraintValidator;
 
 class LeadListAccessValidator extends ConstraintValidator
 {
-    /**
-     * @var ListModel
-     */
-    private $segmentModel;
-
-    public function __construct(ListModel $segmentModel)
+    public function __construct(private ListModel $segmentModel)
     {
-        $this->segmentModel = $segmentModel;
     }
 
     /**
@@ -23,7 +17,7 @@ class LeadListAccessValidator extends ConstraintValidator
      */
     public function validate($value, Constraint $constraint)
     {
-        if (count($value)) {
+        if (is_countable($value) ? count($value) : 0) {
             $lists = $this->segmentModel->getUserLists();
             foreach ($value as $l) {
                 if (!isset($lists[$l->getId()])) {

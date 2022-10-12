@@ -26,43 +26,8 @@ use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 
 class CampaignModel extends CommonFormModel
 {
-    /**
-     * @var ListModel
-     */
-    protected $leadListModel;
-
-    /**
-     * @var FormModel
-     */
-    protected $formModel;
-
-    /**
-     * @var EventCollector
-     */
-    private $eventCollector;
-
-    /**
-     * @var MembershipBuilder
-     */
-    private $membershipBuilder;
-
-    /**
-     * @var ContactTracker
-     */
-    private $contactTracker;
-
-    public function __construct(
-        ListModel $leadListModel,
-        FormModel $formModel,
-        EventCollector $eventCollector,
-        MembershipBuilder $membershipBuilder,
-        ContactTracker $contactTracker
-    ) {
-        $this->leadListModel     = $leadListModel;
-        $this->formModel         = $formModel;
-        $this->eventCollector    = $eventCollector;
-        $this->membershipBuilder = $membershipBuilder;
-        $this->contactTracker    = $contactTracker;
+    public function __construct(protected ListModel $leadListModel, protected FormModel $formModel, private EventCollector $eventCollector, private MembershipBuilder $membershipBuilder, private ContactTracker $contactTracker)
+    {
     }
 
     /**
@@ -232,7 +197,7 @@ class CampaignModel extends CommonFormModel
             $event = !$isNew ? $existingEvents[$properties['id']] : new Event();
 
             foreach ($properties as $f => $v) {
-                if ('id' == $f && 0 === strpos($v, 'new')) {
+                if ('id' == $f && str_starts_with($v, 'new')) {
                     //set the temp ID used to be able to match up connections
                     $event->setTempId($v);
                 }
@@ -341,11 +306,7 @@ class CampaignModel extends CommonFormModel
             function ($a, $b) {
                 $aOrder = $a->getOrder();
                 $bOrder = $b->getOrder();
-                if ($aOrder == $bOrder) {
-                    return 0;
-                }
-
-                return ($aOrder < $bOrder) ? -1 : 1;
+                return $aOrder <=> $bOrder;
             }
         );
 
@@ -386,7 +347,7 @@ class CampaignModel extends CommonFormModel
         }
 
         foreach ($settings['nodes'] as &$node) {
-            if (false !== strpos($node['id'], 'new')) {
+            if (str_contains($node['id'], 'new')) {
                 // Find the real one and update the node
                 $node['id'] = str_replace($node['id'], $tempIds[$node['id']], $node['id']);
             }
@@ -398,13 +359,13 @@ class CampaignModel extends CommonFormModel
 
         foreach ($settings['connections'] as &$connection) {
             // Check source
-            if (false !== strpos($connection['sourceId'], 'new')) {
+            if (str_contains($connection['sourceId'], 'new')) {
                 // Find the real one and update the node
                 $connection['sourceId'] = str_replace($connection['sourceId'], $tempIds[$connection['sourceId']], $connection['sourceId']);
             }
 
             // Check target
-            if (false !== strpos($connection['targetId'], 'new')) {
+            if (str_contains($connection['targetId'], 'new')) {
                 // Find the real one and update the node
                 $connection['targetId'] = str_replace($connection['targetId'], $tempIds[$connection['targetId']], $connection['targetId']);
             }
@@ -540,11 +501,9 @@ class CampaignModel extends CommonFormModel
     }
 
     /**
-     * @param mixed $form
-     *
      * @return array
      */
-    public function getCampaignsByForm($form)
+    public function getCampaignsByForm(mixed $form)
     {
         $formId = ($form instanceof Form) ? $form->getId() : $form;
 
@@ -554,9 +513,7 @@ class CampaignModel extends CommonFormModel
     /**
      * Gets the campaigns a specific lead is part of.
      *
-     * @param Lead $lead
      * @param bool $forList
-     *
      * @return mixed
      */
     public function getLeadCampaigns(Lead $lead = null, $forList = false)
@@ -771,7 +728,7 @@ class CampaignModel extends CommonFormModel
      */
     protected function buildOrder($hierarchy, &$events, $entity, $root = 'null', $order = 1)
     {
-        $count = count($hierarchy);
+        $count = is_countable($hierarchy) ? count($hierarchy) : 0;
         if (1 === $count && 'null' === array_unique(array_values($hierarchy))[0]) {
             // no parents so leave order as is
 
@@ -781,7 +738,7 @@ class CampaignModel extends CommonFormModel
                 if ($parent == $root || 1 === $count) {
                     $events[$eventId]->setOrder($order);
                     unset($hierarchy[$eventId]);
-                    if (count($hierarchy)) {
+                    if (is_countable($hierarchy) ? count($hierarchy) : 0) {
                         $this->buildOrder($hierarchy, $events, $entity, $eventId, $order + 1);
                     }
                 }
@@ -792,7 +749,6 @@ class CampaignModel extends CommonFormModel
     /**
      * @param int             $limit
      * @param bool            $maxLeads
-     * @param OutputInterface $output
      *
      * @return int
      */

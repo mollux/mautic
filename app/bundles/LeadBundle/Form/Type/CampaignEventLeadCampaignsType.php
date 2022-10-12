@@ -12,14 +12,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class CampaignEventLeadCampaignsType extends AbstractType
 {
-    /**
-     * @var ListModel
-     */
-    protected $listModel;
-
-    public function __construct(ListModel $listModel)
+    public function __construct(protected ListModel $listModel)
     {
-        $this->listModel = $listModel;
     }
 
     /**
@@ -42,7 +36,7 @@ class CampaignEventLeadCampaignsType extends AbstractType
             YesNoButtonGroupType::class,
             [
                 'label' => 'mautic.lead.lead.events.campaigns.date.added.filter',
-                'data'  => (isset($options['data']['dataAddedLimit'])) ? $options['data']['dataAddedLimit'] : false,
+                'data'  => $options['data']['dataAddedLimit'] ?? false,
             ]
         );
 

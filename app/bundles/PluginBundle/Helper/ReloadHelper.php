@@ -14,17 +14,8 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  */
 class ReloadHelper
 {
-    /**
-     * @var MauticFactory
-     */
-    private $factory;
-
-    private EventDispatcherInterface $eventDispatcher;
-
-    public function __construct(EventDispatcherInterface $eventDispatcher, MauticFactory $factory)
+    public function __construct(private EventDispatcherInterface $eventDispatcher, private MauticFactory $factory)
     {
-        $this->eventDispatcher = $eventDispatcher;
-        $this->factory         = $factory;
     }
 
     /**
@@ -87,8 +78,7 @@ class ReloadHelper
                 if (!empty($oldVersion) && -1 == version_compare($oldVersion, $plugin->getVersion())) {
                     //call the update callback
                     $callback = $pluginConfig['bundleClass'];
-                    $metadata = isset($pluginMetadata[$pluginConfig['namespace']])
-                        ? $pluginMetadata[$pluginConfig['namespace']] : null;
+                    $metadata = $pluginMetadata[$pluginConfig['namespace']] ?? null;
                     $installedSchema = isset($installedPluginsSchemas[$pluginConfig['namespace']])
                         ? $installedPluginsSchemas[$allPlugins[$bundle]['namespace']] : null;
 
@@ -123,10 +113,10 @@ class ReloadHelper
 
                 // Call the install callback
                 $callback        = $pluginConfig['bundleClass'];
-                $metadata        = isset($pluginMetadata[$pluginConfig['namespace']]) ? $pluginMetadata[$pluginConfig['namespace']] : null;
+                $metadata        = $pluginMetadata[$pluginConfig['namespace']] ?? null;
                 $installedSchema = null;
 
-                if (isset($installedPluginsSchemas[$pluginConfig['namespace']]) && 0 !== count($installedPluginsSchemas[$pluginConfig['namespace']]->getTables())) {
+                if (isset($installedPluginsSchemas[$pluginConfig['namespace']]) && 0 !== (is_countable($installedPluginsSchemas[$pluginConfig['namespace']]->getTables()) ? count($installedPluginsSchemas[$pluginConfig['namespace']]->getTables()) : 0)) {
                     $installedSchema = true;
                 }
 
@@ -158,7 +148,7 @@ class ReloadHelper
             }
 
             $plugin->setName(
-                isset($details['name']) ? $details['name'] : $config['base']
+                $details['name'] ?? $config['base']
             );
 
             if (isset($details['description'])) {

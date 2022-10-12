@@ -52,7 +52,7 @@ trait FilterTrait
         $attr        = ['class' => 'form-control filter-value'];
         $displayType = HiddenType::class;
         $displayAttr = [];
-        $operator    = isset($data['operator']) ? $data['operator'] : '';
+        $operator    = $data['operator'] ?? '';
         $field       = [];
 
         if (isset($options['fields']['behaviors'][$fieldName])) {
@@ -231,9 +231,9 @@ trait FilterTrait
                         'class'                => 'form-control',
                         'data-toggle'          => 'field-lookup',
                         'data-target'          => $data['field'],
-                        'data-action'          => isset($field['properties']['data-action']) ? $field['properties']['data-action'] : 'lead:fieldList',
-                        'data-lookup-callback' => isset($field['properties']['data-lookup-callback']) ? $field['properties']['data-lookup-callback'] : 'updateLookupListFilter',
-                        'data-callback'        => isset($field['properties']['callback']) ? $field['properties']['callback'] : 'activateFieldTypeahead',
+                        'data-action'          => $field['properties']['data-action'] ?? 'lead:fieldList',
+                        'data-lookup-callback' => $field['properties']['data-lookup-callback'] ?? 'updateLookupListFilter',
+                        'data-callback'        => $field['properties']['callback'] ?? 'activateFieldTypeahead',
                         'placeholder'          => $translator->trans(
                             'mautic.lead.list.form.filtervalue'
                         ),
@@ -293,7 +293,7 @@ trait FilterTrait
                     $attr,
                     [
                         'data-toggle' => 'field-lookup',
-                        'data-target' => isset($data['field']) ? $data['field'] : '',
+                        'data-target' => $data['field'] ?? '',
                         'data-action' => 'lead:fieldList',
                         'placeholder' => $translator->trans('mautic.lead.list.form.filtervalue'),
                     ]
@@ -330,7 +330,7 @@ trait FilterTrait
                                     ->setParameter('regex', $this->prepareRegex($regex))
                                     ->setMaxResults(1);
                                 $qb->execute()->fetchAll();
-                            } catch (\Exception $exception) {
+                            } catch (\Exception) {
                                 $context->buildViolation('mautic.core.regex.invalid')->addViolation();
                             }
                         }
@@ -355,7 +355,7 @@ trait FilterTrait
         } else {
             if (!empty($customOptions['constraints'])) {
                 foreach ($customOptions['constraints'] as $i => $constraint) {
-                    if ('NotBlank' === get_class($constraint)) {
+                    if ('NotBlank' === $constraint::class) {
                         array_splice($customOptions['constraints'], $i, 1);
                     }
                 }

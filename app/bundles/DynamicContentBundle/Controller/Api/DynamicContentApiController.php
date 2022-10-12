@@ -13,7 +13,7 @@ class DynamicContentApiController extends CommonApiController
     public function initialize(ControllerEvent $event)
     {
         $this->model           = $this->getModel('dynamicContent');
-        $this->entityClass     = 'Mautic\DynamicContentBundle\Entity\DynamicContent';
+        $this->entityClass     = \Mautic\DynamicContentBundle\Entity\DynamicContent::class;
         $this->entityNameOne   = 'dynamicContent';
         $this->entityNameMulti = 'dynamicContents';
 

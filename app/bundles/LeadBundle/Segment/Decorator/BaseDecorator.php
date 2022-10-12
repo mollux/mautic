@@ -16,17 +16,10 @@ class BaseDecorator implements FilterDecoratorInterface
     use RegexTrait;
 
     /**
-     * @var ContactSegmentFilterOperator
-     */
-    protected $contactSegmentFilterOperator;
-
-    /**
      * BaseDecorator constructor.
      */
-    public function __construct(
-        ContactSegmentFilterOperator $contactSegmentFilterOperator
-    ) {
-        $this->contactSegmentFilterOperator = $contactSegmentFilterOperator;
+    public function __construct(protected ContactSegmentFilterOperator $contactSegmentFilterOperator)
+    {
     }
 
     /**
@@ -55,15 +48,10 @@ class BaseDecorator implements FilterDecoratorInterface
     public function getOperator(ContactSegmentFilterCrate $contactSegmentFilterCrate)
     {
         $operator = $this->contactSegmentFilterOperator->fixOperator($contactSegmentFilterCrate->getOperator());
-
-        switch ($operator) {
-            case 'startsWith':
-            case 'endsWith':
-            case 'contains':
-                return 'like';
-        }
-
-        return $operator;
+        return match ($operator) {
+            'startsWith', 'endsWith', 'contains' => 'like',
+            default => $operator,
+        };
     }
 
     /**
@@ -76,10 +64,8 @@ class BaseDecorator implements FilterDecoratorInterface
 
     /**
      * @param array|string $argument
-     *
-     * @return array|string
      */
-    public function getParameterHolder(ContactSegmentFilterCrate $contactSegmentFilterCrate, $argument)
+    public function getParameterHolder(ContactSegmentFilterCrate $contactSegmentFilterCrate, $argument): array|string
     {
         if (is_array($argument)) {
             $result = [];
@@ -110,7 +96,7 @@ class BaseDecorator implements FilterDecoratorInterface
                 return !is_array($filter) ? explode('|', $filter) : $filter;
             case 'like':
             case '!like':
-                return false === strpos($filter, '%') ? '%'.$filter.'%' : $filter;
+                return !str_contains($filter, '%') ? '%'.$filter.'%' : $filter;
             case 'contains':
                 return '%'.$filter.'%';
             case 'startsWith':

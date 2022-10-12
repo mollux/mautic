@@ -12,36 +12,8 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class SearchSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var UserHelper
-     */
-    private $userHelper;
-
-    /**
-     * @var FormModel
-     */
-    private $formModel;
-
-    /**
-     * @var CorePermissions
-     */
-    private $security;
-
-    /**
-     * @var TemplatingHelper
-     */
-    private $templating;
-
-    public function __construct(
-        UserHelper $userHelper,
-        FormModel $formModel,
-        CorePermissions $security,
-        TemplatingHelper $templating
-    ) {
-        $this->userHelper = $userHelper;
-        $this->formModel  = $formModel;
-        $this->security   = $security;
-        $this->templating = $templating;
+    public function __construct(private UserHelper $userHelper, private FormModel $formModel, private CorePermissions $security, private TemplatingHelper $templating)
+    {
     }
 
     /**

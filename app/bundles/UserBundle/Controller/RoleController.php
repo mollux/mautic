@@ -99,10 +99,8 @@ class RoleController extends FormController
 
     /**
      * Generate's new role form and processes post data.
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function newAction()
+    public function newAction(): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         if (!$this->get('mautic.security')->isGranted('user:roles:create')) {
             return $this->accessDenied();
@@ -182,10 +180,8 @@ class RoleController extends FormController
      *
      * @param int  $objectId
      * @param bool $ignorePost
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function editAction($objectId, $ignorePost = true)
+    public function editAction($objectId, $ignorePost = true): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         if (!$this->get('mautic.security')->isGranted('user:roles:edit')) {
             return $this->accessDenied();
@@ -316,7 +312,7 @@ class RoleController extends FormController
                 $data = $object->convertBitsToPermissionNames($permissionsArray);
 
                 //get the ratio of granted/total
-                list($granted, $total) = $object->getPermissionRatio($data);
+                [$granted, $total] = $object->getPermissionRatio($data);
 
                 $permissions[$bundle] = [
                     'label'            => $label,
@@ -335,9 +331,7 @@ class RoleController extends FormController
         }
 
         //order permissions by label
-        uasort($permissions, function ($a, $b) {
-            return strnatcmp($a['label'], $b['label']);
-        });
+        uasort($permissions, fn($a, $b) => strnatcmp($a['label'], $b['label']));
 
         return ['config' => $permissions, 'list' => $permissionsList];
     }
@@ -346,10 +340,8 @@ class RoleController extends FormController
      * Delete's a role.
      *
      * @param int $objectId
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function deleteAction($objectId)
+    public function deleteAction($objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         if (!$this->get('mautic.security')->isGranted('user:roles:delete')) {
             return $this->accessDenied();
@@ -412,10 +404,8 @@ class RoleController extends FormController
 
     /**
      * Deletes a group of entities.
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function batchDeleteAction()
+    public function batchDeleteAction(): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         $page      = $this->get('session')->get('mautic.role.page', 1);
         $returnUrl = $this->generateUrl('mautic_role_index', ['page' => $page]);
@@ -433,7 +423,7 @@ class RoleController extends FormController
 
         if ('POST' == $this->request->getMethod()) {
             $model       = $this->getModel('user.role');
-            $ids         = json_decode($this->request->query->get('ids', ''));
+            $ids         = json_decode($this->request->query->get('ids', ''), null, 512, JSON_THROW_ON_ERROR);
             $deleteIds   = [];
             $currentUser = $this->user;
 
@@ -448,7 +438,7 @@ class RoleController extends FormController
                         'msg'     => 'mautic.user.role.error.notfound',
                         'msgVars' => ['%id%' => $objectId],
                     ];
-                } elseif (count($users)) {
+                } elseif (is_countable($users) ? count($users) : 0) {
                     $flashes[] = [
                         'type'    => 'error',
                         'msg'     => 'mautic.user.role.error.deletenotallowed',
@@ -471,7 +461,7 @@ class RoleController extends FormController
                     'type'    => 'notice',
                     'msg'     => 'mautic.user.role.notice.batch_deleted',
                     'msgVars' => [
-                        '%count%' => count($entities),
+                        '%count%' => is_countable($entities) ? count($entities) : 0,
                     ],
                 ];
             }

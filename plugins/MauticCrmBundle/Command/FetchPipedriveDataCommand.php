@@ -20,25 +20,13 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class FetchPipedriveDataCommand extends Command
 {
-    private IntegrationHelper $integrationHelper;
-    private TranslatorHelper $translatorHelper;
-    private OwnerImport $ownerImport;
-    private CompanyImport $companyImport;
-    private LeadImport $leadImport;
-
     public function __construct(
-        IntegrationHelper $integrationHelper,
-        TranslatorHelper $translatorHelper,
-        OwnerImport $ownerImport,
-        CompanyImport $companyImport,
-        LeadImport $leadImport
+        private IntegrationHelper $integrationHelper,
+        private TranslatorHelper $translatorHelper,
+        private OwnerImport $ownerImport,
+        private CompanyImport $companyImport,
+        private LeadImport $leadImport
     ) {
-        $this->integrationHelper = $integrationHelper;
-        $this->translatorHelper  = $translatorHelper;
-        $this->ownerImport       = $ownerImport;
-        $this->companyImport     = $companyImport;
-        $this->leadImport        = $leadImport;
-
         parent::__construct();
     }
 
@@ -114,12 +102,12 @@ class FetchPipedriveDataCommand extends Command
 
             try {
                 $result = $service->getData($query, $endPoint);
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 return;
             }
 
             $io->text('Pulled '.$result['processed']);
-            $io->note('Using '.memory_get_peak_usage(true) / 1000000 .' megabytes of ram.');
+            $io->note('Using '.memory_get_peak_usage(true) / 1_000_000 .' megabytes of ram.');
 
             if (!$result['more_items_in_collection']) {
                 return;
@@ -132,15 +120,11 @@ class FetchPipedriveDataCommand extends Command
 
     private function getIntegrationService(string $type): AbstractImport
     {
-        switch ($type) {
-            case 'owner':
-                return $this->ownerImport;
-            case 'lead':
-                return $this->leadImport;
-            case 'company':
-                return $this->companyImport;
-            default:
-                throw new \Exception("Unknown type {$type}");
-        }
+        return match ($type) {
+            'owner' => $this->ownerImport,
+            'lead' => $this->leadImport,
+            'company' => $this->companyImport,
+            default => throw new \Exception("Unknown type {$type}"),
+        };
     }
 }

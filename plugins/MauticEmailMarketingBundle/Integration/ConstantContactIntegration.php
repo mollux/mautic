@@ -63,7 +63,7 @@ class ConstantContactIntegration extends EmailAbstractIntegration
      *
      * @return bool|string false if no error; otherwise the error string
      */
-    public function authCallback($settings = [], $parameters = [])
+    public function authCallback($settings = [], $parameters = []): bool|string
     {
         // Constanct Contact doesn't like POST
         $settings['method'] = 'GET';
@@ -146,10 +146,10 @@ class ConstantContactIntegration extends EmailAbstractIntegration
                 $addresses    = [];
                 $customfields = [];
                 foreach ($mappedData as $k => $v) {
-                    if (0 === strpos($v, 'address_')) {
+                    if (str_starts_with($v, 'address_')) {
                         $addresses[str_replace('address_', '', $k)] = $v;
                         unset($mappedData[$k]);
-                    } elseif (0 === strpos($v, 'customfield_')) {
+                    } elseif (str_starts_with($v, 'customfield_')) {
                         $key            = str_replace('customfield_', 'CustomField', $k);
                         $customfields[] = [
                             'name'  => $key,

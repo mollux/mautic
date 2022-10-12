@@ -20,21 +20,13 @@ use Symfony\Component\Finder\Finder;
  */
 class ProcessEmailQueueCommand extends ModeratedCommand
 {
-    private Swift_Transport $swiftTransport;
-    private EventDispatcherInterface $eventDispatcher;
-    private CoreParametersHelper $parametersHelper;
-
     public function __construct(
-        Swift_Transport $swiftTransport,
-        EventDispatcherInterface $eventDispatcher,
-        CoreParametersHelper $parametersHelper,
+        private Swift_Transport $swiftTransport,
+        private EventDispatcherInterface $eventDispatcher,
+        private CoreParametersHelper $parametersHelper,
         PathsHelper $pathsHelper
     ) {
         parent::__construct($pathsHelper);
-
-        $this->swiftTransport   = $swiftTransport;
-        $this->eventDispatcher  = $eventDispatcher;
-        $this->parametersHelper = $parametersHelper;
     }
 
     protected function configure()
@@ -115,7 +107,7 @@ EOT
                     rename($file, $tmpFilename);
 
                     $message = unserialize(file_get_contents($tmpFilename));
-                    if (false !== $message && is_object($message) && 'Swift_Message' === get_class($message)) {
+                    if (false !== $message && is_object($message) && \Swift_Message::class === $message::class) {
                         $tryAgain = false;
                         if ($this->eventDispatcher->hasListeners(EmailEvents::EMAIL_RESEND)) {
                             $event = new QueueEmailEvent($message);
@@ -125,7 +117,7 @@ EOT
 
                         try {
                             $this->swiftTransport->send($message);
-                        } catch (\Swift_TransportException $e) {
+                        } catch (\Swift_TransportException) {
                             if (!$tryAgain && $this->eventDispatcher->hasListeners(EmailEvents::EMAIL_FAILED)) {
                                 $event = new QueueEmailEvent($message);
                                 $this->eventDispatcher->dispatch($event, EmailEvents::EMAIL_FAILED);

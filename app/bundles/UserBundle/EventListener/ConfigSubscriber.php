@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class ConfigSubscriber implements EventSubscriberInterface
 {
-    private $fileFields = [
+    private array $fileFields = [
         'saml_idp_metadata',
         'saml_idp_own_certificate',
         'saml_idp_own_private_key',
@@ -63,13 +63,13 @@ class ConfigSubscriber implements EventSubscriberInterface
                     }
                     break;
                 case 'saml_idp_own_certificate':
-                    if (0 !== strpos($data[$field], '-----BEGIN CERTIFICATE-----')) {
+                    if (!str_starts_with($data[$field], '-----BEGIN CERTIFICATE-----')) {
                         $event->setError('mautic.user.saml.certificate.invalid', [], 'userconfig', $field);
                     }
                     break;
                 case 'saml_idp_own_private_key':
-                    $encryptedKey = (0 === strpos($data[$field], '-----BEGIN ENCRYPTED PRIVATE KEY-----'));
-                    $decryptedKey = (0 === strpos($data[$field], '-----BEGIN RSA PRIVATE KEY-----'));
+                    $encryptedKey = (str_starts_with($data[$field], '-----BEGIN ENCRYPTED PRIVATE KEY-----'));
+                    $decryptedKey = (str_starts_with($data[$field], '-----BEGIN RSA PRIVATE KEY-----'));
 
                     if (!$encryptedKey && !$decryptedKey) {
                         $event->setError('mautic.user.saml.private_key.invalid', [], 'userconfig', $field);

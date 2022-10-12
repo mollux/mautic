@@ -10,55 +10,28 @@ use Mautic\UserBundle\Entity\User;
 
 class FormEntity extends CommonEntity
 {
-    /**
-     * @var bool
-     */
-    private $isPublished = true;
+    private bool $isPublished = true;
 
-    /**
-     * @var \DateTime|null
-     */
-    private $dateAdded;
+    private ?\DateTime $dateAdded = null;
 
-    /**
-     * @var int|null
-     */
-    private $createdBy;
+    private ?int $createdBy = null;
 
-    /**
-     * @var string|null
-     */
-    private $createdByUser;
+    private ?string $createdByUser = null;
 
-    /**
-     * @var \DateTime|null
-     */
-    private $dateModified;
+    private ?\DateTime $dateModified = null;
 
     /**
      * var null|int.
      */
     private $modifiedBy;
 
-    /**
-     * @var string|null
-     */
-    private $modifiedByUser;
+    private ?string $modifiedByUser = null;
 
-    /**
-     * @var \DateTime|null
-     */
-    private $checkedOut;
+    private ?\DateTime $checkedOut = null;
 
-    /**
-     * @var int|null
-     */
-    private $checkedOutBy;
+    private ?int $checkedOutBy = null;
 
-    /**
-     * @var string|null
-     */
-    private $checkedOutByUser;
+    private ?string $checkedOutByUser = null;
 
     /**
      * @var array
@@ -469,11 +442,9 @@ class FormEntity extends CommonEntity
     }
 
     /**
-     * @param mixed $createdByUser
-     *
      * @return $this
      */
-    public function setCreatedByUser($createdByUser)
+    public function setCreatedByUser(mixed $createdByUser)
     {
         $this->createdByUser = $createdByUser;
 
@@ -481,11 +452,9 @@ class FormEntity extends CommonEntity
     }
 
     /**
-     * @param mixed $modifiedByUser
-     *
      * @return $this
      */
-    public function setModifiedByUser($modifiedByUser)
+    public function setModifiedByUser(mixed $modifiedByUser)
     {
         $this->modifiedByUser = $modifiedByUser;
 
@@ -493,11 +462,9 @@ class FormEntity extends CommonEntity
     }
 
     /**
-     * @param mixed $checkedOutByUser
-     *
      * @return $this
      */
-    public function setCheckedOutByUser($checkedOutByUser)
+    public function setCheckedOutByUser(mixed $checkedOutByUser)
     {
         $this->checkedOutByUser = $checkedOutByUser;
 

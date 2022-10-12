@@ -15,65 +15,29 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 class LeadField extends FormEntity
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var string
-     */
-    private $label;
+    private ?string $label = null;
 
-    /**
-     * @var string
-     */
-    private $alias;
+    private ?string $alias = null;
 
-    /**
-     * @var string
-     */
-    private $type = 'text';
+    private string $type = 'text';
 
-    /**
-     * @var string
-     */
-    private $group = 'core';
+    private string $group = 'core';
 
-    /**
-     * @var string
-     */
-    private $defaultValue;
+    private ?string $defaultValue = null;
 
-    /**
-     * @var bool
-     */
-    private $isRequired = false;
+    private bool $isRequired = false;
 
-    /**
-     * @var bool
-     */
-    private $isFixed = false;
+    private bool $isFixed = false;
 
-    /**
-     * @var bool
-     */
-    private $isVisible = true;
+    private bool $isVisible = true;
 
-    /**
-     * @var bool
-     */
-    private $isShortVisible = true;
+    private bool $isShortVisible = true;
 
-    /**
-     * @var bool
-     */
-    private $isListable = true;
+    private bool $isListable = true;
 
-    /**
-     * @var bool
-     */
-    private $isPubliclyUpdatable = false;
+    private bool $isPubliclyUpdatable = false;
 
     /**
      * @var bool
@@ -82,46 +46,28 @@ class LeadField extends FormEntity
 
     /**
      * Workaround for incorrectly spelled $isUniqueIdentifer.
-     *
-     * @var bool
      */
-    private $isUniqueIdentifier = false;
+    private bool $isUniqueIdentifier = false;
 
-    /**
-     * @var int
-     */
-    private $order = 1;
+    private int $order = 1;
 
-    /**
-     * @var string
-     */
-    private $object = 'lead';
+    private string $object = 'lead';
 
-    /**
-     * @var array
-     */
-    private $properties = [];
+    private array $properties = [];
 
     /**
      * The column in lead_fields table was not created yet if this property is true.
      * Entity cannot be published and we cannot work with it until column is created.
-     *
-     * @var bool
      */
-    private $columnIsNotCreated = false;
+    private bool $columnIsNotCreated = false;
 
     /**
      * This property contains an original value for $isPublished.
      * $isPublished is always set on false if $columnIsNotCreated is true.
-     *
-     * @var bool
      */
-    private $originalIsPublishedValue = false;
+    private bool $originalIsPublishedValue = false;
 
-    /**
-     * @var CustomFieldObject
-     */
-    private $customFieldObject;
+    private ?\Mautic\LeadBundle\Field\DTO\CustomFieldObject $customFieldObject = null;
 
     public function __clone()
     {
@@ -360,7 +306,7 @@ class LeadField extends FormEntity
      *
      * @return LeadField
      */
-    public function setDefaultValue($defaultValue)
+    public function setDefaultValue(string|array $defaultValue)
     {
         $defaultValue = is_array($defaultValue) ? implode('|', $defaultValue) : $defaultValue;
         $this->isChanged('defaultValue', $defaultValue);
@@ -614,11 +560,10 @@ class LeadField extends FormEntity
     /**
      * Set the unique identifer state of the field.
      *
-     * @param mixed $isUniqueIdentifer
      *
      * @return LeadField
      */
-    public function setIsUniqueIdentifer($isUniqueIdentifer)
+    public function setIsUniqueIdentifer(mixed $isUniqueIdentifer)
     {
         $this->isUniqueIdentifer = $this->isUniqueIdentifier = $isUniqueIdentifer;
 
@@ -638,11 +583,10 @@ class LeadField extends FormEntity
     /**
      * Wrapper for incorrectly spelled setIsUniqueIdentifer.
      *
-     * @param mixed $isUniqueIdentifier
      *
      * @return LeadField
      */
-    public function setIsUniqueIdentifier($isUniqueIdentifier)
+    public function setIsUniqueIdentifier(mixed $isUniqueIdentifier)
     {
         return $this->setIsUniqueIdentifer($isUniqueIdentifier);
     }
@@ -715,10 +659,7 @@ class LeadField extends FormEntity
         return $this->group;
     }
 
-    /**
-     * @param mixed $group
-     */
-    public function setGroup($group)
+    public function setGroup(mixed $group)
     {
         $this->group = $group;
     }
@@ -731,10 +672,7 @@ class LeadField extends FormEntity
         return $this->isPubliclyUpdatable;
     }
 
-    /**
-     * @param mixed $isPubliclyUpdatable
-     */
-    public function setIsPubliclyUpdatable($isPubliclyUpdatable)
+    public function setIsPubliclyUpdatable(mixed $isPubliclyUpdatable)
     {
         $this->isPubliclyUpdatable = (bool) $isPubliclyUpdatable;
     }

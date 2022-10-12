@@ -72,10 +72,8 @@ class MessageQueueRepository extends CommonRepository
 
     /**
      * @param $channel
-     *
-     * @return bool|string
      */
-    public function getQueuedChannelCount($channel, array $ids = null)
+    public function getQueuedChannelCount($channel, array $ids = null): bool|string
     {
         $q = $this->getEntityManager()->getConnection()->createQueryBuilder();
 

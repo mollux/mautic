@@ -50,7 +50,7 @@ class LeadFieldRepository extends CommonRepository
 
         if ($includeEntityFields) {
             //add lead main column names to prevent attempt to create a field with the same name
-            $leadRepo = $this->_em->getRepository('MauticLeadBundle:Lead')->getBaseColumns('Mautic\\LeadBundle\\Entity\\Lead', true);
+            $leadRepo = $this->_em->getRepository('MauticLeadBundle:Lead')->getBaseColumns(\Mautic\LeadBundle\Entity\Lead::class, true);
             $aliases  = array_merge($aliases, $leadRepo);
         }
 
@@ -129,10 +129,8 @@ class LeadFieldRepository extends CommonRepository
 
     /**
      * Add company left join.
-     *
-     * @param \Doctrine\ORM\QueryBuilder|\Doctrine\DBAL\Query\QueryBuilder $q
      */
-    private function addCompanyLeftJoin($q)
+    private function addCompanyLeftJoin(\Doctrine\ORM\QueryBuilder|\Doctrine\DBAL\Query\QueryBuilder $q)
     {
         $q->leftJoin('l', MAUTIC_TABLE_PREFIX.'companies_leads', 'companies_lead', 'l.id = companies_lead.lead_id');
         $q->leftJoin('companies_lead', MAUTIC_TABLE_PREFIX.'companies', 'company', 'companies_lead.company_id = company.id');
@@ -142,9 +140,8 @@ class LeadFieldRepository extends CommonRepository
      * Return property by field alias and join tables.
      *
      * @param string                                                       $field
-     * @param \Doctrine\ORM\QueryBuilder|\Doctrine\DBAL\Query\QueryBuilder $q
      */
-    public function getPropertyByField($field, $q)
+    public function getPropertyByField($field, \Doctrine\ORM\QueryBuilder|\Doctrine\DBAL\Query\QueryBuilder $q)
     {
         $columnAlias = 'l.';
         // Join company tables If we're trying search by company fields
@@ -237,7 +234,7 @@ class LeadFieldRepository extends CommonRepository
                 );
 
                 $value = trim($value, "'");
-                if ('not' === substr($operatorExpr, 0, 3)) {
+                if (str_starts_with($operatorExpr, 'not')) {
                     $operator = 'NOT REGEXP';
                 } else {
                     $operator = 'REGEXP';
@@ -291,7 +288,7 @@ class LeadFieldRepository extends CommonRepository
                   ->setParameter('lead', (int) $lead)
                   ->setParameter('value', $value);
             }
-            if (0 === strpos($property, 'u.')) {
+            if (str_starts_with($property, 'u.')) {
                 // Match only against the latest UTM properties.
                 $q->orderBy('u.date_added', 'DESC');
                 $q->setMaxResults(1);

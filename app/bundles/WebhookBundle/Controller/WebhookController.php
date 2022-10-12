@@ -25,10 +25,8 @@ class WebhookController extends FormController
 
     /**
      * @param int $page
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function indexAction($page = 1)
+    public function indexAction($page = 1): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         return parent::indexStandard($page);
     }
@@ -60,10 +58,8 @@ class WebhookController extends FormController
      * Displays details on a Focus.
      *
      * @param $objectId
-     *
-     * @return array|\Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function viewAction($objectId)
+    public function viewAction($objectId): array|\Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         return parent::viewStandard($objectId, 'webhook', 'webhook', null, 'item');
     }
@@ -72,10 +68,8 @@ class WebhookController extends FormController
      * Clone an entity.
      *
      * @param int $objectId
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function cloneAction($objectId)
+    public function cloneAction($objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         return parent::cloneStandard($objectId);
     }
@@ -84,20 +78,16 @@ class WebhookController extends FormController
      * Deletes the entity.
      *
      * @param int $objectId
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function deleteAction($objectId)
+    public function deleteAction($objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         return parent::deleteStandard($objectId);
     }
 
     /**
      * Deletes a group of entities.
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function batchDeleteAction()
+    public function batchDeleteAction(): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         return parent::batchDeleteStandard();
     }

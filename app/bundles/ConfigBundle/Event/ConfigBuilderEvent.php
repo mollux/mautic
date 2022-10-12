@@ -7,31 +7,19 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class ConfigBuilderEvent extends Event
 {
-    /**
-     * @var array
-     */
-    private $forms = [];
+    private array $forms = [];
 
-    /**
-     * @var array
-     */
-    private $formThemes = [
+    private array $formThemes = [
         'MauticConfigBundle:FormTheme',
     ];
-
-    /**
-     * @var BundleHelper
-     */
-    private $bundleHelper;
 
     /**
      * @var array
      */
     protected $encodedFields = [];
 
-    public function __construct(BundleHelper $bundleHelper)
+    public function __construct(private BundleHelper $bundleHelper)
     {
-        $this->bundleHelper = $bundleHelper;
     }
 
     /**

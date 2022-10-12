@@ -12,35 +12,20 @@ use Swift_Mime_SimpleMessage;
  */
 class DelegatingSpool extends \Swift_FileSpool
 {
-    /**
-     * @var bool
-     */
-    private $fileSpoolEnabled = false;
+    private bool $fileSpoolEnabled = false;
 
-    /**
-     * @var \Swift_Transport
-     */
-    private $realTransport;
+    private \Mautic\CoreBundle\Helper\CoreParametersHelper $coreParametersHelper;
 
-    /**
-     * @var CoreParametersHelper
-     */
-    private $coreParametersHelper;
-
-    /**
-     * @var bool
-     */
-    private $messageSpooled = false;
+    private bool $messageSpooled = false;
 
     /**
      * DelegatingSpool constructor.
      *
      * @throws \Swift_IoException
      */
-    public function __construct(CoreParametersHelper $coreParametersHelper, \Swift_Transport $realTransport)
+    public function __construct(CoreParametersHelper $coreParametersHelper, private \Swift_Transport $realTransport)
     {
         $this->fileSpoolEnabled     = 'file' === $coreParametersHelper->get('mailer_spool_type');
-        $this->realTransport        = $realTransport;
         $this->coreParametersHelper = $coreParametersHelper;
 
         parent::__construct($this->getSpoolDir());

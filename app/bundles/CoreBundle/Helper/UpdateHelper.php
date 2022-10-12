@@ -19,58 +19,18 @@ use Monolog\Logger;
  */
 class UpdateHelper
 {
-    /**
-     * @var PathsHelper
-     */
-    private $pathsHelper;
+    private string $phpVersion;
 
-    /**
-     * @var Logger
-     */
-    private $logger;
-
-    /**
-     * @var CoreParametersHelper
-     */
-    private $coreParametersHelper;
-
-    /**
-     * @var Client
-     */
-    private $client;
-
-    /**
-     * @var ReleaseParser
-     */
-    private $releaseParser;
-
-    /**
-     * @var string
-     */
-    private $phpVersion;
-
-    /**
-     * @var string
-     */
-    private $mauticVersion;
-
-    private PreUpdateCheckHelper $preUpdateCheckHelper;
+    private string $mauticVersion;
 
     public function __construct(
-        PathsHelper $pathsHelper,
-        Logger $logger,
-        CoreParametersHelper $coreParametersHelper,
-        Client $client,
-        ReleaseParser $releaseParser,
-        PreUpdateCheckHelper $preUpdateCheckHelper
+        private PathsHelper $pathsHelper,
+        private Logger $logger,
+        private CoreParametersHelper $coreParametersHelper,
+        private Client $client,
+        private ReleaseParser $releaseParser,
+        private PreUpdateCheckHelper $preUpdateCheckHelper
     ) {
-        $this->pathsHelper          = $pathsHelper;
-        $this->logger               = $logger;
-        $this->coreParametersHelper = $coreParametersHelper;
-        $this->client               = $client;
-        $this->releaseParser        = $releaseParser;
-        $this->preUpdateCheckHelper = $preUpdateCheckHelper;
-
         $this->mauticVersion = defined('MAUTIC_VERSION') ? MAUTIC_VERSION : 'unknown';
         $this->phpVersion    = defined('PHP_VERSION') ? PHP_VERSION : 'unknown';
     }
@@ -192,7 +152,7 @@ class UpdateHelper
             'metadata'     => $release->getMetadata(),
         ];
 
-        file_put_contents($cacheFile, json_encode($data));
+        file_put_contents($cacheFile, json_encode($data, JSON_THROW_ON_ERROR));
 
         return $data;
     }
@@ -229,7 +189,7 @@ class UpdateHelper
                 $checkResults[] = $check->runCheck();
             } catch (\Exception $e) {
                 // Checks are supposed to catch errors themselves and return them in their PreUpdateCheckResult, but we catch here just in case.
-                $checkResults[] = new PreUpdateCheckResult(false, $check, [new PreUpdateCheckError('Unknown error while running '.get_class($check).': '.$e->getMessage())]);
+                $checkResults[] = new PreUpdateCheckResult(false, $check, [new PreUpdateCheckError('Unknown error while running '.$check::class.': '.$e->getMessage())]);
             }
         }
 
@@ -303,7 +263,7 @@ class UpdateHelper
     private function checkCachedUpdateData(string $cacheFile, string $updateStability): array
     {
         // Check if we have a cache file and try to return cached data if so
-        $update = json_decode(file_get_contents($cacheFile), true);
+        $update = json_decode(file_get_contents($cacheFile), true, 512, JSON_THROW_ON_ERROR);
 
         if (!empty($update['metadata'])) {
             $update['metadata'] = new Metadata($update['metadata']);
@@ -345,7 +305,7 @@ class UpdateHelper
             throw new CouldNotFetchLatestVersionException();
         }
 
-        $releases = json_decode($response->getBody()->getContents(), true);
+        $releases = json_decode($response->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
         if (empty($releases)) {
             $this->logger->error(sprintf('UPDATE CHECK FAILED: response body for %s is not json', $updateUrl));
 

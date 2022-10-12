@@ -50,32 +50,8 @@ class DashboardSubscriber extends MainDashboardSubscriber
         'lead:leads:viewother',
     ];
 
-    /**
-     * @var LeadModel
-     */
-    protected $leadModel;
-
-    /**
-     * @var ListModel
-     */
-    protected $leadListModel;
-
-    /**
-     * @var RouterInterface
-     */
-    protected $router;
-
-    /**
-     * @var TranslatorInterface
-     */
-    protected $translator;
-
-    public function __construct(LeadModel $leadModel, ListModel $leadListModel, RouterInterface $router, TranslatorInterface $translator)
+    public function __construct(protected LeadModel $leadModel, protected ListModel $leadListModel, protected RouterInterface $router, protected TranslatorInterface $translator)
     {
-        $this->leadModel     = $leadModel;
-        $this->leadListModel = $leadListModel;
-        $this->router        = $router;
-        $this->translator    = $translator;
     }
 
     /**
@@ -212,7 +188,7 @@ class DashboardSubscriber extends MainDashboardSubscriber
 
             if (isset($params['flag'])) {
                 $params['filter']['flag'] = $params['flag'];
-                $maxSegmentsToshow        = count($params['filter']['flag']);
+                $maxSegmentsToshow        = is_countable($params['filter']['flag']) ? count($params['filter']['flag']) : 0;
             }
 
             $lists = $this->leadListModel->getLifeCycleSegments($maxSegmentsToshow, $params['dateFrom'], $params['dateTo'], $canViewOthers, $params['filter']['flag']);
@@ -420,7 +396,7 @@ class DashboardSubscriber extends MainDashboardSubscriber
                     $limit = $params['limit'];
                 }
 
-                $leads = $this->leadModel->getLeadList($limit, $params['dateFrom'], $params['dateTo'], $canViewOthers, [], ['canViewOthers' => $canViewOthers]);
+                $leads = $this->leadModel->getLeadList($limit, $params['dateFrom'], $params['dateTo'], $canViewOthers, []);
                 $items = [];
 
                 if (empty($leads)) {

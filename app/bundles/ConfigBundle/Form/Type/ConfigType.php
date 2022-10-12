@@ -12,20 +12,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ConfigType extends AbstractType
 {
-    /**
-     * @var RestrictionHelper
-     */
-    private $restrictionHelper;
-
-    /**
-     * @var EscapeTransformer
-     */
-    private $escapeTransformer;
-
-    public function __construct(RestrictionHelper $restrictionHelper, EscapeTransformer $escapeTransformer)
+    public function __construct(private RestrictionHelper $restrictionHelper, private EscapeTransformer $escapeTransformer)
     {
-        $this->restrictionHelper = $restrictionHelper;
-        $this->escapeTransformer = $escapeTransformer;
     }
 
     /**
@@ -41,7 +29,7 @@ class ConfigType extends AbstractType
         }
 
         if (isset($options['data']['apiconfig']['parameters']['api_oauth2_refresh_token_lifetime'])
-            && 1209600 === $options['data']['apiconfig']['parameters']['api_oauth2_refresh_token_lifetime']
+            && 1_209_600 === $options['data']['apiconfig']['parameters']['api_oauth2_refresh_token_lifetime']
         ) {
             $options['data']['apiconfig']['parameters']['api_oauth2_refresh_token_lifetime'] = 14;
         }

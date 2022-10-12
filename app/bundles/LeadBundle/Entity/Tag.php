@@ -10,20 +10,14 @@ use Mautic\CoreBundle\Helper\InputHelper;
 
 class Tag
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
     /**
      * @var string
      */
     private $tag;
 
-    /**
-     * @var string
-     */
-    private $description;
+    private ?string $description = null;
 
     /**
      * @param string $tag

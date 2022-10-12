@@ -11,16 +11,6 @@ use Mautic\CoreBundle\Exception\SchemaException;
 class IndexSchemaHelper
 {
     /**
-     * @var Connection
-     */
-    protected $db;
-
-    /**
-     * @var string
-     */
-    protected $prefix;
-
-    /**
      * @var \Doctrine\DBAL\Schema\AbstractSchemaManager
      */
     protected $sm;
@@ -58,10 +48,8 @@ class IndexSchemaHelper
     /**
      * @param string $prefix
      */
-    public function __construct(Connection $db, $prefix)
+    public function __construct(protected Connection $db, protected $prefix)
     {
-        $this->db     = $db;
-        $this->prefix = $prefix;
         $this->sm     = $this->db->getSchemaManager();
     }
 
@@ -118,15 +106,13 @@ class IndexSchemaHelper
     }
 
     /**
-     * @param mixed  $columns
      * @param string $name
      * @param array  $options
      *
      * @return self
-     *
      * @throws \Doctrine\DBAL\Schema\SchemaException
      */
-    public function dropIndex($columns, $name, $options = [])
+    public function dropIndex(mixed $columns, $name, $options = [])
     {
         $textColumns = $this->getTextColumns($columns);
 

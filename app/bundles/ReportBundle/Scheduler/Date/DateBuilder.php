@@ -11,14 +11,8 @@ use Mautic\ReportBundle\Scheduler\SchedulerInterface;
 
 class DateBuilder
 {
-    /**
-     * @var SchedulerBuilder
-     */
-    private $schedulerBuilder;
-
-    public function __construct(SchedulerBuilder $schedulerBuilder)
+    public function __construct(private SchedulerBuilder $schedulerBuilder)
     {
-        $this->schedulerBuilder = $schedulerBuilder;
     }
 
     /**
@@ -36,9 +30,7 @@ class DateBuilder
 
         try {
             $recurrences = $this->schedulerBuilder->getNextEvents($entity, $count);
-        } catch (InvalidSchedulerException $e) {
-            return [];
-        } catch (NotSupportedScheduleTypeException $e) {
+        } catch (InvalidSchedulerException|NotSupportedScheduleTypeException) {
             return [];
         }
 
@@ -59,9 +51,7 @@ class DateBuilder
     {
         try {
             $recurrences = $this->schedulerBuilder->getNextEvent($scheduler);
-        } catch (InvalidSchedulerException $e) {
-            throw new NoScheduleException();
-        } catch (NotSupportedScheduleTypeException $e) {
+        } catch (InvalidSchedulerException|NotSupportedScheduleTypeException) {
             throw new NoScheduleException();
         }
 

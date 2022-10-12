@@ -17,24 +17,10 @@ use Symfony\Component\HttpFoundation\Request;
 class VideoModel extends FormModel
 {
     /**
-     * @var IpLookupHelper
-     */
-    protected $ipLookupHelper;
-
-    /**
-     * @var ContactTracker
-     */
-    protected $contactTracker;
-
-    /**
      * VideoModel constructor.
      */
-    public function __construct(
-        IpLookupHelper $ipLookupHelper,
-        ContactTracker $contactTracker
-    ) {
-        $this->ipLookupHelper = $ipLookupHelper;
-        $this->contactTracker = $contactTracker;
+    public function __construct(protected IpLookupHelper $ipLookupHelper, protected ContactTracker $contactTracker)
+    {
     }
 
     /**

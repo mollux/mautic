@@ -106,7 +106,7 @@ class SmsRepository extends CommonRepository
      */
     protected function addSearchCommandWhereClause($q, $filter)
     {
-        list($expr, $parameters) = $this->addStandardSearchCommandWhereClause($q, $filter);
+        [$expr, $parameters] = $this->addStandardSearchCommandWhereClause($q, $filter);
         if ($expr) {
             return [$expr, $parameters];
         }
@@ -197,7 +197,7 @@ class SmsRepository extends CommonRepository
                 ->where('id = '.(int) $id);
 
             $q->execute();
-        } catch (\Exception $exception) {
+        } catch (\Exception) {
             // not important
         }
     }

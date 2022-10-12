@@ -15,7 +15,7 @@ class AssetController extends FormController
      *
      * @return JsonResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function indexAction($page = 1)
+    public function indexAction($page = 1): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         $model = $this->getModel('asset');
 
@@ -126,7 +126,7 @@ class AssetController extends FormController
      *
      * @return JsonResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function viewAction($objectId)
+    public function viewAction($objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         $model       = $this->getModel('asset');
         $security    = $this->get('mautic.security');
@@ -218,7 +218,7 @@ class AssetController extends FormController
      *
      * @return JsonResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function previewAction($objectId)
+    public function previewAction($objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         /** @var \Mautic\AssetBundle\Model\AssetModel $model */
         $model       = $this->getModel('asset');
@@ -238,7 +238,7 @@ class AssetController extends FormController
                 //set the uploadDir
                 $activeAsset->setUploadDir($this->get('mautic.helper.core_parameters')->get('upload_dir'));
                 $contents = $activeAsset->getFileContents();
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 return $this->notFound();
             }
 
@@ -266,10 +266,8 @@ class AssetController extends FormController
 
     /**
      * Generates new form and processes post data.
-     *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function newAction($entity = null)
+    public function newAction($entity = null): \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         /** @var \Mautic\AssetBundle\Model\AssetModel $model */
         $model = $this->getModel('asset');
@@ -409,7 +407,7 @@ class AssetController extends FormController
      *
      * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function editAction($objectId, $ignorePost = false)
+    public function editAction($objectId, $ignorePost = false): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         /** @var \Mautic\AssetBundle\Model\AssetModel $model */
         $model  = $this->getModel('asset');
@@ -575,8 +573,9 @@ class AssetController extends FormController
      *
      * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function cloneAction($objectId)
+    public function cloneAction($objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
+        $clone = null;
         /** @var \Mautic\AssetBundle\Model\AssetModel $model */
         $model  = $this->getModel('asset');
         $entity = $model->getEntity($objectId);
@@ -604,10 +603,8 @@ class AssetController extends FormController
      * Deletes the entity.
      *
      * @param int $objectId
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function deleteAction($objectId)
+    public function deleteAction($objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         $page      = $this->get('session')->get('mautic.asset.page', 1);
         $returnUrl = $this->generateUrl('mautic_asset_index', ['page' => $page]);
@@ -667,10 +664,8 @@ class AssetController extends FormController
 
     /**
      * Deletes a group of entities.
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function batchDeleteAction()
+    public function batchDeleteAction(): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         $page      = $this->get('session')->get('mautic.asset.page', 1);
         $returnUrl = $this->generateUrl('mautic_asset_index', ['page' => $page]);
@@ -689,7 +684,7 @@ class AssetController extends FormController
         if ('POST' == $this->request->getMethod()) {
             /** @var \Mautic\AssetBundle\Model\AssetModel $model */
             $model     = $this->getModel('asset');
-            $ids       = json_decode($this->request->query->get('ids', '{}'));
+            $ids       = json_decode($this->request->query->get('ids', '{}'), null, 512, JSON_THROW_ON_ERROR);
             $deleteIds = [];
 
             // Loop over the IDs to perform access checks pre-delete
@@ -737,10 +732,8 @@ class AssetController extends FormController
 
     /**
      * Renders the container for the remote file browser.
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function remoteAction()
+    public function remoteAction(): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         // Check for integrations to cloud providers
         /** @var \Mautic\PluginBundle\Helper\IntegrationHelper $integrationHelper */

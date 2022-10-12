@@ -7,25 +7,13 @@ use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
 
 class Cache
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var string
-     */
-    private $data;
+    private ?string $data = null;
 
-    /**
-     * @var int
-     */
-    private $lifetime;
+    private ?int $lifetime = null;
 
-    /**
-     * @var int
-     */
-    private $time;
+    private ?int $time = null;
 
     public static function loadMetadata(ORM\ClassMetadata $metadata)
     {

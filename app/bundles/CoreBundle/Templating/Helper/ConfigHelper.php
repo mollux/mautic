@@ -14,22 +14,14 @@ use Symfony\Component\Templating\Helper\Helper;
  */
 class ConfigHelper extends Helper
 {
-    /**
-     * @var CoreParametersHelper
-     */
-    private $coreParametersHelper;
-
-    public function __construct(CoreParametersHelper $coreParametersHelper)
+    public function __construct(private CoreParametersHelper $coreParametersHelper)
     {
-        $this->coreParametersHelper = $coreParametersHelper;
     }
 
     /**
-     * @param mixed $default
-     *
      * @return mixed
      */
-    public function get(string $name, $default = null)
+    public function get(string $name, mixed $default = null)
     {
         return $this->coreParametersHelper->get($name, $default);
     }

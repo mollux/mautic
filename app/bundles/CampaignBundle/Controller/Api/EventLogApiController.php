@@ -33,7 +33,7 @@ class EventLogApiController extends CommonApiController
     public function initialize(ControllerEvent $event)
     {
         $this->model                    = $this->getModel('campaign.event_log');
-        $this->entityClass              = 'Mautic\CampaignBundle\Entity\LeadEventLog';
+        $this->entityClass              = \Mautic\CampaignBundle\Entity\LeadEventLog::class;
         $this->entityNameOne            = 'event';
         $this->entityNameMulti          = 'events';
         $this->parentChildrenLevelDepth = 1;
@@ -88,7 +88,7 @@ class EventLogApiController extends CommonApiController
             }
             // Check that contact is part of the campaign
             $membership = $campaign->getContactMembership($contact);
-            if (0 === count($membership)) {
+            if (0 === (is_countable($membership) ? count($membership) : 0)) {
                 return $this->returnError(
                     $this->translator->trans(
                         'mautic.campaign.error.contact_not_in_campaign',
@@ -151,7 +151,7 @@ class EventLogApiController extends CommonApiController
         if (is_string($result)) {
             return $this->returnError($result, Response::HTTP_CONFLICT);
         } else {
-            list($log, $created) = $result;
+            [$log, $created] = $result;
         }
 
         $event->addContactLog($log);
@@ -168,10 +168,7 @@ class EventLogApiController extends CommonApiController
         return $this->handleView($view);
     }
 
-    /**
-     * @return array|Response
-     */
-    public function editEventsAction()
+    public function editEventsAction(): array|\Symfony\Component\HttpFoundation\Response
     {
         $parameters = $this->request->request->all();
 
@@ -217,7 +214,7 @@ class EventLogApiController extends CommonApiController
             if (is_string($result)) {
                 $errors[$key] = $this->returnError($result, Response::HTTP_CONFLICT);
             } else {
-                list($log, $created) = $result;
+                [$log, $created] = $result;
                 $event->addContactLog($log);
             }
         }
@@ -249,7 +246,7 @@ class EventLogApiController extends CommonApiController
             $data['campaign'] = $this->campaign;
 
             if ($this->contact) {
-                list($data['membership'], $ignore) = $this->prepareEntitiesForView($this->campaign->getContactMembership($this->contact));
+                [$data['membership'], $ignore] = $this->prepareEntitiesForView($this->campaign->getContactMembership($this->contact));
             }
         }
 

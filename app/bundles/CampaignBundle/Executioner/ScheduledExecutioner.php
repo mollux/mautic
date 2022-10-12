@@ -23,65 +23,23 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ScheduledExecutioner implements ExecutionerInterface
 {
-    /**
-     * @var LeadEventLogRepository
-     */
-    private $repo;
+    private ?\Mautic\CampaignBundle\Entity\Campaign $campaign = null;
 
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    /**
-     * @var EventExecutioner
-     */
-    private $executioner;
-
-    /**
-     * @var EventScheduler
-     */
-    private $scheduler;
-
-    /**
-     * @var ScheduledContactFinder
-     */
-    private $scheduledContactFinder;
-
-    /**
-     * @var Campaign
-     */
-    private $campaign;
-
-    /**
-     * @var ContactLimiter
-     */
-    private $limiter;
+    private ?\Mautic\CampaignBundle\Executioner\ContactFinder\Limiter\ContactLimiter $limiter = null;
 
     /**
      * @var OutputInterface
      */
     private $output;
 
-    /**
-     * @var ProgressBar
-     */
-    private $progressBar;
+    private ?\Symfony\Component\Console\Helper\ProgressBar $progressBar = null;
 
     /**
      * @var array
      */
     private $scheduledEvents;
 
-    /**
-     * @var Counter
-     */
-    private $counter;
+    private ?\Mautic\CampaignBundle\Executioner\Result\Counter $counter = null;
 
     /**
      * @var \DateTime
@@ -91,20 +49,8 @@ class ScheduledExecutioner implements ExecutionerInterface
     /**
      * ScheduledExecutioner constructor.
      */
-    public function __construct(
-        LeadEventLogRepository $repository,
-        LoggerInterface $logger,
-        TranslatorInterface $translator,
-        EventExecutioner $executioner,
-        EventScheduler $scheduler,
-        ScheduledContactFinder $scheduledContactFinder
-    ) {
-        $this->repo                   = $repository;
-        $this->logger                 = $logger;
-        $this->translator             = $translator;
-        $this->executioner            = $executioner;
-        $this->scheduler              = $scheduler;
-        $this->scheduledContactFinder = $scheduledContactFinder;
+    public function __construct(private LeadEventLogRepository $repo, private LoggerInterface $logger, private TranslatorInterface $translator, private EventExecutioner $executioner, private EventScheduler $scheduler, private ScheduledContactFinder $scheduledContactFinder)
+    {
     }
 
     /**
@@ -120,7 +66,7 @@ class ScheduledExecutioner implements ExecutionerInterface
     {
         $this->campaign   = $campaign;
         $this->limiter    = $limiter;
-        $this->output     = ($output) ? $output : new NullOutput();
+        $this->output     = $output ?: new NullOutput();
         $this->counter    = new Counter();
 
         $this->logger->debug('CAMPAIGN: Triggering scheduled events');
@@ -128,7 +74,7 @@ class ScheduledExecutioner implements ExecutionerInterface
         try {
             $this->prepareForExecution();
             $this->executeOrRescheduleEvent();
-        } catch (NoEventsFoundException $exception) {
+        } catch (NoEventsFoundException) {
             $this->logger->debug('CAMPAIGN: No events to process');
         } finally {
             if ($this->progressBar) {
@@ -150,7 +96,7 @@ class ScheduledExecutioner implements ExecutionerInterface
      */
     public function executeByIds(array $logIds, OutputInterface $output = null)
     {
-        $this->output  = ($output) ? $output : new NullOutput();
+        $this->output  = $output ?: new NullOutput();
         $this->counter = new Counter();
 
         if (!$logIds) {
@@ -199,7 +145,7 @@ class ScheduledExecutioner implements ExecutionerInterface
                     $this->scheduledContactFinder->hydrateContacts($organizedLogs);
 
                     $this->executioner->executeLogs($event, $organizedLogs, $this->counter);
-                } catch (NoContactsFoundException $e) {
+                } catch (NoContactsFoundException) {
                     // All of the events were rescheduled
                 }
             } else {
@@ -284,7 +230,7 @@ class ScheduledExecutioner implements ExecutionerInterface
         while ($logs->count()) {
             try {
                 $this->scheduledContactFinder->hydrateContacts($logs);
-            } catch (NoContactsFoundException $e) {
+            } catch (NoContactsFoundException) {
                 break;
             }
 
@@ -376,6 +322,6 @@ class ScheduledExecutioner implements ExecutionerInterface
             }
         }
 
-        return array_merge($other, $jumpTo);
+        return [...$other, ...$jumpTo];
     }
 }

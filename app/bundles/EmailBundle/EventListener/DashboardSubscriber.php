@@ -54,20 +54,8 @@ class DashboardSubscriber extends MainDashboardSubscriber
         'email:emails:viewother',
     ];
 
-    /**
-     * @var EmailModel
-     */
-    protected $emailModel;
-
-    /**
-     * @var RouterInterface
-     */
-    private $router;
-
-    public function __construct(EmailModel $emailModel, RouterInterface $router)
+    public function __construct(protected EmailModel $emailModel, private RouterInterface $router)
     {
-        $this->emailModel = $emailModel;
-        $this->router     = $router;
     }
 
     /**
@@ -347,8 +335,7 @@ class DashboardSubscriber extends MainDashboardSubscriber
                     'chartHeight' => $widget->getHeight() - 80,
                     'chartData'   => $this->emailModel->getDeviceGranularityPieChartData(
                         $params['dateFrom'],
-                        $params['dateTo'],
-                        $canViewOthers
+                        $params['dateTo']
                     ),
                 ]);
             }

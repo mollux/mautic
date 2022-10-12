@@ -36,27 +36,18 @@ class HttpFactory implements AuthProviderInterface
 {
     public const NAME = 'oauth2_two_legged';
 
-    /**
-     * @var PasswordCredentialsGrantInterface|ClientCredentialsGrantInterface
-     */
-    private $credentials;
+    private \Mautic\IntegrationsBundle\Auth\Provider\Oauth2TwoLegged\Credentials\PasswordCredentialsGrantInterface|\Mautic\IntegrationsBundle\Auth\Provider\Oauth2TwoLegged\Credentials\ClientCredentialsGrantInterface|null $credentials = null;
 
-    /**
-     * @var ConfigCredentialsSignerInterface|ConfigTokenPersistenceInterface|ConfigTokenSignerInterface
-     */
-    private $config;
+    private \Mautic\IntegrationsBundle\Auth\Support\Oauth2\ConfigAccess\ConfigCredentialsSignerInterface|\Mautic\IntegrationsBundle\Auth\Support\Oauth2\ConfigAccess\ConfigTokenPersistenceInterface|\Mautic\IntegrationsBundle\Auth\Support\Oauth2\ConfigAccess\ConfigTokenSignerInterface|null $config = null;
 
-    /**
-     * @var Client
-     */
-    private $reAuthClient;
+    private ?\GuzzleHttp\Client $reAuthClient = null;
 
     /**
      * Cache of initialized clients.
      *
      * @var Client[]
      */
-    private $initializedClients = [];
+    private array $initializedClients = [];
 
     public function getAuthType(): string
     {
@@ -106,7 +97,7 @@ class HttpFactory implements AuthProviderInterface
     /**
      * @param ClientCredentialsGrantInterface|PasswordCredentialsGrantInterface|AuthCredentialsInterface $credentials
      */
-    private function credentialsAreConfigured(AuthCredentialsInterface $credentials): bool
+    private function credentialsAreConfigured(\Mautic\IntegrationsBundle\Auth\Provider\Oauth2TwoLegged\Credentials\ClientCredentialsGrantInterface|\Mautic\IntegrationsBundle\Auth\Provider\Oauth2TwoLegged\Credentials\PasswordCredentialsGrantInterface|\Mautic\IntegrationsBundle\Auth\Provider\AuthCredentialsInterface $credentials): bool
     {
         if (empty($credentials->getAuthorizationUrl()) || empty($credentials->getClientId()) || empty($credentials->getClientSecret())) {
             return false;

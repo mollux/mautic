@@ -11,20 +11,14 @@ class PipedriveApi extends CrmApi
     public const ORGANIZATIONS_API_ENDPOINT = 'organizations';
     public const PERSONS_API_ENDPOINT       = 'persons';
     public const USERS_API_ENDPOINT         = 'users';
-    /**
-     * @var TransportInterface
-     */
-    private $transport;
 
-    private $apiFields = [];
+    private array $apiFields = [];
 
     /**
      * PipedriveApi constructor.
      */
-    public function __construct(CrmAbstractIntegration $integration, TransportInterface $transport)
+    public function __construct(CrmAbstractIntegration $integration, private TransportInterface $transport)
     {
-        $this->transport = $transport;
-
         parent::__construct($integration);
     }
 
@@ -161,7 +155,7 @@ class PipedriveApi extends CrmApi
 
         $response = $this->transport->get($url, $params);
 
-        return json_decode($response->getBody(), true);
+        return json_decode($response->getBody(), true, 512, JSON_THROW_ON_ERROR);
     }
 
     /**
@@ -193,9 +187,9 @@ class PipedriveApi extends CrmApi
      */
     private function getResponseData(ResponseInterface $response)
     {
-        $body = json_decode($response->getBody(), true);
+        $body = json_decode($response->getBody(), true, 512, JSON_THROW_ON_ERROR);
 
-        return isset($body['data']) ? $body['data'] : [];
+        return $body['data'] ?? [];
     }
 
     /**

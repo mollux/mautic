@@ -15,15 +15,9 @@ use Symfony\Component\HttpKernel\Event\ControllerEvent;
 
 class FieldController extends CommonFormController
 {
-    /**
-     * @var FormModel|AbstractCommonModel
-     */
-    private $formModel;
+    private \Mautic\FormBundle\Model\FormModel|\Mautic\CoreBundle\Model\AbstractCommonModel|null $formModel = null;
 
-    /**
-     * @var FieldModel|AbstractCommonModel
-     */
-    private $formFieldModel;
+    private \Mautic\FormBundle\Model\FieldModel|\Mautic\CoreBundle\Model\AbstractCommonModel|null $formFieldModel = null;
 
     /**
      * @var FormFieldHelper
@@ -64,7 +58,7 @@ class FieldController extends CommonFormController
         }
 
         $customComponents = $this->formModel->getCustomComponents();
-        $customParams     = (isset($customComponents['fields'][$fieldType])) ? $customComponents['fields'][$fieldType] : false;
+        $customParams     = $customComponents['fields'][$fieldType] ?? false;
         //ajax only for form fields
         if (!$fieldType ||
             !$this->request->isXmlHttpRequest() ||
@@ -88,7 +82,7 @@ class FieldController extends CommonFormController
                     $success = 1;
 
                     //form is valid so process the data
-                    $keyId = 'new'.hash('sha1', uniqid(mt_rand()));
+                    $keyId = 'new'.hash('sha1', uniqid(random_int(0, mt_getrandmax())));
 
                     //save the properties to session
                     $fields          = $session->get('mautic.form.'.$formId.'.fields.modified', []);
@@ -112,7 +106,7 @@ class FieldController extends CommonFormController
                     }
 
                     // Add it to the next to last assuming the last is the submit button
-                    if (count($fields)) {
+                    if (is_countable($fields) ? count($fields) : 0) {
                         $lastField = end($fields);
                         $lastKey   = key($fields);
                         array_pop($fields);
@@ -246,7 +240,7 @@ class FieldController extends CommonFormController
                         //overwrite with updated data
                         $formField = array_merge($fields[$objectId], $formData);
 
-                        if (false !== strpos($objectId, 'new')) {
+                        if (str_contains($objectId, 'new')) {
                             // Get aliases in order to generate update for this one
                             $aliases = [];
                             foreach ($fields as $k => $f) {
@@ -282,7 +276,7 @@ class FieldController extends CommonFormController
 
             $viewParams       = ['type' => $fieldType];
             $customComponents = $this->formModel->getCustomComponents();
-            $customParams     = (isset($customComponents['fields'][$fieldType])) ? $customComponents['fields'][$fieldType] : false;
+            $customParams     = $customComponents['fields'][$fieldType] ?? false;
 
             if ($cancelled || $valid) {
                 $closeModal = true;
@@ -412,7 +406,7 @@ class FieldController extends CommonFormController
     {
         //fire the form builder event
         $customComponents = $this->getModel('form.form')->getCustomComponents();
-        $customParams     = (isset($customComponents['fields'][$formField['type']])) ? $customComponents['fields'][$formField['type']] : false;
+        $customParams     = $customComponents['fields'][$formField['type']] ?? false;
 
         $form = $this->getModel('form.field')->createForm(
             $formField,

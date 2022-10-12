@@ -4,14 +4,11 @@ namespace Mautic\EmailBundle\MonitoredEmail\Accessor;
 
 class ConfigAccessor
 {
-    private $config;
-
     /**
      * ConfigAccessor constructor.
      */
-    public function __construct(array $config)
+    public function __construct(private array $config)
     {
-        $this->config = $config;
     }
 
     /**
@@ -69,6 +66,6 @@ class ConfigAccessor
      */
     protected function getProperty($property)
     {
-        return isset($this->config[$property]) ? $this->config[$property] : null;
+        return $this->config[$property] ?? null;
     }
 }

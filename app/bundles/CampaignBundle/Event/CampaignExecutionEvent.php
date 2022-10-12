@@ -37,19 +37,9 @@ class CampaignExecutionEvent extends Event
     protected $systemTriggered;
 
     /**
-     * @var bool|mixed[]|string|null
-     */
-    protected $result;
-
-    /**
      * @var array
      */
     protected $eventSettings;
-
-    /**
-     * @var LeadEventLog|null
-     */
-    protected $log;
 
     /**
      * @var bool
@@ -69,15 +59,13 @@ class CampaignExecutionEvent extends Event
     /**
      * @param bool|mixed[]|string|null $result
      */
-    public function __construct(array $args, $result, LeadEventLog $log = null)
+    public function __construct(array $args, protected $result, protected ?\Mautic\CampaignBundle\Entity\LeadEventLog $log = null)
     {
         $this->lead            = $args['lead'];
         $this->event           = $args['event'];
         $this->eventDetails    = $args['eventDetails'];
         $this->systemTriggered = $args['systemTriggered'];
         $this->eventSettings   = $args['eventSettings'];
-        $this->result          = $result;
-        $this->log             = $log;
     }
 
     /**

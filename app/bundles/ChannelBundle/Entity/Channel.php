@@ -9,40 +9,19 @@ use Mautic\CoreBundle\Entity\CommonEntity;
 
 class Channel extends CommonEntity
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var string
-     */
-    private $channel;
+    private ?string $channel = null;
 
-    /**
-     * @var int
-     */
-    private $channelId;
+    private ?int $channelId = null;
 
-    /**
-     * @var string
-     */
-    private $channelName;
+    private ?string $channelName = null;
 
-    /**
-     * @var Message
-     */
-    private $message;
+    private ?\Mautic\ChannelBundle\Entity\Message $message = null;
 
-    /**
-     * @var array
-     */
-    private $properties = [];
+    private array $properties = [];
 
-    /**
-     * @var bool
-     */
-    private $isEnabled = false;
+    private bool $isEnabled = false;
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
@@ -62,7 +41,7 @@ class Channel extends CommonEntity
                 ->columnName('is_enabled')
                 ->build();
 
-        $builder->createManyToOne('message', Message::class, 'channels')
+        $builder->createManyToOne('message', Message::class)
                 ->addJoinColumn('message_id', 'id', false, false, 'CASCADE')
                 ->inversedBy('channels')
                 ->build();

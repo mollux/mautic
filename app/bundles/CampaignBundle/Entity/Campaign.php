@@ -20,65 +20,29 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
  */
 class Campaign extends FormEntity implements PublishStatusIconAttributesInterface
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var string
-     */
-    private $name;
+    private ?string $name = null;
 
-    /**
-     * @var string
-     */
-    private $description;
+    private ?string $description = null;
 
-    /**
-     * @var \DateTime|null
-     */
-    private $publishUp;
+    private ?\DateTime $publishUp = null;
 
-    /**
-     * @var \DateTime|null
-     */
-    private $publishDown;
+    private ?\DateTime $publishDown = null;
 
-    /**
-     * @var \Mautic\CategoryBundle\Entity\Category
-     **/
-    private $category;
+    private ?\Mautic\CategoryBundle\Entity\Category $category = null;
 
-    /**
-     * @var ArrayCollection
-     */
-    private $events;
+    private \Doctrine\Common\Collections\ArrayCollection $events;
 
-    /**
-     * @var ArrayCollection
-     */
-    private $leads;
+    private \Doctrine\Common\Collections\ArrayCollection $leads;
 
-    /**
-     * @var ArrayCollection
-     */
-    private $lists;
+    private \Doctrine\Common\Collections\ArrayCollection $lists;
 
-    /**
-     * @var ArrayCollection
-     */
-    private $forms;
+    private \Doctrine\Common\Collections\ArrayCollection $forms;
 
-    /**
-     * @var array
-     */
-    private $canvasSettings = [];
+    private array $canvasSettings = [];
 
-    /**
-     * @var bool
-     */
-    private $allowRestart = false;
+    private bool $allowRestart = false;
 
     /**
      * Constructor.
@@ -107,7 +71,7 @@ class Campaign extends FormEntity implements PublishStatusIconAttributesInterfac
         $builder = new ClassMetadataBuilder($metadata);
 
         $builder->setTable('campaigns')
-            ->setCustomRepositoryClass('Mautic\CampaignBundle\Entity\CampaignRepository');
+            ->setCustomRepositoryClass(\Mautic\CampaignBundle\Entity\CampaignRepository::class);
 
         $builder->addIdColumns();
 
@@ -115,7 +79,7 @@ class Campaign extends FormEntity implements PublishStatusIconAttributesInterfac
 
         $builder->addCategory();
 
-        $builder->createOneToMany('events', 'Event')
+        $builder->createOneToMany('events', \Event::class)
             ->setIndexBy('id')
             ->setOrderBy(['order' => 'ASC'])
             ->mappedBy('campaign')
@@ -129,14 +93,14 @@ class Campaign extends FormEntity implements PublishStatusIconAttributesInterfac
             ->fetchExtraLazy()
             ->build();
 
-        $builder->createManyToMany('lists', 'Mautic\LeadBundle\Entity\LeadList')
+        $builder->createManyToMany('lists', \Mautic\LeadBundle\Entity\LeadList::class)
             ->setJoinTable('campaign_leadlist_xref')
             ->setIndexBy('id')
             ->addInverseJoinColumn('leadlist_id', 'id', false, false, 'CASCADE')
             ->addJoinColumn('campaign_id', 'id', true, false, 'CASCADE')
             ->build();
 
-        $builder->createManyToMany('forms', 'Mautic\FormBundle\Entity\Form')
+        $builder->createManyToMany('forms', \Mautic\FormBundle\Entity\Form::class)
             ->setJoinTable('campaign_form_xref')
             ->setIndexBy('id')
             ->addInverseJoinColumn('form_id', 'id', false, false, 'CASCADE')
@@ -310,7 +274,6 @@ class Campaign extends FormEntity implements PublishStatusIconAttributesInterfac
      * Add events.
      *
      * @param                                     $key
-     * @param \Mautic\CampaignBundle\Entity\Event $event
      *
      * @return Campaign
      */
@@ -465,10 +428,7 @@ class Campaign extends FormEntity implements PublishStatusIconAttributesInterfac
         return $this->category;
     }
 
-    /**
-     * @param mixed $category
-     */
-    public function setCategory($category)
+    public function setCategory(mixed $category)
     {
         $this->isChanged('category', $category);
         $this->category = $category;
@@ -507,7 +467,7 @@ class Campaign extends FormEntity implements PublishStatusIconAttributesInterfac
      *
      * @return Lead[]|\Doctrine\Common\Collections\Collection
      */
-    public function getLeads()
+    public function getLeads(): array|\Doctrine\Common\Collections\Collection
     {
         return $this->leads;
     }

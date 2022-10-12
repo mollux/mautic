@@ -13,32 +13,22 @@ class IpAddress
 {
     /**
      * Set by factory of configured IPs to not track.
-     *
-     * @var array
      */
-    private $doNotTrack = [];
+    private array $doNotTrack = [];
 
-    /**
-     * @var int
-     */
-    private $id;
-
-    /**
-     * @var string
-     */
-    private $ipAddress;
+    private ?int $id = null;
 
     /**
      * @var array<string,string>
      */
-    private $ipDetails;
+    private ?array $ipDetails = null;
 
     public static function loadMetadata(ORM\ClassMetadata $metadata)
     {
         $builder = new ClassMetadataBuilder($metadata);
 
         $builder->setTable('ip_addresses')
-            ->setCustomRepositoryClass('Mautic\CoreBundle\Entity\IpAddressRepository')
+            ->setCustomRepositoryClass(\Mautic\CoreBundle\Entity\IpAddressRepository::class)
             ->addIndex(['ip_address'], 'ip_search');
 
         $builder->addId();
@@ -83,9 +73,8 @@ class IpAddress
      *
      * @param string|null $ipAddress
      */
-    public function __construct($ipAddress = null)
+    public function __construct(private $ipAddress = null)
     {
-        $this->ipAddress = $ipAddress;
     }
 
     /**
@@ -171,13 +160,13 @@ class IpAddress
     {
         if (!empty($this->doNotTrack)) {
             foreach ($this->doNotTrack as $ip) {
-                if (false !== strpos($ip, '/')) {
+                if (str_contains($ip, '/')) {
                     // has a netmask range
                     // https://gist.github.com/tott/7684443
-                    list($range, $netmask) = explode('/', $ip, 2);
+                    [$range, $netmask] = explode('/', $ip, 2);
                     $range_decimal         = ip2long($range);
                     $ip_decimal            = ip2long($this->ipAddress);
-                    $wildcard_decimal      = pow(2, (32 - $netmask)) - 1;
+                    $wildcard_decimal      = 2 ** (32 - $netmask) - 1;
                     $netmask_decimal       = ~$wildcard_decimal;
 
                     if ((($ip_decimal & $netmask_decimal) == ($range_decimal & $netmask_decimal))) {

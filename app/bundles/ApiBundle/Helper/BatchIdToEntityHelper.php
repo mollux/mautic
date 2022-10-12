@@ -4,40 +4,21 @@ namespace Mautic\ApiBundle\Helper;
 
 class BatchIdToEntityHelper
 {
-    /**
-     * @var array
-     */
-    private $ids = [];
+    private array $ids = [];
 
-    /**
-     * @var array
-     */
-    private $originalKeys = [];
+    private array $originalKeys = [];
 
-    /**
-     * @var string
-     */
-    private $idKey;
+    private array $errors = [];
 
-    /**
-     * @var array
-     */
-    private $errors = [];
-
-    /**
-     * @var bool
-     */
-    private $isAssociative = false;
+    private bool $isAssociative = false;
 
     /**
      * BatchIdToEntityHelper constructor.
      *
      * @param string $idKey
      */
-    public function __construct(array $parameters, $idKey = 'id')
+    public function __construct(array $parameters, private $idKey = 'id')
     {
-        $this->idKey = $idKey;
-
         $this->extractIds($parameters);
     }
 
@@ -121,10 +102,7 @@ class BatchIdToEntityHelper
         $this->extractIdsFromParams($parameters);
     }
 
-    /**
-     * @param mixed $ids
-     */
-    private function extractIdsFromIdKey($ids)
+    private function extractIdsFromIdKey(mixed $ids)
     {
         // ['ids' => [1,2,3]]
         if (is_array($ids)) {
@@ -136,7 +114,7 @@ class BatchIdToEntityHelper
         }
 
         // ['ids' => '1,2,3'] OR ['ids' => '1']
-        if (false !== strpos($ids, ',') || is_numeric($ids)) {
+        if (str_contains($ids, ',') || is_numeric($ids)) {
             $this->ids           = str_getcsv($ids);
             $this->originalKeys  = array_keys($this->ids);
             $this->isAssociative = false;
@@ -153,10 +131,7 @@ class BatchIdToEntityHelper
     {
         $this->isAssociative = $this->isAssociativeArray($parameters);
         $this->originalKeys  = array_keys($parameters);
-
-        // [1,2,3]
-        reset($parameters);
-        $firstKey = key($parameters);
+        $firstKey = array_key_first($parameters);
         if (!is_array($parameters[$firstKey])) {
             $this->ids = array_values($parameters);
 
@@ -184,9 +159,7 @@ class BatchIdToEntityHelper
         if (empty($array)) {
             return false;
         }
-
-        reset($array);
-        $firstKey = key($array);
+        $firstKey = array_key_first($array);
 
         return array_keys($array) !== range(0, count($array) - 1) && 0 !== $firstKey;
     }

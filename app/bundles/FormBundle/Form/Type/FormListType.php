@@ -18,10 +18,7 @@ class FormListType extends AbstractType
 {
     private $viewOther;
 
-    /**
-     * @var FormRepository
-     */
-    private $repo;
+    private \Mautic\FormBundle\Entity\FormRepository $repo;
 
     public function __construct(CorePermissions $security, FormModel $model, UserHelper $userHelper)
     {

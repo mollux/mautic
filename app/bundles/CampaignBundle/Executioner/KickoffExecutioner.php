@@ -21,73 +21,23 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class KickoffExecutioner implements ExecutionerInterface
 {
-    /**
-     * @var ContactLimiter
-     */
-    private $limiter;
+    private ?\Mautic\CampaignBundle\Executioner\ContactFinder\Limiter\ContactLimiter $limiter = null;
 
-    /**
-     * @var Campaign
-     */
-    private $campaign;
+    private ?\Mautic\CampaignBundle\Entity\Campaign $campaign = null;
 
     /**
      * @var OutputInterface
      */
     private $output;
 
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
+    private ?\Symfony\Component\Console\Helper\ProgressBar $progressBar = null;
 
-    /**
-     * @var KickoffContactFinder
-     */
-    private $kickoffContactFinder;
+    private ?\Doctrine\Common\Collections\ArrayCollection $rootEvents = null;
 
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
+    private ?\Mautic\CampaignBundle\Executioner\Result\Counter $counter = null;
 
-    /**
-     * @var EventExecutioner
-     */
-    private $executioner;
-
-    /**
-     * @var EventScheduler
-     */
-    private $scheduler;
-
-    /**
-     * @var ProgressBar
-     */
-    private $progressBar;
-
-    /**
-     * @var ArrayCollection
-     */
-    private $rootEvents;
-
-    /**
-     * @var Counter
-     */
-    private $counter;
-
-    public function __construct(
-        LoggerInterface $logger,
-        KickoffContactFinder $kickoffContactFinder,
-        TranslatorInterface $translator,
-        EventExecutioner $executioner,
-        EventScheduler $scheduler
-    ) {
-        $this->logger               = $logger;
-        $this->kickoffContactFinder = $kickoffContactFinder;
-        $this->translator           = $translator;
-        $this->executioner          = $executioner;
-        $this->scheduler            = $scheduler;
+    public function __construct(private LoggerInterface $logger, private KickoffContactFinder $kickoffContactFinder, private TranslatorInterface $translator, private EventExecutioner $executioner, private EventScheduler $scheduler)
+    {
     }
 
     /**
@@ -102,15 +52,15 @@ class KickoffExecutioner implements ExecutionerInterface
     {
         $this->campaign = $campaign;
         $this->limiter  = $limiter;
-        $this->output   = ($output) ? $output : new NullOutput();
+        $this->output   = $output ?: new NullOutput();
         $this->counter  = new Counter();
 
         try {
             $this->prepareForExecution();
             $this->executeOrScheduleEvent();
-        } catch (NoContactsFoundException $exception) {
+        } catch (NoContactsFoundException) {
             $this->logger->debug('CAMPAIGN: No more contacts to process');
-        } catch (NoEventsFoundException $exception) {
+        } catch (NoEventsFoundException) {
             $this->logger->debug('CAMPAIGN: No events to process');
         } finally {
             if ($this->progressBar) {
@@ -201,7 +151,7 @@ class KickoffExecutioner implements ExecutionerInterface
                     $rootEvents->remove($key);
 
                     continue;
-                } catch (NotSchedulableException $exception) {
+                } catch (NotSchedulableException) {
                     // Execute the event
                 }
             }

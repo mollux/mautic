@@ -14,72 +14,36 @@ use Mautic\LeadBundle\Entity\LeadList;
  */
 class Stat
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var Sms
-     */
-    private $sms;
+    private ?\Mautic\SmsBundle\Entity\Sms $sms = null;
 
-    /**
-     * @var \Mautic\LeadBundle\Entity\Lead
-     */
-    private $lead;
+    private ?\Mautic\LeadBundle\Entity\Lead $lead = null;
 
-    /**
-     * @var \Mautic\LeadBundle\Entity\LeadList
-     */
-    private $list;
+    private ?\Mautic\LeadBundle\Entity\LeadList $list = null;
 
-    /**
-     * @var \Mautic\CoreBundle\Entity\IpAddress
-     */
-    private $ipAddress;
+    private ?\Mautic\CoreBundle\Entity\IpAddress $ipAddress = null;
 
-    /**
-     * @var \DateTime
-     */
-    private $dateSent;
+    private ?\DateTime $dateSent = null;
 
-    /**
-     * @var string
-     */
-    private $trackingHash;
+    private ?string $trackingHash = null;
 
-    /**
-     * @var string
-     */
-    private $source;
+    private ?string $source = null;
 
-    /**
-     * @var int
-     */
-    private $sourceId;
+    private ?int $sourceId = null;
 
-    /**
-     * @var array
-     */
-    private $tokens = [];
+    private array $tokens = [];
 
-    /**
-     * @var array
-     */
-    private $details = [];
+    private array $details = [];
 
-    /**
-     * @var bool
-     */
-    private $isFailed = false;
+    private bool $isFailed = false;
 
     public static function loadMetadata(ORM\ClassMetadata $metadata)
     {
         $builder = new ClassMetadataBuilder($metadata);
 
         $builder->setTable('sms_message_stats')
-            ->setCustomRepositoryClass('Mautic\SmsBundle\Entity\StatRepository')
+            ->setCustomRepositoryClass(\Mautic\SmsBundle\Entity\StatRepository::class)
             ->addIndex(['sms_id', 'lead_id'], 'stat_sms_search')
             ->addIndex(['tracking_hash'], 'stat_sms_hash_search')
             ->addIndex(['source', 'source_id'], 'stat_sms_source_search')
@@ -94,7 +58,7 @@ class Stat
 
         $builder->addLead(true, 'SET NULL');
 
-        $builder->createManyToOne('list', 'Mautic\LeadBundle\Entity\LeadList')
+        $builder->createManyToOne('list', \Mautic\LeadBundle\Entity\LeadList::class)
             ->addJoinColumn('list_id', 'id', true, false, 'SET NULL')
             ->build();
 

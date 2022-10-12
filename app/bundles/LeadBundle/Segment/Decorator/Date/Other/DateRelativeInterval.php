@@ -10,31 +10,10 @@ use Mautic\LeadBundle\Segment\Decorator\FilterDecoratorInterface;
 class DateRelativeInterval implements FilterDecoratorInterface
 {
     /**
-     * @var DateDecorator
-     */
-    private $dateDecorator;
-
-    /**
-     * @var string
-     */
-    private $originalValue;
-
-    /**
-     * @var DateOptionParameters
-     */
-    private $dateOptionParameters;
-
-    /**
      * @param string $originalValue
      */
-    public function __construct(
-        DateDecorator $dateDecorator,
-        $originalValue,
-        DateOptionParameters $dateOptionParameters
-    ) {
-        $this->dateDecorator        = $dateDecorator;
-        $this->originalValue        = $originalValue;
-        $this->dateOptionParameters = $dateOptionParameters;
+    public function __construct(private DateDecorator $dateDecorator, private $originalValue, private DateOptionParameters $dateOptionParameters)
+    {
     }
 
     /**
@@ -70,10 +49,8 @@ class DateRelativeInterval implements FilterDecoratorInterface
 
     /**
      * @param array|string $argument
-     *
-     * @return array|string
      */
-    public function getParameterHolder(ContactSegmentFilterCrate $contactSegmentFilterCrate, $argument)
+    public function getParameterHolder(ContactSegmentFilterCrate $contactSegmentFilterCrate, $argument): array|string
     {
         return $this->dateDecorator->getParameterHolder($contactSegmentFilterCrate, $argument);
     }
@@ -103,10 +80,7 @@ class DateRelativeInterval implements FilterDecoratorInterface
         return $this->dateDecorator->getQueryType($contactSegmentFilterCrate);
     }
 
-    /**
-     * @return bool|string
-     */
-    public function getAggregateFunc(ContactSegmentFilterCrate $contactSegmentFilterCrate)
+    public function getAggregateFunc(ContactSegmentFilterCrate $contactSegmentFilterCrate): bool|string
     {
         return $this->dateDecorator->getAggregateFunc($contactSegmentFilterCrate);
     }

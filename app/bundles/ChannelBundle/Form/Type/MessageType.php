@@ -17,16 +17,10 @@ use Symfony\Component\Validator\Constraints\Valid;
 class MessageType extends AbstractFormStandardType
 {
     /**
-     * @var MessageModel
-     */
-    protected $model;
-
-    /**
      * MessageType constructor.
      */
-    public function __construct(MessageModel $messageModel)
+    public function __construct(protected MessageModel $model)
     {
-        $this->model = $messageModel;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)

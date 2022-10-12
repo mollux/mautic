@@ -72,7 +72,7 @@ class DoctrineStep implements StepInterface
         $parameters = $configurator->getParameters();
 
         foreach ($parameters as $key => $value) {
-            if (0 === strpos($key, 'db_')) {
+            if (str_starts_with($key, 'db_')) {
                 $parameters[substr($key, 3)] = $value;
                 $key                         = substr($key, 3);
                 $this->$key                  = $value;
@@ -95,7 +95,7 @@ class DoctrineStep implements StepInterface
     {
         $messages = [];
 
-        if (!class_exists('\PDO')) {
+        if (!class_exists('\\' . \PDO::class)) {
             $messages[] = 'mautic.install.pdo.mandatory';
         } else {
             $drivers = \PDO::getAvailableDrivers();
@@ -165,7 +165,7 @@ class DoctrineStep implements StepInterface
         $supported = [];
 
         // Add PDO drivers if supported
-        if (class_exists('\PDO')) {
+        if (class_exists('\\' . \PDO::class)) {
             $pdoDrivers = \PDO::getAvailableDrivers();
 
             foreach ($pdoDrivers as $driver) {

@@ -19,39 +19,15 @@ class IntegrationsHelper
     /**
      * @var IntegrationInterface[]
      */
-    private $integrations = [];
+    private array $integrations = [];
 
-    /**
-     * @var IntegrationRepository
-     */
-    private $integrationRepository;
-
-    /**
-     * @var EncryptionService
-     */
-    private $encryptionService;
-
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $eventDispatcher;
-
-    /**
-     * @var array
-     */
-    private $decryptedIntegrationConfigurations = [];
+    private array $decryptedIntegrationConfigurations = [];
 
     /**
      * IntegrationsHelper constructor.
      */
-    public function __construct(
-        IntegrationRepository $integrationRepository,
-        EncryptionService $encryptionService,
-        EventDispatcherInterface $eventDispatcher
-    ) {
-        $this->integrationRepository = $integrationRepository;
-        $this->encryptionService     = $encryptionService;
-        $this->eventDispatcher       = $eventDispatcher;
+    public function __construct(private IntegrationRepository $integrationRepository, private EncryptionService $encryptionService, private EventDispatcherInterface $eventDispatcher)
+    {
     }
 
     public function addIntegration(IntegrationInterface $integration): void

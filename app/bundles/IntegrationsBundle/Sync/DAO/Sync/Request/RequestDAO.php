@@ -8,31 +8,16 @@ use Mautic\IntegrationsBundle\Sync\DAO\Sync\InputOptionsDAO;
 
 class RequestDAO
 {
-    /**
-     * @var int
-     */
-    private $syncIteration;
-
-    /**
-     * @var InputOptionsDAO
-     */
-    private $inputOptionsDAO;
-
-    /**
-     * @var string
-     */
-    private $syncToIntegration;
+    private int $syncIteration;
 
     /**
      * @var ObjectDAO[]
      */
-    private $objects = [];
+    private array $objects = [];
 
-    public function __construct(string $syncToIntegration, int $syncIteration, InputOptionsDAO $inputOptionsDAO)
+    public function __construct(private string $syncToIntegration, int $syncIteration, private InputOptionsDAO $inputOptionsDAO)
     {
         $this->syncIteration     = (int) $syncIteration;
-        $this->inputOptionsDAO   = $inputOptionsDAO;
-        $this->syncToIntegration = $syncToIntegration;
     }
 
     /**

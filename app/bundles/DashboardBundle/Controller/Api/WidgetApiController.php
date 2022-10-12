@@ -16,7 +16,7 @@ class WidgetApiController extends CommonApiController
     public function initialize(ControllerEvent $event)
     {
         $this->model            = $this->getModel('dashboard');
-        $this->entityClass      = 'Mautic\DashboardBundle\Entity\Widget';
+        $this->entityClass      = \Mautic\DashboardBundle\Entity\Widget::class;
         $this->entityNameOne    = 'widget';
         $this->entityNameMulti  = 'widgets';
         $this->serializerGroups = [];

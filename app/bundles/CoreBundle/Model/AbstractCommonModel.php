@@ -129,10 +129,8 @@ abstract class AbstractCommonModel
 
     /**
      * Retrieve the repository for an entity.
-     *
-     * @return \Mautic\CoreBundle\Entity\CommonRepository|bool
      */
-    public function getRepository()
+    public function getRepository(): \Mautic\CoreBundle\Entity\CommonRepository
     {
         static $commonRepo;
 
@@ -157,10 +155,8 @@ abstract class AbstractCommonModel
      * Return a list of entities.
      *
      * @param array $args [start, limit, filter, orderBy, orderByDir]
-     *
-     * @return \Doctrine\ORM\Tools\Pagination\Paginator|array
      */
-    public function getEntities(array $args = [])
+    public function getEntities(array $args = []): \Doctrine\ORM\Tools\Pagination\Paginator|array
     {
         //set the translator
         $repo = $this->getRepository();
@@ -242,10 +238,8 @@ abstract class AbstractCommonModel
      * Retrieve entity based on id/alias slugs.
      *
      * @param string $slug
-     *
-     * @return object|bool
      */
-    public function getEntityBySlugs($slug)
+    public function getEntityBySlugs($slug): object|bool
     {
         $slugs    = explode('/', $slug);
         $idSlug   = '';
@@ -257,12 +251,12 @@ abstract class AbstractCommonModel
 
         switch (true) {
             case 3 === $slugCount:
-                list($lang, $category, $idSlug) = $slugs;
+                [$lang, $category, $idSlug] = $slugs;
 
                 break;
 
             case 2 === $slugCount:
-                list($category, $idSlug) = $slugs;
+                [$category, $idSlug] = $slugs;
 
                 // Check if the first slug is actually a locale
                 if (isset($locales[$category])) {
@@ -290,7 +284,7 @@ abstract class AbstractCommonModel
         }
 
         $entity = false;
-        if (false !== strpos($idSlug, ':')) {
+        if (str_contains($idSlug, ':')) {
             $parts = explode(':', $idSlug);
             if (2 == count($parts)) {
                 $entity = $this->getEntity($parts[0]);

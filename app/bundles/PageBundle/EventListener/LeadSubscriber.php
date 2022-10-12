@@ -18,36 +18,8 @@ class LeadSubscriber implements EventSubscriberInterface
 {
     use ChannelTrait;
 
-    /**
-     * @var PageModel
-     */
-    private $pageModel;
-
-    /**
-     * @var VideoModel
-     */
-    private $pageVideoModel;
-
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    /**
-     * @var RouterInterface
-     */
-    private $router;
-
-    public function __construct(
-        PageModel $pageModel,
-        VideoModel $pageVideoModel,
-        TranslatorInterface $translator,
-        RouterInterface $router
-    ) {
-        $this->pageModel      = $pageModel;
-        $this->pageVideoModel = $pageVideoModel;
-        $this->translator     = $translator;
-        $this->router         = $router;
+    public function __construct(private PageModel $pageModel, private VideoModel $pageVideoModel, private TranslatorInterface $translator, private RouterInterface $router)
+    {
     }
 
     /**
@@ -74,7 +46,7 @@ class LeadSubscriber implements EventSubscriberInterface
         $eventTypeKey  = 'page.hit';
         $eventTypeName = $this->translator->trans('mautic.page.event.hit');
         $event->addEventType($eventTypeKey, $eventTypeName);
-        $event->addSerializerGroup('pageList', 'hitDetails');
+        $event->addSerializerGroup('pageList');
 
         if (!$event->isApplicable($eventTypeKey)) {
             return;
@@ -140,7 +112,7 @@ class LeadSubscriber implements EventSubscriberInterface
                     ];
                 } else {
                     $eventLabel = [
-                        'label'      => (isset($hit['urlTitle'])) ? $hit['urlTitle'] : $hit['url'],
+                        'label'      => $hit['urlTitle'] ?? $hit['url'],
                         'href'       => $hit['url'],
                         'isExternal' => true,
                     ];
@@ -177,7 +149,7 @@ class LeadSubscriber implements EventSubscriberInterface
         $eventTypeKey  = 'page.videohit';
         $eventTypeName = $this->translator->trans('mautic.page.event.videohit');
         $event->addEventType($eventTypeKey, $eventTypeName);
-        $event->addSerializerGroup('pageList', 'hitDetails');
+        $event->addSerializerGroup('pageList');
 
         if (!$event->isApplicable($eventTypeKey)) {
             return;

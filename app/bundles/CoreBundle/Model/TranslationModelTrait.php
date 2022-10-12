@@ -22,7 +22,7 @@ trait TranslationModelTrait
      */
     public function getTranslatedEntity(TranslationEntityInterface $entity, $lead = null, Request $request = null)
     {
-        list($translationParent, $translationChildren) = $entity->getTranslations();
+        [$translationParent, $translationChildren] = $entity->getTranslations();
 
         $leadPreference = $chosenLanguage = null;
 
@@ -136,7 +136,7 @@ trait TranslationModelTrait
      */
     protected function getTranslationLocaleCore($locale)
     {
-        if (false !== strpos($locale, '_')) {
+        if (str_contains($locale, '_')) {
             $locale = substr($locale, 0, 2);
         }
 

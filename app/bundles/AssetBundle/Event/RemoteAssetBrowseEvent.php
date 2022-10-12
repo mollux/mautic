@@ -12,19 +12,10 @@ use Mautic\PluginBundle\Integration\UnifiedIntegrationInterface;
  */
 class RemoteAssetBrowseEvent extends CommonEvent
 {
-    /**
-     * @var Adapter
-     */
-    private $adapter;
+    private ?\Gaufrette\Adapter $adapter = null;
 
-    /**
-     * @var AbstractIntegration
-     */
-    private $integration;
-
-    public function __construct(UnifiedIntegrationInterface $integration)
+    public function __construct(private UnifiedIntegrationInterface $integration)
     {
-        $this->integration = $integration;
     }
 
     /**

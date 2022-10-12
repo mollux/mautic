@@ -20,6 +20,7 @@ class AuthController extends FormController
      */
     public function authCallbackAction($integration)
     {
+        $identifier = [];
         $isAjax  = $this->request->isXmlHttpRequest();
         $session = $this->get('session');
 
@@ -109,6 +110,7 @@ class AuthController extends FormController
      */
     public function authUserAction($integration)
     {
+        $settings = [];
         /** @var \Mautic\PluginBundle\Helper\IntegrationHelper $integrationHelper */
         $integrationHelper = $this->factory->getHelper('integration');
         $integrationObject = $integrationHelper->getIntegrationObject($integration);

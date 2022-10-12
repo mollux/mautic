@@ -11,20 +11,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ButtonSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    /**
-     * @var RouterInterface
-     */
-    private $router;
-
-    public function __construct(TranslatorInterface $translator, RouterInterface $router)
+    public function __construct(private TranslatorInterface $translator, private RouterInterface $router)
     {
-        $this->translator = $translator;
-        $this->router     = $router;
     }
 
     public static function getSubscribedEvents()
@@ -36,7 +24,7 @@ class ButtonSubscriber implements EventSubscriberInterface
 
     public function injectViewButtons(CustomButtonEvent $event)
     {
-        if (0 === strpos($event->getRoute(), 'mautic_contact_index')) {
+        if (str_starts_with($event->getRoute(), 'mautic_contact_index')) {
             $exportRoute = $this->router->generate(
                 'mautic_contact_action',
                 ['objectAction' => 'batchExport']

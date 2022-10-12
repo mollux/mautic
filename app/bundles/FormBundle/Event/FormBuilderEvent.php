@@ -15,29 +15,14 @@ class FormBuilderEvent extends Event
 {
     use ComponentValidationTrait;
 
-    /**
-     * @var array
-     */
-    private $actions = [];
+    private array $actions = [];
 
-    /**
-     * @var array
-     */
-    private $fields = [];
+    private array $fields = [];
 
-    /**
-     * @var array
-     */
-    private $validators = [];
+    private array $validators = [];
 
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    public function __construct(TranslatorInterface $translator)
+    public function __construct(private TranslatorInterface $translator)
     {
-        $this->translator = $translator;
     }
 
     /**
@@ -72,7 +57,7 @@ class FormBuilderEvent extends Event
         );
 
         $action['label']       = $this->translator->trans($action['label']);
-        $action['description'] = $action['description'] ?? '';
+        $action['description'] ??= '';
 
         $this->actions[$key] = $action;
     }
@@ -86,12 +71,10 @@ class FormBuilderEvent extends Event
     {
         uasort(
             $this->actions,
-            function ($a, $b) {
-                return strnatcasecmp(
-                    $a['label'],
-                    $b['label']
-                );
-            }
+            fn($a, $b) => strnatcasecmp(
+                $a['label'],
+                $b['label']
+            )
         );
 
         return $this->actions;
@@ -152,7 +135,7 @@ class FormBuilderEvent extends Event
         if (isset($field['valueFilter'])
             && (!is_string($field['valueFilter'])
                 || !is_callable(
-                    ['\Mautic\CoreBundle\Helper\InputHelper', $field['valueFilter']]
+                    ['\\' . \Mautic\CoreBundle\Helper\InputHelper::class, $field['valueFilter']]
                 ))
         ) {
             $callbacks = ['valueFilter'];
@@ -199,7 +182,7 @@ class FormBuilderEvent extends Event
     public function addValidatorsToBuilder(Form $form)
     {
         if (!empty($this->validators)) {
-            $validationData = (isset($form->getData()['validation'])) ? $form->getData()['validation'] : [];
+            $validationData = $form->getData()['validation'] ?? [];
             foreach ($this->validators as $validator) {
                 if (isset($validator['formType']) && isset($validator['fieldType']) && $validator['fieldType'] == $form->getData()['type']) {
                     $form->add(

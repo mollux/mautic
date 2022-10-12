@@ -23,11 +23,10 @@ class DynamicsApi extends CrmApi
      * @param string $method
      * @param string $moduleobject
      *
-     * @return array|ResponseInterface
      *
      * @throws ApiErrorException
      */
-    protected function request($operation, array $parameters = [], $method = 'GET', $moduleobject = 'contacts', $settings = [])
+    protected function request($operation, array $parameters = [], $method = 'GET', $moduleobject = 'contacts', $settings = []): array|\Psr\Http\Message\ResponseInterface
     {
         if ('company' === $moduleobject) {
             $moduleobject = 'accounts';
@@ -54,11 +53,11 @@ class DynamicsApi extends CrmApi
         $response = $this->integration->makeRequest($url, $parameters, $method, $settings);
 
         if ('POST' === $method && (!($response instanceof ResponseInterface) || !in_array($response->getStatusCode(), [200, 204], true))) {
-            throw new ApiErrorException('Dynamics CRM API error: '.json_encode($response->getBody()));
+            throw new ApiErrorException('Dynamics CRM API error: '.json_encode($response->getBody(), JSON_THROW_ON_ERROR));
         }
 
         if ('GET' === $method && $response instanceof ResponseInterface) {
-            return json_decode($response->getBody(), true);
+            return json_decode($response->getBody(), true, 512, JSON_THROW_ON_ERROR);
         }
 
         return $response;
@@ -148,6 +147,7 @@ class DynamicsApi extends CrmApi
      */
     public function createLeads($data, $object = 'contacts', $isUpdate = false)
     {
+        $settings = [];
         if (0 === count($data)) {
             return [];
         }
@@ -174,7 +174,7 @@ class DynamicsApi extends CrmApi
             $returnIds[$objectId] = $contentId;
             if (!$isUpdate) {
                 $oid                  = $objectId;
-                $objectId             = sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X', mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535));
+                $objectId             = sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X', random_int(0, 65535), random_int(0, 65535), random_int(0, 65535), random_int(16384, 20479), random_int(32768, 49151), random_int(0, 65535), random_int(0, 65535), random_int(0, 65535));
                 $returnIds[$objectId] = $oid; // save lead Id
             }
             $operation = sprintf('%s(%s)', $object, $objectId);
@@ -185,7 +185,7 @@ class DynamicsApi extends CrmApi
                 $odata .= 'If-None-Match: *'.PHP_EOL;
             }
             $odata .= 'Content-Type: application/json;type=entry'.PHP_EOL.PHP_EOL;
-            $odata .= json_encode($lead).PHP_EOL;
+            $odata .= json_encode($lead, JSON_THROW_ON_ERROR).PHP_EOL;
         }
         $odata .= '--changeset_'.$changeId.'--'.PHP_EOL.PHP_EOL;
 
@@ -231,10 +231,10 @@ class DynamicsApi extends CrmApi
         array_pop($a_blocks);
         // there is only one batchresponse
         $input                = array_pop($a_blocks);
-        list($header, $input) = explode("\r\n\r\n", $input, 2);
+        [$header, $input] = explode("\r\n\r\n", $input, 2);
         foreach (explode("\r\n", $header) as $r) {
             if (0 === stripos($r, 'Content-Type:')) {
-                list($headername, $contentType) = explode(':', $r, 2);
+                [$headername, $contentType] = explode(':', $r, 2);
             }
         }
         // grab multipart boundary from content type header

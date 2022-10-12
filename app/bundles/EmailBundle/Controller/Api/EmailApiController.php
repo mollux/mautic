@@ -19,7 +19,7 @@ class EmailApiController extends CommonApiController
     public function initialize(ControllerEvent $event)
     {
         $this->model            = $this->getModel('email');
-        $this->entityClass      = 'Mautic\EmailBundle\Entity\Email';
+        $this->entityClass      = \Mautic\EmailBundle\Entity\Email::class;
         $this->entityNameOne    = 'email';
         $this->entityNameMulti  = 'emails';
         $this->serializerGroups = ['emailDetails', 'categoryList', 'publishDetails', 'assetList', 'formList', 'leadListList'];
@@ -76,7 +76,7 @@ class EmailApiController extends CommonApiController
         $lists = $this->request->request->get('lists', null);
         $limit = $this->request->request->get('limit', null);
 
-        list($count, $failed) = $this->model->sendEmailToLists($entity, $lists, $limit);
+        [$count, $failed] = $this->model->sendEmailToLists($entity, $lists, $limit);
 
         $view = $this->view(
             [

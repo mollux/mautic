@@ -18,20 +18,13 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class DynamicContentFilterEntryType extends AbstractType
 {
-    private $fieldChoices    = [];
-    private $countryChoices  = [];
-    private $regionChoices   = [];
-    private $timezoneChoices = [];
-    private $localeChoices   = [];
+    private array $fieldChoices    = [];
+    private array $countryChoices  = [];
+    private array $regionChoices   = [];
+    private array $timezoneChoices = [];
+    private array $localeChoices   = [];
 
-    /**
-     * @var StageModel
-     */
-    private $stageModel;
-
-    private BuilderIntegrationsHelper $builderIntegrationsHelper;
-
-    public function __construct(ListModel $listModel, StageModel $stageModel, BuilderIntegrationsHelper $builderIntegrationsHelper)
+    public function __construct(ListModel $listModel, private StageModel $stageModel, private BuilderIntegrationsHelper $builderIntegrationsHelper)
     {
         $this->fieldChoices = $listModel->getChoiceFields();
 
@@ -41,8 +34,6 @@ class DynamicContentFilterEntryType extends AbstractType
         $this->regionChoices             = FormFieldHelper::getRegionChoices();
         $this->timezoneChoices           = FormFieldHelper::getTimezonesChoices();
         $this->localeChoices             = FormFieldHelper::getLocaleChoices();
-        $this->stageModel                = $stageModel;
-        $this->builderIntegrationsHelper = $builderIntegrationsHelper;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -52,7 +43,7 @@ class DynamicContentFilterEntryType extends AbstractType
         try {
             $mauticBuilder = $this->builderIntegrationsHelper->getBuilder('email');
             $mauticBuilder->getName();
-        } catch (IntegrationNotFoundException $exception) {
+        } catch (IntegrationNotFoundException) {
             // Assume legacy builder
             $extraClasses = ' legacy-builder';
         }
@@ -121,26 +112,24 @@ class DynamicContentFilterEntryType extends AbstractType
     {
         $this->fieldChoices['lead'] = array_filter(
             $this->fieldChoices['lead'],
-            function ($key) {
-                return !in_array(
-                    $key,
-                    [
-                        'company',
-                        'leadlist',
-                        'campaign',
-                        'device_type',
-                        'device_brand',
-                        'device_os',
-                        'lead_email_received',
-                        'tags',
-                        'dnc_bounced',
-                        'dnc_unsubscribed',
-                        'dnc_bounced_sms',
-                        'dnc_unsubscribed_sms',
-                        'hit_url',
-                    ]
-                );
-            },
+            fn($key) => !in_array(
+                $key,
+                [
+                    'company',
+                    'leadlist',
+                    'campaign',
+                    'device_type',
+                    'device_brand',
+                    'device_os',
+                    'lead_email_received',
+                    'tags',
+                    'dnc_bounced',
+                    'dnc_unsubscribed',
+                    'dnc_bounced_sms',
+                    'dnc_unsubscribed_sms',
+                    'hit_url',
+                ]
+            ),
             ARRAY_FILTER_USE_KEY
         );
     }

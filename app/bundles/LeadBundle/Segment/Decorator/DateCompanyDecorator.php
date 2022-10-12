@@ -10,14 +10,8 @@ use Mautic\LeadBundle\Segment\Query\Filter\ComplexRelationValueFilterQueryBuilde
  */
 class DateCompanyDecorator implements FilterDecoratorInterface
 {
-    /**
-     * @var FilterDecoratorInterface
-     */
-    private $dateDecorator;
-
-    public function __construct(FilterDecoratorInterface $dateDecorator)
+    public function __construct(private FilterDecoratorInterface $dateDecorator)
     {
-        $this->dateDecorator = $dateDecorator;
     }
 
     /**
@@ -46,10 +40,8 @@ class DateCompanyDecorator implements FilterDecoratorInterface
 
     /**
      * @param array|string $argument
-     *
-     * @return array|string
      */
-    public function getParameterHolder(ContactSegmentFilterCrate $contactSegmentFilterCrate, $argument)
+    public function getParameterHolder(ContactSegmentFilterCrate $contactSegmentFilterCrate, $argument): array|string
     {
         return $this->dateDecorator->getParameterHolder($contactSegmentFilterCrate, $argument);
     }
@@ -70,10 +62,7 @@ class DateCompanyDecorator implements FilterDecoratorInterface
         return ComplexRelationValueFilterQueryBuilder::getServiceId();
     }
 
-    /**
-     * @return bool|string
-     */
-    public function getAggregateFunc(ContactSegmentFilterCrate $contactSegmentFilterCrate)
+    public function getAggregateFunc(ContactSegmentFilterCrate $contactSegmentFilterCrate): bool|string
     {
         return $this->dateDecorator->getAggregateFunc($contactSegmentFilterCrate);
     }

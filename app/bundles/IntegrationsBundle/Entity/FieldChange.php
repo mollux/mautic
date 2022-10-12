@@ -11,45 +11,21 @@ use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
 
 class FieldChange
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var string
-     */
-    private $integration;
+    private ?string $integration = null;
 
-    /**
-     * @var int
-     */
-    private $objectId;
+    private ?int $objectId = null;
 
-    /**
-     * @var string
-     */
-    private $objectType;
+    private ?string $objectType = null;
 
-    /**
-     * @var \DateTime
-     */
-    private $modifiedAt;
+    private ?\DateTime $modifiedAt = null;
 
-    /**
-     * @var string
-     */
-    private $columnName;
+    private ?string $columnName = null;
 
-    /**
-     * @var string
-     */
-    private $columnType;
+    private ?string $columnType = null;
 
-    /**
-     * @var string
-     */
-    private $columnValue;
+    private ?string $columnValue = null;
 
     public static function loadMetadata(ORM\ClassMetadata $metadata): void
     {
@@ -121,9 +97,6 @@ class FieldChange
         return $this;
     }
 
-    /**
-     * @return FieldChange
-     */
     public function setObjectId(int $id): self
     {
         $this->objectId = $id;
@@ -136,9 +109,6 @@ class FieldChange
         return $this->objectId;
     }
 
-    /**
-     * @return FieldChange
-     */
     public function setObjectType(string $type): self
     {
         $this->objectType = $type;
@@ -151,9 +121,6 @@ class FieldChange
         return $this->objectType;
     }
 
-    /**
-     * @return FieldChange
-     */
     public function setModifiedAt(\DateTime $time): self
     {
         $this->modifiedAt = $time;
@@ -166,9 +133,6 @@ class FieldChange
         return $this->modifiedAt;
     }
 
-    /**
-     * @return FieldChange
-     */
     public function setColumnName(string $name): self
     {
         $this->columnName = $name;
@@ -181,9 +145,6 @@ class FieldChange
         return $this->columnName;
     }
 
-    /**
-     * @return FieldChange
-     */
     public function setColumnType(string $type): self
     {
         $this->columnType = $type;
@@ -196,9 +157,6 @@ class FieldChange
         return $this->columnType;
     }
 
-    /**
-     * @return FieldChange
-     */
     public function setColumnValue(string $value): self
     {
         $this->columnValue = $value;

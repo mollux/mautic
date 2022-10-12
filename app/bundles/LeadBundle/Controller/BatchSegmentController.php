@@ -31,7 +31,7 @@ class BatchSegmentController extends AbstractFormController
     public function setAction()
     {
         $params     = $this->request->get('lead_batch', []);
-        $contactIds = empty($params['ids']) ? [] : json_decode($params['ids']);
+        $contactIds = empty($params['ids']) ? [] : json_decode($params['ids'], null, 512, JSON_THROW_ON_ERROR);
 
         if ($contactIds && is_array($contactIds)) {
             $segmentsToAdd    = $params['add'] ?? [];
@@ -63,7 +63,7 @@ class BatchSegmentController extends AbstractFormController
      *
      * @return JsonResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function indexAction()
+    public function indexAction(): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         $route = $this->generateUrl('mautic_segment_batch_contact_set');
         $lists = $this->segmentModel->getUserLists();

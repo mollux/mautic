@@ -23,7 +23,7 @@ trait VariantModelTrait
         //let saveEntities() know it does not need to set variant start dates
         $this->inConversion = true;
 
-        list($parent, $children) = $entity->getVariants();
+        [$parent, $children] = $entity->getVariants();
 
         $save = [];
 
@@ -142,7 +142,6 @@ trait VariantModelTrait
     /**
      * @param           $entity
      * @param           $relatedIds
-     * @param \DateTime $variantStartDate
      */
     protected function resetVariants($entity, $relatedIds = null, \DateTime $variantStartDate = null)
     {

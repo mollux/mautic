@@ -14,10 +14,8 @@ class EmojiToHtmlTransformer implements DataTransformerInterface
      * Convert emoji unicode to HTML.
      *
      * @param array|string $content
-     *
-     * @return string|array
      */
-    public function transform($content)
+    public function transform($content): string|array
     {
         if (is_array($content)) {
             foreach ($content as &$convert) {
@@ -34,10 +32,8 @@ class EmojiToHtmlTransformer implements DataTransformerInterface
      * Convert HTML emoji to unicode bytes.
      *
      * @param array|string $content
-     *
-     * @return array|string
      */
-    public function reverseTransform($content)
+    public function reverseTransform($content): array|string
     {
         if (is_array($content)) {
             foreach ($content as &$convert) {

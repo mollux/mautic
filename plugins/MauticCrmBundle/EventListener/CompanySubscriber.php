@@ -11,20 +11,8 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class CompanySubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var IntegrationHelper
-     */
-    private $integrationHelper;
-
-    /**
-     * @var CompanyExport
-     */
-    private $companyExport;
-
-    public function __construct(IntegrationHelper $integrationHelper, CompanyExport $companyExport)
+    public function __construct(private IntegrationHelper $integrationHelper, private CompanyExport $companyExport)
     {
-        $this->integrationHelper = $integrationHelper;
-        $this->companyExport     = $companyExport;
     }
 
     /**

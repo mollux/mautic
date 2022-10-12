@@ -7,30 +7,13 @@ use Mautic\EmailBundle\Swiftmailer\Message\MauticMessage;
 
 class MetadataProcessor
 {
-    /**
-     * @var array
-     */
-    private $metadata = [];
+    private array $metadata = [];
 
-    /**
-     * @var array
-     */
-    private $substitutionKeys = [];
+    private array $substitutionKeys = [];
 
-    /**
-     * @var array
-     */
-    private $substitutionMergeVars = [];
+    private array $substitutionMergeVars = [];
 
-    /**
-     * @var array
-     */
-    private $mauticTokens = [];
-
-    /**
-     * @var \Swift_Message
-     */
-    private $message;
+    private array $mauticTokens = [];
 
     /**
      * @var string
@@ -40,10 +23,8 @@ class MetadataProcessor
     /**
      * MetadataProcessor constructor.
      */
-    public function __construct(\Swift_Message $message)
+    public function __construct(private \Swift_Message $message)
     {
-        $this->message = $message;
-
         $metadata       = ($message instanceof MauticMessage) ? $message->getMetadata() : [];
         $this->metadata = $metadata;
 

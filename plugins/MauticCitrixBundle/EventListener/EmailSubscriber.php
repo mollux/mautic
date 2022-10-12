@@ -18,36 +18,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class EmailSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var CitrixModel
-     */
-    private $citrixModel;
-
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $dispatcher;
-
-    /**
-     * @var TemplatingHelper
-     */
-    private $templating;
-
-    public function __construct(
-        CitrixModel $citrixModel,
-        TranslatorInterface $translator,
-        EventDispatcherInterface $dispatcher,
-        TemplatingHelper $templating
-    ) {
-        $this->citrixModel = $citrixModel;
-        $this->translator  = $translator;
-        $this->dispatcher  = $dispatcher;
-        $this->templating  = $templating;
+    public function __construct(private CitrixModel $citrixModel, private TranslatorInterface $translator, private EventDispatcherInterface $dispatcher, private TemplatingHelper $templating)
+    {
     }
 
     /**

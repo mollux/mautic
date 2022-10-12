@@ -32,31 +32,6 @@ use Symfony\Contracts\EventDispatcher\Event;
 class ImportModel extends FormModel
 {
     /**
-     * @var PathsHelper
-     */
-    protected $pathsHelper;
-
-    /**
-     * @var LeadModel
-     */
-    protected $leadModel;
-
-    /**
-     * @var CompanyModel
-     */
-    protected $companyModel;
-
-    /**
-     * @var NotificationModel
-     */
-    protected $notificationModel;
-
-    /**
-     * @var CoreParametersHelper
-     */
-    protected $config;
-
-    /**
      * @var LeadEventLogRepository
      */
     protected $leadEventLogRepo;
@@ -65,18 +40,13 @@ class ImportModel extends FormModel
      * ImportModel constructor.
      */
     public function __construct(
-        PathsHelper $pathsHelper,
-        LeadModel $leadModel,
-        NotificationModel $notificationModel,
-        CoreParametersHelper $config,
-        CompanyModel $companyModel
+        protected PathsHelper $pathsHelper,
+        protected LeadModel $leadModel,
+        protected NotificationModel $notificationModel,
+        protected CoreParametersHelper $config,
+        protected CompanyModel $companyModel
     ) {
-        $this->pathsHelper       = $pathsHelper;
-        $this->leadModel         = $leadModel;
-        $this->notificationModel = $notificationModel;
-        $this->config            = $config;
         $this->leadEventLogRepo  = $leadModel->getEventLogRepository();
-        $this->companyModel      = $companyModel;
     }
 
     /**
@@ -419,9 +389,7 @@ class ImportModel extends FormModel
      * If it is less, generate empty values for the rest of the missing values.
      * If it is more, return true.
      *
-     * @param array &$data
      * @param int   $headerCount
-     *
      * @return bool
      */
     public function hasMoreValuesThanColumns(array &$data, $headerCount)
@@ -456,11 +424,10 @@ class ImportModel extends FormModel
     /**
      * Decide whether the CSV row is empty.
      *
-     * @param mixed $row
      *
      * @return bool
      */
-    public function isEmptyCsvRow($row)
+    public function isEmptyCsvRow(mixed $row)
     {
         if (!is_array($row) || empty($row)) {
             return true;
@@ -675,7 +642,6 @@ class ImportModel extends FormModel
      * Logs a debug message if in dev environment.
      *
      * @param string $msg
-     * @param Import $import
      */
     protected function logDebug($msg, Import $import = null)
     {

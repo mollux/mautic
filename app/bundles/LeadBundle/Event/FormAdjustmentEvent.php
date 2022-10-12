@@ -11,32 +11,11 @@ use Symfony\Contracts\EventDispatcher\Event;
 final class FormAdjustmentEvent extends Event
 {
     /**
-     * @var FormInterface<FormInterface>
-     */
-    private FormInterface $form;
-
-    private string $fieldAlias;
-
-    private string $fieldObject;
-
-    private string $operator;
-
-    /**
-     * @var mixed[]
-     */
-    private array $fieldDetails;
-
-    /**
      * @param FormInterface<FormInterface> $form
      * @param mixed[]                      $fieldDetails
      */
-    public function __construct(FormInterface $form, string $fieldAlias, string $fieldObject, string $operator, array $fieldDetails)
+    public function __construct(private FormInterface $form, private string $fieldAlias, private string $fieldObject, private string $operator, private array $fieldDetails)
     {
-        $this->form         = $form;
-        $this->fieldAlias   = $fieldAlias;
-        $this->fieldObject  = $fieldObject;
-        $this->operator     = $operator;
-        $this->fieldDetails = $fieldDetails;
     }
 
     /**
@@ -62,17 +41,11 @@ final class FormAdjustmentEvent extends Event
         return $this->operator;
     }
 
-    /**
-     * @param string ...$operators
-     */
     public function operatorIsOneOf(string ...$operators): bool
     {
         return in_array($this->getOperator(), $operators);
     }
 
-    /**
-     * @param string ...$fieldTypes
-     */
     public function fieldTypeIsOneOf(string ...$fieldTypes): bool
     {
         return in_array($this->getFieldType(), $fieldTypes);

@@ -12,72 +12,29 @@ use MauticPlugin\MauticCrmBundle\Integration\Salesforce\QueryBuilder;
 
 class Fetcher
 {
-    /**
-     * @var IntegrationEntityRepository
-     */
-    private $repo;
+    private array $leads = [];
 
-    /**
-     * @var Organizer
-     */
-    private $organizer;
+    private array $knownLeadIds = [];
 
-    /**
-     * @var string
-     */
-    private $campaignId;
+    private array $unknownLeadIds = [];
 
-    /**
-     * @var array
-     */
-    private $leads = [];
+    private array $contacts = [];
 
-    /**
-     * @var array
-     */
-    private $knownLeadIds = [];
+    private array $knownContactIds = [];
 
-    /**
-     * @var array
-     */
-    private $unknownLeadIds = [];
+    private array $unknownContactIds = [];
 
-    /**
-     * @var array
-     */
-    private $contacts = [];
+    private array $mauticIds = [];
 
-    /**
-     * @var array
-     */
-    private $knownContactIds = [];
-
-    /**
-     * @var array
-     */
-    private $unknownContactIds = [];
-
-    /**
-     * @var array
-     */
-    private $mauticIds = [];
-
-    /**
-     * @var array
-     */
-    private $knownCampaignMembers = [];
+    private array $knownCampaignMembers = [];
 
     /**
      * Fetcher constructor.
      *
      * @param string $campaignId
      */
-    public function __construct(IntegrationEntityRepository $repo, Organizer $organizer, $campaignId)
+    public function __construct(private IntegrationEntityRepository $repo, private Organizer $organizer, private $campaignId)
     {
-        $this->repo       = $repo;
-        $this->organizer  = $organizer;
-        $this->campaignId = $campaignId;
-
         $this->fetchLeads();
         $this->fetchContacts();
     }
@@ -94,14 +51,11 @@ class Fetcher
      */
     public function getQueryForUnknownObjects(array $fields, $object)
     {
-        switch ($object) {
-            case Lead::OBJECT:
-                return QueryBuilder::getLeadQuery($fields, $this->unknownLeadIds);
-            case Contact::OBJECT:
-                return QueryBuilder::getContactQuery($fields, $this->unknownContactIds);
-            default:
-                throw new InvalidObjectException();
-        }
+        return match ($object) {
+            Lead::OBJECT => QueryBuilder::getLeadQuery($fields, $this->unknownLeadIds),
+            Contact::OBJECT => QueryBuilder::getContactQuery($fields, $this->unknownContactIds),
+            default => throw new InvalidObjectException(),
+        };
     }
 
     /**
@@ -118,9 +72,7 @@ class Fetcher
         $this->fetchNewlyCreated();
 
         $mauticLeadIds = array_map(
-            function ($entity) {
-                return $entity['internal_entity_id'];
-            },
+            fn($entity) => $entity['internal_entity_id'],
             $this->knownCampaignMembers
         );
 

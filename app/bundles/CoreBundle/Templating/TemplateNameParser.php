@@ -43,7 +43,7 @@ class TemplateNameParser extends BaseTemplateNameParser
         // normalize name
         $name = str_replace(':/', ':', preg_replace('#/{2,}#', '/', strtr($name, '\\', '/')));
 
-        if (false !== strpos($name, '..')) {
+        if (str_contains($name, '..')) {
             throw new \RuntimeException(sprintf('Template name "%s" contains invalid characters.', $name));
         }
 

@@ -13,8 +13,6 @@ class ListChangeEvent extends Event
 {
     private $lead;
     private $leads;
-    private $list;
-    private $added;
 
     /**
      * ListChangeEvent constructor.
@@ -22,15 +20,13 @@ class ListChangeEvent extends Event
      * @param      $leads
      * @param bool $added
      */
-    public function __construct($leads, LeadList $list, $added = true)
+    public function __construct($leads, private LeadList $list, private $added = true)
     {
         if (is_array($leads)) {
             $this->leads = $leads;
         } else {
             $this->lead = $leads;
         }
-        $this->list  = $list;
-        $this->added = $added;
     }
 
     /**

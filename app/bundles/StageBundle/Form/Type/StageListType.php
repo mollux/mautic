@@ -13,7 +13,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class StageListType extends AbstractType
 {
-    private $choices = [];
+    private array $choices = [];
 
     public function __construct(StageModel $model)
     {

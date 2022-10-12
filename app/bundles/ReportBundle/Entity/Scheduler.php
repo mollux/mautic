@@ -11,20 +11,7 @@ use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
  */
 class Scheduler
 {
-    /**
-     * @var int
-     */
-    private $id;
-
-    /**
-     * @var Report
-     */
-    private $report;
-
-    /**
-     * @var \DateTimeInterface
-     */
-    private $scheduleDate;
+    private ?int $id = null;
 
     public static function loadMetadata(ORM\ClassMetadata $metadata)
     {
@@ -45,10 +32,8 @@ class Scheduler
             ->build();
     }
 
-    public function __construct(Report $report, \DateTimeInterface $scheduleDate)
+    public function __construct(private Report $report, private \DateTimeInterface $scheduleDate)
     {
-        $this->report       = $report;
-        $this->scheduleDate = $scheduleDate;
     }
 
     /**

@@ -10,32 +10,8 @@ use Mautic\UserBundle\Model\UserModel;
 
 class FieldsBuilder
 {
-    /**
-     * @var FieldModel
-     */
-    private $fieldModel;
-
-    /**
-     * @var ListModel
-     */
-    private $listModel;
-
-    /**
-     * @var UserModel
-     */
-    private $userModel;
-
-    /**
-     * @var LeadModel
-     */
-    private $leadModel;
-
-    public function __construct(FieldModel $fieldModel, ListModel $listModel, UserModel $userModel, LeadModel $leadModel)
+    public function __construct(private FieldModel $fieldModel, private ListModel $listModel, private UserModel $userModel, private LeadModel $leadModel)
     {
-        $this->fieldModel = $fieldModel;
-        $this->listModel  = $listModel;
-        $this->userModel  = $userModel;
-        $this->leadModel  = $leadModel;
     }
 
     /**
@@ -264,7 +240,7 @@ class FieldsBuilder
      */
     private function sanitizePrefix($prefix)
     {
-        if (false === strpos($prefix, '.')) {
+        if (!str_contains($prefix, '.')) {
             $prefix .= '.';
         }
 

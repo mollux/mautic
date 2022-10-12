@@ -13,42 +13,30 @@ use Mautic\LeadBundle\Entity\LeadDevice;
  */
 class StatDevice
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
     /**
      * @var array
      */
     private $stat;
 
-    /**
-     * @var \Mautic\LeadBundle\Entity\LeadDevice
-     */
-    private $device;
+    private ?\Mautic\LeadBundle\Entity\LeadDevice $device = null;
 
-    /**
-     * @var \Mautic\CoreBundle\Entity\IpAddress
-     */
-    private $ipAddress;
+    private ?\Mautic\CoreBundle\Entity\IpAddress $ipAddress = null;
 
-    /**
-     * @var \DateTime
-     */
-    private $dateOpened;
+    private ?\DateTime $dateOpened = null;
 
     public static function loadMetadata(ORM\ClassMetadata $metadata)
     {
         $builder = new ClassMetadataBuilder($metadata);
 
         $builder->setTable('email_stats_devices')
-            ->setCustomRepositoryClass('Mautic\EmailBundle\Entity\StatDeviceRepository')
+            ->setCustomRepositoryClass(\Mautic\EmailBundle\Entity\StatDeviceRepository::class)
             ->addIndex(['date_opened'], 'date_opened_search');
 
         $builder->addBigIntIdField();
 
-        $builder->createManyToOne('device', 'Mautic\LeadBundle\Entity\LeadDevice')
+        $builder->createManyToOne('device', \Mautic\LeadBundle\Entity\LeadDevice::class)
             ->addJoinColumn('device_id', 'id', true, false, 'CASCADE')
             ->build();
 
@@ -130,10 +118,7 @@ class StatDevice
         return $this->dateOpened;
     }
 
-    /**
-     * @param mixed $dateOpened
-     */
-    public function setDateOpened($dateOpened)
+    public function setDateOpened(mixed $dateOpened)
     {
         $this->dateOpened = $dateOpened;
     }

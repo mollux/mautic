@@ -153,7 +153,7 @@ class Mailbox
     protected $isGmail = false;
     protected $mailboxes;
 
-    private $folders = [];
+    private array $folders = [];
 
     /**
      * Mailbox constructor.
@@ -197,7 +197,7 @@ class Mailbox
         if (null !== $bundleKey) {
             try {
                 $this->switchMailbox($bundleKey, $folderKey);
-            } catch (MailboxException $e) {
+            } catch (MailboxException) {
                 return false;
             }
         }
@@ -328,7 +328,6 @@ class Mailbox
      *
      * @param int   $options
      * @param int   $retriesNum
-     * @param array $params
      */
     public function setConnectionArgs($options = 0, $retriesNum = 0, array $params = null)
     {
@@ -542,7 +541,7 @@ class Mailbox
             $mailIds = imap_search($this->getImapStream(), $criteria, SE_UID);
         }
 
-        return $mailIds ? $mailIds : [];
+        return $mailIds ?: [];
     }
 
     /**
@@ -915,10 +914,8 @@ class Mailbox
      * @param            $partStructure
      * @param            $partNum
      * @param bool|true  $markAsSeen
-     * @param bool|false $isDsn
-     * @param bool|false $isFbl
      */
-    protected function initMailPart(Message $mail, $partStructure, $partNum, $markAsSeen = true, $isDsn = false, $isFbl = false)
+    protected function initMailPart(Message $mail, $partStructure, $partNum, $markAsSeen = true, bool $isDsn = false, bool $isFbl = false)
     {
         $options = FT_UID;
         if (!$markAsSeen) {
@@ -947,7 +944,7 @@ class Mailbox
         // attachments
         $attachmentId = $partStructure->ifid
             ? trim($partStructure->id, ' <>')
-            : (isset($params['filename']) || isset($params['name']) ? mt_rand().mt_rand() : null);
+            : (isset($params['filename']) || isset($params['name']) ? random_int(0, mt_getrandmax()).random_int(0, mt_getrandmax()) : null);
 
         if ($attachmentId) {
             if (isset($this->settings['use_attachments']) && $this->settings['use_attachments']) {
@@ -989,14 +986,10 @@ class Mailbox
                     : '';
                 switch ($partStructure->type) {
                     case TYPETEXT:
-                        switch ($subtype) {
-                            case 'plain':
-                                $mail->textPlain .= $data;
-                                break;
-                            case 'html':
-                            default:
-                                $mail->textHtml .= $data;
-                        }
+                        match ($subtype) {
+                            'plain' => $mail->textPlain .= $data,
+                            default => $mail->textHtml .= $data,
+                        };
                         break;
                     case TYPEMULTIPART:
                         if (
@@ -1082,7 +1075,7 @@ class Mailbox
     {
         $newString = '';
         $elements  = imap_mime_header_decode($string);
-        for ($i = 0; $i < count($elements); ++$i) {
+        for ($i = 0; $i < (is_countable($elements) ? count($elements) : 0); ++$i) {
             if ('default' == $elements[$i]->charset) {
                 $elements[$i]->charset = 'iso-8859-1';
             }

@@ -12,38 +12,17 @@ use Mautic\LeadBundle\Entity\Lead;
 abstract class AbstractLogCollectionEvent extends \Symfony\Contracts\EventDispatcher\Event
 {
     /**
-     * @var AbstractEventAccessor
-     */
-    protected $config;
-
-    /**
-     * @var Event
-     */
-    protected $event;
-
-    /**
-     * @var ArrayCollection
-     */
-    protected $logs;
-
-    /**
      * @var ArrayCollection|Lead[]
      */
-    private $contacts;
+    private \Doctrine\Common\Collections\ArrayCollection|array $contacts;
 
-    /**
-     * @var array
-     */
-    private $logContactXref = [];
+    private array $logContactXref = [];
 
     /**
      * PendingEvent constructor.
      */
-    public function __construct(AbstractEventAccessor $config, Event $event, ArrayCollection $logs)
+    public function __construct(protected AbstractEventAccessor $config, protected Event $event, protected ArrayCollection $logs)
     {
-        $this->config   = $config;
-        $this->event    = $event;
-        $this->logs     = $logs;
         $this->contacts = new ArrayCollection();
 
         $this->extractContacts();
@@ -70,7 +49,7 @@ abstract class AbstractLogCollectionEvent extends \Symfony\Contracts\EventDispat
      *
      * @return Lead[]|ArrayCollection
      */
-    public function getContacts()
+    public function getContacts(): array|\Doctrine\Common\Collections\ArrayCollection
     {
         return $this->contacts;
     }

@@ -14,20 +14,12 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class GenerateProductionAssetsCommand extends Command
 {
-    private AssetGenerationHelper $assetGenerationHelper;
-    private PathsHelper $pathsHelper;
-    private TranslatorInterface $translator;
-
     public function __construct(
-        AssetGenerationHelper $assetGenerationHelper,
-        PathsHelper $pathsHelper,
-        TranslatorInterface $translator
+        private AssetGenerationHelper $assetGenerationHelper,
+        private PathsHelper $pathsHelper,
+        private TranslatorInterface $translator
     ) {
         parent::__construct();
-
-        $this->assetGenerationHelper = $assetGenerationHelper;
-        $this->pathsHelper           = $pathsHelper;
-        $this->translator            = $translator;
     }
 
     protected function configure()

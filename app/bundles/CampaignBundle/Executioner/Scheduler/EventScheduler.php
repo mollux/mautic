@@ -23,59 +23,10 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 class EventScheduler
 {
     /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
-     * @var EventLogger
-     */
-    private $eventLogger;
-
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $dispatcher;
-
-    /**
-     * @var Interval
-     */
-    private $intervalScheduler;
-
-    /**
-     * @var DateTime
-     */
-    private $dateTimeScheduler;
-
-    /**
-     * @var EventCollector
-     */
-    private $collector;
-
-    /**
-     * @var CoreParametersHelper
-     */
-    private $coreParametersHelper;
-
-    /**
      * EventScheduler constructor.
      */
-    public function __construct(
-        LoggerInterface $logger,
-        EventLogger $eventLogger,
-        Interval $intervalScheduler,
-        DateTime $dateTimeScheduler,
-        EventCollector $collector,
-        EventDispatcherInterface $dispatcher,
-        CoreParametersHelper $coreParametersHelper
-    ) {
-        $this->logger               = $logger;
-        $this->dispatcher           = $dispatcher;
-        $this->eventLogger          = $eventLogger;
-        $this->intervalScheduler    = $intervalScheduler;
-        $this->dateTimeScheduler    = $dateTimeScheduler;
-        $this->collector            = $collector;
-        $this->coreParametersHelper = $coreParametersHelper;
+    public function __construct(private LoggerInterface $logger, private EventLogger $eventLogger, private Interval $intervalScheduler, private DateTime $dateTimeScheduler, private EventCollector $collector, private EventDispatcherInterface $dispatcher, private CoreParametersHelper $coreParametersHelper)
+    {
     }
 
     public function scheduleForContact(Event $event, \DateTime $executionDate, Lead $contact)
@@ -130,7 +81,7 @@ class EventScheduler
     /**
      * @param ArrayCollection|LeadEventLog[] $logs
      */
-    public function rescheduleLogs(ArrayCollection $logs, \DateTime $toBeExecutedOn)
+    public function rescheduleLogs(\Doctrine\Common\Collections\ArrayCollection|array $logs, \DateTime $toBeExecutedOn)
     {
         foreach ($logs as $log) {
             $log->setTriggerDate($toBeExecutedOn);
@@ -151,7 +102,7 @@ class EventScheduler
     {
         try {
             $this->reschedule($log, $this->getRescheduleDate($log));
-        } catch (IntervalNotConfiguredException $e) {
+        } catch (IntervalNotConfiguredException) {
             // Do not reschedule if an interval was not configured.
         }
     }
@@ -165,7 +116,7 @@ class EventScheduler
         foreach ($logs as $log) {
             try {
                 $this->reschedule($log, $this->getRescheduleDate($log));
-            } catch (IntervalNotConfiguredException $e) {
+            } catch (IntervalNotConfiguredException) {
                 // Do not reschedule if an interval was not configured.
             }
         }
@@ -248,7 +199,7 @@ class EventScheduler
      *
      * @throws NotSchedulableException
      */
-    public function getSortedExecutionDates(ArrayCollection $events, \DateTime $lastActiveDate)
+    public function getSortedExecutionDates(\Doctrine\Common\Collections\ArrayCollection|array $events, \DateTime $lastActiveDate)
     {
         $eventExecutionDates = [];
 
@@ -259,13 +210,7 @@ class EventScheduler
 
         uasort(
             $eventExecutionDates,
-            function (\DateTime $a, \DateTime $b) {
-                if ($a === $b) {
-                    return 0;
-                }
-
-                return $a < $b ? -1 : 1;
-            }
+            fn(\DateTime $a, \DateTime $b) => $a <=> $b
         );
 
         return $eventExecutionDates;
@@ -423,7 +368,7 @@ class EventScheduler
 
         try {
             return $rescheduleDate->add(new \DateInterval($defaultIntervalString));
-        } catch (\Exception $exception) {
+        } catch (\Exception) {
             // Bad interval
             throw new IntervalNotConfiguredException("'{$defaultIntervalString}' is not valid interval string for campaign_time_wait_on_event_false config key.");
         }

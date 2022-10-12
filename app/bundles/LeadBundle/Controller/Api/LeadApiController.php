@@ -237,7 +237,7 @@ class LeadApiController extends CommonApiController
 
             $view = $this->view(
                 [
-                    'total' => count($lists),
+                    'total' => is_countable($lists) ? count($lists) : 0,
                     'lists' => $lists,
                 ],
                 Response::HTTP_OK
@@ -272,7 +272,7 @@ class LeadApiController extends CommonApiController
 
         $view = $this->view(
             [
-                'total'     => count($companies),
+                'total'     => is_countable($companies) ? count($companies) : 0,
                 'companies' => $companies,
             ],
             Response::HTTP_OK
@@ -316,7 +316,7 @@ class LeadApiController extends CommonApiController
 
             $view = $this->view(
                 [
-                    'total'     => count($campaigns),
+                    'total'     => is_countable($campaigns) ? count($campaigns) : 0,
                     'campaigns' => $campaigns,
                 ],
                 Response::HTTP_OK
@@ -468,7 +468,7 @@ class LeadApiController extends CommonApiController
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    protected function applyUtmTagsAction($id, $method, $data)
+    protected function applyUtmTagsAction($id, $method, array|int $data)
     {
         $entity = $this->model->getEntity((int) $id);
 
@@ -546,7 +546,7 @@ class LeadApiController extends CommonApiController
             unset($parameters['tags']);
         }
 
-        if (count($entity->getTags()) > 0) {
+        if ((is_countable($entity->getTags()) ? count($entity->getTags()) : 0) > 0) {
             foreach ($entity->getTags() as $tag) {
                 $parameters['tags'][] = $tag->getId();
             }
@@ -575,7 +575,7 @@ class LeadApiController extends CommonApiController
             if ($entity->getId() && $existingEntity->getId()) {
                 try {
                     $entity = $contactMerger->merge($entity, $existingEntity);
-                } catch (SameContactException $exception) {
+                } catch (SameContactException) {
                 }
             } elseif ($existingEntity->getId()) {
                 $entity = $existingEntity;
@@ -695,7 +695,6 @@ class LeadApiController extends CommonApiController
     /**
      * Helper method to be used in FrequencyRuleTrait.
      *
-     * @param array $data
      *
      * @return bool
      */

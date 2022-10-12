@@ -42,7 +42,7 @@ class FormController extends AbstractStandardFormController
     ) {
         $this->deprecatedModelName      = $modelName;
         $this->deprecatedPermissionBase = $permissionBase;
-        if (0 !== strpos($sessionBase, 'mautic.')) {
+        if (!str_starts_with($sessionBase, 'mautic.')) {
             $sessionBase = 'mautic.'.$sessionBase;
         }
         $this->deprecatedSessionBase     = $sessionBase;
@@ -107,7 +107,7 @@ class FormController extends AbstractStandardFormController
      */
     protected function getSessionBase($objectId = null)
     {
-        return null !== $this->deprecatedSessionBase ? $this->deprecatedSessionBase : parent::getSessionBase($objectId);
+        return $this->deprecatedSessionBase ?? parent::getSessionBase($objectId);
     }
 
     /**

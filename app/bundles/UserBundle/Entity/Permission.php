@@ -40,7 +40,7 @@ class Permission
         $builder = new ClassMetadataBuilder($metadata);
 
         $builder->setTable('permissions')
-            ->setCustomRepositoryClass('Mautic\UserBundle\Entity\PermissionRepository')
+            ->setCustomRepositoryClass(\Mautic\UserBundle\Entity\PermissionRepository::class)
             ->addUniqueConstraint(['bundle', 'name', 'role_id'], 'unique_perm');
 
         $builder->addId();
@@ -122,7 +122,6 @@ class Permission
     /**
      * Set role.
      *
-     * @param Role $role
      *
      * @return Permission
      */

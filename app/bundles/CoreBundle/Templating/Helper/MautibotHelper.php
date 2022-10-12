@@ -32,18 +32,12 @@ class MautibotHelper extends Helper
      */
     public static function get($image)
     {
-        switch ($image) {
-            case self::OPEN_MOUTH:
-                return self::OPEN_MOUTH_SVG;
-
-            case self::SMILE:
-                return self::SMILE_SVG;
-
-            case self::WAVE:
-                return self::WAVE_SVG;
-        }
-
-        return '';
+        return match ($image) {
+            self::OPEN_MOUTH => self::OPEN_MOUTH_SVG,
+            self::SMILE => self::SMILE_SVG,
+            self::WAVE => self::WAVE_SVG,
+            default => '',
+        };
     }
 
     /**

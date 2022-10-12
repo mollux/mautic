@@ -37,7 +37,7 @@ class PublicController extends FormController
             return new Response('ERROR');
         }
 
-        $result           = json_decode($this->request->request->get('result', []), true);
+        $result           = json_decode($this->request->request->get('result', []), true, 512, JSON_THROW_ON_ERROR);
         $oid              = $this->request->request->get('webhookId', '');
         $validatedRequest = $this->get('mautic.plugin.fullcontact.lookup_helper')->validateRequest($oid);
 
@@ -70,7 +70,7 @@ class PublicController extends FormController
                     }
                 }
 
-                if (0 === count($org) && 0 !== count($result['organizations'])) {
+                if (0 === count($org) && 0 !== (is_countable($result['organizations']) ? count($result['organizations']) : 0)) {
                     // primary not found, use the first one if exists
                     $org = $result['organizations'][0];
                 }
@@ -121,9 +121,9 @@ class PublicController extends FormController
                 }
 
                 if ((array_key_exists('websites', $result['contactInfo'])
-                        && count(
+                        && (is_countable($result['contactInfo']['websites']) ? count(
                             $result['contactInfo']['websites']
-                        ))
+                        ) : 0))
                     && empty($currFields['website']['value'])
                 ) {
                     $data['website'] = $result['contactInfo']['websites'][0]['url'];
@@ -254,23 +254,23 @@ class PublicController extends FormController
                 $org = $result['organization'];
                 if (array_key_exists('contactInfo', $result['organization'])) {
                     if (array_key_exists('addresses', $result['organization']['contactInfo'])
-                        && count(
+                        && (is_countable($result['organization']['contactInfo']['addresses']) ? count(
                             $result['organization']['contactInfo']['addresses']
-                        )
+                        ) : 0)
                     ) {
                         $loc = $result['organization']['contactInfo']['addresses'][0];
                     }
                     if (array_key_exists('emailAddresses', $result['organization']['contactInfo'])
-                        && count(
+                        && (is_countable($result['organization']['contactInfo']['emailAddresses']) ? count(
                             $result['organization']['contactInfo']['emailAddresses']
-                        )
+                        ) : 0)
                     ) {
                         $email = $result['organization']['contactInfo']['emailAddresses'][0];
                     }
                     if (array_key_exists('phoneNumbers', $result['organization']['contactInfo'])
-                        && count(
+                        && (is_countable($result['organization']['contactInfo']['phoneNumbers']) ? count(
                             $result['organization']['contactInfo']['phoneNumbers']
-                        )
+                        ) : 0)
                     ) {
                         $phone = $result['organization']['contactInfo']['phoneNumbers'][0];
                         foreach ($result['organization']['contactInfo']['phoneNumbers'] as $phoneNumber) {

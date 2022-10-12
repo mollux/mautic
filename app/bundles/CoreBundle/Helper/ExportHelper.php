@@ -21,12 +21,8 @@ class ExportHelper
     public const EXPORT_TYPE_EXCEL = 'xlsx';
     public const EXPORT_TYPE_CSV   = 'csv';
 
-    /** @var TranslatorInterface */
-    private $translator;
-
-    public function __construct(TranslatorInterface $translator)
+    public function __construct(private TranslatorInterface $translator)
     {
-        $this->translator = $translator;
     }
 
     /**
@@ -42,10 +38,8 @@ class ExportHelper
 
     /**
      * Exports data as the given export type. You can get available export types with getSupportedExportTypes().
-     *
-     * @param array|\Iterator $data
      */
-    public function exportDataAs($data, string $type, string $filename): StreamedResponse
+    public function exportDataAs(array|\Iterator $data, string $type, string $filename): StreamedResponse
     {
         if (is_array($data)) {
             $data = new ArrayIterator($data);
@@ -55,16 +49,11 @@ class ExportHelper
             throw new \Exception('No or invalid data given');
         }
 
-        switch ($type) {
-            case self::EXPORT_TYPE_CSV:
-                return $this->exportAsCsv($data, $filename);
-
-            case self::EXPORT_TYPE_EXCEL:
-                return $this->exportAsExcel($data, $filename);
-
-            default:
-                throw new \InvalidArgumentException($this->translator->trans('mautic.error.invalid.export.type', ['%type%' => $type]));
-        }
+        return match ($type) {
+            self::EXPORT_TYPE_CSV => $this->exportAsCsv($data, $filename),
+            self::EXPORT_TYPE_EXCEL => $this->exportAsExcel($data, $filename),
+            default => throw new \InvalidArgumentException($this->translator->trans('mautic.error.invalid.export.type', ['%type%' => $type])),
+        };
     }
 
     private function getSpreadsheetGeneric(Iterator $data, string $filename): Spreadsheet

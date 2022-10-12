@@ -19,49 +19,19 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 class LookupHelper
 {
     /**
-     * @var UserHelper
-     */
-    protected $userHelper;
-
-    /**
      * @var bool|FullContactIntegration
      */
     protected $integration;
 
-    /**
-     * @var Logger
-     */
-    protected $logger;
-
-    /**
-     * @var Router
-     */
-    protected $router;
-
-    /**
-     * @var LeadModel
-     */
-    protected $leadModel;
-
-    /**
-     * @var CompanyModel
-     */
-    protected $companyModel;
-
     public function __construct(
         IntegrationHelper $integrationHelper,
-        UserHelper $userHelper,
-        Logger $logger,
-        Router $router,
-        LeadModel $leadModel,
-        CompanyModel $companyModel
+        protected UserHelper $userHelper,
+        protected Logger $logger,
+        protected Router $router,
+        protected LeadModel $leadModel,
+        protected CompanyModel $companyModel
     ) {
         $this->integration  = $integrationHelper->getIntegrationObject('FullContact');
-        $this->userHelper   = $userHelper;
-        $this->logger       = $logger;
-        $this->router       = $router;
-        $this->leadModel    = $leadModel;
-        $this->companyModel = $companyModel;
     }
 
     /**
@@ -78,7 +48,7 @@ class LookupHelper
         if ($fullcontact = $this->getFullContact()) {
             if (!$checkAuto || ($checkAuto && $this->integration->shouldAutoUpdate())) {
                 try {
-                    list($cacheId, $webhookId, $cache) = $this->getCache($lead, $notify);
+                    [$cacheId, $webhookId, $cache] = $this->getCache($lead, $notify);
 
                     if (!array_key_exists($cacheId, $cache['fullcontact'])) {
                         $fullcontact->setWebhookUrl(
@@ -125,7 +95,7 @@ class LookupHelper
             if (!$checkAuto || ($checkAuto && $this->integration->shouldAutoUpdate())) {
                 try {
                     $parse                             = parse_url($website);
-                    list($cacheId, $webhookId, $cache) = $this->getCache($company, $notify);
+                    [$cacheId, $webhookId, $cache] = $this->getCache($company, $notify);
 
                     if (isset($parse['host']) && !array_key_exists($cacheId, $cache['fullcontact'])) {
                         $fullcontact->setWebhookUrl(
@@ -162,9 +132,9 @@ class LookupHelper
     public function validateRequest($oid)
     {
         // prefix#entityId#hour#userId#nonce
-        list($w, $id, $hour, $uid, $nonce) = explode('#', $oid, 5);
-        $notify                            = (false !== strpos($w, '_notify') && $uid) ? $uid : false;
-        $type                              = (0 === strpos($w, 'fullcontactcomp')) ? 'company' : 'person';
+        [$w, $id, $hour, $uid, $nonce] = explode('#', $oid, 5);
+        $notify                            = (str_contains($w, '_notify') && $uid) ? $uid : false;
+        $type                              = (str_starts_with($w, 'fullcontactcomp')) ? 'company' : 'person';
 
         switch ($type) {
             case 'person':
@@ -195,10 +165,8 @@ class LookupHelper
 
     /**
      * @param bool $person
-     *
-     * @return bool|FullContact_Company|FullContact_Person
      */
-    protected function getFullContact($person = true)
+    protected function getFullContact($person = true): bool|\MauticPlugin\MauticFullContactBundle\Services\FullContact_Company|\MauticPlugin\MauticFullContactBundle\Services\FullContact_Person
     {
         if (!$this->integration || !$this->integration->getIntegrationSettings()->getIsPublished()) {
             return false;

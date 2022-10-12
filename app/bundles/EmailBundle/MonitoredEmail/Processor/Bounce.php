@@ -20,39 +20,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class Bounce implements ProcessorInterface
 {
     /**
-     * @var \Swift_Transport
-     */
-    protected $transport;
-
-    /**
-     * @var ContactFinder
-     */
-    protected $contactFinder;
-
-    /**
-     * @var StatRepository
-     */
-    protected $statRepository;
-
-    /**
-     * @var LeadModel
-     */
-    protected $leadModel;
-
-    /**
-     * @var TranslatorInterface
-     */
-    protected $translator;
-
-    /**
      * @var string
      */
     protected $bouncerAddress;
-
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
 
     /**
      * @var Message
@@ -60,29 +30,10 @@ class Bounce implements ProcessorInterface
     protected $message;
 
     /**
-     * @var DoNotContact
-     */
-    protected $doNotContact;
-
-    /**
      * Bounce constructor.
      */
-    public function __construct(
-        \Swift_Transport $transport,
-        ContactFinder $contactFinder,
-        StatRepository $statRepository,
-        LeadModel $leadModel,
-        TranslatorInterface $translator,
-        LoggerInterface $logger,
-        DoNotContact $doNotContact
-    ) {
-        $this->transport      = $transport;
-        $this->contactFinder  = $contactFinder;
-        $this->statRepository = $statRepository;
-        $this->leadModel      = $leadModel;
-        $this->translator     = $translator;
-        $this->logger         = $logger;
-        $this->doNotContact   = $doNotContact;
+    public function __construct(protected \Swift_Transport $transport, protected ContactFinder $contactFinder, protected StatRepository $statRepository, protected LeadModel $leadModel, protected TranslatorInterface $translator, protected LoggerInterface $logger, protected DoNotContact $doNotContact)
+    {
     }
 
     /**
@@ -99,7 +50,7 @@ class Bounce implements ProcessorInterface
         if ($this->transport instanceof BounceProcessorInterface) {
             try {
                 $bounce = $this->transport->processBounce($this->message);
-            } catch (BounceNotFound $exception) {
+            } catch (BounceNotFound) {
                 // Attempt to parse a bounce the standard way
             }
         }
@@ -107,7 +58,7 @@ class Bounce implements ProcessorInterface
         if (!$bounce) {
             try {
                 $bounce = (new Parser($this->message))->parse();
-            } catch (BounceNotFound $exception) {
+            } catch (BounceNotFound) {
                 return false;
             }
         }

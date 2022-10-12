@@ -8,7 +8,7 @@ use Mautic\CoreBundle\Helper\CoreParametersHelper;
 
 class MaxMindDoNotSellList implements DoNotSellListInterface
 {
-    private $position = 0;
+    private int $position = 0;
 
     private $list = [];
 
@@ -33,7 +33,7 @@ class MaxMindDoNotSellList implements DoNotSellListInterface
 
         $json = file_get_contents($listPath);
 
-        if ($data = json_decode($json, true)) {
+        if ($data = json_decode($json, true, 512, JSON_THROW_ON_ERROR)) {
             $this->list = $data['exclusions'];
 
             return true;

@@ -18,7 +18,7 @@ $container->loadFromExtension(
         ],
         'producers' => [
             'mautic' => [
-                'class'            => 'Mautic\QueueBundle\Helper\RabbitMqProducer',
+                'class'            => \Mautic\QueueBundle\Helper\RabbitMqProducer::class,
                 'connection'       => 'default',
                 'exchange_options' => [
                     'name'    => 'mautic',

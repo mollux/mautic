@@ -11,10 +11,7 @@ class ResponseItem
      */
     private $email;
 
-    /**
-     * @var string
-     */
-    private $reason;
+    private ?string $reason;
 
     /**
      * @var int

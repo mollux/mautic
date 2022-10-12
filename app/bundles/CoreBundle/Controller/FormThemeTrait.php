@@ -13,11 +13,10 @@ trait FormThemeTrait
      *
      * @param FormInterface<FormInterface> $form
      * @param string                       $template
-     * @param mixed                        $themes
      *
      * @return \Symfony\Component\Form\FormView
      */
-    protected function setFormTheme(FormInterface $form, $template, $themes = null)
+    protected function setFormTheme(FormInterface $form, $template, mixed $themes = null)
     {
         $formView = $form->createView();
 

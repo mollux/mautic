@@ -25,7 +25,7 @@ return [
                 'standard_entity' => true,
                 'name'            => 'emails',
                 'path'            => '/emails',
-                'controller'      => 'Mautic\EmailBundle\Controller\Api\EmailApiController',
+                'controller'      => \Mautic\EmailBundle\Controller\Api\EmailApiController::class,
             ],
             'mautic_api_sendemail' => [
                 'path'       => '/emails/{id}/send',
@@ -423,7 +423,7 @@ return [
                 ],
             ],
             'mautic.transport.mandrill' => [
-                'class'        => 'Mautic\EmailBundle\Swiftmailer\Transport\MandrillTransport',
+                'class'        => \Mautic\EmailBundle\Swiftmailer\Transport\MandrillTransport::class,
                 'serviceAlias' => 'swiftmailer.mailer.transport.%s',
                 'arguments'    => [
                     'translator',
@@ -435,7 +435,7 @@ return [
                 ],
             ],
             'mautic.transport.mailjet' => [
-                'class'        => 'Mautic\EmailBundle\Swiftmailer\Transport\MailjetTransport',
+                'class'        => \Mautic\EmailBundle\Swiftmailer\Transport\MailjetTransport::class,
                 'serviceAlias' => 'swiftmailer.mailer.transport.%s',
                 'arguments'    => [
                     'mautic.email.model.transport_callback',
@@ -583,7 +583,7 @@ return [
                 ],
             ],
             'mautic.transport.elasticemail' => [
-                'class'        => 'Mautic\EmailBundle\Swiftmailer\Transport\ElasticemailTransport',
+                'class'        => \Mautic\EmailBundle\Swiftmailer\Transport\ElasticemailTransport::class,
                 'arguments'    => [
                     'translator',
                     'monolog.logger.mautic',
@@ -609,7 +609,7 @@ return [
                 ],
             ],
             'mautic.transport.postmark' => [
-                'class'        => 'Mautic\EmailBundle\Swiftmailer\Transport\PostmarkTransport',
+                'class'        => \Mautic\EmailBundle\Swiftmailer\Transport\PostmarkTransport::class,
                 'serviceAlias' => 'swiftmailer.mailer.transport.%s',
                 'methodCalls'  => [
                     'setUsername' => ['%mautic.mailer_user%'],
@@ -617,7 +617,7 @@ return [
                 ],
             ],
             'mautic.transport.sparkpost' => [
-                'class'        => 'Mautic\EmailBundle\Swiftmailer\Transport\SparkpostTransport',
+                'class'        => \Mautic\EmailBundle\Swiftmailer\Transport\SparkpostTransport::class,
                 'serviceAlias' => 'swiftmailer.mailer.transport.%s',
                 'arguments'    => [
                     '%mautic.mailer_api_key%',
@@ -646,7 +646,7 @@ return [
                 'factory'   => ['@mautic.guzzle.client.factory', 'create'],
             ],
             'mautic.helper.mailbox' => [
-                'class'     => 'Mautic\EmailBundle\MonitoredEmail\Mailbox',
+                'class'     => \Mautic\EmailBundle\MonitoredEmail\Mailbox::class,
                 'arguments' => [
                     'mautic.helper.core_parameters',
                     'mautic.helper.paths',

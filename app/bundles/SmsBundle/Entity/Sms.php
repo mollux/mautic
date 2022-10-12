@@ -19,30 +19,18 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
  */
 class Sms extends FormEntity
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var string
-     */
-    private $name;
+    private ?string $name = null;
 
-    /**
-     * @var string
-     */
-    private $description;
+    private ?string $description = null;
 
     /**
      * @var string
      */
     private $language = 'en';
 
-    /**
-     * @var string
-     */
-    private $message;
+    private ?string $message = null;
 
     /**
      * @var \DateTime
@@ -54,35 +42,20 @@ class Sms extends FormEntity
      */
     private $publishDown;
 
-    /**
-     * @var int
-     */
-    private $sentCount = 0;
+    private int $sentCount = 0;
 
     /**
      * @var \Mautic\CategoryBundle\Entity\Category
      **/
     private $category;
 
-    /**
-     * @var ArrayCollection
-     */
-    private $lists;
+    private \Doctrine\Common\Collections\ArrayCollection $lists;
 
-    /**
-     * @var ArrayCollection
-     */
-    private $stats;
+    private \Doctrine\Common\Collections\ArrayCollection $stats;
 
-    /**
-     * @var string
-     */
-    private $smsType = 'template';
+    private string $smsType = 'template';
 
-    /**
-     * @var int
-     */
-    private $pendingCount = 0;
+    private int $pendingCount = 0;
 
     public function __clone()
     {
@@ -112,7 +85,7 @@ class Sms extends FormEntity
         $builder = new ClassMetadataBuilder($metadata);
 
         $builder->setTable('sms_messages')
-            ->setCustomRepositoryClass('Mautic\SmsBundle\Entity\SmsRepository');
+            ->setCustomRepositoryClass(\Mautic\SmsBundle\Entity\SmsRepository::class);
 
         $builder->addIdColumns();
 
@@ -136,7 +109,7 @@ class Sms extends FormEntity
 
         $builder->addCategory();
 
-        $builder->createManyToMany('lists', 'Mautic\LeadBundle\Entity\LeadList')
+        $builder->createManyToMany('lists', \Mautic\LeadBundle\Entity\LeadList::class)
             ->setJoinTable('sms_message_list_xref')
             ->setIndexBy('id')
             ->addInverseJoinColumn('leadlist_id', 'id', false, false, 'CASCADE')

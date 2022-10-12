@@ -18,108 +18,52 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
  */
 class Form extends FormEntity
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var string
-     */
-    private $name;
+    private ?string $name = null;
 
-    /**
-     * @var string
-     */
-    private $formAttributes;
+    private ?string $formAttributes = null;
 
-    /**
-     * @var string
-     */
-    private $description;
+    private ?string $description = null;
 
-    /**
-     * @var string
-     */
-    private $alias;
+    private ?string $alias = null;
 
-    /**
-     * @var \Mautic\CategoryBundle\Entity\Category
-     **/
-    private $category;
+    private ?\Mautic\CategoryBundle\Entity\Category $category = null;
 
-    /**
-     * @var string
-     */
-    private $cachedHtml;
+    private ?string $cachedHtml = null;
 
-    /**
-     * @var string
-     */
-    private $postAction = 'return';
+    private string $postAction = 'return';
 
-    /**
-     * @var string
-     */
-    private $postActionProperty;
+    private ?string $postActionProperty = null;
 
-    /**
-     * @var \DateTime
-     */
-    private $publishUp;
+    private ?\DateTime $publishUp = null;
 
-    /**
-     * @var \DateTime
-     */
-    private $publishDown;
+    private ?\DateTime $publishDown = null;
 
-    /**
-     * @var ArrayCollection
-     */
-    private $fields;
+    private \Doctrine\Common\Collections\ArrayCollection $fields;
 
-    /**
-     * @var ArrayCollection
-     */
-    private $actions;
+    private \Doctrine\Common\Collections\ArrayCollection $actions;
 
-    /**
-     * @var string
-     */
-    private $template;
+    private ?string $template = null;
 
-    /**
-     * @var bool
-     */
-    private $inKioskMode = false;
+    private bool $inKioskMode = false;
 
-    /**
-     * @var bool
-     */
-    private $renderStyle = false;
+    private bool $renderStyle = false;
 
     /**
      * @ORM\OneToMany(targetEntity="Submission", mappedBy="form", fetch="EXTRA_LAZY")
      * @ORM\OrderBy({"dateSubmitted" = "DESC"})
-     *
-     * @var ArrayCollection
      */
-    private $submissions;
+    private \Doctrine\Common\Collections\ArrayCollection $submissions;
 
     /**
      * @var int
      */
     public $submissionCount;
 
-    /**
-     * @var string
-     */
-    private $formType;
+    private ?string $formType = null;
 
-    /**
-     * @var bool
-     */
-    private $noIndex;
+    private ?bool $noIndex = null;
 
     /**
      * @var int
@@ -128,10 +72,8 @@ class Form extends FormEntity
 
     /**
      * This var is used to cache the result once gained from the loop.
-     *
-     * @var bool
      */
-    private $usesProgressiveProfiling;
+    private ?bool $usesProgressiveProfiling = null;
 
     public function __clone()
     {
@@ -155,7 +97,7 @@ class Form extends FormEntity
         $builder = new ClassMetadataBuilder($metadata);
 
         $builder->setTable('forms')
-            ->setCustomRepositoryClass('Mautic\FormBundle\Entity\FormRepository');
+            ->setCustomRepositoryClass(\Mautic\FormBundle\Entity\FormRepository::class);
 
         $builder->addIdColumns();
 
@@ -577,7 +519,7 @@ class Form extends FormEntity
      *
      * @return \Doctrine\Common\Collections\Collection|Field[]
      */
-    public function getFields()
+    public function getFields(): \Doctrine\Common\Collections\Collection|array
     {
         return $this->fields;
     }
@@ -651,7 +593,7 @@ class Form extends FormEntity
      *
      * @return \Doctrine\Common\Collections\Collection|Submission[]
      */
-    public function getSubmissions()
+    public function getSubmissions(): \Doctrine\Common\Collections\Collection|array
     {
         return $this->submissions;
     }
@@ -694,7 +636,7 @@ class Form extends FormEntity
      *
      * @return \Doctrine\Common\Collections\Collection|Action[]
      */
-    public function getActions()
+    public function getActions(): \Doctrine\Common\Collections\Collection|array
     {
         return $this->actions;
     }
@@ -707,10 +649,7 @@ class Form extends FormEntity
         return $this->category;
     }
 
-    /**
-     * @param mixed $category
-     */
-    public function setCategory($category)
+    public function setCategory(mixed $category)
     {
         $this->category = $category;
     }
@@ -723,10 +662,7 @@ class Form extends FormEntity
         return $this->template;
     }
 
-    /**
-     * @param mixed $template
-     */
-    public function setTemplate($template)
+    public function setTemplate(mixed $template)
     {
         $this->template = $template;
     }
@@ -739,18 +675,12 @@ class Form extends FormEntity
         return $this->inKioskMode;
     }
 
-    /**
-     * @param mixed $inKioskMode
-     */
-    public function setInKioskMode($inKioskMode)
+    public function setInKioskMode(mixed $inKioskMode)
     {
         $this->inKioskMode = $inKioskMode;
     }
 
-    /**
-     * @param mixed $renderStyle
-     */
-    public function setRenderStyle($renderStyle)
+    public function setRenderStyle(mixed $renderStyle)
     {
         $this->renderStyle = $renderStyle;
     }
@@ -772,11 +702,9 @@ class Form extends FormEntity
     }
 
     /**
-     * @param mixed $formType
-     *
      * @return Form
      */
-    public function setFormType($formType)
+    public function setFormType(mixed $formType)
     {
         $this->formType = $formType;
 
@@ -859,7 +787,7 @@ class Form extends FormEntity
 
         // Progressive profiling must be turned off in the kiosk mode
         if (false === $this->getInKioskMode()) {
-            if ('' != $this->getProgressiveProfilingLimit()) {
+            if (0 != $this->getProgressiveProfilingLimit()) {
                 $this->usesProgressiveProfiling = true;
 
                 return $this->usesProgressiveProfiling;

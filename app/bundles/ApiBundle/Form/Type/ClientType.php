@@ -23,43 +23,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ClientType extends AbstractType
 {
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    /**
-     * @var ValidatorInterface
-     */
-    private $validator;
-
-    /**
-     * @var RouterInterface
-     */
-    private $router;
-
-    /**
-     * @var RequestStack
-     */
-    private $requestStack;
-
-    /**
-     * @var Session
-     */
-    private $session;
-
-    public function __construct(
-        RequestStack $requestStack,
-        TranslatorInterface $translator,
-        ValidatorInterface $validator,
-        Session $session,
-        RouterInterface $router
-    ) {
-        $this->translator   = $translator;
-        $this->validator    = $validator;
-        $this->requestStack = $requestStack;
-        $this->session      = $session;
-        $this->router       = $router;
+    public function __construct(private RequestStack $requestStack, private TranslatorInterface $translator, private ValidatorInterface $validator, private Session $session, private RouterInterface $router)
+    {
     }
 
     /**
@@ -196,7 +161,7 @@ class ClientType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $dataClass = 'Mautic\ApiBundle\Entity\oAuth2\Client';
+        $dataClass = \Mautic\ApiBundle\Entity\oAuth2\Client::class;
         $resolver->setDefaults(
             [
                 'data_class' => $dataClass,

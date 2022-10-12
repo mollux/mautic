@@ -16,10 +16,8 @@ class FieldController extends FormController
      * Generate's default list view.
      *
      * @param int $page
-     *
-     * @return array|\Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function indexAction($page = 1)
+    public function indexAction($page = 1): array|\Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         //set some permissions
         $permissions = $this->get('mautic.security')->isGranted(['lead:fields:view', 'lead:fields:full'], 'RETURN_ARRAY');
@@ -106,10 +104,8 @@ class FieldController extends FormController
 
     /**
      * Generate's new form and processes post data.
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function newAction()
+    public function newAction(): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         if (!$this->get('mautic.security')->isGranted('lead:fields:full')) {
             return $this->accessDenied();
@@ -224,11 +220,9 @@ class FieldController extends FormController
      * Generate's edit form and processes post data.
      *
      * @param            $objectId
-     * @param bool|false $ignorePost
      *
-     * @return array|\Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function editAction($objectId, $ignorePost = false)
+    public function editAction($objectId, bool $ignorePost = false): array|\Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         if (!$this->get('mautic.security')->isGranted('lead:fields:full')) {
             return $this->accessDenied();
@@ -375,10 +369,8 @@ class FieldController extends FormController
      * Delete a field.
      *
      * @param $objectId
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function deleteAction($objectId)
+    public function deleteAction($objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         if (!$this->get('mautic.security')->isGranted('lead:fields:full')) {
             return $this->accessDenied();
@@ -453,10 +445,8 @@ class FieldController extends FormController
 
     /**
      * Deletes a group of entities.
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function batchDeleteAction()
+    public function batchDeleteAction(): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         if (!$this->get('mautic.security')->isGranted('lead:fields:full')) {
             return $this->accessDenied();
@@ -477,7 +467,7 @@ class FieldController extends FormController
         if ('POST' == $this->request->getMethod()) {
             /** @var FieldModel $model */
             $model     = $this->getModel('lead.field');
-            $ids       = json_decode($this->request->query->get('ids', '{}'));
+            $ids       = json_decode($this->request->query->get('ids', '{}'), null, 512, JSON_THROW_ON_ERROR);
             $deleteIds = [];
 
             // Loop over the IDs to perform access checks pre-delete

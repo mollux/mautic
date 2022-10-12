@@ -51,10 +51,8 @@ abstract class AbstractFormController extends CommonController
      * @param object $entity
      * @param string $model
      * @param bool   $batch          Flag if a batch action is being performed
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|array
      */
-    protected function isLocked($postActionVars, $entity, $model, $batch = false)
+    protected function isLocked($postActionVars, $entity, $model, $batch = false): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|array
     {
         $date                   = $entity->getCheckedOut();
         $postActionVars         = $this->refererPostActionVars($postActionVars);
@@ -148,7 +146,6 @@ abstract class AbstractFormController extends CommonController
     /**
      * Binds form data, checks validity, and determines cancel request.
      *
-     * @param array $data
      *
      * @return bool
      */
@@ -226,11 +223,11 @@ abstract class AbstractFormController extends CommonController
 
         $urlMatcher  = explode('/s/', $returnUrl);
         $actionRoute = $this->get('router')->match('/s/'.$urlMatcher[1]);
-        $objAction   = isset($actionRoute['objectAction']) ? $actionRoute['objectAction'] : 'index';
+        $objAction   = $actionRoute['objectAction'] ?? 'index';
         $routeCtrlr  = explode('\\', $actionRoute['_controller']);
 
         $defaultContentTemplate  = $routeCtrlr[0].$routeCtrlr[1].':'.ucfirst(str_replace('Bundle', '', $routeCtrlr[1])).':'.$objAction;
-        $vars['contentTemplate'] = isset($vars['contentTemplate']) ? $vars['contentTemplate'] : $defaultContentTemplate;
+        $vars['contentTemplate'] ??= $defaultContentTemplate;
 
         $vars['passthroughVars']['activeLink'] = '#'.str_replace('_action', '_'.$objAction, $actionRoute['_route']);
 

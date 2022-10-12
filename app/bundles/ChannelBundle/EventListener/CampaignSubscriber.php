@@ -22,66 +22,22 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class CampaignSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var MessageModel
-     */
-    private $messageModel;
+    private ?\Mautic\CampaignBundle\Entity\Event $pseudoEvent = null;
 
-    /**
-     * @var ActionDispatcher
-     */
-    private $actionDispatcher;
-
-    /**
-     * @var EventCollector
-     */
-    private $eventCollector;
-
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    /**
-     * @var Event
-     */
-    private $pseudoEvent;
-
-    /**
-     * @var PendingEvent
-     */
-    private $pendingEvent;
+    private ?\Mautic\CampaignBundle\Event\PendingEvent $pendingEvent = null;
 
     /**
      * @var ArrayCollection
      */
     private $mmLogs;
 
-    /**
-     * @var array
-     */
-    private $messageChannels = [];
+    private array $messageChannels = [];
 
     /**
      * CampaignSubscriber constructor.
      */
-    public function __construct(
-        MessageModel $messageModel,
-        ActionDispatcher $actionDispatcher,
-        EventCollector $collector,
-        LoggerInterface $logger,
-        TranslatorInterface $translator
-    ) {
-        $this->messageModel     = $messageModel;
-        $this->actionDispatcher = $actionDispatcher;
-        $this->eventCollector   = $collector;
-        $this->logger           = $logger;
-        $this->translator       = $translator;
+    public function __construct(private MessageModel $messageModel, private ActionDispatcher $actionDispatcher, private EventCollector $eventCollector, private LoggerInterface $logger, private TranslatorInterface $translator)
+    {
     }
 
     /**
@@ -157,7 +113,7 @@ class CampaignSubscriber implements EventSubscriberInterface
         $priority           = 1;
         $channelPreferences = $preferenceBuilder->getChannelPreferences();
 
-        while ($priority <= count($this->messageChannels[$id])) {
+        while ($priority <= (is_countable($this->messageChannels[$id]) ? count($this->messageChannels[$id]) : 0)) {
             foreach ($channelPreferences as $channel => $preferences) {
                 if (!isset($messageSettings[$channel]['campaignAction'])) {
                     continue;
@@ -185,13 +141,12 @@ class CampaignSubscriber implements EventSubscriberInterface
     /**
      * @param string $channel
      *
-     * @return bool|ArrayCollection
      *
      * @throws \Mautic\CampaignBundle\Executioner\Dispatcher\Exception\LogNotProcessedException
      * @throws \Mautic\CampaignBundle\Executioner\Dispatcher\Exception\LogPassedAndFailedException
      * @throws \ReflectionException
      */
-    private function sendChannelMessage(ArrayCollection $logs, $channel, array $messageChannel)
+    private function sendChannelMessage(ArrayCollection $logs, $channel, array $messageChannel): bool|\Doctrine\Common\Collections\ArrayCollection
     {
         /** @var ActionAccessor $config */
         $config = $this->eventCollector->getEventConfig($this->pseudoEvent);
@@ -267,7 +222,7 @@ class CampaignSubscriber implements EventSubscriberInterface
                 if ($metadata = $channelLog->getMetadata()) {
                     $log->appendToMetadata([$channel => $metadata]);
                 }
-            } catch (NoContactsFoundException $exception) {
+            } catch (NoContactsFoundException) {
                 continue;
             }
         }

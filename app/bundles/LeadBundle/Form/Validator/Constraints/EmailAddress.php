@@ -14,6 +14,6 @@ class EmailAddress extends Constraint
      */
     public function validatedBy()
     {
-        return \get_class($this).'Validator';
+        return $this::class.'Validator';
     }
 }

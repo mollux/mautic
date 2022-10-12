@@ -32,69 +32,21 @@ use Symfony\Contracts\EventDispatcher\Event;
 class AssetModel extends FormModel
 {
     /**
-     * @var CategoryModel
-     */
-    protected $categoryModel;
-
-    /**
-     * @var LeadModel
-     */
-    protected $leadModel;
-
-    /**
-     * @var IpLookupHelper
-     */
-    protected $ipLookupHelper;
-
-    /**
      * @var int
      */
     protected $maxAssetSize;
 
-    /**
-     * @var DeviceCreatorServiceInterface
-     */
-    private $deviceCreatorService;
-
-    /**
-     * @var DeviceDetectorFactoryInterface
-     */
-    private $deviceDetectorFactory;
-
-    /**
-     * @var DeviceTrackingServiceInterface
-     */
-    private $deviceTrackingService;
-
-    /**
-     * @var ContactTracker
-     */
-    private $contactTracker;
-
-    /**
-     * @var RequestStack
-     */
-    private $requestStack;
-
     public function __construct(
-        LeadModel $leadModel,
-        CategoryModel $categoryModel,
-        RequestStack $requestStack,
-        IpLookupHelper $ipLookupHelper,
+        protected LeadModel $leadModel,
+        protected CategoryModel $categoryModel,
+        private RequestStack $requestStack,
+        protected IpLookupHelper $ipLookupHelper,
         CoreParametersHelper $coreParametersHelper,
-        DeviceCreatorServiceInterface $deviceCreatorService,
-        DeviceDetectorFactoryInterface $deviceDetectorFactory,
-        DeviceTrackingServiceInterface $deviceTrackingService,
-        ContactTracker $contactTracker
+        private DeviceCreatorServiceInterface $deviceCreatorService,
+        private DeviceDetectorFactoryInterface $deviceDetectorFactory,
+        private DeviceTrackingServiceInterface $deviceTrackingService,
+        private ContactTracker $contactTracker
     ) {
-        $this->leadModel              = $leadModel;
-        $this->categoryModel          = $categoryModel;
-        $this->requestStack           = $requestStack;
-        $this->ipLookupHelper         = $ipLookupHelper;
-        $this->deviceCreatorService   = $deviceCreatorService;
-        $this->deviceDetectorFactory  = $deviceDetectorFactory;
-        $this->deviceTrackingService  = $deviceTrackingService;
-        $this->contactTracker         = $contactTracker;
         $this->maxAssetSize           = $coreParametersHelper->get('max_size');
     }
 
@@ -148,6 +100,7 @@ class AssetModel extends FormModel
      */
     public function trackDownload($asset, $request = null, $code = '200', $systemEntry = [])
     {
+        $lead = [];
         // Don't skew results with in-house downloads
         if (empty($systemEntry) && !$this->security->isAnonymous()) {
             return;
@@ -183,7 +136,7 @@ class AssetModel extends FormModel
                     }
                 }
                 if (!empty($clickthrough['channel'])) {
-                    if (1 === count($clickthrough['channel'])) {
+                    if (1 === (is_countable($clickthrough['channel']) ? count($clickthrough['channel']) : 0)) {
                         $channelId = reset($clickthrough['channel']);
                         $channel   = key($clickthrough['channel']);
                     } else {
@@ -315,9 +268,8 @@ class AssetModel extends FormModel
      *
      * @param            $asset
      * @param int        $increaseBy
-     * @param bool|false $unique
      */
-    public function upDownloadCount($asset, $increaseBy = 1, $unique = false)
+    public function upDownloadCount($asset, $increaseBy = 1, bool $unique = false)
     {
         $id = ($asset instanceof Asset) ? $asset->getId() : (int) $asset;
 
@@ -501,7 +453,7 @@ class AssetModel extends FormModel
      *
      * @return float
      */
-    public function getMaxUploadSize($unit = 'M', $humanReadable = false)
+    public function getMaxUploadSize($unit = 'M', bool $humanReadable = false)
     {
         $maxAssetSize  = $this->maxAssetSize;
         $maxAssetSize  = (-1 == $maxAssetSize || 0 === $maxAssetSize) ? PHP_INT_MAX : FileHelper::convertMegabytesToBytes($maxAssetSize);
@@ -513,7 +465,7 @@ class AssetModel extends FormModel
         if ($humanReadable) {
             $number = Asset::convertBytesToHumanReadable($maxAllowed);
         } else {
-            list($number, $unit) = Asset::convertBytesToUnit($maxAllowed, $unit);
+            [$number, $unit] = Asset::convertBytesToUnit($maxAllowed, $unit);
         }
 
         return $number;
@@ -521,10 +473,8 @@ class AssetModel extends FormModel
 
     /**
      * @param $assets
-     *
-     * @return int|string
      */
-    public function getTotalFilesize($assets)
+    public function getTotalFilesize($assets): int|string
     {
         $firstAsset = is_array($assets) ? reset($assets) : false;
         if ($assets instanceof PersistentCollection || is_object($firstAsset)) {
@@ -656,8 +606,6 @@ class AssetModel extends FormModel
      * Get a list of assets in a date range.
      *
      * @param int       $limit
-     * @param \DateTime $dateFrom
-     * @param \DateTime $dateTo
      * @param array     $filters
      * @param array     $options
      *

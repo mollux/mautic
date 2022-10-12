@@ -13,7 +13,7 @@ class TweetApiController extends CommonApiController
     public function initialize(ControllerEvent $event)
     {
         $this->model           = $this->getModel('social.tweet');
-        $this->entityClass     = 'MauticPlugin\MauticSocialBundle\Entity\Tweet';
+        $this->entityClass     = \MauticPlugin\MauticSocialBundle\Entity\Tweet::class;
         $this->entityNameOne   = 'tweet';
         $this->entityNameMulti = 'tweets';
 

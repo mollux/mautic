@@ -7,37 +7,22 @@ use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
 
 class MergeRecord
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var Lead
-     */
-    private $contact;
+    private ?\Mautic\LeadBundle\Entity\Lead $contact = null;
 
-    /**
-     * @var \DateTime
-     */
-    private $dateAdded;
+    private ?\DateTime $dateAdded = null;
 
-    /**
-     * @var string
-     */
-    private $name;
+    private ?string $name = null;
 
-    /**
-     * @var int
-     */
-    private $mergedId;
+    private ?int $mergedId = null;
 
     public static function loadMetadata(ORM\ClassMetadata $metadata)
     {
         $builder = new ClassMetadataBuilder($metadata);
 
         $builder->setTable('contact_merge_records')
-            ->setCustomRepositoryClass('Mautic\LeadBundle\Entity\MergeRecordRepository')
+            ->setCustomRepositoryClass(\Mautic\LeadBundle\Entity\MergeRecordRepository::class)
             ->addIndex(['date_added'], 'contact_merge_date_added')
             ->addIndex(['merged_id'], 'contact_merge_ids');
 
@@ -87,8 +72,6 @@ class MergeRecord
     }
 
     /**
-     * @param \DateTime $dateAdded
-     *
      * @return MergeRecord
      */
     public function setDateAdded(\DateTime $dateAdded = null)

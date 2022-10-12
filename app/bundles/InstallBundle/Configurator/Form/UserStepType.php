@@ -13,14 +13,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class UserStepType extends AbstractType
 {
-    /**
-     * @var Session
-     */
-    private $session;
-
-    public function __construct(Session $session)
+    public function __construct(private Session $session)
     {
-        $this->session = $session;
     }
 
     /**

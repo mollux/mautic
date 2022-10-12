@@ -37,10 +37,7 @@ class ConfigController extends AbstractFormController
      */
     protected $request;
 
-    /**
-     * @var BasicIntegration|ConfigFormInterface
-     */
-    private $integrationObject;
+    private \Mautic\IntegrationsBundle\Integration\BasicIntegration|\Mautic\IntegrationsBundle\Integration\Interfaces\ConfigFormInterface|null $integrationObject = null;
 
     /**
      * @var Integration
@@ -55,7 +52,7 @@ class ConfigController extends AbstractFormController
     /**
      * @return array|JsonResponse|RedirectResponse|Response
      */
-    public function editAction(Request $request, string $integration)
+    public function editAction(Request $request, string $integration): array|\Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         // Check ACL
         if (!$this->get('mautic.security')->isGranted('plugin:plugins:manage')) {
@@ -69,7 +66,7 @@ class ConfigController extends AbstractFormController
         try {
             $this->integrationObject        = $this->integrationsHelper->getIntegration($integration);
             $this->integrationConfiguration = $this->integrationObject->getIntegrationConfiguration();
-        } catch (IntegrationNotFoundException $exception) {
+        } catch (IntegrationNotFoundException) {
             return $this->notFound();
         }
 
@@ -98,7 +95,7 @@ class ConfigController extends AbstractFormController
     /**
      * @return JsonResponse|Response
      */
-    private function submitForm(Form $form)
+    private function submitForm(Form $form): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         if ($this->isFormCancelled($form)) {
             return $this->closeForm();
@@ -181,7 +178,7 @@ class ConfigController extends AbstractFormController
     /**
      * @return JsonResponse|Response
      */
-    private function showForm(Form $form)
+    private function showForm(Form $form): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         $integrationObject = $this->integrationObject;
         $form              = $this->setFormTheme($form, 'IntegrationsBundle:Config:form.html.php');

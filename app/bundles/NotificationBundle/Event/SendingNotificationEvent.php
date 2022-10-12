@@ -12,22 +12,10 @@ use Mautic\NotificationBundle\Entity\Notification;
 class SendingNotificationEvent extends CommonEvent
 {
     /**
-     * @var Lead
-     */
-    protected $lead;
-
-    /**
-     * @var Notification
-     */
-    protected $entity;
-
-    /**
      * SendingNotificationEvent constructor.
      */
-    public function __construct(Notification $notification, Lead $lead)
+    public function __construct(protected Notification $entity, protected Lead $lead)
     {
-        $this->entity = $notification;
-        $this->lead   = $lead;
     }
 
     /**

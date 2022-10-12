@@ -6,23 +6,14 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class MessageQueueBatchProcessEvent extends Event
 {
-    private $messages = [];
-
-    private $channel;
-
-    private $channelId;
-
     /**
      * MessageQueueBatchProcessEvent constructor.
      *
      * @param $channel
      * @param $channelId
      */
-    public function __construct(array $messages, $channel, $channelId)
+    public function __construct(private array $messages, private $channel, private $channelId)
     {
-        $this->messages  = $messages;
-        $this->channel   = $channel;
-        $this->channelId = $channelId;
     }
 
     /**

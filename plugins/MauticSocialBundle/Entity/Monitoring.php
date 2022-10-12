@@ -13,25 +13,13 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
  */
 class Monitoring extends FormEntity
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var string
-     */
-    private $title;
+    private ?string $title = null;
 
-    /**
-     * @var string
-     */
-    private $description;
+    private ?string $description = null;
 
-    /**
-     * @var \Mautic\CategoryBundle\Entity\Category
-     */
-    private $category;
+    private ?\Mautic\CategoryBundle\Entity\Category $category = null;
 
     /**
      * @var array
@@ -43,37 +31,22 @@ class Monitoring extends FormEntity
      */
     private $networkType;
 
-    /**
-     * @var int
-     */
-    private $revision = 1;
+    private int $revision = 1;
 
-    /**
-     * @var array
-     */
-    private $stats = [];
+    private array $stats = [];
 
-    /**
-     * @var array
-     */
-    private $properties = [];
+    private array $properties = [];
 
-    /**
-     * @var \DateTime
-     */
-    private $publishDown;
+    private ?\DateTime $publishDown = null;
 
-    /**
-     * @var \DateTime
-     */
-    private $publishUp;
+    private ?\DateTime $publishUp = null;
 
     public static function loadMetadata(ORM\ClassMetadata $metadata)
     {
         $builder = new ClassMetadataBuilder($metadata);
 
         $builder->setTable('monitoring')
-            ->setCustomRepositoryClass('MauticPlugin\MauticSocialBundle\Entity\MonitoringRepository')
+            ->setCustomRepositoryClass(\MauticPlugin\MauticSocialBundle\Entity\MonitoringRepository::class)
             ->addLifecycleEvent('cleanMonitorData', 'preUpdate')
             ->addLifecycleEvent('cleanMonitorData', 'prePersist');
 

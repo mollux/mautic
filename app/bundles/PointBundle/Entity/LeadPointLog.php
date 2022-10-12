@@ -7,32 +7,20 @@ use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
 
 class LeadPointLog
 {
-    /**
-     * @var Point
-     **/
-    private $point;
+    private ?\Mautic\PointBundle\Entity\Point $point = null;
 
-    /**
-     * @var \Mautic\LeadBundle\Entity\Lead
-     */
-    private $lead;
+    private ?\Mautic\LeadBundle\Entity\Lead $lead = null;
 
-    /**
-     * @var \Mautic\CoreBundle\Entity\IpAddress
-     */
-    private $ipAddress;
+    private ?\Mautic\CoreBundle\Entity\IpAddress $ipAddress = null;
 
-    /**
-     * @var \DateTime
-     **/
-    private $dateFired;
+    private ?\DateTime $dateFired = null;
 
     public static function loadMetadata(ORM\ClassMetadata $metadata)
     {
         $builder = new ClassMetadataBuilder($metadata);
 
         $builder->setTable('point_lead_action_log')
-            ->setCustomRepositoryClass('Mautic\PointBundle\Entity\LeadPointLogRepository');
+            ->setCustomRepositoryClass(\Mautic\PointBundle\Entity\LeadPointLogRepository::class);
 
         $builder->createManyToOne('point', 'Point')
             ->isPrimaryKey()
@@ -57,10 +45,7 @@ class LeadPointLog
         return $this->dateFired;
     }
 
-    /**
-     * @param mixed $dateFired
-     */
-    public function setDateFired($dateFired)
+    public function setDateFired(mixed $dateFired)
     {
         $this->dateFired = $dateFired;
     }
@@ -73,10 +58,7 @@ class LeadPointLog
         return $this->ipAddress;
     }
 
-    /**
-     * @param mixed $ipAddress
-     */
-    public function setIpAddress($ipAddress)
+    public function setIpAddress(mixed $ipAddress)
     {
         $this->ipAddress = $ipAddress;
     }
@@ -89,10 +71,7 @@ class LeadPointLog
         return $this->lead;
     }
 
-    /**
-     * @param mixed $lead
-     */
-    public function setLead($lead)
+    public function setLead(mixed $lead)
     {
         $this->lead = $lead;
     }
@@ -105,10 +84,7 @@ class LeadPointLog
         return $this->point;
     }
 
-    /**
-     * @param mixed $point
-     */
-    public function setPoint($point)
+    public function setPoint(mixed $point)
     {
         $this->point = $point;
     }

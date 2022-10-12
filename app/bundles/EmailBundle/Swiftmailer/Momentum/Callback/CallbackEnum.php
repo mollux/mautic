@@ -69,7 +69,7 @@ class CallbackEnum
 
         $key = self::getCommentsKeyForEvent($event);
 
-        return isset($item[$key]) ? $item[$key] : $key;
+        return $item[$key] ?? $key;
     }
 
     /**
@@ -135,6 +135,6 @@ class CallbackEnum
             self::LINK_UNSUBSCRIBE => 'unsubscribed',
         ];
 
-        return (isset($mapping[$event])) ? $mapping[$event] : null;
+        return $mapping[$event] ?? null;
     }
 }

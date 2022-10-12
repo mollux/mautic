@@ -12,19 +12,10 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class EmailSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var string
-     */
-    private static $contactFieldRegex = '{contactfield=(.*?)}';
+    private static string $contactFieldRegex = '{contactfield=(.*?)}';
 
-    /**
-     * @var BuilderTokenHelperFactory
-     */
-    private $builderTokenHelperFactory;
-
-    public function __construct(BuilderTokenHelperFactory $builderTokenHelperFactory)
+    public function __construct(private BuilderTokenHelperFactory $builderTokenHelperFactory)
     {
-        $this->builderTokenHelperFactory = $builderTokenHelperFactory;
     }
 
     /**
@@ -67,7 +58,7 @@ class EmailSubscriber implements EventSubscriberInterface
         $lead = $event->getLead();
 
         $tokenList = TokenHelper::findLeadTokens($content, $lead);
-        if (count($tokenList)) {
+        if (is_countable($tokenList) ? count($tokenList) : 0) {
             $event->addTokens($tokenList);
             unset($tokenList);
         }

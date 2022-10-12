@@ -17,90 +17,39 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 class Report extends FormEntity implements SchedulerInterface
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var string
-     */
-    private $name;
+    private ?string $name = null;
 
-    /**
-     * @var string
-     */
-    private $description;
+    private ?string $description = null;
 
-    /**
-     * @var bool
-     */
-    private $system = false;
+    private bool $system = false;
 
-    /**
-     * @var string
-     */
-    private $source;
+    private ?string $source = null;
 
-    /**
-     * @var array
-     */
-    private $columns = [];
+    private array $columns = [];
 
-    /**
-     * @var array
-     */
-    private $filters = [];
+    private array $filters = [];
 
-    /**
-     * @var array
-     */
-    private $tableOrder = [];
+    private array $tableOrder = [];
 
-    /**
-     * @var array
-     */
-    private $graphs = [];
+    private array $graphs = [];
 
-    /**
-     * @var array
-     */
-    private $groupBy = [];
+    private array $groupBy = [];
 
-    /**
-     * @var array
-     */
-    private $aggregators = [];
+    private array $aggregators = [];
 
-    /**
-     * @var array
-     */
-    private $settings = [];
+    private array $settings = [];
 
-    /**
-     * @var bool
-     */
-    private $isScheduled = false;
+    private bool $isScheduled = false;
 
-    /**
-     * @var string|null
-     */
-    private $toAddress;
+    private ?string $toAddress = null;
 
-    /**
-     * @var string|null
-     */
-    private $scheduleUnit;
+    private ?string $scheduleUnit = null;
 
-    /**
-     * @var string|null
-     */
-    private $scheduleDay;
+    private ?string $scheduleDay = null;
 
-    /**
-     * @var string|null
-     */
-    private $scheduleMonthFrequency;
+    private ?string $scheduleMonthFrequency = null;
 
     public function __clone()
     {
@@ -386,10 +335,7 @@ class Report extends FormEntity implements SchedulerInterface
         return $this->description;
     }
 
-    /**
-     * @param mixed $description
-     */
-    public function setDescription($description)
+    public function setDescription(mixed $description)
     {
         $this->description = $description;
     }
@@ -452,9 +398,7 @@ class Report extends FormEntity implements SchedulerInterface
      */
     public function getAggregatorColumns()
     {
-        return array_map(function ($aggregator) {
-            return $aggregator['column'];
-        }, $this->getAggregators());
+        return array_map(fn($aggregator) => $aggregator['column'], $this->getAggregators());
     }
 
     /**
@@ -462,9 +406,7 @@ class Report extends FormEntity implements SchedulerInterface
      */
     public function getOrderColumns()
     {
-        return array_map(function ($order) {
-            return $order['column'];
-        }, $this->getTableOrder());
+        return array_map(fn($order) => $order['column'], $this->getTableOrder());
     }
 
     /**

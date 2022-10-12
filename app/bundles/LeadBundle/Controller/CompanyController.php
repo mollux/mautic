@@ -20,7 +20,7 @@ class CompanyController extends FormController
      *
      * @return JsonResponse|Response
      */
-    public function indexAction($page = 1)
+    public function indexAction($page = 1): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         //set some permissions
         $permissions = $this->get('mautic.security')->isGranted(
@@ -124,7 +124,7 @@ class CompanyController extends FormController
      *
      * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function contactsListAction($objectId, $page = 1)
+    public function contactsListAction($objectId, $page = 1): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         if (empty($objectId)) {
             return $this->accessDenied();
@@ -184,7 +184,7 @@ class CompanyController extends FormController
      *
      * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function newAction($entity = null)
+    public function newAction($entity = null): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         $model = $this->getModel('lead.company');
 
@@ -325,7 +325,7 @@ class CompanyController extends FormController
      *
      * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function editAction($objectId, $ignorePost = false)
+    public function editAction($objectId, $ignorePost = false): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         $model  = $this->getModel('lead.company');
         $entity = $model->getEntity($objectId);
@@ -506,10 +506,8 @@ class CompanyController extends FormController
      * Loads a specific company into the detailed panel.
      *
      * @param $objectId
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function viewAction($objectId)
+    public function viewAction($objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         /** @var CompanyModel $model */
         $model  = $this->getModel('lead.company');
@@ -662,7 +660,7 @@ class CompanyController extends FormController
      *
      * @return array|JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function cloneAction($objectId)
+    public function cloneAction($objectId): array|\Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         $model  = $this->getModel('lead.company');
         $entity = $model->getEntity($objectId);
@@ -682,10 +680,8 @@ class CompanyController extends FormController
      * Deletes the entity.
      *
      * @param int $objectId
-     *
-     * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function deleteAction($objectId)
+    public function deleteAction($objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         $page      = $this->get('session')->get('mautic.company.page', 1);
         $returnUrl = $this->generateUrl('mautic_company_index', ['page' => $page]);
@@ -741,10 +737,8 @@ class CompanyController extends FormController
 
     /**
      * Deletes a group of entities.
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function batchDeleteAction()
+    public function batchDeleteAction(): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         $page      = $this->get('session')->get('mautic.company.page', 1);
         $returnUrl = $this->generateUrl('mautic_company_index', ['page' => $page]);
@@ -762,7 +756,7 @@ class CompanyController extends FormController
 
         if ('POST' == $this->request->getMethod()) {
             $model     = $this->getModel('lead.company');
-            $ids       = json_decode($this->request->query->get('ids', '{}'));
+            $ids       = json_decode($this->request->query->get('ids', '{}'), null, 512, JSON_THROW_ON_ERROR);
             $deleteIds = [];
 
             // Loop over the IDs to perform access checks pre-delete
@@ -787,7 +781,7 @@ class CompanyController extends FormController
             // Delete everything we are able to
             if (!empty($deleteIds)) {
                 $entities = $model->deleteEntities($deleteIds);
-                $deleted  = count($entities);
+                $deleted  = is_countable($entities) ? count($entities) : 0;
                 $this->addFlash(
                     'mautic.company.notice.batch_deleted',
                     [
@@ -814,8 +808,9 @@ class CompanyController extends FormController
      *
      * @return array|JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function mergeAction($objectId)
+    public function mergeAction($objectId): array|\Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
+        $viewParameters = null;
         //set some permissions
         $permissions = $this->get('mautic.security')->isGranted(
             [
@@ -906,7 +901,7 @@ class CompanyController extends FormController
                     }
 
                     //Both leads are good so now we merge them
-                    $mainCompany = $model->companyMerge($primaryCompany, $secondaryCompany, false);
+                    $mainCompany = $model->companyMerge($primaryCompany, $secondaryCompany);
                 }
 
                 if ($valid) {
@@ -963,10 +958,8 @@ class CompanyController extends FormController
      * Export company's data.
      *
      * @param $companyId
-     *
-     * @return array|JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\StreamedResponse
      */
-    public function companyExportAction($companyId)
+    public function companyExportAction($companyId): array|\Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\StreamedResponse
     {
         //set some permissions
         $permissions = $this->get('mautic.security')->isGranted(

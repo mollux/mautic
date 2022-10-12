@@ -46,7 +46,7 @@ class CampaignSubscriber implements EventSubscriberInterface
         $errors                  = [];
         $success                 = $this->pushToIntegration($config, $lead, $errors);
 
-        if (count($errors)) {
+        if (is_countable($errors) ? count($errors) : 0) {
             $log = $event->getLogEntry();
             $log->appendToMetadata(
                 [

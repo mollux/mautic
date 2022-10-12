@@ -18,50 +18,23 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
 class Webhook extends FormEntity
 {
     public const LOGS_DISPLAY_LIMIT = 100;
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var string
-     */
-    private $name;
+    private ?string $name = null;
 
-    /**
-     * @var string
-     */
-    private $description;
+    private ?string $description = null;
 
-    /**
-     * @var string
-     */
-    private $webhookUrl;
+    private ?string $webhookUrl = null;
 
-    /**
-     * @var string
-     */
-    private $secret;
+    private ?string $secret = null;
 
-    /**
-     * @var \Mautic\CategoryBundle\Entity\Category
-     **/
-    private $category;
+    private ?\Mautic\CategoryBundle\Entity\Category $category = null;
 
-    /**
-     * @var ArrayCollection
-     */
-    private $events;
+    private \Doctrine\Common\Collections\ArrayCollection $events;
 
-    /**
-     * @var ArrayCollection
-     */
-    private $logs;
+    private \Doctrine\Common\Collections\ArrayCollection $logs;
 
-    /**
-     * @var array
-     */
-    private $removedEvents = [];
+    private array $removedEvents = [];
 
     /**
      * @var array
@@ -71,18 +44,14 @@ class Webhook extends FormEntity
     /**
      * Holds a simplified array of events, just an array of event types.
      * It's used for API serializaiton.
-     *
-     * @var array
      */
-    private $triggers = [];
+    private array $triggers = [];
 
     /**
      * ASC or DESC order for fetching order of the events when queue mode is on.
      * Null means use the global default.
-     *
-     * @var string
      */
-    private $eventsOrderbyDir;
+    private ?string $eventsOrderbyDir = null;
 
     public function __construct()
     {

@@ -9,7 +9,7 @@ use Mautic\EmailBundle\Swiftmailer\Momentum\Metadata\MetadataProcessor;
 
 final class SwiftMessageService implements SwiftMessageServiceInterface
 {
-    private $reservedKeys = [
+    private array $reservedKeys = [
         'MIME-Version',
         'Content-Type',
         'Content-Transfer-Encoding',
@@ -88,7 +88,7 @@ final class SwiftMessageService implements SwiftMessageServiceInterface
             $content->setInlineCss($cssHeader);
         }
 
-        $returnPath = $message->getReturnPath() ? $message->getReturnPath() : $messageFromEmail;
+        $returnPath = $message->getReturnPath() ?: $messageFromEmail;
 
         $transmission = new TransmissionDTO($content, $returnPath);
         $transmission->setCampaignId($metadataProcessor->getCampaignId());

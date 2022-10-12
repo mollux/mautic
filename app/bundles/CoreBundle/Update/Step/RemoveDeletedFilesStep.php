@@ -11,26 +11,11 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class RemoveDeletedFilesStep implements StepInterface
 {
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
+    private string $appRoot;
 
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
-     * @var string
-     */
-    private $appRoot;
-
-    public function __construct(TranslatorInterface $translator, PathsHelper $pathsHelper, LoggerInterface $logger)
+    public function __construct(private TranslatorInterface $translator, PathsHelper $pathsHelper, private LoggerInterface $logger)
     {
-        $this->translator = $translator;
         $this->appRoot    = $pathsHelper->getRootPath();
-        $this->logger     = $logger;
     }
 
     public function getOrder(): int
@@ -53,7 +38,7 @@ final class RemoveDeletedFilesStep implements StepInterface
         $progressBar->setMessage($this->translator->trans('mautic.core.update.remove.deleted.files'));
         $progressBar->advance();
 
-        $deletedFiles = json_decode(file_get_contents($this->appRoot.'/deleted_files.txt'), true);
+        $deletedFiles = json_decode(file_get_contents($this->appRoot.'/deleted_files.txt'), true, 512, JSON_THROW_ON_ERROR);
 
         // Before looping over the deleted files, add in our upgrade specific files
         $deletedFiles += ['deleted_files.txt', 'upgrade.php'];

@@ -26,16 +26,10 @@ use Symfony\Contracts\EventDispatcher\Event;
 class NotificationModel extends FormModel implements AjaxLookupModelInterface
 {
     /**
-     * @var TrackableModel
-     */
-    protected $pageTrackableModel;
-
-    /**
      * NotificationModel constructor.
      */
-    public function __construct(TrackableModel $pageTrackableModel)
+    public function __construct(protected TrackableModel $pageTrackableModel)
     {
-        $this->pageTrackableModel = $pageTrackableModel;
     }
 
     /**
@@ -122,7 +116,7 @@ class NotificationModel extends FormModel implements AjaxLookupModelInterface
             $options['action'] = $action;
         }
 
-        $type = false !== strpos($action, 'mobile_') ? MobileNotificationType::class : NotificationType::class;
+        $type = str_contains($action, 'mobile_') ? MobileNotificationType::class : NotificationType::class;
 
         return $formFactory->create($type, $entity, $options);
     }
@@ -314,7 +308,7 @@ class NotificationModel extends FormModel implements AjaxLookupModelInterface
                     $limit,
                     $start,
                     $this->security->isGranted($this->getPermissionBase().':viewother'),
-                    isset($options['notification_type']) ? $options['notification_type'] : null
+                    $options['notification_type'] ?? null
                 );
 
                 foreach ($entities as $entity) {
@@ -331,7 +325,7 @@ class NotificationModel extends FormModel implements AjaxLookupModelInterface
                     $limit,
                     $start,
                     $this->security->isGranted($this->getPermissionBase().':viewother'),
-                    isset($options['notification_type']) ? $options['notification_type'] : null
+                    $options['notification_type'] ?? null
                 );
 
                 foreach ($entities as $entity) {

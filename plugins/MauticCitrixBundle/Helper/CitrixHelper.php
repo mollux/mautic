@@ -16,20 +16,11 @@ use Symfony\Component\Security\Core\Exception\AuthenticationException;
 
 class CitrixHelper
 {
-    /**
-     * @var LoggerInterface
-     */
-    private static $logger;
+    private static ?\Psr\Log\LoggerInterface $logger = null;
 
-    /**
-     * @var IntegrationHelper
-     */
-    private static $integrationHelper;
+    private static ?\Mautic\PluginBundle\Helper\IntegrationHelper $integrationHelper = null;
 
-    /**
-     * @var RouterInterface
-     */
-    private static $router;
+    private static ?\Symfony\Component\Routing\RouterInterface $router = null;
 
     public static function init(IntegrationHelper $helper, LoggerInterface $logger, RouterInterface $router)
     {
@@ -47,7 +38,7 @@ class CitrixHelper
     {
         static $g2mapi;
         if (null === $g2mapi) {
-            $class  = '\\MauticPlugin\\MauticCitrixBundle\\Api\\GotomeetingApi';
+            $class  = '\\' . \MauticPlugin\MauticCitrixBundle\Api\GotomeetingApi::class;
             $g2mapi = new $class(self::getIntegration('Gotomeeting'));
         }
 
@@ -63,7 +54,7 @@ class CitrixHelper
     {
         static $g2wapi;
         if (null === $g2wapi) {
-            $class  = '\\MauticPlugin\\MauticCitrixBundle\\Api\\GotowebinarApi';
+            $class  = '\\' . \MauticPlugin\MauticCitrixBundle\Api\GotowebinarApi::class;
             $g2wapi = new $class(self::getIntegration('Gotowebinar'));
         }
 
@@ -79,7 +70,7 @@ class CitrixHelper
     {
         static $g2tapi;
         if (null === $g2tapi) {
-            $class  = '\\MauticPlugin\\MauticCitrixBundle\\Api\\GototrainingApi';
+            $class  = '\\' . \MauticPlugin\MauticCitrixBundle\Api\GototrainingApi::class;
             $g2tapi = new $class(self::getIntegration('Gototraining'));
         }
 
@@ -95,7 +86,7 @@ class CitrixHelper
     {
         static $g2aapi;
         if (null === $g2aapi) {
-            $class  = '\\MauticPlugin\\MauticCitrixBundle\\Api\\GotoassistApi';
+            $class  = '\\' . \MauticPlugin\MauticCitrixBundle\Api\GotoassistApi::class;
             $g2aapi = new $class(self::getIntegration('Gotoassist'));
         }
 
@@ -110,7 +101,7 @@ class CitrixHelper
     {
         try {
             self::$logger->log($level, $msg);
-        } catch (\Exception $ex) {
+        } catch (\Exception) {
             // do nothing
         }
     }
@@ -242,7 +233,7 @@ class CitrixHelper
     {
         try {
             return self::$integrationHelper->getIntegrationObject($integration);
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             // do nothing
         }
 
@@ -542,7 +533,7 @@ class CitrixHelper
                         $lastname  = '';
                         break;
                     case 2:
-                        list($firstname, $lastname) = $names;
+                        [$firstname, $lastname] = $names;
                         break;
                     default:
                         $firstname = $names[0];
@@ -558,10 +549,10 @@ class CitrixHelper
             } elseif (!empty($result['email'])) {
                 $emailKey            = strtolower($result['email']);
                 $contacts[$emailKey] = [
-                    'firstname' => (isset($result['firstName'])) ? $result['firstName'] : '',
-                    'lastname'  => (isset($result['lastName'])) ? $result['lastName'] : '',
+                    'firstname' => $result['firstName'] ?? '',
+                    'lastname'  => $result['lastName'] ?? '',
                     'email'     => $result['email'],
-                    'joinUrl'   => (isset($result['joinUrl'])) ? $result['joinUrl'] : '',
+                    'joinUrl'   => $result['joinUrl'] ?? '',
                 ];
             }
 

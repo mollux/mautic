@@ -26,78 +26,24 @@ class InactiveExecutioner implements ExecutionerInterface
      */
     private $campaign;
 
-    /**
-     * @var ContactLimiter
-     */
-    private $limiter;
+    private ?\Mautic\CampaignBundle\Executioner\ContactFinder\Limiter\ContactLimiter $limiter = null;
 
     /**
      * @var OutputInterface
      */
     private $output;
 
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
+    private ?\Symfony\Component\Console\Helper\ProgressBar $progressBar = null;
 
-    /**
-     * @var ProgressBar
-     */
-    private $progressBar;
+    private ?\Mautic\CampaignBundle\Executioner\Result\Counter $counter = null;
 
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    /**
-     * @var EventScheduler
-     */
-    private $scheduler;
-
-    /**
-     * @var EventExecutioner
-     */
-    private $executioner;
-
-    /**
-     * @var Counter
-     */
-    private $counter;
-
-    /**
-     * @var InactiveContactFinder
-     */
-    private $inactiveContactFinder;
-
-    /**
-     * @var ArrayCollection
-     */
-    private $decisions;
-
-    /**
-     * @var InactiveHelper
-     */
-    private $helper;
+    private ?\Doctrine\Common\Collections\ArrayCollection $decisions = null;
 
     /**
      * InactiveExecutioner constructor.
      */
-    public function __construct(
-        InactiveContactFinder $inactiveContactFinder,
-        LoggerInterface $logger,
-        TranslatorInterface $translator,
-        EventScheduler $scheduler,
-        InactiveHelper $helper,
-        EventExecutioner $executioner
-    ) {
-        $this->inactiveContactFinder = $inactiveContactFinder;
-        $this->logger                = $logger;
-        $this->translator            = $translator;
-        $this->scheduler             = $scheduler;
-        $this->helper                = $helper;
-        $this->executioner           = $executioner;
+    public function __construct(private InactiveContactFinder $inactiveContactFinder, private LoggerInterface $logger, private TranslatorInterface $translator, private EventScheduler $scheduler, private InactiveHelper $helper, private EventExecutioner $executioner)
+    {
     }
 
     /**
@@ -112,7 +58,7 @@ class InactiveExecutioner implements ExecutionerInterface
     {
         $this->campaign = $campaign;
         $this->limiter  = $limiter;
-        $this->output   = ($output) ? $output : new NullOutput();
+        $this->output   = $output ?: new NullOutput();
         $this->counter  = new Counter();
 
         try {
@@ -120,9 +66,9 @@ class InactiveExecutioner implements ExecutionerInterface
 
             $this->prepareForExecution();
             $this->executeEvents();
-        } catch (NoContactsFoundException $exception) {
+        } catch (NoContactsFoundException) {
             $this->logger->debug('CAMPAIGN: No more contacts to process');
-        } catch (NoEventsFoundException $exception) {
+        } catch (NoEventsFoundException) {
             $this->logger->debug('CAMPAIGN: No events to process');
         } finally {
             if ($this->progressBar) {
@@ -146,7 +92,7 @@ class InactiveExecutioner implements ExecutionerInterface
     public function validate($decisionId, ContactLimiter $limiter, OutputInterface $output = null)
     {
         $this->limiter = $limiter;
-        $this->output  = ($output) ? $output : new NullOutput();
+        $this->output  = $output ?: new NullOutput();
         $this->counter = new Counter();
 
         try {
@@ -155,9 +101,9 @@ class InactiveExecutioner implements ExecutionerInterface
             $this->checkCampaignIsPublished();
             $this->prepareForExecution();
             $this->executeEvents();
-        } catch (NoContactsFoundException $exception) {
+        } catch (NoContactsFoundException) {
             $this->logger->debug('CAMPAIGN: No more contacts to process');
-        } catch (NoEventsFoundException $exception) {
+        } catch (NoEventsFoundException) {
             $this->logger->debug('CAMPAIGN: No events to process');
         } finally {
             if ($this->progressBar) {
@@ -282,7 +228,7 @@ class InactiveExecutioner implements ExecutionerInterface
                     // Get the next batch, starting with the max contact ID
                     $contacts = $this->inactiveContactFinder->getContacts($this->campaign->getId(), $decisionEvent, $this->limiter);
                 }
-            } catch (NoContactsFoundException $exception) {
+            } catch (NoContactsFoundException) {
                 // On to the next decision
                 $this->logger->debug('CAMPAIGN: No more contacts to process for decision ID #'.$decisionEvent->getId());
             }

@@ -23,17 +23,13 @@ class TweetListType extends AbstractType
                 'modal_header'        => 'mautic.integration.Twitter.new.tweet',
                 'model'               => 'social.tweet',
                 'model_lookup_method' => 'getLookupResults',
-                'lookup_arguments'    => function (Options $options) {
-                    return [
-                        'type'   => 'tweet',
-                        'filter' => '$data',
-                        'limit'  => 0,
-                        'start'  => 0,
-                    ];
-                },
-                'ajax_lookup_action' => function (Options $options) {
-                    return 'mauticSocial:getLookupChoiceList';
-                },
+                'lookup_arguments'    => fn(Options $options) => [
+                    'type'   => 'tweet',
+                    'filter' => '$data',
+                    'limit'  => 0,
+                    'start'  => 0,
+                ],
+                'ajax_lookup_action' => fn(Options $options) => 'mauticSocial:getLookupChoiceList',
                 'multiple' => true,
                 'required' => false,
             ]

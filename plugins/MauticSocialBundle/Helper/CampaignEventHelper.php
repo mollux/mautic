@@ -17,31 +17,6 @@ use MauticPlugin\MauticSocialBundle\Model\TweetModel;
 class CampaignEventHelper
 {
     /**
-     * @var IntegrationHelper
-     */
-    protected $integrationHelper;
-
-    /**
-     * @var TrackableModel
-     */
-    protected $trackableModel;
-
-    /**
-     * @var PageTokenHelper
-     */
-    protected $pageTokenHelper;
-
-    /**
-     * @var AssetTokenHelper
-     */
-    protected $assetTokenHelper;
-
-    /**
-     * @var TweetModel
-     */
-    protected $tweetModel;
-
-    /**
      * @var array
      */
     protected $clickthrough = [];
@@ -49,24 +24,11 @@ class CampaignEventHelper
     /**
      * CampaignEventHelper constructor.
      */
-    public function __construct(
-        IntegrationHelper $integrationHelper,
-        TrackableModel $trackableModel,
-        PageTokenHelper $pageTokenHelper,
-        AssetTokenHelper $assetTokenHelper,
-        TweetModel $tweetModel
-    ) {
-        $this->integrationHelper = $integrationHelper;
-        $this->trackableModel    = $trackableModel;
-        $this->pageTokenHelper   = $pageTokenHelper;
-        $this->assetTokenHelper  = $assetTokenHelper;
-        $this->tweetModel        = $tweetModel;
+    public function __construct(protected IntegrationHelper $integrationHelper, protected TrackableModel $trackableModel, protected PageTokenHelper $pageTokenHelper, protected AssetTokenHelper $assetTokenHelper, protected TweetModel $tweetModel)
+    {
     }
 
-    /**
-     * @return array|false
-     */
-    public function sendTweetAction(Lead $lead, array $event)
+    public function sendTweetAction(Lead $lead, array $event): array|false
     {
         $tweetSent   = false;
         $tweetEntity = $this->tweetModel->getEntity($event['channelId']);
@@ -128,7 +90,7 @@ class CampaignEventHelper
     {
         $tweetHandle = $lead['twitter'];
         $tokens      = [
-            '{twitter_handle}' => (false !== strpos($tweetHandle, '@')) ? $tweetHandle : "@$tweetHandle",
+            '{twitter_handle}' => (str_contains($tweetHandle, '@')) ? $tweetHandle : "@$tweetHandle",
         ];
 
         $tokens = array_merge(
@@ -138,7 +100,7 @@ class CampaignEventHelper
             $this->assetTokenHelper->findAssetTokens($text, $this->clickthrough)
         );
 
-        list($text, $trackables) = $this->trackableModel->parseContentForTrackables(
+        [$text, $trackables] = $this->trackableModel->parseContentForTrackables(
             $text,
             $tokens,
             'social_twitter',

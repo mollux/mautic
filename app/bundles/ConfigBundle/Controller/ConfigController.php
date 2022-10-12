@@ -18,10 +18,8 @@ class ConfigController extends FormController
 {
     /**
      * Controller action for editing the application configuration.
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function editAction()
+    public function editAction(): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         //admin only allowed
         if (!$this->user->isAdmin()) {
@@ -182,7 +180,7 @@ class ConfigController extends FormController
      *
      * @return array|\Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function downloadAction($objectId)
+    public function downloadAction($objectId): array|\Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         //admin only allowed
         if (!$this->user->isAdmin()) {
@@ -223,7 +221,7 @@ class ConfigController extends FormController
      *
      * @return array|\Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function removeAction($objectId)
+    public function removeAction($objectId): array|\Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         //admin only allowed
         if (!$this->user->isAdmin()) {
@@ -248,7 +246,7 @@ class ConfigController extends FormController
                 $cacheHelper = $this->get('mautic.helper.cache');
                 $cacheHelper->refreshConfig();
                 $success = 1;
-            } catch (\Exception $exception) {
+            } catch (\Exception) {
             }
         }
 

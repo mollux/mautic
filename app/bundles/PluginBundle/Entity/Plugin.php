@@ -14,55 +14,25 @@ class Plugin extends CommonEntity
 {
     public const DESCRIPTION_DELIMITER_REGEX = "/\R---\R/";
 
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var string
-     */
-    private $name;
+    private ?string $name = null;
 
-    /**
-     * @var string
-     */
-    private $description;
+    private ?string $description = null;
 
-    /**
-     * @var string
-     */
-    private $primaryDescription;
+    private ?string $primaryDescription = null;
 
-    /**
-     * @var string
-     */
-    private $secondaryDescription;
+    private ?string $secondaryDescription = null;
 
-    /**
-     * @var bool
-     */
-    private $isMissing = false;
+    private bool $isMissing = false;
 
-    /**
-     * @var string
-     */
-    private $bundle;
+    private ?string $bundle = null;
 
-    /**
-     * @var string
-     */
-    private $version;
+    private ?string $version = null;
 
-    /**
-     * @var string
-     */
-    private $author;
+    private ?string $author = null;
 
-    /**
-     * @var ArrayCollection
-     */
-    private $integrations;
+    private \Doctrine\Common\Collections\ArrayCollection $integrations;
 
     public function __construct()
     {
@@ -179,10 +149,7 @@ class Plugin extends CommonEntity
         return $this->description;
     }
 
-    /**
-     * @param mixed $description
-     */
-    public function setDescription($description)
+    public function setDescription(mixed $description)
     {
         $this->description = $description;
         $this->splitDescriptions();
@@ -220,10 +187,7 @@ class Plugin extends CommonEntity
         return $this->version;
     }
 
-    /**
-     * @param mixed $version
-     */
-    public function setVersion($version)
+    public function setVersion(mixed $version)
     {
         $this->version = $version;
     }
@@ -236,10 +200,7 @@ class Plugin extends CommonEntity
         return $this->isMissing;
     }
 
-    /**
-     * @param mixed $isMissing
-     */
-    public function setIsMissing($isMissing)
+    public function setIsMissing(mixed $isMissing)
     {
         $this->isMissing = $isMissing;
     }
@@ -252,10 +213,7 @@ class Plugin extends CommonEntity
         return $this->author;
     }
 
-    /**
-     * @param mixed $author
-     */
-    public function setAuthor($author)
+    public function setAuthor(mixed $author)
     {
         $this->author = $author;
     }

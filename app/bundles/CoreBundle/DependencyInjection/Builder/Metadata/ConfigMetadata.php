@@ -7,19 +7,10 @@ use Tightenco\Collect\Support\Collection;
 
 class ConfigMetadata
 {
-    /**
-     * @var BundleMetadata
-     */
-    private $metadata;
+    private array $ipLookupServices = [];
 
-    /**
-     * @var array
-     */
-    private $ipLookupServices = [];
-
-    public function __construct(BundleMetadata $metadata)
+    public function __construct(private BundleMetadata $metadata)
     {
-        $this->metadata = $metadata;
     }
 
     public function build(): void
@@ -78,20 +69,16 @@ class ConfigMetadata
 
                 $serviceGroup = new \Tightenco\Collect\Support\Collection($serviceGroup);
                 $filtered     = $serviceGroup->reject(
-                    function ($serviceDefinition) {
-                        // Remove optional services (has argument optional = true) if the service class does not exist
-                        return is_array($serviceDefinition)
-                            && isset($serviceDefinition['optional'])
-                            && true === $serviceDefinition['optional']
-                            && isset($serviceDefinition['class'])
-                            && false === class_exists($serviceDefinition['class']);
-                    }
+                    fn($serviceDefinition) => // Remove optional services (has argument optional = true) if the service class does not exist
+is_array($serviceDefinition)
+                        && isset($serviceDefinition['optional'])
+                        && true === $serviceDefinition['optional']
+                        && isset($serviceDefinition['class'])
+                        && false === class_exists($serviceDefinition['class'])
                 );
 
                 $filtered->transform(
-                    function ($serviceDefinition) {
-                        return $this->encodeParameters($serviceDefinition);
-                    }
+                    fn($serviceDefinition) => $this->encodeParameters($serviceDefinition)
                 );
 
                 return $filtered->toArray();
@@ -104,9 +91,7 @@ class ConfigMetadata
     private function prepareParameters(Collection $parameters): array
     {
         $parameters->transform(
-            function ($parameterValue) {
-                return $this->encodeParameters($parameterValue);
-            }
+            fn($parameterValue) => $this->encodeParameters($parameterValue)
         );
 
         return $parameters->toArray();

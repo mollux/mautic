@@ -33,11 +33,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class HubspotIntegration extends CrmAbstractIntegration
 {
-    /**
-     * @var UserHelper
-     */
-    protected $userHelper;
-
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
         CacheStorageHelper $cacheStorageHelper,
@@ -55,10 +50,8 @@ class HubspotIntegration extends CrmAbstractIntegration
         FieldModel $fieldModel,
         IntegrationEntityModel $integrationEntityModel,
         DoNotContact $doNotContact,
-        UserHelper $userHelper
+        protected UserHelper $userHelper
     ) {
-        $this->userHelper = $userHelper;
-
         parent::__construct(
             $eventDispatcher,
             $cacheStorageHelper,
@@ -187,13 +180,13 @@ class HubspotIntegration extends CrmAbstractIntegration
         }
 
         $hubsFields        = [];
-        $silenceExceptions = (isset($settings['silence_exceptions'])) ? $settings['silence_exceptions'] : true;
+        $silenceExceptions = $settings['silence_exceptions'] ?? true;
 
         if (isset($settings['feature_settings']['objects'])) {
             $hubspotObjects = $settings['feature_settings']['objects'];
         } else {
             $settings       = $this->settings->getFeatureSettings();
-            $hubspotObjects = isset($settings['objects']) ? $settings['objects'] : ['contacts'];
+            $hubspotObjects = $settings['objects'] ?? ['contacts'];
         }
 
         try {
@@ -343,6 +336,7 @@ class HubspotIntegration extends CrmAbstractIntegration
      */
     public function amendLeadDataBeforeMauticPopulate($data, $object)
     {
+        $fieldsValues = [];
         if (!isset($data['properties'])) {
             return [];
         }
@@ -480,12 +474,13 @@ class HubspotIntegration extends CrmAbstractIntegration
      */
     public function getMauticLead($data, $persist = true, $socialCache = null, $identifiers = null, $object = null)
     {
+        $stages = [];
         if (is_object($data)) {
             // Convert to array in all levels
-            $data = json_encode(json_decode($data, true));
+            $data = json_encode(json_decode($data, true, 512, JSON_THROW_ON_ERROR), JSON_THROW_ON_ERROR);
         } elseif (is_string($data)) {
             // Assume JSON
-            $data = json_decode($data, true);
+            $data = json_decode($data, true, 512, JSON_THROW_ON_ERROR);
         }
 
         if (isset($data['lifecyclestage'])) {
@@ -556,10 +551,8 @@ class HubspotIntegration extends CrmAbstractIntegration
     /**
      * @param Lead  $lead
      * @param array $config
-     *
-     * @return array|bool
      */
-    public function pushLead($lead, $config = [])
+    public function pushLead($lead, $config = []): array|bool
     {
         $config = $this->mergeConfigToFeatureSettings($config);
 

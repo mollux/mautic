@@ -31,7 +31,7 @@ return [
                 'standard_entity' => true,
                 'name'            => 'categories',
                 'path'            => '/categories',
-                'controller'      => 'Mautic\CategoryBundle\Controller\Api\CategoryApiController',
+                'controller'      => \Mautic\CategoryBundle\Controller\Api\CategoryApiController::class,
             ],
         ],
     ],
@@ -67,7 +67,7 @@ return [
         ],
         'forms' => [
             'mautic.form.type.category' => [
-                'class'     => 'Mautic\CategoryBundle\Form\Type\CategoryListType',
+                'class'     => \Mautic\CategoryBundle\Form\Type\CategoryListType::class,
                 'arguments' => [
                     'doctrine.orm.entity_manager',
                     'translator',
@@ -82,7 +82,7 @@ return [
                 ],
             ],
             'mautic.form.type.category_bundles_form' => [
-                'class'     => 'Mautic\CategoryBundle\Form\Type\CategoryBundlesType',
+                'class'     => \Mautic\CategoryBundle\Form\Type\CategoryBundlesType::class,
                 'arguments' => [
                     'event_dispatcher',
                 ],
@@ -90,7 +90,7 @@ return [
         ],
         'models' => [
             'mautic.category.model.category' => [
-                'class'     => 'Mautic\CategoryBundle\Model\CategoryModel',
+                'class'     => \Mautic\CategoryBundle\Model\CategoryModel::class,
                 'arguments' => [
                     'request_stack',
                 ],

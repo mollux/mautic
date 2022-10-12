@@ -14,22 +14,10 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class MandrillTransport extends AbstractTokenHttpTransport implements CallbackTransportInterface
 {
     /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    /**
-     * @var TransportCallback
-     */
-    private $transportCallback;
-
-    /**
      * MandrillTransport constructor.
      */
-    public function __construct(TranslatorInterface $translator, TransportCallback $transportCallback)
+    public function __construct(private TranslatorInterface $translator, private TransportCallback $transportCallback)
     {
-        $this->translator        = $translator;
-        $this->transportCallback = $transportCallback;
     }
 
     /**
@@ -177,7 +165,7 @@ class MandrillTransport extends AbstractTokenHttpTransport implements CallbackTr
 
                             // If CC and BCC, remove the ct from URLs to prevent false lead tracking
                             foreach ($ccMergeVars['vars'] as &$var) {
-                                if (false !== strpos($var['content'], 'http') && ($ctPos = strpos($var['content'], 'ct=')) !== false) {
+                                if (str_contains($var['content'], 'http') && ($ctPos = strpos($var['content'], 'ct=')) !== false) {
                                     // URL so make sure a ct query is not part of it
                                     $var['content'] = substr($var['content'], 0, $ctPos);
                                 }
@@ -246,7 +234,7 @@ class MandrillTransport extends AbstractTokenHttpTransport implements CallbackTr
             [
                 'key'     => $key,
                 'message' => $message,
-            ]
+            ], JSON_THROW_ON_ERROR
         );
 
         return $payload;
@@ -285,7 +273,7 @@ class MandrillTransport extends AbstractTokenHttpTransport implements CallbackTr
                 'payload' => json_encode(
                     [
                         'key' => $key,
-                    ]
+                    ], JSON_THROW_ON_ERROR
                 ),
             ]
         );
@@ -306,7 +294,7 @@ class MandrillTransport extends AbstractTokenHttpTransport implements CallbackTr
     protected function handlePostResponse($response, $info)
     {
         $parsedResponse = '';
-        $response       = json_decode($response, true);
+        $response       = json_decode($response, true, 512, JSON_THROW_ON_ERROR);
 
         if (false === $response) {
             $parsedResponse = $response;
@@ -407,7 +395,7 @@ class MandrillTransport extends AbstractTokenHttpTransport implements CallbackTr
     public function processCallbackRequest(Request $request)
     {
         $mandrillEvents = $request->request->get('mandrill_events');
-        $mandrillEvents = json_decode($mandrillEvents, true);
+        $mandrillEvents = json_decode($mandrillEvents, true, 512, JSON_THROW_ON_ERROR);
 
         if (is_array($mandrillEvents)) {
             foreach ($mandrillEvents as $event) {

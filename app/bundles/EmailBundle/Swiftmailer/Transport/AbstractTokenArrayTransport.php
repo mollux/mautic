@@ -14,10 +14,7 @@ abstract class AbstractTokenArrayTransport implements TokenTransportInterface
      */
     protected $message;
 
-    /**
-     * @var \Swift_Events_SimpleEventDispatcher|null
-     */
-    private $dispatcher;
+    private ?\Swift_Events_SimpleEventDispatcher $dispatcher = null;
 
     /**
      * @var bool
@@ -135,10 +132,8 @@ abstract class AbstractTokenArrayTransport implements TokenTransportInterface
      * @param array      $search            If the mailer requires tokens in another format than Mautic's, pass array of Mautic tokens to replace
      * @param array      $replace           If the mailer requires tokens in another format than Mautic's, pass array of replacement tokens
      * @param bool|false $binaryAttachments True to convert file attachments to binary
-     *
-     * @return array|\Swift_Message
      */
-    protected function messageToArray($search = [], $replace = [], $binaryAttachments = false)
+    protected function messageToArray($search = [], $replace = [], bool $binaryAttachments = false): array|\Swift_Message
     {
         if (!empty($search)) {
             MailHelper::searchReplaceTokens($search, $replace, $this->message);
@@ -281,11 +276,9 @@ abstract class AbstractTokenArrayTransport implements TokenTransportInterface
     }
 
     /**
-     * @param \Exception|string $exception
-     *
      * @throws \Exception
      */
-    protected function throwException($exception)
+    protected function throwException(\Exception|string $exception)
     {
         if (!$exception instanceof \Exception) {
             $exception = new \Swift_TransportException($exception);

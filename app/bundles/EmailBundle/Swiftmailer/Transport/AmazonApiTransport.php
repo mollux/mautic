@@ -16,10 +16,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class AmazonApiTransport extends AbstractTokenArrayTransport implements \Swift_Transport, TokenTransportInterface, CallbackTransportInterface
 {
-    /**
-     * @var string|null
-     */
-    private $region;
+    private ?string $region = null;
 
     /**
      * @var string|null
@@ -32,34 +29,13 @@ class AmazonApiTransport extends AbstractTokenArrayTransport implements \Swift_T
     private $password;
 
     /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
      * @var SesV2Client
      */
     private $amazonClient;
 
-    /**
-     * @var AmazonCallback
-     */
-    private $amazonCallback;
+    private ?int $concurrency = null;
 
-    /**
-     * @var int
-     */
-    private $concurrency;
-
-    /**
-     * @var Aws\CommandInterface|Psr\Http\Message\RequestInterface
-     */
-    private $handler;
+    private \Aws\CommandInterface|\Psr\Http\Message\RequestInterface|null $handler = null;
 
     /**
      * @var bool
@@ -147,14 +123,8 @@ class AmazonApiTransport extends AbstractTokenArrayTransport implements \Swift_T
         return $this->debug;
     }
 
-    public function __construct(
-        TranslatorInterface $translator,
-        AmazonCallback $amazonCallback,
-        LoggerInterface $logger
-    ) {
-        $this->amazonCallback    = $amazonCallback;
-        $this->translator        = $translator;
-        $this->logger            = $logger;
+    public function __construct(private TranslatorInterface $translator, private AmazonCallback $amazonCallback, private LoggerInterface $logger)
+    {
     }
 
     public function start()
@@ -260,10 +230,7 @@ class AmazonApiTransport extends AbstractTokenArrayTransport implements \Swift_T
             $promise->wait();
 
             return count($commands);
-        } catch (SesV2Exception $e) {
-            $this->triggerSendError($evt, $failedRecipients, $e->getMessage());
-            $this->throwException($e->getMessage());
-        } catch (\Exception $e) {
+        } catch (SesV2Exception|\Exception $e) {
             $this->triggerSendError($evt, $failedRecipients, $e->getMessage());
             $this->throwException($e->getMessage());
         }
@@ -380,20 +347,20 @@ class AmazonApiTransport extends AbstractTokenArrayTransport implements \Swift_T
                     foreach ($tokenizedMessage['headers'] as $key => $value) {
                         if ('List-Unsubscribe' === $key) {
                             $listUnsubscribe = array_map('trim', explode(',', $value));
-                            $listUnsubscribe = array_filter($listUnsubscribe, fn ($el) => strpos($el, $mailData['hashId']));
+                            $listUnsubscribe = array_filter($listUnsubscribe, fn ($el) => strpos($el, (string) $mailData['hashId']));
                             $value           = implode(',', $listUnsubscribe);
                         }
                         $headers->addTextHeader($key, $value);
                     }
                 }
 
-                if (count($tokenizedMessage['recipients']['cc']) > 0) {
+                if ((is_countable($tokenizedMessage['recipients']['cc']) ? count($tokenizedMessage['recipients']['cc']) : 0) > 0) {
                     $cc = array_keys($tokenizedMessage['recipients']['cc']);
                     $toSendMessage->setCc($cc);
                     $sesArray['Destination']['CcAddresses'] = $cc;
                 }
 
-                if (count($tokenizedMessage['recipients']['bcc']) > 0) {
+                if ((is_countable($tokenizedMessage['recipients']['bcc']) ? count($tokenizedMessage['recipients']['bcc']) : 0) > 0) {
                     $bcc = array_keys($tokenizedMessage['recipients']['bcc']);
                     $toSendMessage->setBcc($bcc);
                     $sesArray['Destination']['BccAddresses'] = $bcc;
@@ -413,7 +380,7 @@ class AmazonApiTransport extends AbstractTokenArrayTransport implements \Swift_T
                     $sesArray['ConfigurationSetName'] = $tokenizedMessage['headers']['X-SES-CONFIGURATION-SET'];
                 }
 
-                if (count($tokenizedMessage['file_attachments']) > 0) {
+                if ((is_countable($tokenizedMessage['file_attachments']) ? count($tokenizedMessage['file_attachments']) : 0) > 0) {
                     foreach ($tokenizedMessage['file_attachments'] as $attachment) {
                         $fileAttach = \Swift_Attachment::fromPath($attachment['filePath']);
                         $fileAttach->setFilename($attachment['fileName']);
@@ -421,7 +388,7 @@ class AmazonApiTransport extends AbstractTokenArrayTransport implements \Swift_T
                         $toSendMessage->attach($fileAttach);
                     }
                 }
-                if (count($tokenizedMessage['binary_attachments']) > 0) {
+                if ((is_countable($tokenizedMessage['binary_attachments']) ? count($tokenizedMessage['binary_attachments']) : 0) > 0) {
                     foreach ($tokenizedMessage['binary_attachments'] as $attachment) {
                         $fileAttach = new \Swift_Attachment($attachment['content'], $attachment['name'], $attachment['type']);
                         $toSendMessage->attach($fileAttach);

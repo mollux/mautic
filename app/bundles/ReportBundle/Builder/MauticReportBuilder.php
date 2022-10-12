@@ -77,36 +77,12 @@ final class MauticReportBuilder implements ReportBuilderInterface
     public const CHANNEL_COLUMN_CREATED_BY_USER = 'channel.created_by_user';
 
     /**
-     * @var Connection
-     */
-    private $db;
-
-    /**
-     * @var Report
-     */
-    private $entity;
-
-    /**
      * @var string
      */
     private $contentTemplate;
 
-    /**
-     * @var EventDispatcher
-     */
-    private $dispatcher;
-
-    /**
-     * @var ChannelListHelper
-     */
-    private $channelListHelper;
-
-    public function __construct(EventDispatcherInterface $dispatcher, Connection $db, Report $entity, ChannelListHelper $channelListHelper)
+    public function __construct(private EventDispatcherInterface $dispatcher, private Connection $db, private Report $entity, private ChannelListHelper $channelListHelper)
     {
-        $this->entity            = $entity;
-        $this->dispatcher        = $dispatcher;
-        $this->db                = $db;
-        $this->channelListHelper = $channelListHelper;
     }
 
     /**
@@ -208,7 +184,7 @@ final class MauticReportBuilder implements ReportBuilderInterface
                 if (isset($options['order']['column'])) {
                     $queryBuilder->orderBy($options['order']['column'], $options['order']['direction']);
                 } elseif (!empty($options['order'][0][1])) {
-                    list($column, $dir) = $options['order'];
+                    [$column, $dir] = $options['order'];
                     $queryBuilder->orderBy($column, $dir);
                 } else {
                     foreach ($options['order'] as $order) {
@@ -293,8 +269,8 @@ final class MauticReportBuilder implements ReportBuilderInterface
                     }
 
                     // support for prefix and suffix to value in query
-                    $prefix     = isset($fieldOptions['prefix']) ? $fieldOptions['prefix'] : '';
-                    $suffix     = isset($fieldOptions['suffix']) ? $fieldOptions['suffix'] : '';
+                    $prefix     = $fieldOptions['prefix'] ?? '';
+                    $suffix     = $fieldOptions['suffix'] ?? '';
                     if ($prefix || $suffix) {
                         $selectText = 'CONCAT(\''.$prefix.'\', '.$selectText.',\''.$suffix.'\')';
                     }
@@ -316,7 +292,7 @@ final class MauticReportBuilder implements ReportBuilderInterface
 
         // Replace {{count}} with the count query
         array_walk($selectColumns, function (&$columnValue, $columnIndex) use ($countSql) {
-            if (false !== strpos($columnValue, '{{count}}')) {
+            if (str_contains($columnValue, '{{count}}')) {
                 $columnValue = str_replace('{{count}}', $countSql, $columnValue);
             }
         });
@@ -375,7 +351,7 @@ final class MauticReportBuilder implements ReportBuilderInterface
 
         if (count($filters)) {
             foreach ($filters as $i => $filter) {
-                $exprFunction = isset($filter['expr']) ? $filter['expr'] : $filter['condition'];
+                $exprFunction = $filter['expr'] ?? $filter['condition'];
                 $paramName    = sprintf('i%dc%s', $i, InputHelper::alphanum($filter['column']));
 
                 if (array_key_exists('glue', $filter) && 'or' === $filter['glue']) {

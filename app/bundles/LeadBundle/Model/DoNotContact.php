@@ -9,22 +9,10 @@ use Mautic\LeadBundle\Entity\Lead;
 class DoNotContact
 {
     /**
-     * @var LeadModel
-     */
-    protected $leadModel;
-
-    /**
-     * @var DoNotContactRepository
-     */
-    protected $dncRepo;
-
-    /**
      * DoNotContact constructor.
      */
-    public function __construct(LeadModel $leadModel, DoNotContactRepository $dncRepo)
+    public function __construct(protected LeadModel $leadModel, protected DoNotContactRepository $dncRepo)
     {
-        $this->leadModel = $leadModel;
-        $this->dncRepo   = $dncRepo;
     }
 
     /**
@@ -78,13 +66,13 @@ class DoNotContact
      */
     public function addDncForContact(
         $contactId,
-        $channel,
+        string|array $channel,
         $reason = DNC::BOUNCED,
         $comments = '',
         $persist = true,
         $checkCurrentStatus = true,
         $allowUnsubscribeOverride = false
-    ) {
+    ): bool|DNC {
         $dnc     = false;
         $contact = $this->leadModel->getEntity($contactId);
 

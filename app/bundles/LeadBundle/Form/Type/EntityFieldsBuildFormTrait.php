@@ -55,7 +55,7 @@ trait EntityFieldsBuildFormTrait
 
             try {
                 $type = FieldAliasToFqcnMap::getFqcn($type);
-            } catch (FieldNotFoundException $e) {
+            } catch (FieldNotFoundException) {
             }
 
             if ($field['isUniqueIdentifer']) {
@@ -63,10 +63,9 @@ trait EntityFieldsBuildFormTrait
             }
 
             if ($isObject) {
-                $value = (isset($fieldValues[$group][$alias]['value'])) ?
-                    $fieldValues[$group][$alias]['value'] : $field['defaultValue'];
+                $value = $fieldValues[$group][$alias]['value'] ?? $field['defaultValue'];
             } else {
-                $value = (isset($fieldValues[$alias])) ? $fieldValues[$alias] : '';
+                $value = $fieldValues[$alias] ?? '';
             }
 
             $constraints = [];
@@ -130,7 +129,7 @@ trait EntityFieldsBuildFormTrait
                     if ($value) {
                         try {
                             $dtHelper = new DateTimeHelper($value, null, 'local');
-                        } catch (\Exception $e) {
+                        } catch (\Exception) {
                             // Rather return empty value than break the page
                             $value = null;
                         }

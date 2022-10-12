@@ -442,7 +442,7 @@ class ZohoIntegration extends CrmAbstractIntegration
             }
 
             $this->em->getRepository('MauticPluginBundle:IntegrationEntity')->saveEntities($integrationEntities);
-            $this->em->clear('Mautic\PluginBundle\Entity\IntegrationEntity');
+            $this->em->clear(\Mautic\PluginBundle\Entity\IntegrationEntity::class);
             //}
             unset($integrationEntities);
         }
@@ -460,6 +460,8 @@ class ZohoIntegration extends CrmAbstractIntegration
      */
     public function getLeads($params, $query, &$executed, $result = [], $object = 'Lead')
     {
+        $oparams = [];
+        $progress = null;
         if ('Lead' === $object || 'Contact' === $object) {
             $object .= 's'; // pluralize object name for Zoho
         }
@@ -538,6 +540,8 @@ class ZohoIntegration extends CrmAbstractIntegration
      */
     public function getCompanies($params = [], $query = null, &$executed = null, &$result = [])
     {
+        $oparams = [];
+        $progress = null;
         $executed = 0;
         $object   = 'company';
 
@@ -764,20 +768,19 @@ class ZohoIntegration extends CrmAbstractIntegration
     /**
      * @param array $settings
      *
-     * @return array|bool
      *
      * @throws ApiErrorException
      */
-    public function getAvailableLeadFields($settings = [])
+    public function getAvailableLeadFields($settings = []): array|bool
     {
         $zohoFields        = [];
-        $silenceExceptions = isset($settings['silence_exceptions']) ? $settings['silence_exceptions'] : true;
+        $silenceExceptions = $settings['silence_exceptions'] ?? true;
 
         if (isset($settings['feature_settings']['objects'])) {
             $zohoObjects = $settings['feature_settings']['objects'];
         } else {
             $settings    = $this->settings->getFeatureSettings();
-            $zohoObjects = isset($settings['objects']) ? $settings['objects'] : ['Leads'];
+            $zohoObjects = $settings['objects'] ?? ['Leads'];
         }
 
         try {
@@ -825,7 +828,7 @@ class ZohoIntegration extends CrmAbstractIntegration
             $this->logIntegrationError($exception);
 
             if (!$silenceExceptions) {
-                if (false !== strpos($exception->getMessage(), 'Invalid Ticket Id')) {
+                if (str_contains($exception->getMessage(), 'Invalid Ticket Id')) {
                     // Use a bit more friendly message
                     $exception = new ApiErrorException('There was an issue with communicating with Zoho. Please try to reauthorize.');
                 }
@@ -846,6 +849,8 @@ class ZohoIntegration extends CrmAbstractIntegration
      */
     public function pushLeads($params = [])
     {
+        $fieldsToUpdate = [];
+        $output = null;
         $maxRecords = (isset($params['limit']) && $params['limit'] < 100) ? $params['limit'] : 100;
         if (isset($params['fetchAll']) && $params['fetchAll']) {
             $params['start'] = null;
@@ -965,7 +970,7 @@ class ZohoIntegration extends CrmAbstractIntegration
                 'lead',
                 $lead['internal_entity_id']
             );
-            if (count($integrationId)) { // lead exists, then update
+            if (is_countable($integrationId) ? count($integrationId) : 0) { // lead exists, then update
                 $integrationEntity     = $this->em->getReference('MauticPluginBundle:IntegrationEntity', $integrationId[0]['id']);
                 $integrationEntity->setLastSyncDate(new \DateTime());
                 $integrationEntity->setInternalEntity('lead-converted');
@@ -1073,11 +1078,10 @@ class ZohoIntegration extends CrmAbstractIntegration
     /**
      * @param Lead|array $lead
      * @param array      $config
-     *
-     * @return array|bool
      */
-    public function pushLead($lead, $config = [])
+    public function pushLead($lead, $config = []): array|bool
     {
+        $fieldsToUpdate = [];
         $config  = $this->mergeConfigToFeatureSettings($config);
         $zObject = 'Leads';
 
@@ -1334,7 +1338,7 @@ class ZohoIntegration extends CrmAbstractIntegration
 
         $objects = (!is_array($object)) ? [$object] : $object;
         if (is_string($object) && 'Accounts' === $object) {
-            return isset($fields['companyFields']) ? $fields['companyFields'] : $fields;
+            return $fields['companyFields'] ?? $fields;
         }
 
         if (isset($fields['leadFields'])) {

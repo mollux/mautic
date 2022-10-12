@@ -21,36 +21,8 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class LeadSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var FieldChangeRepository
-     */
-    private $fieldChangeRepo;
-
-    /**
-     * @var ObjectMappingRepository
-     */
-    private $objectMappingRepository;
-
-    /**
-     * @var VariableExpresserHelperInterface
-     */
-    private $variableExpressor;
-
-    /**
-     * @var SyncIntegrationsHelper
-     */
-    private $syncIntegrationsHelper;
-
-    public function __construct(
-        FieldChangeRepository $fieldChangeRepo,
-        ObjectMappingRepository $objectMappingRepository,
-        VariableExpresserHelperInterface $variableExpressor,
-        SyncIntegrationsHelper $syncIntegrationsHelper
-    ) {
-        $this->fieldChangeRepo         = $fieldChangeRepo;
-        $this->objectMappingRepository = $objectMappingRepository;
-        $this->variableExpressor       = $variableExpressor;
-        $this->syncIntegrationsHelper  = $syncIntegrationsHelper;
+    public function __construct(private FieldChangeRepository $fieldChangeRepo, private ObjectMappingRepository $objectMappingRepository, private VariableExpresserHelperInterface $variableExpressor, private SyncIntegrationsHelper $syncIntegrationsHelper)
+    {
     }
 
     public static function getSubscribedEvents(): array
@@ -164,6 +136,7 @@ class LeadSubscriber implements EventSubscriberInterface
 
     public function onLeadCompanyChange(Events\LeadChangeCompanyEvent $event): void
     {
+        $changes = [];
         $lead = $event->getLead();
 
         // This mechanism is not able to record multiple company changes.

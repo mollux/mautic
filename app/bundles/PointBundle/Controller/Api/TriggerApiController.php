@@ -15,7 +15,7 @@ class TriggerApiController extends CommonApiController
     public function initialize(ControllerEvent $event)
     {
         $this->model            = $this->getModel('point.trigger');
-        $this->entityClass      = 'Mautic\PointBundle\Entity\Trigger';
+        $this->entityClass      = \Mautic\PointBundle\Entity\Trigger::class;
         $this->entityNameOne    = 'trigger';
         $this->entityNameMulti  = 'triggers';
         $this->serializerGroups = ['triggerDetails', 'categoryList', 'publishDetails'];
@@ -51,7 +51,7 @@ class TriggerApiController extends CommonApiController
             foreach ($parameters['events'] as &$eventParams) {
                 if (empty($eventParams['id'])) {
                     // Create an unique ID if not set - the following code requires one
-                    $eventParams['id']  = 'new'.hash('sha1', uniqid(mt_rand()));
+                    $eventParams['id']  = 'new'.hash('sha1', uniqid(random_int(0, mt_getrandmax())));
                     $triggerEventEntity = $triggerEventModel->getEntity();
                 } else {
                     $triggerEventEntity  = $triggerEventModel->getEntity($eventParams['id']);

@@ -16,14 +16,8 @@ use Symfony\Component\Validator\Constraints\NotBlank;
  */
 class CampaignEventFormFieldValueType extends AbstractType
 {
-    /**
-     * @var FormModel
-     */
-    private $model;
-
-    public function __construct(FormModel $model)
+    public function __construct(private FormModel $model)
     {
-        $this->model = $model;
     }
 
     /**
@@ -124,7 +118,7 @@ class CampaignEventFormFieldValueType extends AbstractType
                     'choices'           => $fields,
                     'attr'              => [
                         'onchange'           => 'Mautic.updateFormFieldValues(this)',
-                        'data-field-options' => json_encode($options),
+                        'data-field-options' => json_encode($options, JSON_THROW_ON_ERROR),
                     ],
                     'required'    => true,
                     'constraints' => [

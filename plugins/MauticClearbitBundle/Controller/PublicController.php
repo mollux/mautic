@@ -167,7 +167,7 @@ class PublicController extends FormController
             } else {
                 /******************  COMPANY STUFF  *********************/
 
-                if ('company' === $this->request->request->get('type', [], true)) {
+                if ('company' === $this->request->request->get('type', [])) {
                     /** @var \Mautic\LeadBundle\Model\CompanyModel $model */
                     $model = $this->getModel('lead.company');
                     /** @var Company $company */
@@ -218,7 +218,7 @@ class PublicController extends FormController
                             'emailAddresses',
                             $result['site']
                         )
-                        && count($result['site']['emailAddresses'])
+                        && (is_countable($result['site']['emailAddresses']) ? count($result['site']['emailAddresses']) : 0)
                         && empty($currFields['companyemail']['value'])
                     ) {
                         $data['companyemail'] = $result['site']['emailAddresses'][0];

@@ -26,10 +26,8 @@ trait FrequencyRuleTrait
      * @param bool  $isPublic
      * @param null  $action
      * @param bool  $isPreferenceCenter
-     *
-     * @return bool|Form
      */
-    protected function getFrequencyRuleForm($lead, &$viewParameters = [], &$data = null, $isPublic = false, $action = null, $isPreferenceCenter = false)
+    protected function getFrequencyRuleForm($lead, &$viewParameters = [], &$data = null, $isPublic = false, $action = null, $isPreferenceCenter = false): bool|\Symfony\Component\Form\Form
     {
         /** @var LeadModel $model */
         $model = $this->getModel('lead');
@@ -132,11 +130,9 @@ trait FrequencyRuleTrait
             }
         }
 
-        $data['global_categories'] = (isset($frequencyRules['global_categories']))
-            ? $frequencyRules['global_categories']
-            : $model->getLeadCategories(
-                $lead
-            );
+        $data['global_categories'] = $frequencyRules['global_categories'] ?? $model->getLeadCategories(
+            $lead
+        );
         $this->leadLists    = $model->getLists($lead, false, false, $isPublic, $isPreferenceCenter);
         $data['lead_lists'] = [];
         foreach ($this->leadLists as $leadList) {

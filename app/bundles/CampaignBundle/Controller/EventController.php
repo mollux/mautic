@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 class EventController extends CommonFormController
 {
-    private $supportedEventTypes = [
+    private array $supportedEventTypes = [
         Event::TYPE_DECISION,
         Event::TYPE_ACTION,
         Event::TYPE_CONDITION,
@@ -18,10 +18,8 @@ class EventController extends CommonFormController
 
     /**
      * Generates new form and processes post data.
-     *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function newAction()
+    public function newAction(): \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         $success = 0;
         $valid   = $cancelled   = false;
@@ -91,7 +89,7 @@ class EventController extends CommonFormController
                     $success = 1;
 
                     //form is valid so process the data
-                    $keyId = 'new'.hash('sha1', uniqid(mt_rand()));
+                    $keyId = 'new'.hash('sha1', uniqid(random_int(0, mt_getrandmax())));
 
                     //save the properties to session
                     $modifiedEvents = $session->get('mautic.campaign.'.$campaignId.'.events.modified');
@@ -208,10 +206,8 @@ class EventController extends CommonFormController
 
     /**
      * Generates edit form and processes post data.
-     *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function editAction($objectId)
+    public function editAction($objectId): \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         $session       = $this->get('session');
         $valid         = $cancelled = false;
@@ -346,9 +342,7 @@ class EventController extends CommonFormController
         if (!$cancelled && $valid) {
             // Prevent undefined errors
             $event    = array_merge((new Event())->convertToArray(), $event);
-            $template = isset($event['settings']['template'])
-                ? $event['settings']['template']
-                : 'MauticCampaignBundle:Event:generic.html.php';
+            $template = $event['settings']['template'] ?? 'MauticCampaignBundle:Event:generic.html.php';
 
             $passthroughVars = array_merge($passthroughVars, [
                 'event'      => $event,
@@ -414,10 +408,8 @@ class EventController extends CommonFormController
      * Deletes the entity.
      *
      * @param $objectId
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function deleteAction($objectId)
+    public function deleteAction($objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         $campaignId     = $this->request->query->get('campaignId');
         $session        = $this->get('session');
@@ -448,7 +440,7 @@ class EventController extends CommonFormController
             // Add the field to the delete list
             if (!in_array($objectId, $deletedEvents)) {
                 //If event is new don't add to deleted list
-                if (false === strpos($objectId, 'new')) {
+                if (!str_contains($objectId, 'new')) {
                     $deletedEvents[] = $objectId;
                     $session->set('mautic.campaign.'.$campaignId.'.events.deleted', $deletedEvents);
                 }
@@ -479,10 +471,8 @@ class EventController extends CommonFormController
      * Undeletes the entity.
      *
      * @param $objectId
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function undeleteAction($objectId)
+    public function undeleteAction($objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         $campaignId     = $this->request->query->get('campaignId');
         $session        = $this->get('session');

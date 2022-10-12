@@ -11,20 +11,11 @@ class ReportExportOptions
      */
     private $batchSize;
 
-    /**
-     * @var int
-     */
-    private $page;
+    private int $page;
 
-    /**
-     * @var \DateTime
-     */
-    private $dateFrom;
+    private ?\DateTime $dateFrom = null;
 
-    /**
-     * @var \DateTime
-     */
-    private $dateTo;
+    private ?\DateTime $dateTo = null;
 
     public function __construct(CoreParametersHelper $coreParametersHelper)
     {

@@ -11,38 +11,25 @@ use Symfony\Component\HttpFoundation\ParameterBag;
  */
 class CoreParametersHelper
 {
-    /**
-     * @var ParameterBag
-     */
-    private $parameters;
+    private \Symfony\Component\HttpFoundation\ParameterBag $parameters;
 
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
+    private ?array $resolvedParameters = null;
 
-    /**
-     * @var array
-     */
-    private $resolvedParameters;
-
-    public function __construct(ContainerInterface $container)
+    public function __construct(private ContainerInterface $container)
     {
         $loader = new ParameterLoader();
 
         $this->parameters = $loader->getParameterBag();
-        $this->container  = $container;
 
         $this->resolveParameters();
     }
 
     /**
      * @param string $name
-     * @param mixed  $default
      *
      * @return mixed
      */
-    public function get($name, $default = null)
+    public function get($name, mixed $default = null)
     {
         $name = $this->stripMauticPrefix($name);
 

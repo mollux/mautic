@@ -37,10 +37,7 @@ class ContactSegmentFilterCrate
      */
     private $operator;
 
-    /**
-     * @var array
-     */
-    private $sourceArray;
+    private array $sourceArray;
 
     private $nullValue;
 
@@ -95,14 +92,11 @@ class ContactSegmentFilterCrate
      */
     public function getFilter()
     {
-        switch ($this->getType()) {
-            case 'number':
-                return (float) $this->filter;
-            case 'boolean':
-                return (bool) $this->filter;
-        }
-
-        return $this->filter;
+        return match ($this->getType()) {
+            'number' => (float) $this->filter,
+            'boolean' => (bool) $this->filter,
+            default => $this->filter,
+        };
     }
 
     /**
@@ -173,10 +167,10 @@ class ContactSegmentFilterCrate
 
     private function setOperator(array $filter)
     {
-        $operator = isset($filter['operator']) ? $filter['operator'] : null;
+        $operator = $filter['operator'] ?? null;
 
         if ('multiselect' === $this->getType() && in_array($operator, ['in', '!in'])) {
-            $neg            = false === strpos($operator, '!') ? '' : '!';
+            $neg            = !str_contains($operator, '!') ? '' : '!';
             $this->operator = $neg.$this->getType();
 
             return;

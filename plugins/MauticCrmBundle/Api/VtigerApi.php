@@ -20,7 +20,7 @@ class VtigerApi extends CrmApi
         ];
 
         if (!empty($elementData)) {
-            $parameters['element'] = json_encode($elementData);
+            $parameters['element'] = json_encode($elementData, JSON_THROW_ON_ERROR);
         }
         $response = $this->integration->makeRequest($request_url, $parameters, $method);
 

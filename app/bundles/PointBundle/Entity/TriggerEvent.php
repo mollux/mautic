@@ -9,45 +9,21 @@ use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
 
 class TriggerEvent
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var string
-     */
-    private $name;
+    private ?string $name = null;
 
-    /**
-     * @var string
-     */
-    private $description;
+    private ?string $description = null;
 
-    /**
-     * @var string
-     */
-    private $type;
+    private ?string $type = null;
 
-    /**
-     * @var int
-     */
-    private $order = 0;
+    private int $order = 0;
 
-    /**
-     * @var array
-     */
-    private $properties = [];
+    private array $properties = [];
 
-    /**
-     * @var Trigger
-     */
-    private $trigger;
+    private ?\Mautic\PointBundle\Entity\Trigger $trigger = null;
 
-    /**
-     * @var ArrayCollection
-     */
-    private $log;
+    private \Doctrine\Common\Collections\ArrayCollection $log;
 
     /**
      * @var array
@@ -64,7 +40,7 @@ class TriggerEvent
         $builder = new ClassMetadataBuilder($metadata);
 
         $builder->setTable('point_trigger_events')
-            ->setCustomRepositoryClass('Mautic\PointBundle\Entity\TriggerEventRepository')
+            ->setCustomRepositoryClass(\Mautic\PointBundle\Entity\TriggerEventRepository::class)
             ->addIndex(['type'], 'trigger_type_search');
 
         $builder->addIdColumns();

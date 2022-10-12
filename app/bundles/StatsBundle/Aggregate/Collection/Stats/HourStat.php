@@ -4,24 +4,15 @@ namespace Mautic\StatsBundle\Aggregate\Collection\Stats;
 
 class HourStat
 {
-    /**
-     * @var int
-     */
-    private $count = 0;
-
-    /**
-     * @var string
-     */
-    private $hour;
+    private int $count = 0;
 
     /**
      * HourStat constructor.
      *
      * @param string $hour "2018-12-07 12" format
      */
-    public function __construct($hour)
+    public function __construct(private $hour)
     {
-        $this->hour = $hour;
     }
 
     /**

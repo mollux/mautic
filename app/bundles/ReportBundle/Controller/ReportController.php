@@ -21,7 +21,7 @@ class ReportController extends FormController
      *
      * @return HttpFoundation\JsonResponse|HttpFoundation\RedirectResponse|HttpFoundation\Response
      */
-    public function indexAction($page = 1)
+    public function indexAction($page = 1): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         /* @type \Mautic\ReportBundle\Model\ReportModel $model */
         $model = $this->getModel('report');
@@ -125,7 +125,7 @@ class ReportController extends FormController
      *
      * @return HttpFoundation\JsonResponse|HttpFoundation\RedirectResponse|HttpFoundation\Response
      */
-    public function cloneAction($objectId)
+    public function cloneAction($objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         /* @type \Mautic\ReportBundle\Model\ReportModel $model */
         $model  = $this->getModel('report');
@@ -154,10 +154,8 @@ class ReportController extends FormController
      * Deletes the entity.
      *
      * @param $objectId
-     *
-     * @return HttpFoundation\JsonResponse|HttpFoundation\RedirectResponse
      */
-    public function deleteAction($objectId)
+    public function deleteAction($objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         $page      = $this->container->get('session')->get('mautic.report.page', 1);
         $returnUrl = $this->generateUrl('mautic_report_index', ['page' => $page]);
@@ -215,10 +213,8 @@ class ReportController extends FormController
 
     /**
      * Deletes a group of entities.
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function batchDeleteAction()
+    public function batchDeleteAction(): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         $page      = $this->container->get('session')->get('mautic.report.page', 1);
         $returnUrl = $this->generateUrl('mautic_report_index', ['page' => $page]);
@@ -236,7 +232,7 @@ class ReportController extends FormController
 
         if ('POST' == $this->request->getMethod()) {
             $model     = $this->getModel('report');
-            $ids       = json_decode($this->request->query->get('ids', '{}'));
+            $ids       = json_decode($this->request->query->get('ids', '{}'), null, 512, JSON_THROW_ON_ERROR);
             $deleteIds = [];
 
             // Loop over the IDs to perform access checks pre-delete
@@ -271,7 +267,7 @@ class ReportController extends FormController
                     'type'    => 'notice',
                     'msg'     => 'mautic.report.report.notice.batch_deleted',
                     'msgVars' => [
-                        '%count%' => count($entities),
+                        '%count%' => is_countable($entities) ? count($entities) : 0,
                     ],
                 ];
             }
@@ -295,8 +291,10 @@ class ReportController extends FormController
      *
      * @return HttpFoundation\JsonResponse|HttpFoundation\RedirectResponse|HttpFoundation\Response
      */
-    public function editAction($objectId, $ignorePost = false)
+    public function editAction($objectId, $ignorePost = false): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
+        $form = null;
+        $action = null;
         /* @type \Mautic\ReportBundle\Model\ReportModel $model */
         $model   = $this->getModel('report');
         $entity  = $model->getEntity($objectId);
@@ -437,7 +435,7 @@ class ReportController extends FormController
      *
      * @return HttpFoundation\JsonResponse|HttpFoundation\RedirectResponse|HttpFoundation\Response
      */
-    public function newAction($entity = null)
+    public function newAction($entity = null): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         if (!$this->container->get('mautic.security')->isGranted('report:reports:create')) {
             return $this->accessDenied();
@@ -541,7 +539,7 @@ class ReportController extends FormController
      *
      * @return HttpFoundation\JsonResponse|HttpFoundation\Response
      */
-    public function viewAction($objectId, $reportPage = 1)
+    public function viewAction($objectId, $reportPage = 1): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         /* @type \Mautic\ReportBundle\Model\ReportModel $model */
         $model    = $this->getModel('report');
@@ -616,7 +614,7 @@ class ReportController extends FormController
         $dynamicFilters = $session->get('mautic.report.'.$objectId.'.filters', []);
         $filterSettings = [];
 
-        if (count($dynamicFilters) > 0 && count($entity->getFilters()) > 0) {
+        if (count($dynamicFilters) > 0 && (is_countable($entity->getFilters()) ? count($entity->getFilters()) : 0) > 0) {
             foreach ($entity->getFilters() as $filter) {
                 foreach ($dynamicFilters as $dfcol => $dfval) {
                     if (1 === $filter['dynamic'] && $filter['column'] === $dfcol) {

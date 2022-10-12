@@ -11,20 +11,8 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class LeadSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var IntegrationHelper
-     */
-    private $integrationHelper;
-
-    /**
-     * @var LeadExport
-     */
-    private $leadExport;
-
-    public function __construct(IntegrationHelper $integrationHelper, LeadExport $leadExport = null)
+    public function __construct(private IntegrationHelper $integrationHelper, private LeadExport $leadExport = null)
     {
-        $this->integrationHelper = $integrationHelper;
-        $this->leadExport        = $leadExport;
     }
 
     /**

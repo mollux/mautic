@@ -7,20 +7,11 @@ namespace Mautic\EmailBundle\Swiftmailer\Momentum\DTO\TransmissionDTO;
  */
 final class OptionsDTO implements \JsonSerializable
 {
-    /**
-     * @var string|null
-     */
-    private $startTime;
+    private ?string $startTime = null;
 
-    /**
-     * @var bool|null
-     */
-    private $openTracking;
+    private ?bool $openTracking = null;
 
-    /**
-     * @var bool|null
-     */
-    private $clickTracking;
+    private ?bool $clickTracking = null;
 
     /**
      * @return mixed

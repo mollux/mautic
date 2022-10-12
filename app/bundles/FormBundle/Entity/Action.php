@@ -13,40 +13,19 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
  */
 class Action
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var string
-     */
-    private $name;
+    private ?string $name = null;
 
-    /**
-     * @var string
-     */
-    private $description;
+    private ?string $description = null;
 
-    /**
-     * @var string
-     */
-    private $type;
+    private ?string $type = null;
 
-    /**
-     * @var int
-     */
-    private $order = 0;
+    private int $order = 0;
 
-    /**
-     * @var array
-     */
-    private $properties = [];
+    private array $properties = [];
 
-    /**
-     * @var Form
-     */
-    private $form;
+    private ?\Mautic\FormBundle\Entity\Form $form = null;
 
     /**
      * @var array
@@ -67,7 +46,7 @@ class Action
         $builder = new ClassMetadataBuilder($metadata);
 
         $builder->setTable('form_actions')
-            ->setCustomRepositoryClass('Mautic\FormBundle\Entity\ActionRepository')
+            ->setCustomRepositoryClass(\Mautic\FormBundle\Entity\ActionRepository::class)
             ->addIndex(['type'], 'form_action_type_search');
 
         $builder->addIdColumns();

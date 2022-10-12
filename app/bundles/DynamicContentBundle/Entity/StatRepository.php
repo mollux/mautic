@@ -41,11 +41,9 @@ class StatRepository extends CommonRepository
     }
 
     /**
-     * @param int|array $dynamicContentIds
-     *
      * @return int
      */
-    public function getSentCount($dynamicContentIds = null)
+    public function getSentCount(int|array $dynamicContentIds = null)
     {
         $q = $this->_em->getConnection()->createQueryBuilder();
 
@@ -70,7 +68,6 @@ class StatRepository extends CommonRepository
      * Get sent counts based grouped by dynamic content Id.
      *
      * @param array     $dynamicContentIds
-     * @param \DateTime $fromDate
      *
      * @return array
      */

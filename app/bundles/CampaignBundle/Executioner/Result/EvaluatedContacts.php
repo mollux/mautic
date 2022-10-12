@@ -7,23 +7,17 @@ use Mautic\LeadBundle\Entity\Lead;
 
 class EvaluatedContacts
 {
-    /**
-     * @var ArrayCollection
-     */
-    private $passed;
+    private \Doctrine\Common\Collections\ArrayCollection $passed;
 
-    /**
-     * @var ArrayCollection
-     */
-    private $failed;
+    private \Doctrine\Common\Collections\ArrayCollection $failed;
 
     /**
      * EvaluatedContacts constructor.
      */
     public function __construct(ArrayCollection $passed = null, ArrayCollection $failed = null)
     {
-        $this->passed = (null === $passed) ? new ArrayCollection() : $passed;
-        $this->failed = (null === $failed) ? new ArrayCollection() : $failed;
+        $this->passed = $passed ?? new ArrayCollection();
+        $this->failed = $failed ?? new ArrayCollection();
     }
 
     public function pass(Lead $contact)
@@ -39,7 +33,7 @@ class EvaluatedContacts
     /**
      * @return ArrayCollection|Lead[]
      */
-    public function getPassed()
+    public function getPassed(): \Doctrine\Common\Collections\ArrayCollection|array
     {
         return $this->passed;
     }
@@ -47,7 +41,7 @@ class EvaluatedContacts
     /**
      * @return ArrayCollection|Lead[]
      */
-    public function getFailed()
+    public function getFailed(): \Doctrine\Common\Collections\ArrayCollection|array
     {
         return $this->failed;
     }

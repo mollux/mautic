@@ -11,7 +11,7 @@ class CategoryApiController extends CommonApiController
     public function initialize(ControllerEvent $event)
     {
         $this->model            = $this->getModel('category');
-        $this->entityClass      = 'Mautic\CategoryBundle\Entity\Category';
+        $this->entityClass      = \Mautic\CategoryBundle\Entity\Category::class;
         $this->entityNameOne    = 'category';
         $this->entityNameMulti  = 'categories';
         $this->serializerGroups = ['categoryDetails'];

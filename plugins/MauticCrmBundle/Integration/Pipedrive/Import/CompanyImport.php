@@ -11,18 +11,11 @@ use Symfony\Component\HttpFoundation\Response;
 class CompanyImport extends AbstractImport
 {
     /**
-     * @var CompanyModel
-     */
-    private $companyModel;
-
-    /**
      * CompanyImport constructor.
      */
-    public function __construct(EntityManager $em, CompanyModel $companyModel)
+    public function __construct(EntityManager $em, private CompanyModel $companyModel)
     {
         parent::__construct($em);
-
-        $this->companyModel = $companyModel;
     }
 
     /**

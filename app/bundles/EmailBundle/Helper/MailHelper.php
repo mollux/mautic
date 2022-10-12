@@ -28,12 +28,6 @@ class MailHelper
     public const QUEUE_DO_NOTHING        = 'DO_NOTHING';
     public const QUEUE_NOTHING_IF_FAILED = 'IF_FAILED';
     public const QUEUE_RETURN_ERRORS     = 'RETURN_ERRORS';
-    /**
-     * @var MauticFactory
-     */
-    protected $factory;
-
-    protected $mailer;
 
     protected $transport;
 
@@ -211,10 +205,8 @@ class MailHelper
 
     /**
      * Large batch mail sends may result on timeouts with SMTP servers. This will will keep track of the number of sends and restart the connection once met.
-     *
-     * @var int
      */
-    private $messageSentCount = 0;
+    private int $messageSentCount = 0;
 
     /**
      * Large batch mail sends may result on timeouts with SMTP servers. This will will keep track of when a transport was last started and force a restart after set number of minutes.
@@ -225,25 +217,15 @@ class MailHelper
 
     /**
      * Simply a md5 of the content so that event listeners can easily determine if the content has been changed.
-     *
-     * @var string
      */
-    private $contentHash;
+    private ?string $contentHash = null;
 
-    /**
-     * @var array
-     */
-    private $copies = [];
+    private array $copies = [];
 
-    /**
-     * @var array
-     */
-    private $embedImagesReplaces = [];
+    private array $embedImagesReplaces = [];
 
-    public function __construct(MauticFactory $factory, \Swift_Mailer $mailer, $from = null)
+    public function __construct(protected MauticFactory $factory, protected \Swift_Mailer $mailer, $from = null)
     {
-        $this->factory   = $factory;
-        $this->mailer    = $mailer;
         $this->transport = $mailer->getTransport();
 
         try {
@@ -462,12 +444,7 @@ class MailHelper
 
                 // Exception encountered when sending so all recipients are considered failures
                 $this->errors['failures'] = array_unique(
-                    array_merge(
-                        $failures,
-                        array_keys((array) $this->message->getTo()),
-                        array_keys((array) $this->message->getCc()),
-                        array_keys((array) $this->message->getBcc())
-                    )
+                    [...$failures, ...array_keys((array) $this->message->getTo()), ...array_keys((array) $this->message->getCc()), ...array_keys((array) $this->message->getBcc())]
                 );
 
                 $this->logError($e, 'send');
@@ -498,10 +475,8 @@ class MailHelper
      *                                  DO_NOTHING         leaves the current errors array and MauticMessage instance intact
      *                                  NOTHING_IF_FAILED  leaves the current errors array MauticMessage instance intact if it fails, otherwise reset_to
      *                                  RETURN_ERROR       return an array of [success, $errors]; only one applicable if message is queued
-     *
-     * @return bool|array
      */
-    public function queue($dispatchSendEvent = false, $returnMode = self::QUEUE_RESET_TO)
+    public function queue($dispatchSendEvent = false, $returnMode = self::QUEUE_RESET_TO): bool|array
     {
         if ($this->tokenizationEnabled) {
             // Dispatch event to get custom tokens from listeners
@@ -795,10 +770,8 @@ class MailHelper
 
     /**
      * Get a MauticMessage/Swift_Message instance.
-     *
-     * @return bool|MauticMessage
      */
-    public function getMessageInstance()
+    public function getMessageInstance(): bool|\Mautic\EmailBundle\Swiftmailer\Message\MauticMessage
     {
         try {
             return $this->tokenizationEnabled ? MauticMessage::newInstance() : (new \Swift_Message());
@@ -848,10 +821,7 @@ class MailHelper
         }
     }
 
-    /**
-     * @param int|Asset $asset
-     */
-    public function attachAsset($asset)
+    public function attachAsset(int|\Mautic\AssetBundle\Entity\Asset $asset)
     {
         $model = $this->factory->getModel('asset');
 
@@ -976,7 +946,7 @@ class MailHelper
         if (!$ignoreTrackingPixel && $this->factory->getParameter('mailer_append_tracking_pixel')) {
             // Append tracking pixel
             $trackingImg = '<img height="1" width="1" src="{tracking_pixel}" alt="" />';
-            if (false !== strpos($content, '</body>')) {
+            if (str_contains($content, '</body>')) {
                 $content = str_replace('</body>', $trackingImg.'</body>', $content);
             } else {
                 $content .= $trackingImg;
@@ -1002,7 +972,7 @@ class MailHelper
         if (preg_match_all('/<img.+?src=[\"\'](.+?)[\"\'].*?>/i', $content, $matches) > 0) {
             foreach ($matches[1] as $match) {
                 // skip items that already embedded, or have token {tracking_pixel}
-                if (false !== strpos($match, 'cid:') || false !== strpos($match, '{tracking_pixel}') || array_key_exists($match, $this->embedImagesReplaces)) {
+                if (str_contains($match, 'cid:') || str_contains($match, '{tracking_pixel}') || array_key_exists($match, $this->embedImagesReplaces)) {
                     continue;
                 }
 
@@ -1062,7 +1032,7 @@ class MailHelper
             }, []);
         }
 
-        $this->checkBatchMaxRecipients(count($addresses));
+        $this->checkBatchMaxRecipients(is_countable($addresses) ? count($addresses) : 0);
 
         try {
             $this->message->setTo($addresses);
@@ -1104,14 +1074,12 @@ class MailHelper
     /**
      * Set CC address(es).
      *
-     * @param mixed  $addresses
      * @param string $name
-     *
      * @return bool
      */
-    public function setCc($addresses, $name = null)
+    public function setCc(mixed $addresses, $name = null)
     {
-        $this->checkBatchMaxRecipients(count($addresses), 'cc');
+        $this->checkBatchMaxRecipients(is_countable($addresses) ? count($addresses) : 0, 'cc');
 
         try {
             $name = $this->cleanName($name);
@@ -1128,12 +1096,10 @@ class MailHelper
     /**
      * Add cc address.
      *
-     * @param mixed $address
      * @param null  $name
-     *
      * @return bool
      */
-    public function addCc($address, $name = null)
+    public function addCc(mixed $address, $name = null)
     {
         $this->checkBatchMaxRecipients(1, 'cc');
 
@@ -1152,14 +1118,12 @@ class MailHelper
     /**
      * Set BCC address(es).
      *
-     * @param mixed  $addresses
      * @param string $name
-     *
      * @return bool
      */
-    public function setBcc($addresses, $name = null)
+    public function setBcc(mixed $addresses, $name = null)
     {
-        $this->checkBatchMaxRecipients(count($addresses), 'bcc');
+        $this->checkBatchMaxRecipients(is_countable($addresses) ? count($addresses) : 0, 'bcc');
 
         try {
             $name = $this->cleanName($name);
@@ -1252,10 +1216,9 @@ class MailHelper
     /**
      * Set from email address and name (defaults to determining automatically unless isGlobal is true).
      *
-     * @param string|array $fromEmail
      * @param string       $fromName
      */
-    public function setFrom($fromEmail, $fromName = null)
+    public function setFrom(string|array $fromEmail, $fromName = null)
     {
         $fromName = $this->cleanName($fromName);
 
@@ -1300,18 +1263,12 @@ class MailHelper
         $this->message->leadIdHash = $idHash;
     }
 
-    /**
-     * @return array|Lead
-     */
-    public function getLead()
+    public function getLead(): array|\Mautic\LeadBundle\Entity\Lead
     {
         return $this->lead;
     }
 
-    /**
-     * @param array|Lead $lead
-     */
-    public function setLead($lead, $interalSend = false)
+    public function setLead(array|\Mautic\LeadBundle\Entity\Lead $lead, $interalSend = false)
     {
         $this->lead         = $lead;
         $this->internalSend = $interalSend;
@@ -1508,7 +1465,7 @@ class MailHelper
         $listUnsubscribeHeader = $this->getUnsubscribeHeader();
         if ($listUnsubscribeHeader) {
             if (!empty($headers['List-Unsubscribe'])) {
-                if (false === strpos($headers['List-Unsubscribe'], $listUnsubscribeHeader)) {
+                if (!str_contains($headers['List-Unsubscribe'], $listUnsubscribeHeader)) {
                     // Ensure Mautic's is always part of this header
                     $headers['List-Unsubscribe'] .= ','.$listUnsubscribeHeader;
                 }
@@ -1520,10 +1477,7 @@ class MailHelper
         return $headers;
     }
 
-    /**
-     * @return bool|string
-     */
-    private function getUnsubscribeHeader()
+    private function getUnsubscribeHeader(): bool|string
     {
         if ($this->idHash) {
             $url = $this->factory->getRouter()->generate('mautic_email_unsubscribe', ['idHash' => $this->idHash], UrlGeneratorInterface::ABSOLUTE_URL);
@@ -1663,7 +1617,7 @@ class MailHelper
         }
 
         $logDump = $this->logger->dump();
-        if (!empty($logDump) && false === strpos($error, $logDump)) {
+        if (!empty($logDump) && !str_contains($error, $logDump)) {
             $error .= " Log data: $logDump";
         }
 
@@ -1811,7 +1765,7 @@ class MailHelper
     public function getTrackableLink($url)
     {
         // Ensure a valid URL and that it has not already been found
-        if ('http' !== substr($url, 0, 4) && 'ftp' !== substr($url, 0, 3)) {
+        if (!str_starts_with($url, 'http') && !str_starts_with($url, 'ftp')) {
             return null;
         }
 
@@ -1850,7 +1804,7 @@ class MailHelper
         if (null !== $this->lead) {
             try {
                 $stat->setLead($this->factory->getEntityManager()->getReference('MauticLeadBundle:Lead', $this->lead['id']));
-            } catch (ORMException $exception) {
+            } catch (ORMException) {
                 // keep IDE happy
             }
             $emailAddress = $this->lead['email'];
@@ -1862,8 +1816,7 @@ class MailHelper
             $emailAddresses = $this->message->getTo();
 
             if (count($emailAddresses)) {
-                end($emailAddresses);
-                $emailAddress = key($emailAddresses);
+                $emailAddress = array_key_last($emailAddresses);
             }
         }
         $stat->setEmailAddress($emailAddress);
@@ -1872,7 +1825,7 @@ class MailHelper
         if (null !== $listId) {
             try {
                 $stat->setList($this->factory->getEntityManager()->getReference('MauticLeadBundle:LeadList', $listId));
-            } catch (ORMException $exception) {
+            } catch (ORMException) {
                 // keep IDE happy
             }
         }
@@ -1913,7 +1866,7 @@ class MailHelper
         if (isset($this->copies[$id])) {
             try {
                 $stat->setStoredCopy($this->factory->getEntityManager()->getReference('MauticEmailBundle:Copy', $this->copies[$id]));
-            } catch (ORMException $exception) {
+            } catch (ORMException) {
                 // keep IDE happy
             }
         }
@@ -1930,10 +1883,8 @@ class MailHelper
      *
      * @param $bundleKey
      * @param $folderKey
-     *
-     * @return bool|array
      */
-    public function isMontoringEnabled($bundleKey, $folderKey)
+    public function isMontoringEnabled($bundleKey, $folderKey): bool|array
     {
         /** @var \Mautic\EmailBundle\MonitoredEmail\Mailbox $mailboxHelper */
         $mailboxHelper = $this->factory->getHelper('mailbox');
@@ -1949,10 +1900,8 @@ class MailHelper
      * Generate bounce email for the lead.
      *
      * @param null $idHash
-     *
-     * @return bool|string
      */
-    public function generateBounceEmail($idHash = null)
+    public function generateBounceEmail($idHash = null): bool|string
     {
         $monitoredEmail = false;
 
@@ -1973,10 +1922,8 @@ class MailHelper
      * Generate an unsubscribe email for the lead.
      *
      * @param null $idHash
-     *
-     * @return bool|string
      */
-    public function generateUnsubscribeEmail($idHash = null)
+    public function generateUnsubscribeEmail($idHash = null): bool|string
     {
         $monitoredEmail = false;
 
@@ -2035,7 +1982,7 @@ class MailHelper
                 $slotConfig = [];
             }
 
-            $value = isset($content[$slot]) ? $content[$slot] : '';
+            $value = $content[$slot] ?? '';
             $slotsHelper->set($slot, $value);
         }
     }
@@ -2065,10 +2012,8 @@ class MailHelper
 
     /**
      * @param $contact
-     *
-     * @return bool|array
      */
-    protected function getContactOwner(&$contact)
+    protected function getContactOwner(&$contact): bool|array
     {
         $owner = false;
         $email = $this->getEmail();

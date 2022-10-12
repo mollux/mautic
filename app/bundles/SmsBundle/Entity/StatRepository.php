@@ -70,12 +70,10 @@ class StatRepository extends CommonRepository
     }
 
     /**
-     * @param int|array $smsIds
      * @param int       $listId
-     *
      * @return int
      */
-    public function getSentCount($smsIds = null, $listId = null)
+    public function getSentCount(int|array $smsIds = null, $listId = null)
     {
         $q = $this->_em->getConnection()->createQueryBuilder();
 

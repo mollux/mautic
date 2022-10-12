@@ -7,10 +7,7 @@ use Symfony\Component\Templating\Helper\Helper;
 
 class AnalyticsHelper extends Helper
 {
-    /**
-     * @var string
-     */
-    private $code;
+    private string $code;
 
     /**
      * AnalyticsHelper constructor.
@@ -37,9 +34,9 @@ class AnalyticsHelper extends Helper
         $analytics = $this->getCode();
 
         // Check for html doc
-        if (false === strpos($content, '<html')) {
+        if (!str_contains($content, '<html')) {
             $content = "<html>\n<head>{$analytics}</head>\n<body>{$content}</body>\n</html>";
-        } elseif (false === strpos($content, '<head>')) {
+        } elseif (!str_contains($content, '<head>')) {
             $content = str_replace('<html>', "<html>\n<head>\n{$analytics}\n</head>", $content);
         } elseif (!empty($analytics)) {
             $content = str_replace('</head>', $analytics."\n</head>", $content);

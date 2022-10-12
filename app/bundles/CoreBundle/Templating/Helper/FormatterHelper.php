@@ -9,19 +9,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class FormatterHelper extends Helper
 {
-    /**
-     * @var DateHelper
-     */
-    private $dateHelper;
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    public function __construct(DateHelper $dateHelper, TranslatorInterface $translator)
+    public function __construct(private DateHelper $dateHelper, private TranslatorInterface $translator)
     {
-        $this->dateHelper = $dateHelper;
-        $this->translator = $translator;
     }
 
     /**
@@ -102,12 +91,10 @@ class FormatterHelper extends Helper
      * Internally, the method uses conversion to json
      * instead of simple implode to cover multidimensional arrays.
      *
-     * @param mixed  $array
      * @param string $delimiter
-     *
      * @return string
      */
-    public function arrayToString($array, $delimiter = ', ')
+    public function arrayToString(mixed $array, $delimiter = ', ')
     {
         if (is_array($array)) {
             $replacements = [
@@ -119,7 +106,7 @@ class FormatterHelper extends Helper
                 'null' => 'undefined',
                 ':'    => ' = ',
             ];
-            $json = json_encode($array);
+            $json = json_encode($array, JSON_THROW_ON_ERROR);
 
             return trim(str_replace(array_keys($replacements), array_values($replacements), $json), '()[]');
         }

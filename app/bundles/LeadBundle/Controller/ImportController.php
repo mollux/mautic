@@ -47,10 +47,7 @@ class ImportController extends FormController
      */
     private $session;
 
-    /**
-     * @var ImportModel
-     */
-    private $importModel;
+    private ?\Mautic\LeadBundle\Model\ImportModel $importModel = null;
 
     public function initialize(ControllerEvent $event)
     {
@@ -66,10 +63,8 @@ class ImportController extends FormController
 
     /**
      * @param int $page
-     *
-     * @return JsonResponse|RedirectResponse
      */
-    public function indexAction($page = 1)
+    public function indexAction($page = 1): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         $initEvent = $this->dispatchImportOnInit();
         $this->session->set('mautic.import.object', $initEvent->objectSingular);
@@ -122,7 +117,7 @@ class ImportController extends FormController
      *
      * @return array|JsonResponse|RedirectResponse|Response
      */
-    public function viewAction($objectId)
+    public function viewAction($objectId): array|\Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         return $this->viewStandard($objectId, 'import', 'lead');
     }
@@ -132,7 +127,7 @@ class ImportController extends FormController
      *
      * @return array|JsonResponse|RedirectResponse|Response
      */
-    public function cancelAction()
+    public function cancelAction(): array|\Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         $initEvent   = $this->dispatchImportOnInit();
         $object      = $initEvent->objectSingular;
@@ -157,12 +152,12 @@ class ImportController extends FormController
      *
      * @return array|JsonResponse|RedirectResponse|Response
      */
-    public function queueAction()
+    public function queueAction(): array|\Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         $initEvent   = $this->dispatchImportOnInit();
         $object      = $initEvent->objectSingular;
         $fullPath    = $this->getFullCsvPath($object);
-        $import      = $$this->importModel->getEntity($this->session->get('mautic.lead.import.id', null));
+        $import      = ${$this}->importModel->getEntity($this->session->get('mautic.lead.import.id', null));
 
         if ($import) {
             $import->setStatus($import::QUEUED);
@@ -181,7 +176,7 @@ class ImportController extends FormController
      *
      * @return JsonResponse|Response
      */
-    public function newAction($objectId = 0, $ignorePost = false)
+    public function newAction($objectId = 0, $ignorePost = false): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         //Auto detect line endings for the file to work around MS DOS vs Unix new line characters
         ini_set('auto_detect_line_endings', '1');
@@ -370,7 +365,7 @@ class ImportController extends FormController
                                     }
                                 }
                             } catch (FileException $e) {
-                                if (false !== strpos($e->getMessage(), 'upload_max_filesize')) {
+                                if (str_contains($e->getMessage(), 'upload_max_filesize')) {
                                     $errorMessage    = 'mautic.lead.import.filetoolarge';
                                     $errorParameters = [
                                         '%upload_max_filesize%' => ini_get('upload_max_filesize'),
@@ -378,7 +373,7 @@ class ImportController extends FormController
                                 } else {
                                     $errorMessage = 'mautic.lead.import.filenotreadable';
                                 }
-                            } catch (\Exception $e) {
+                            } catch (\Exception) {
                                 $errorMessage = 'mautic.lead.import.filenotreadable';
                             } finally {
                                 if (!is_null($errorMessage)) {
@@ -519,7 +514,7 @@ class ImportController extends FormController
     {
         $progress = $this->session->get('mautic.'.$object.'.import.progress', [0, 0]);
 
-        return isset($progress[1]) ? $progress[1] : 0;
+        return $progress[1] ?? 0;
     }
 
     /**
@@ -652,7 +647,7 @@ class ImportController extends FormController
                         'importedRowsChart' => $entity->getDateStarted() ? $this->importModel->getImportedRowsLineChartData(
                             'i',
                             $entity->getDateStarted(),
-                            $entity->getDateEnded() ? $entity->getDateEnded() : $entity->getDateModified(),
+                            $entity->getDateEnded() ?: $entity->getDateModified(),
                             null,
                             [
                                 'object_id' => $entity->getId(),
@@ -688,13 +683,10 @@ class ImportController extends FormController
     {
         $objectInRequest = $this->request->get('object');
 
-        switch ($objectInRequest) {
-            case 'companies':
-                return 'company';
-            case 'contacts':
-            default:
-                return 'lead';
-        }
+        return match ($objectInRequest) {
+            'companies' => 'company',
+            default => 'lead',
+        };
     }
 
     protected function getModelName()

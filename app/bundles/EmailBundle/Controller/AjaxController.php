@@ -56,7 +56,7 @@ class AjaxController extends CommonAjaxController
 
             if ($pending && !$inProgress && $entity->isPublished()) {
                 $session->set('mautic.email.send.active', true);
-                list($batchSentCount, $batchFailedCount, $batchFailedRecipients) = $model->sendEmailToLists($entity, null, $limit);
+                [$batchSentCount, $batchFailedCount, $batchFailedRecipients] = $model->sendEmailToLists($entity, null, $limit);
 
                 $progress[0] += ($batchSentCount + $batchFailedCount);
                 $stats['sent'] += $batchSentCount;
@@ -120,7 +120,7 @@ class AjaxController extends CommonAjaxController
      */
     protected function getAttachmentsSizeAction(Request $request)
     {
-        $assets = $request->get('assets', [], true);
+        $assets = $request->get('assets', []);
         $size   = 0;
         if ($assets) {
             /** @var \Mautic\AssetBundle\Model\AssetModel $assetModel */
@@ -154,8 +154,8 @@ class AjaxController extends CommonAjaxController
             $helper = $this->factory->getHelper('mailbox');
 
             try {
-                $helper->setMailboxSettings($settings, false);
-                $folders = $helper->getListingFolders('');
+                $helper->setMailboxSettings($settings);
+                $folders = $helper->getListingFolders();
                 if (!empty($folders)) {
                     $dataArray['folders'] = '';
                     foreach ($folders as $folder) {
@@ -179,6 +179,7 @@ class AjaxController extends CommonAjaxController
      */
     protected function testEmailServerConnectionAction(Request $request)
     {
+        $mailer = null;
         $dataArray = ['success' => 0, 'message' => ''];
         $user      = $this->get('mautic.helper.user')->getUser();
 
@@ -221,7 +222,7 @@ class AjaxController extends CommonAjaxController
                         }
                         $mailer->setApiKey($settings['api_key']);
                     }
-                } catch (\Exception $exception) {
+                } catch (\Exception) {
                     // Transport had magic method defined and threw an exception
                 }
 
@@ -233,7 +234,7 @@ class AjaxController extends CommonAjaxController
                         $mailer->setUsername($settings['user']);
                         $mailer->setPassword($settings['password']);
                     }
-                } catch (\Exception $exception) {
+                } catch (\Exception) {
                     // Transport had magic method defined and threw an exception
                 }
 

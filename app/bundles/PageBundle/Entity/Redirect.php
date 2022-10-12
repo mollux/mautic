@@ -10,32 +10,17 @@ use Mautic\CoreBundle\Entity\FormEntity;
 
 class Redirect extends FormEntity
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var string
-     */
-    private $redirectId;
+    private ?string $redirectId = null;
 
     private $url;
 
-    /**
-     * @var int
-     */
-    private $hits = 0;
+    private int $hits = 0;
 
-    /**
-     * @var int
-     */
-    private $uniqueHits = 0;
+    private int $uniqueHits = 0;
 
-    /**
-     * @var ArrayCollection
-     */
-    private $trackables;
+    private \Doctrine\Common\Collections\ArrayCollection $trackables;
 
     /**
      * Redirect constructor.
@@ -50,7 +35,7 @@ class Redirect extends FormEntity
         $builder = new ClassMetadataBuilder($metadata);
 
         $builder->setTable('page_redirects')
-            ->setCustomRepositoryClass('Mautic\PageBundle\Entity\RedirectRepository');
+            ->setCustomRepositoryClass(\Mautic\PageBundle\Entity\RedirectRepository::class);
 
         $builder->addBigIntIdField();
 
@@ -119,7 +104,7 @@ class Redirect extends FormEntity
     public function setRedirectId($redirectId = null)
     {
         if (null === $redirectId) {
-            $redirectId = substr(hash('sha1', uniqid(mt_rand())), 0, 25);
+            $redirectId = substr(hash('sha1', uniqid(random_int(0, mt_getrandmax()))), 0, 25);
         }
         $this->redirectId = $redirectId;
     }

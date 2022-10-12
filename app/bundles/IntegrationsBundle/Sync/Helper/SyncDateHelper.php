@@ -9,20 +9,9 @@ use Mautic\IntegrationsBundle\Sync\SyncDataExchange\MauticSyncDataExchange;
 
 class SyncDateHelper
 {
-    /**
-     * @var Connection
-     */
-    private $connection;
+    private ?\DateTimeInterface $syncFromDateTime = null;
 
-    /**
-     * @var \DateTimeInterface|null
-     */
-    private $syncFromDateTime;
-
-    /**
-     * @var \DateTimeInterface|null
-     */
-    private $syncToDateTime;
+    private ?\DateTimeInterface $syncToDateTime = null;
 
     /**
      * @var \DateTimeInterface|null
@@ -32,11 +21,10 @@ class SyncDateHelper
     /**
      * @var \DateTimeInterface[]
      */
-    private $lastObjectSyncDates = [];
+    private array $lastObjectSyncDates = [];
 
-    public function __construct(Connection $connection)
+    public function __construct(private Connection $connection)
     {
-        $this->connection = $connection;
     }
 
     public function setSyncDateTimes(?\DateTimeInterface $fromDateTime = null, ?\DateTimeInterface $toDateTime = null): void

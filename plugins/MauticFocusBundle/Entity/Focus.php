@@ -15,15 +15,9 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
  */
 class Focus extends FormEntity
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var string
-     */
-    private $description;
+    private ?string $description = null;
 
     /**
      * @var string
@@ -40,54 +34,27 @@ class Focus extends FormEntity
      */
     private $htmlMode;
 
-    /**
-     * @var string
-     */
-    private $name;
+    private ?string $name = null;
 
     private $category;
 
-    /**
-     * @var string
-     */
-    private $type;
+    private ?string $type = null;
 
-    /**
-     * @var string
-     */
-    private $website;
+    private ?string $website = null;
 
-    /**
-     * @var string
-     */
-    private $style;
+    private ?string $style = null;
 
-    /**
-     * @var \DateTime
-     */
-    private $publishUp;
+    private ?\DateTime $publishUp = null;
 
-    /**
-     * @var \DateTime
-     */
-    private $publishDown;
+    private ?\DateTime $publishDown = null;
 
-    private $properties = [];
+    private array $properties = [];
 
-    /**
-     * @var array
-     */
-    private $utmTags = [];
+    private array $utmTags = [];
 
-    /**
-     * @var int
-     */
-    private $form;
+    private ?int $form = null;
 
-    /**
-     * @var string
-     */
-    private $cache;
+    private ?string $cache = null;
 
     public static function loadValidatorMetadata(ClassMetadata $metadata)
     {
@@ -127,7 +94,7 @@ class Focus extends FormEntity
         $builder = new ClassMetadataBuilder($metadata);
 
         $builder->setTable('focus')
-            ->setCustomRepositoryClass('MauticPlugin\MauticFocusBundle\Entity\FocusRepository')
+            ->setCustomRepositoryClass(\MauticPlugin\MauticFocusBundle\Entity\FocusRepository::class)
             ->addIndex(['focus_type'], 'focus_type')
             ->addIndex(['style'], 'focus_style')
             ->addIndex(['form_id'], 'focus_form');
@@ -225,11 +192,9 @@ class Focus extends FormEntity
     }
 
     /**
-     * @param mixed $description
-     *
      * @return Focus
      */
-    public function setDescription($description)
+    public function setDescription(mixed $description)
     {
         $this->isChanged('description', $description);
 
@@ -307,11 +272,9 @@ class Focus extends FormEntity
     }
 
     /**
-     * @param mixed $name
-     *
      * @return Focus
      */
-    public function setName($name)
+    public function setName(mixed $name)
     {
         $this->isChanged('name', $name);
 
@@ -329,11 +292,9 @@ class Focus extends FormEntity
     }
 
     /**
-     * @param mixed $category
-     *
      * @return Focus
      */
-    public function setCategory($category)
+    public function setCategory(mixed $category)
     {
         $this->isChanged('category', $category);
 
@@ -351,11 +312,9 @@ class Focus extends FormEntity
     }
 
     /**
-     * @param mixed $publishUp
-     *
      * @return Focus
      */
-    public function setPublishUp($publishUp)
+    public function setPublishUp(mixed $publishUp)
     {
         $this->isChanged('publishUp', $publishUp);
 
@@ -373,11 +332,9 @@ class Focus extends FormEntity
     }
 
     /**
-     * @param mixed $publishDown
-     *
      * @return Focus
      */
-    public function setPublishDown($publishDown)
+    public function setPublishDown(mixed $publishDown)
     {
         $this->isChanged('publishDown', $publishDown);
 
@@ -395,11 +352,9 @@ class Focus extends FormEntity
     }
 
     /**
-     * @param mixed $properties
-     *
      * @return Focus
      */
-    public function setProperties($properties)
+    public function setProperties(mixed $properties)
     {
         $this->isChanged('properties', $properties);
 
@@ -436,11 +391,9 @@ class Focus extends FormEntity
     }
 
     /**
-     * @param mixed $type
-     *
      * @return Focus
      */
-    public function setType($type)
+    public function setType(mixed $type)
     {
         $this->isChanged('type', $type);
 
@@ -458,11 +411,9 @@ class Focus extends FormEntity
     }
 
     /**
-     * @param mixed $style
-     *
      * @return Focus
      */
-    public function setStyle($style)
+    public function setStyle(mixed $style)
     {
         $this->isChanged('style', $style);
 
@@ -480,11 +431,9 @@ class Focus extends FormEntity
     }
 
     /**
-     * @param mixed $website
-     *
      * @return Focus
      */
-    public function setWebsite($website)
+    public function setWebsite(mixed $website)
     {
         $this->isChanged('website', $website);
 
@@ -502,11 +451,9 @@ class Focus extends FormEntity
     }
 
     /**
-     * @param mixed $form
-     *
      * @return Focus
      */
-    public function setForm($form)
+    public function setForm(mixed $form)
     {
         if ($form instanceof Form) {
             $form = $form->getId();
@@ -528,11 +475,9 @@ class Focus extends FormEntity
     }
 
     /**
-     * @param mixed $cache
-     *
      * @return Focus
      */
-    public function setCache($cache)
+    public function setCache(mixed $cache)
     {
         $this->cache = $cache;
 

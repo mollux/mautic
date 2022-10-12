@@ -7,9 +7,7 @@ use Mautic\CoreBundle\Helper\ListParser\Exception\FormatNotSupportedException;
 interface ListParserInterface
 {
     /**
-     * @param mixed $list
-     *
      * @throws FormatNotSupportedException
      */
-    public function parse($list): array;
+    public function parse(mixed $list): array;
 }

@@ -33,11 +33,10 @@ class AssetRepository extends CommonRepository
      * @param string     $search
      * @param int        $limit
      * @param int        $start
-     * @param bool|false $viewOther
      *
      * @return array
      */
-    public function getAssetList($search = '', $limit = 10, $start = 0, $viewOther = false)
+    public function getAssetList($search = '', $limit = 10, $start = 0, bool $viewOther = false)
     {
         $q = $this->createQueryBuilder('a');
         $q->select('partial a.{id, title, path, alias, language}');
@@ -84,7 +83,7 @@ class AssetRepository extends CommonRepository
      */
     protected function addSearchCommandWhereClause($q, $filter)
     {
-        list($expr, $parameters) = $this->addStandardSearchCommandWhereClause($q, $filter);
+        [$expr, $parameters] = $this->addStandardSearchCommandWhereClause($q, $filter);
         if ($expr) {
             return [$expr, $parameters];
         }
@@ -182,9 +181,8 @@ class AssetRepository extends CommonRepository
     /**
      * @param            $id
      * @param int        $increaseBy
-     * @param bool|false $unique
      */
-    public function upDownloadCount($id, $increaseBy = 1, $unique = false)
+    public function upDownloadCount($id, $increaseBy = 1, bool $unique = false)
     {
         $q = $this->_em->getConnection()->createQueryBuilder();
 

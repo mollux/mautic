@@ -196,10 +196,8 @@ class DynamicsIntegration extends CrmAbstractIntegration
      * {@inheritdoc}
      *
      * @param $section
-     *
-     * @return string|array
      */
-    public function getFormNotes($section)
+    public function getFormNotes($section): string|array
     {
         if ('custom' === $section) {
             return [
@@ -253,19 +251,18 @@ class DynamicsIntegration extends CrmAbstractIntegration
     /**
      * @param array $settings
      *
-     * @return array|bool
      *
      * @throws ApiErrorException
      */
-    public function getAvailableLeadFields($settings = [])
+    public function getAvailableLeadFields($settings = []): array|bool
     {
         $dynamicsFields    = [];
-        $silenceExceptions = isset($settings['silence_exceptions']) ? $settings['silence_exceptions'] : true;
+        $silenceExceptions = $settings['silence_exceptions'] ?? true;
         if (isset($settings['feature_settings']['objects'])) {
             $dynamicsObjects = $settings['feature_settings']['objects'];
         } else {
             $settings        = $this->settings->getFeatureSettings();
-            $dynamicsObjects = isset($settings['objects']) ? $settings['objects'] : ['contacts'];
+            $dynamicsObjects = $settings['objects'] ?? ['contacts'];
         }
         try {
             if ($this->isAuthorized()) {
@@ -332,10 +329,8 @@ class DynamicsIntegration extends CrmAbstractIntegration
     /**
      * @param Lead  $lead
      * @param array $config
-     *
-     * @return array|bool
      */
-    public function pushLead($lead, $config = [])
+    public function pushLead($lead, $config = []): array|bool
     {
         $config = $this->mergeConfigToFeatureSettings($config);
 
@@ -404,6 +399,8 @@ class DynamicsIntegration extends CrmAbstractIntegration
      */
     public function getLeads($params = [], $query = null, &$executed = null, $result = [], $object = 'contacts')
     {
+        $oparams = [];
+        $progress = null;
         if ('Contact' === $object) {
             $object = 'contacts';
         }
@@ -477,6 +474,8 @@ class DynamicsIntegration extends CrmAbstractIntegration
      */
     public function getCompanies($params = [])
     {
+        $oparams = [];
+        $progress = null;
         $executed    = 0;
         $MAX_RECORDS = 200; // Default max records is 5000
         $object      = 'company';
@@ -609,7 +608,7 @@ class DynamicsIntegration extends CrmAbstractIntegration
                         }
 
                         if (count($newMatchedFields)) {
-                            $this->companyModel->setFieldValues($entity, $newMatchedFields, false, false);
+                            $this->companyModel->setFieldValues($entity, $newMatchedFields, false);
                             $this->companyModel->saveEntity($entity, false);
                             $isModified = true;
                         }
@@ -725,7 +724,7 @@ class DynamicsIntegration extends CrmAbstractIntegration
             }
 
             $integrationEntityRepo->saveEntities($integrationEntities);
-            $this->em->clear('Mautic\PluginBundle\Entity\IntegrationEntity');
+            $this->em->clear(\Mautic\PluginBundle\Entity\IntegrationEntity::class);
             $this->em->clear();
 
             unset($integrationEntityRepo, $integrationEntities);
@@ -741,6 +740,8 @@ class DynamicsIntegration extends CrmAbstractIntegration
      */
     public function pushLeads($params = [])
     {
+        $fieldsToUpdate = [];
+        $output = null;
         $MAX_RECORDS = (isset($params['limit']) && $params['limit'] < 100) ? $params['limit'] : 100;
         if (isset($params['fetchAll']) && $params['fetchAll']) {
             $params['start'] = null;
@@ -931,6 +932,7 @@ class DynamicsIntegration extends CrmAbstractIntegration
 
     private function getExistingRecord($seachColumn, $searchValue, $object = 'contacts')
     {
+        $oparams = [];
         $availableFields    = $this->getAvailableLeadFields();
         $oparams['$select'] = implode(',', array_keys($availableFields[$object]));
         $oparams['$filter'] = $seachColumn.' eq \''.$searchValue.'\'';

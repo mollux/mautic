@@ -18,26 +18,11 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class MaxMindDoNotSellPurgeCommand extends Command
 {
-    /**
-     * @var EntityManager
-     */
-    private $em;
+    private \Mautic\LeadBundle\Entity\LeadRepository $leadRepository;
 
-    /**
-     * @var MaxMindDoNotSellList
-     */
-    private $doNotSellList;
-
-    /**
-     * @var LeadRepository
-     */
-    private $leadRepository;
-
-    public function __construct(EntityManager $em, MaxMindDoNotSellList $doNotSellList)
+    public function __construct(private EntityManager $em, private MaxMindDoNotSellList $doNotSellList)
     {
         parent::__construct();
-        $this->em             = $em;
-        $this->doNotSellList  = $doNotSellList;
         $this->leadRepository = $this->em->getRepository(Lead::class);
     }
 
@@ -79,10 +64,8 @@ EOT
             $output->writeln('<info>Step 1: Searching for contacts with data from Do Not Sell List...</info>');
 
             $this->doNotSellList->loadList();
-            $doNotSellListIPs = array_map(function ($item) {
-                // strip subnet mask characters
-                return substr_replace($item['value'], '', strpos($item['value'], '/'), 3);
-            }, $this->doNotSellList->getList());
+            $doNotSellListIPs = array_map(fn($item) => // strip subnet mask characters
+substr_replace($item['value'], '', strpos($item['value'], '/'), 3), $this->doNotSellList->getList());
             $doNotSellContacts = $this->findContactsFromIPs($doNotSellListIPs);
 
             if (0 == count($doNotSellContacts)) {
@@ -138,9 +121,7 @@ EOT
     {
         /** @var Lead $lead */
         $lead       = $this->leadRepository->findOneBy(['id' => $contactId]);
-        $matchedIps = array_filter($lead->getIpAddresses()->getValues(), function ($item) use ($ip) {
-            return $item->getIpAddress() == $ip;
-        });
+        $matchedIps = array_filter($lead->getIpAddresses()->getValues(), fn($item) => $item->getIpAddress() == $ip);
 
         // We only purge data from the contact if it matches the data in the IP details
         if ($ipDetails = $matchedIps[0]->getIpDetails()) {

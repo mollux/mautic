@@ -13,22 +13,10 @@ class MenuEvent extends Event
     protected $menuItems = ['children' => []];
 
     /**
-     * @var string
-     */
-    protected $type;
-
-    /**
-     * @var MenuHelper
-     */
-    protected $helper;
-
-    /**
      * @param string $type
      */
-    public function __construct(MenuHelper $menuHelper, $type = 'main')
+    public function __construct(protected MenuHelper $helper, protected $type = 'main')
     {
-        $this->helper = $menuHelper;
-        $this->type   = $type;
     }
 
     public function setMenuItems(array $menuItems)
@@ -41,8 +29,8 @@ class MenuEvent extends Event
      */
     public function addMenuItems(array $menuItems)
     {
-        $defaultPriority = isset($menuItems['priority']) ? $menuItems['priority'] : 9999;
-        $items           = isset($menuItems['items']) ? $menuItems['items'] : $menuItems;
+        $defaultPriority = $menuItems['priority'] ?? 9999;
+        $items           = $menuItems['items'] ?? $menuItems;
 
         $isRoot = isset($items['name']) && ('root' == $items['name'] || $items['name'] == $items['name']);
         if (!$isRoot) {

@@ -13,97 +13,46 @@ use Mautic\LeadBundle\Entity\Lead;
  */
 class Stat
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var Notification
-     */
-    private $notification;
+    private ?\Mautic\NotificationBundle\Entity\Notification $notification = null;
 
-    /**
-     * @var \Mautic\LeadBundle\Entity\Lead
-     */
-    private $lead;
+    private ?\Mautic\LeadBundle\Entity\Lead $lead = null;
 
-    /**
-     * @var \Mautic\LeadBundle\Entity\LeadList
-     */
-    private $list;
+    private ?\Mautic\LeadBundle\Entity\LeadList $list = null;
 
-    /**
-     * @var \Mautic\CoreBundle\Entity\IpAddress
-     */
-    private $ipAddress;
+    private ?\Mautic\CoreBundle\Entity\IpAddress $ipAddress = null;
 
-    /**
-     * @var \DateTime
-     */
-    private $dateSent;
+    private ?\DateTime $dateSent = null;
 
-    /**
-     * @var \DateTime
-     */
-    private $dateRead;
+    private ?\DateTime $dateRead = null;
 
-    /**
-     * @var bool
-     */
-    private $isClicked = false;
+    private bool $isClicked = false;
 
-    /**
-     * @var \DateTime
-     */
-    private $dateClicked;
+    private ?\DateTime $dateClicked = null;
 
-    /**
-     * @var string
-     */
-    private $trackingHash;
+    private ?string $trackingHash = null;
 
-    /**
-     * @var int
-     */
-    private $retryCount = 0;
+    private int $retryCount = 0;
 
-    /**
-     * @var string
-     */
-    private $source;
+    private ?string $source = null;
 
-    /**
-     * @var int
-     */
-    private $sourceId;
+    private ?int $sourceId = null;
 
-    /**
-     * @var array
-     */
-    private $tokens = [];
+    private array $tokens = [];
 
-    /**
-     * @var int
-     */
-    private $clickCount;
+    private ?int $clickCount = null;
 
-    /**
-     * @var array
-     */
-    private $clickDetails = [];
+    private array $clickDetails = [];
 
-    /**
-     * @var \DateTime
-     */
-    private $lastClicked;
+    private ?\DateTime $lastClicked = null;
 
     public static function loadMetadata(ORM\ClassMetadata $metadata)
     {
         $builder = new ClassMetadataBuilder($metadata);
 
         $builder->setTable('push_notification_stats')
-            ->setCustomRepositoryClass('Mautic\NotificationBundle\Entity\StatRepository')
+            ->setCustomRepositoryClass(\Mautic\NotificationBundle\Entity\StatRepository::class)
             ->addIndex(['notification_id', 'lead_id'], 'stat_notification_search')
             ->addIndex(['is_clicked'], 'stat_notification_clicked_search')
             ->addIndex(['tracking_hash'], 'stat_notification_hash_search')
@@ -118,7 +67,7 @@ class Stat
 
         $builder->addLead(true, 'SET NULL');
 
-        $builder->createManyToOne('list', 'Mautic\LeadBundle\Entity\LeadList')
+        $builder->createManyToOne('list', \Mautic\LeadBundle\Entity\LeadList::class)
             ->addJoinColumn('list_id', 'id', true, false, 'SET NULL')
             ->build();
 
@@ -208,10 +157,7 @@ class Stat
         return $this->dateClicked;
     }
 
-    /**
-     * @param mixed $dateClicked
-     */
-    public function setDateClicked($dateClicked)
+    public function setDateClicked(mixed $dateClicked)
     {
         $this->dateClicked = $dateClicked;
     }
@@ -224,10 +170,7 @@ class Stat
         return $this->dateSent;
     }
 
-    /**
-     * @param mixed $dateSent
-     */
-    public function setDateSent($dateSent)
+    public function setDateSent(mixed $dateSent)
     {
         $this->dateSent = $dateSent;
     }
@@ -240,9 +183,6 @@ class Stat
         return $this->notification;
     }
 
-    /**
-     * @param Notification $notification
-     */
     public function setNotification(Notification $notification = null)
     {
         $this->notification = $notification;
@@ -280,10 +220,7 @@ class Stat
         return $this->isClicked;
     }
 
-    /**
-     * @param mixed $isClicked
-     */
-    public function setIsClicked($isClicked)
+    public function setIsClicked(mixed $isClicked)
     {
         $this->isClicked = $isClicked;
     }
@@ -312,10 +249,7 @@ class Stat
         return $this->trackingHash;
     }
 
-    /**
-     * @param mixed $trackingHash
-     */
-    public function setTrackingHash($trackingHash)
+    public function setTrackingHash(mixed $trackingHash)
     {
         $this->trackingHash = $trackingHash;
     }
@@ -328,10 +262,7 @@ class Stat
         return $this->list;
     }
 
-    /**
-     * @param mixed $list
-     */
-    public function setList($list)
+    public function setList(mixed $list)
     {
         $this->list = $list;
     }
@@ -344,10 +275,7 @@ class Stat
         return $this->retryCount;
     }
 
-    /**
-     * @param mixed $retryCount
-     */
-    public function setRetryCount($retryCount)
+    public function setRetryCount(mixed $retryCount)
     {
         $this->retryCount = $retryCount;
     }
@@ -365,10 +293,7 @@ class Stat
         return $this->source;
     }
 
-    /**
-     * @param mixed $source
-     */
-    public function setSource($source)
+    public function setSource(mixed $source)
     {
         $this->source = $source;
     }
@@ -381,10 +306,7 @@ class Stat
         return $this->sourceId;
     }
 
-    /**
-     * @param mixed $sourceId
-     */
-    public function setSourceId($sourceId)
+    public function setSourceId(mixed $sourceId)
     {
         $this->sourceId = (int) $sourceId;
     }
@@ -397,10 +319,7 @@ class Stat
         return $this->tokens;
     }
 
-    /**
-     * @param mixed $tokens
-     */
-    public function setTokens($tokens)
+    public function setTokens(mixed $tokens)
     {
         $this->tokens = $tokens;
     }
@@ -414,11 +333,9 @@ class Stat
     }
 
     /**
-     * @param mixed $clickCount
-     *
      * @return Stat
      */
-    public function setClickCount($clickCount)
+    public function setClickCount(mixed $clickCount)
     {
         $this->clickCount = $clickCount;
 
@@ -475,11 +392,9 @@ class Stat
     }
 
     /**
-     * @param mixed $clickDetails
-     *
      * @return Stat
      */
-    public function setClickDetails($clickDetails)
+    public function setClickDetails(mixed $clickDetails)
     {
         $this->clickDetails = $clickDetails;
 

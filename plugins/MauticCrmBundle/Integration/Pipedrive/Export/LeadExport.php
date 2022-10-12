@@ -12,17 +12,11 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 class LeadExport extends AbstractPipedrive
 {
     /**
-     * @var CompanyExport
-     */
-    private $companyExport;
-
-    /**
      * LeadExport constructor.
      */
-    public function __construct(EntityManager $em, CompanyExport $companyExport)
+    public function __construct(EntityManager $em, private CompanyExport $companyExport)
     {
         $this->em            = $em;
-        $this->companyExport = $companyExport;
     }
 
     /**

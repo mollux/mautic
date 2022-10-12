@@ -60,8 +60,8 @@ trait CustomFieldEntityTrait
      */
     public function __call($name, $arguments)
     {
-        $isSetter = 0 === strpos($name, 'set');
-        $isGetter = 0 === strpos($name, 'get');
+        $isSetter = str_starts_with($name, 'set');
+        $isGetter = str_starts_with($name, 'get');
 
         if (($isSetter && array_key_exists(0, $arguments)) || $isGetter) {
             $fieldRequested = mb_strtolower(mb_substr($name, 3));
@@ -208,10 +208,8 @@ trait CustomFieldEntityTrait
      *
      * @param string $key
      * @param string $group
-     *
-     * @return array|false
      */
-    public function getField($key, $group = null)
+    public function getField($key, $group = null): array|false
     {
         if ($group && isset($this->fields[$group][$key])) {
             return $this->fields[$group][$key];
@@ -271,7 +269,7 @@ trait CustomFieldEntityTrait
      */
     public function getEventData($key)
     {
-        return (isset($this->eventData[$key])) ? $this->eventData[$key] : null;
+        return $this->eventData[$key] ?? null;
     }
 
     /**

@@ -18,22 +18,8 @@ use Symfony\Component\Routing\Router;
 
 class CompanyObjectSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var CompanyObjectHelper
-     */
-    private $companyObjectHelper;
-
-    /**
-     * @var Router
-     */
-    private $router;
-
-    public function __construct(
-        CompanyObjectHelper $companyObjectHelper,
-        Router $router
-    ) {
-        $this->companyObjectHelper = $companyObjectHelper;
-        $this->router              = $router;
+    public function __construct(private CompanyObjectHelper $companyObjectHelper, private Router $router)
+    {
     }
 
     /**

@@ -14,52 +14,31 @@ use Mautic\LeadBundle\Segment\Exception\SegmentNotFoundException;
 class SegmentContactsLineChartQuery extends ChartQuery
 {
     /**
-     * @var array
-     */
-    private $filters;
-
-    /**
      * @var int
      */
     private $segmentId;
 
-    /**
-     * @var bool|string
-     */
-    private $firstEventLog;
+    private bool|string|null $firstEventLog = null;
 
-    /**
-     * @var array
-     */
-    private $addedEventLogStats;
+    private ?array $addedEventLogStats = null;
 
-    /**
-     * @var array
-     */
-    private $removedEventLogStats;
+    private ?array $removedEventLogStats = null;
 
-    /**
-     * @var array
-     */
-    private $addedLeadListStats;
+    private ?array $addedLeadListStats = null;
 
-    /**
-     * @var bool
-     */
-    private $statsFromEventLog;
+    private ?bool $statsFromEventLog = null;
 
     /**
      * @param string|null $unit
      *
      * @throws SegmentNotFoundException
      */
-    public function __construct(Connection $connection, \DateTime $dateFrom, \DateTime $dateTo, array $filters = [], $unit = null)
+    public function __construct(Connection $connection, \DateTime $dateFrom, \DateTime $dateTo, private array $filters = [], $unit = null)
     {
         $this->connection = $connection;
         $this->dateFrom   = $dateFrom;
         $this->dateTo     = $dateTo;
         $this->unit       = $unit;
-        $this->filters    = $filters;
 
         if (!isset($this->filters['leadlist_id']['value'])) {
             throw new SegmentNotFoundException('Segment ID required');
@@ -149,10 +128,7 @@ class SegmentContactsLineChartQuery extends ChartQuery
         return $this->loadAndBuildTimeData($q);
     }
 
-    /**
-     * @return bool|string
-     */
-    private function getFirstDateAddedSegmentEventLog()
+    private function getFirstDateAddedSegmentEventLog(): bool|string
     {
         $subQuery = $this->connection->createQueryBuilder();
         $subQuery->select('el.date_added - INTERVAL 10 SECOND')
@@ -243,9 +219,7 @@ class SegmentContactsLineChartQuery extends ChartQuery
         $compositeExpressionReflectionParts = $compositeExpressionReflection->getProperty('parts');
         $compositeExpressionReflectionParts->setAccessible(true);
         $parts    = $compositeExpressionReflectionParts->getValue($compositeExpression);
-        $newParts = array_filter($parts, function ($val) use ($joinAlias) {
-            return 0 !== strpos($val, "$joinAlias.");
-        });
+        $newParts = array_filter($parts, fn($val) => !str_starts_with($val, "$joinAlias."));
         $compositeExpressionReflectionParts->setValue($compositeExpression, $newParts);
         $compositeExpressionReflectionParts->setAccessible(false);
     }

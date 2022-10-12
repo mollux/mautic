@@ -13,61 +13,19 @@ use Psr\Log\LoggerInterface;
 
 class InactiveHelper
 {
-    /**
-     * @var EventScheduler
-     */
-    private $scheduler;
-
-    /**
-     * @var InactiveContactFinder
-     */
-    private $inactiveContactFinder;
-
-    /**
-     * @var LeadEventLogRepository
-     */
-    private $eventLogRepository;
-
-    /**
-     * @var EventRepository
-     */
-    private $eventRepository;
-
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    private DecisionHelper $decisionHelper;
-
-    /**
-     * @var \DateTime
-     */
-    private $earliestInactiveDate;
+    private ?\DateTime $earliestInactiveDate = null;
 
     /**
      * InactiveHelper constructor.
      */
-    public function __construct(
-        EventScheduler $scheduler,
-        InactiveContactFinder $inactiveContactFinder,
-        LeadEventLogRepository $eventLogRepository,
-        EventRepository $eventRepository,
-        LoggerInterface $logger,
-        DecisionHelper $decisionHelper
-    ) {
-        $this->scheduler               = $scheduler;
-        $this->inactiveContactFinder   = $inactiveContactFinder;
-        $this->eventLogRepository      = $eventLogRepository;
-        $this->eventRepository         = $eventRepository;
-        $this->logger                  = $logger;
-        $this->decisionHelper          = $decisionHelper;
+    public function __construct(private EventScheduler $scheduler, private InactiveContactFinder $inactiveContactFinder, private LeadEventLogRepository $eventLogRepository, private EventRepository $eventRepository, private LoggerInterface $logger, private DecisionHelper $decisionHelper)
+    {
     }
 
     /**
      * @param ArrayCollection|Event[] $decisions
      */
-    public function removeDecisionsWithoutNegativeChildren(ArrayCollection $decisions)
+    public function removeDecisionsWithoutNegativeChildren(\Doctrine\Common\Collections\ArrayCollection|array $decisions)
     {
         /**
          * @var int
@@ -183,10 +141,8 @@ class InactiveHelper
 
     /**
      * @param $lastActiveEventId
-     *
-     * @return array|ArrayCollection
      */
-    private function getLastActiveDates($lastActiveEventId, array $contactIds)
+    private function getLastActiveDates($lastActiveEventId, array $contactIds): array|\Doctrine\Common\Collections\ArrayCollection
     {
         // If there is a parent ID, get last active dates based on when that event was executed for the given contact
         // Otherwise, use when the contact was added to the campaign for comparison

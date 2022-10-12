@@ -33,49 +33,19 @@ class CompanyModel extends CommonFormModel implements AjaxLookupModelInterface
     use RequestTrait;
 
     /**
-     * @var Session
-     */
-    protected $session;
-
-    /**
-     * @var FieldModel
-     */
-    protected $leadFieldModel;
-
-    /**
      * @var array
      */
     protected $companyFields;
 
-    /**
-     * @var EmailValidator
-     */
-    protected $emailValidator;
+    private array $fields = [];
 
-    /**
-     * @var array
-     */
-    private $fields = [];
-
-    /**
-     * @var bool
-     */
-    private $repoSetup = false;
-
-    /**
-     * @var CompanyDeduper
-     */
-    private $companyDeduper;
+    private bool $repoSetup = false;
 
     /**
      * CompanyModel constructor.
      */
-    public function __construct(FieldModel $leadFieldModel, Session $session, EmailValidator $validator, CompanyDeduper $companyDeduper)
+    public function __construct(protected FieldModel $leadFieldModel, protected Session $session, protected EmailValidator $emailValidator, private CompanyDeduper $companyDeduper)
     {
-        $this->leadFieldModel = $leadFieldModel;
-        $this->session        = $session;
-        $this->emailValidator = $validator;
-        $this->companyDeduper = $companyDeduper;
     }
 
     /**
@@ -125,7 +95,7 @@ class CompanyModel extends CommonFormModel implements AjaxLookupModelInterface
 
             $searchFields = [];
             foreach ($fields as $groupFields) {
-                $searchFields = array_merge($searchFields, array_keys($groupFields));
+                $searchFields = [...$searchFields, ...array_keys($groupFields)];
             }
             $repo->setAvailableSearchFields($searchFields);
         }
@@ -253,10 +223,8 @@ class CompanyModel extends CommonFormModel implements AjaxLookupModelInterface
 
     /**
      * Populates custom field values for updating the company.
-     *
-     * @param bool|false $overwriteWithBlank
      */
-    public function setFieldValues(Company $company, array $data, $overwriteWithBlank = false)
+    public function setFieldValues(Company $company, array $data, bool $overwriteWithBlank = false)
     {
         //save the field values
         $fieldValues = $company->getFields();
@@ -303,14 +271,12 @@ class CompanyModel extends CommonFormModel implements AjaxLookupModelInterface
     /**
      * Add lead to company.
      *
-     * @param array|Company $companies
-     * @param array|Lead    $lead
      *
      * @return bool
      *
      * @throws \Doctrine\ORM\ORMException
      */
-    public function addLeadToCompany($companies, $lead)
+    public function addLeadToCompany(array|\Mautic\LeadBundle\Entity\Company $companies, array|\Mautic\LeadBundle\Entity\Lead $lead)
     {
         // Primary company name to be persisted to the lead's contact company field
         $companyName        = '';
@@ -558,6 +524,7 @@ class CompanyModel extends CommonFormModel implements AjaxLookupModelInterface
      */
     public function getLookupResults($type, $filter = '', $limit = 10, $start = 0)
     {
+        $filterVal = null;
         $results = [];
         switch ($type) {
             case 'companyfield':
@@ -807,7 +774,7 @@ class CompanyModel extends CommonFormModel implements AjaxLookupModelInterface
     {
         try {
             $duplicateCompanies = $this->companyDeduper->checkForDuplicateCompanies($this->getFieldData($fields, $data));
-        } catch (UniqueFieldNotFoundException $uniqueFieldNotFoundException) {
+        } catch (UniqueFieldNotFoundException) {
             return null;
         }
 

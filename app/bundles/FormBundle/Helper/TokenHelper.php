@@ -11,22 +11,10 @@ use Mautic\FormBundle\Model\FormModel;
 class TokenHelper
 {
     /**
-     * @var FormModel
-     */
-    protected $formModel;
-
-    /**
-     * @var CorePermissions
-     */
-    protected $security;
-
-    /**
      * TokenHelper constructor.
      */
-    public function __construct(FormModel $formModel, CorePermissions $security)
+    public function __construct(protected FormModel $formModel, protected CorePermissions $security)
     {
-        $this->formModel = $formModel;
-        $this->security  = $security;
     }
 
     /**
@@ -40,7 +28,7 @@ class TokenHelper
 
         preg_match_all('/{form=(.*?)}/', $content, $matches);
 
-        if (count($matches[0])) {
+        if (is_countable($matches[0]) ? count($matches[0]) : 0) {
             foreach ($matches[1] as $k => $id) {
                 $token = $matches[0][$k];
 

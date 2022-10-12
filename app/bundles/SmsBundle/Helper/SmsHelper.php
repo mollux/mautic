@@ -14,50 +14,8 @@ use Mautic\SmsBundle\Model\SmsModel;
 
 class SmsHelper
 {
-    /**
-     * @var EntityManager
-     */
-    protected $em;
-
-    /**
-     * @var LeadModel
-     */
-    protected $leadModel;
-
-    /**
-     * @var PhoneNumberHelper
-     */
-    protected $phoneNumberHelper;
-
-    /**
-     * @var SmsModel
-     */
-    protected $smsModel;
-
-    /**
-     * @var IntegrationHelper
-     */
-    protected $integrationHelper;
-
-    /**
-     * @var DoNotContact
-     */
-    private $doNotContact;
-
-    public function __construct(
-        EntityManager $em,
-        LeadModel $leadModel,
-        PhoneNumberHelper $phoneNumberHelper,
-        SmsModel $smsModel,
-        IntegrationHelper $integrationHelper,
-        DoNotContact $doNotContact
-    ) {
-        $this->em                   = $em;
-        $this->leadModel            = $leadModel;
-        $this->phoneNumberHelper    = $phoneNumberHelper;
-        $this->smsModel             = $smsModel;
-        $this->integrationHelper    = $integrationHelper;
-        $this->doNotContact         = $doNotContact;
+    public function __construct(protected EntityManager $em, protected LeadModel $leadModel, protected PhoneNumberHelper $phoneNumberHelper, protected SmsModel $smsModel, protected IntegrationHelper $integrationHelper, private DoNotContact $doNotContact)
+    {
     }
 
     public function unsubscribe($number)

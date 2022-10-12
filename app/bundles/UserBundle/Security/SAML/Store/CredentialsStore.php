@@ -11,28 +11,13 @@ use RobRichards\XMLSecLibs\XMLSecurityKey;
 
 class CredentialsStore implements CredentialStoreInterface
 {
-    /**
-     * @var CoreParametersHelper
-     */
-    private $coreParametersHelper;
-
-    /**
-     * @var string
-     */
-    private $entityId;
-
-    /**
-     * @var X509Credential|null
-     */
-    private $credentials;
+    private ?\LightSaml\Credential\X509Credential $credentials = null;
 
     /**
      * CredentialsStore constructor.
      */
-    public function __construct(CoreParametersHelper $coreParametersHelper, string $entityId)
+    public function __construct(private CoreParametersHelper $coreParametersHelper, private string $entityId)
     {
-        $this->coreParametersHelper = $coreParametersHelper;
-        $this->entityId             = $entityId;
     }
 
     public function getByEntityId($entityId): array
@@ -75,7 +60,7 @@ class CredentialsStore implements CredentialStoreInterface
     private function createDefaultCredentials(): X509Credential
     {
         $reflection         = new \ReflectionClass(\Composer\Autoload\ClassLoader::class);
-        $vendorPath         = dirname(dirname($reflection->getFileName()));
+        $vendorPath         = dirname($reflection->getFileName(), 2);
         $certificateContent = file_get_contents($vendorPath.'/lightsaml/lightsaml/web/sp/saml.crt');
         $privateKeyContent  = file_get_contents($vendorPath.'/lightsaml/lightsaml/web/sp/saml.key');
         $keyPassword        = '';

@@ -7,12 +7,9 @@ class YearStat implements StatInterface
     /**
      * @var MonthStat[]
      */
-    private $stats = [];
+    private array $stats = [];
 
-    /**
-     * @var int
-     */
-    private $year;
+    private int $year;
 
     /**
      * YearStat constructor.

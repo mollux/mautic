@@ -21,7 +21,7 @@ class NotificationApiController extends CommonApiController
     {
         $this->contactTracker  = $this->container->get('mautic.tracker.contact');
         $this->model           = $this->getModel('notification');
-        $this->entityClass     = 'Mautic\NotificationBundle\Entity\Notification';
+        $this->entityClass     = \Mautic\NotificationBundle\Entity\Notification::class;
         $this->entityNameOne   = 'notification';
         $this->entityNameMulti = 'notifications';
 

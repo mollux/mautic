@@ -22,105 +22,45 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
     use TranslationEntityTrait;
     use VariantEntityTrait;
 
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var string
-     */
-    private $title;
+    private ?string $title = null;
 
-    /**
-     * @var string
-     */
-    private $alias;
+    private ?string $alias = null;
 
-    /**
-     * @var string
-     */
-    private $template;
+    private ?string $template = null;
 
-    /**
-     * @var string
-     */
-    private $customHtml;
+    private ?string $customHtml = null;
 
-    /**
-     * @var array
-     */
-    private $content = [];
+    private array $content = [];
 
-    /**
-     * @var \DateTime
-     */
-    private $publishUp;
+    private ?\DateTime $publishUp = null;
 
-    /**
-     * @var \DateTime
-     */
-    private $publishDown;
+    private ?\DateTime $publishDown = null;
 
-    /**
-     * @var int
-     */
-    private $hits = 0;
+    private int $hits = 0;
 
-    /**
-     * @var int
-     */
-    private $uniqueHits = 0;
+    private int $uniqueHits = 0;
 
-    /**
-     * @var int
-     */
-    private $variantHits = 0;
+    private int $variantHits = 0;
 
-    /**
-     * @var int
-     */
-    private $revision = 1;
+    private int $revision = 1;
 
-    /**
-     * @var string
-     */
-    private $metaDescription;
+    private ?string $metaDescription = null;
 
-    /**
-     * @var string
-     */
-    private $headScript;
+    private ?string $headScript = null;
 
-    /**
-     * @var string
-     */
-    private $footerScript;
+    private ?string $footerScript = null;
 
-    /**
-     * @var string
-     */
-    private $redirectType;
+    private ?string $redirectType = null;
 
-    /**
-     * @var string
-     */
-    private $redirectUrl;
+    private ?string $redirectUrl = null;
 
-    /**
-     * @var \Mautic\CategoryBundle\Entity\Category
-     **/
-    private $category;
+    private ?\Mautic\CategoryBundle\Entity\Category $category = null;
 
-    /**
-     * @var bool
-     */
-    private $isPreferenceCenter;
+    private ?bool $isPreferenceCenter = null;
 
-    /**
-     * @var bool
-     */
-    private $noIndex;
+    private ?bool $noIndex = null;
 
     /**
      * Used to identify the page for the builder.
@@ -150,7 +90,7 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
         $builder = new ClassMetadataBuilder($metadata);
 
         $builder->setTable('pages')
-            ->setCustomRepositoryClass('Mautic\PageBundle\Entity\PageRepository')
+            ->setCustomRepositoryClass(\Mautic\PageBundle\Entity\PageRepository::class)
             ->addIndex(['alias'], 'page_alias_search');
 
         $builder->addId();
@@ -633,7 +573,6 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
     /**
      * Set category.
      *
-     * @param \Mautic\CategoryBundle\Entity\Category $category
      *
      * @return Page
      */
@@ -798,10 +737,7 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
         return ($includeVariants) ? $this->getAccumulativeVariantCount('getVariantHits') : $this->variantHits;
     }
 
-    /**
-     * @param mixed $variantHits
-     */
-    public function setVariantHits($variantHits)
+    public function setVariantHits(mixed $variantHits)
     {
         $this->variantHits = $variantHits;
     }
@@ -814,10 +750,7 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
         return $this->customHtml;
     }
 
-    /**
-     * @param mixed $customHtml
-     */
-    public function setCustomHtml($customHtml)
+    public function setCustomHtml(mixed $customHtml)
     {
         $this->customHtml = $customHtml;
     }

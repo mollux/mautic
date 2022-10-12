@@ -9,8 +9,6 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class ImportValidateEvent extends Event
 {
-    private string $routeObjectName;
-    private Form $form;
     private ?int $ownerId = null;
     private ?int $list    = null;
 
@@ -24,10 +22,8 @@ class ImportValidateEvent extends Event
      */
     private array $tags = [];
 
-    public function __construct(string $routeObjectName, Form $form)
+    public function __construct(private string $routeObjectName, private Form $form)
     {
-        $this->routeObjectName = $routeObjectName;
-        $this->form            = $form;
     }
 
     public function getForm(): Form

@@ -23,7 +23,7 @@ class PluginController extends FormController
     /**
      * @return JsonResponse|Response
      */
-    public function indexAction()
+    public function indexAction(): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         if (!$this->get('mautic.security')->isGranted('plugin:plugins:manage')) {
             return $this->accessDenied();
@@ -92,9 +92,7 @@ class PluginController extends FormController
         //sort by name
         uksort(
             $integrations,
-            function ($a, $b) {
-                return strnatcasecmp($a, $b);
-            }
+            fn($a, $b) => strnatcasecmp($a, $b)
         );
 
         $tmpl = $this->request->isXmlHttpRequest() ? $this->request->get('tmpl', 'index') : 'index';
@@ -132,7 +130,7 @@ class PluginController extends FormController
      *
      * @return JsonResponse|Response
      */
-    public function configAction($name, $activeTab = 'details-container', $page = 1)
+    public function configAction($name, $activeTab = 'details-container', $page = 1): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         if (!$this->get('mautic.security')->isGranted('plugin:plugins:manage')) {
             return $this->accessDenied();
@@ -143,7 +141,7 @@ class PluginController extends FormController
 
         $session   = $this->get('session');
 
-        $integrationDetailsPost = $this->request->request->get('integration_details', [], true);
+        $integrationDetailsPost = $this->request->request->get('integration_details', []);
         $authorize              = empty($integrationDetailsPost['in_auth']) ? false : true;
 
         /** @var \Mautic\PluginBundle\Helper\IntegrationHelper $integrationHelper */
@@ -324,7 +322,7 @@ class PluginController extends FormController
             if ('custom' === $section) {
                 $formNotes[$section] = $integrationObject->getFormNotes($section);
             } else {
-                list($specialInstructions, $alertType) = $integrationObject->getFormNotes($section);
+                [$specialInstructions, $alertType] = str_split($integrationObject->getFormNotes($section));
 
                 if (!empty($specialInstructions)) {
                     $formNotes[$section] = [
@@ -361,7 +359,7 @@ class PluginController extends FormController
      *
      * @return array|JsonResponse|RedirectResponse|Response
      */
-    public function infoAction($name)
+    public function infoAction($name): array|\Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         if (!$this->get('mautic.security')->isGranted('plugin:plugins:manage')) {
             return $this->accessDenied();

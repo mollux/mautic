@@ -4,20 +4,11 @@ namespace Mautic\EmailBundle\Swiftmailer\Transport;
 
 abstract class AbstractTokenHttpTransport extends AbstractTokenArrayTransport implements \Swift_Transport, TokenTransportInterface
 {
-    /**
-     * @var string|null
-     */
-    private $username;
+    private ?string $username = null;
 
-    /**
-     * @var string|null
-     */
-    private $password;
+    private ?string $password = null;
 
-    /**
-     * @var string|null
-     */
-    private $apiKey;
+    private ?string $apiKey = null;
 
     /**
      * Return an array of headers for the POST.
@@ -183,6 +174,7 @@ abstract class AbstractTokenHttpTransport extends AbstractTokenArrayTransport im
      */
     protected function post($settings = [])
     {
+        $curl = [];
         $payload  = empty($settings['payload']) ? $this->getPayload() : $settings['payload'];
         $headers  = empty($settings['headers']) ? $this->getHeaders() : $settings['headers'];
         $endpoint = empty($settings['url']) ? $this->getApiEndpoint() : $settings['url'];

@@ -6,14 +6,8 @@ use Mautic\AssetBundle\Model\AssetModel;
 
 class TokenHelper
 {
-    /**
-     * @var AssetModel
-     */
-    protected $model;
-
-    public function __construct(AssetModel $model)
+    public function __construct(protected AssetModel $model)
     {
-        $this->model = $model;
     }
 
     /**

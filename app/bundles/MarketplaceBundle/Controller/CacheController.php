@@ -13,18 +13,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class CacheController extends CommonController
 {
-    private CorePermissions $corePermissions;
-    private Config $config;
-    private Allowlist $allowlist;
-
-    public function __construct(
-        CorePermissions $corePermissions,
-        Config $config,
-        Allowlist $allowlist
-    ) {
-        $this->corePermissions = $corePermissions;
-        $this->config          = $config;
-        $this->allowlist       = $allowlist;
+    public function __construct(private CorePermissions $corePermissions, private Config $config, private Allowlist $allowlist)
+    {
     }
 
     public function clearAction(): Response

@@ -54,124 +54,8 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class SubmissionModel extends CommonFormModel
 {
-    /**
-     * @var IpLookupHelper
-     */
-    protected $ipLookupHelper;
-
-    /**
-     * @var TemplatingHelper
-     */
-    protected $templatingHelper;
-
-    /**
-     * @var FormModel
-     */
-    protected $formModel;
-
-    /**
-     * @var PageModel
-     */
-    protected $pageModel;
-
-    /**
-     * @var LeadModel
-     */
-    protected $leadModel;
-
-    /**
-     * @var CampaignModel
-     */
-    protected $campaignModel;
-
-    /**
-     * @var MembershipManager
-     */
-    protected $membershipManager;
-
-    /**
-     * @var LeadFieldModel
-     */
-    protected $leadFieldModel;
-
-    /**
-     * @var CompanyModel
-     */
-    protected $companyModel;
-
-    /**
-     * @var FormFieldHelper
-     */
-    protected $fieldHelper;
-
-    /**
-     * @var UploadFieldValidator
-     */
-    private $uploadFieldValidator;
-
-    /**
-     * @var FormUploader
-     */
-    private $formUploader;
-
-    /**
-     * @var DeviceTrackingServiceInterface
-     */
-    private $deviceTrackingService;
-
-    /**
-     * @var FieldValueTransformer
-     */
-    private $fieldValueTransformer;
-
-    /**
-     * @var DateHelper
-     */
-    private $dateHelper;
-
-    /**
-     * @var ContactTracker
-     */
-    private $contactTracker;
-
-    private ContactMerger $contactMerger;
-
-    public function __construct(
-        IpLookupHelper $ipLookupHelper,
-        TemplatingHelper $templatingHelper,
-        FormModel $formModel,
-        PageModel $pageModel,
-        LeadModel $leadModel,
-        CampaignModel $campaignModel,
-        MembershipManager $membershipManager,
-        LeadFieldModel $leadFieldModel,
-        CompanyModel $companyModel,
-        FormFieldHelper $fieldHelper,
-        UploadFieldValidator $uploadFieldValidator,
-        FormUploader $formUploader,
-        DeviceTrackingServiceInterface $deviceTrackingService,
-        FieldValueTransformer $fieldValueTransformer,
-        DateHelper $dateHelper,
-        ContactTracker $contactTracker,
-        ContactMerger $contactMerger
-    ) {
-        $this->ipLookupHelper         = $ipLookupHelper;
-        $this->templatingHelper       = $templatingHelper;
-        $this->formModel              = $formModel;
-        $this->pageModel              = $pageModel;
-        $this->leadModel              = $leadModel;
-        $this->campaignModel          = $campaignModel;
-        $this->membershipManager      = $membershipManager;
-        $this->leadFieldModel         = $leadFieldModel;
-        $this->companyModel           = $companyModel;
-        $this->fieldHelper            = $fieldHelper;
-        $this->uploadFieldValidator   = $uploadFieldValidator;
-        $this->formUploader           = $formUploader;
-        $this->deviceTrackingService  = $deviceTrackingService;
-        $this->fieldValueTransformer  = $fieldValueTransformer;
-        $this->dateHelper             = $dateHelper;
-        $this->contactTracker         = $contactTracker;
-        $this->contactMerger          = $contactMerger;
+    public function __construct(protected IpLookupHelper $ipLookupHelper, protected TemplatingHelper $templatingHelper, protected FormModel $formModel, protected PageModel $pageModel, protected LeadModel $leadModel, protected CampaignModel $campaignModel, protected MembershipManager $membershipManager, protected LeadFieldModel $leadFieldModel, protected CompanyModel $companyModel, protected FormFieldHelper $fieldHelper, private UploadFieldValidator $uploadFieldValidator, private FormUploader $formUploader, private DeviceTrackingServiceInterface $deviceTrackingService, private FieldValueTransformer $fieldValueTransformer, private DateHelper $dateHelper, private ContactTracker $contactTracker, private ContactMerger $contactMerger)
+    {
     }
 
     /**
@@ -189,11 +73,10 @@ class SubmissionModel extends CommonFormModel
      * @param      $server
      * @param bool $returnEvent
      *
-     * @return bool|array
      *
      * @throws ORMException
      */
-    public function saveSubmission($post, $server, Form $form, Request $request, $returnEvent = false)
+    public function saveSubmission($post, $server, Form $form, Request $request, $returnEvent = false): bool|array
     {
         $leadFields = $this->leadFieldModel->getFieldListWithProperties(false);
 
@@ -244,7 +127,7 @@ class SubmissionModel extends CommonFormModel
             $id    = $f->getId();
             $type  = $f->getType();
             $alias = $f->getAlias();
-            $value = (isset($post[$alias])) ? $post[$alias] : '';
+            $value = $post[$alias] ?? '';
 
             $fieldArray[$id] = [
                 'id'    => $id,
@@ -312,7 +195,7 @@ class SubmissionModel extends CommonFormModel
                 $params = $components['fields'][$f->getType()];
                 if (!empty($value)) {
                     if (isset($params['valueFilter'])) {
-                        if (is_string($params['valueFilter']) && is_callable(['\Mautic\CoreBundle\Helper\InputHelper', $params['valueFilter']])) {
+                        if (is_string($params['valueFilter']) && is_callable(['\\' . \Mautic\CoreBundle\Helper\InputHelper::class, $params['valueFilter']])) {
                             $value = InputHelper::_($value, $params['valueFilter']);
                         } elseif (is_callable($params['valueFilter'])) {
                             $value = call_user_func_array($params['valueFilter'], [$f, $value]);
@@ -511,7 +394,7 @@ class SubmissionModel extends CommonFormModel
      *
      * @throws \Exception
      */
-    public function exportResults($format, $form, $queryArgs)
+    public function exportResults($format, $form, $queryArgs): \Symfony\Component\HttpFoundation\StreamedResponse|\Symfony\Component\HttpFoundation\Response
     {
         $viewOnlyFields              = $this->formModel->getCustomComponents()['viewOnlyFields'];
         $queryArgs['viewOnlyFields'] = $viewOnlyFields;
@@ -681,7 +564,7 @@ class SubmissionModel extends CommonFormModel
      *
      * @throws \Exception
      */
-    public function exportResultsForPage($format, $page, $queryArgs)
+    public function exportResultsForPage($format, $page, $queryArgs): \Symfony\Component\HttpFoundation\StreamedResponse|\Symfony\Component\HttpFoundation\Response
     {
         $results    = $this->getEntitiesByPage($queryArgs);
         $results    = $results['results'];
@@ -918,9 +801,7 @@ class SubmissionModel extends CommonFormModel
         $customComponents = $this->formModel->getCustomComponents();
         $availableActions = $customComponents['actions'] ?? [];
 
-        $actions->filter(function (Action $action) use ($availableActions) {
-            return array_key_exists($action->getType(), $availableActions);
-        })->map(function (Action $action) use ($event, $availableActions) {
+        $actions->filter(fn(Action $action) => array_key_exists($action->getType(), $availableActions))->map(function (Action $action) use ($event, $availableActions) {
             $event->setAction($action);
             $this->dispatcher->dispatch($event, $availableActions[$action->getType()]['eventName']);
         });
@@ -1058,7 +939,7 @@ class SubmissionModel extends CommonFormModel
                 // Merge the found lead with currently tracked lead
                 try {
                     $lead = $this->contactMerger->merge($lead, $foundLead);
-                } catch (SameContactException $exception) {
+                } catch (SameContactException) {
                 }
             }
 
@@ -1159,7 +1040,7 @@ class SubmissionModel extends CommonFormModel
      *
      * @return bool|string True if valid; otherwise string with invalid reason
      */
-    protected function validateFieldValue(Field $field, $value)
+    protected function validateFieldValue(Field $field, $value): bool|string
     {
         $standardValidation = $this->fieldHelper->validateFieldValue($field->getType(), $value, $field);
         if (!empty($standardValidation)) {

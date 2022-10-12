@@ -15,45 +15,21 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
  */
 class Stage extends FormEntity
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var string
-     */
-    private $name;
+    private ?string $name = null;
 
-    /**
-     * @var string
-     */
-    private $description;
+    private ?string $description = null;
 
-    /**
-     * @var int
-     */
-    private $weight = 0;
+    private int $weight = 0;
 
-    /**
-     * @var \DateTime
-     */
-    private $publishUp;
+    private ?\DateTime $publishUp = null;
 
-    /**
-     * @var \DateTime
-     */
-    private $publishDown;
+    private ?\DateTime $publishDown = null;
 
-    /**
-     * @var ArrayCollection
-     */
-    private $log;
+    private \Doctrine\Common\Collections\ArrayCollection $log;
 
-    /**
-     * @var \Mautic\CategoryBundle\Entity\Category
-     **/
-    private $category;
+    private ?\Mautic\CategoryBundle\Entity\Category $category = null;
 
     public function __clone()
     {
@@ -74,7 +50,7 @@ class Stage extends FormEntity
     {
         $builder = new ClassMetadataBuilder($metadata);
         $builder->setTable('stages')
-            ->setCustomRepositoryClass('Mautic\StageBundle\Entity\StageRepository');
+            ->setCustomRepositoryClass(\Mautic\StageBundle\Entity\StageRepository::class);
 
         $builder->addIdColumns();
 
@@ -304,10 +280,7 @@ class Stage extends FormEntity
         return $this->category;
     }
 
-    /**
-     * @param mixed $category
-     */
-    public function setCategory($category)
+    public function setCategory(mixed $category)
     {
         $this->category = $category;
     }

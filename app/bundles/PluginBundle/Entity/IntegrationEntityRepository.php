@@ -233,9 +233,7 @@ class IntegrationEntityRepository extends CommonRepository
                 $q->expr()->notIn(
                     'i.integration_entity_id',
                     array_map(
-                        function ($x) {
-                            return "'".$x."'";
-                        },
+                        fn($x) => "'".$x."'",
                         $excludeIntegrationIds
                     )
                 )
@@ -325,10 +323,8 @@ class IntegrationEntityRepository extends CommonRepository
      * @param int  $limit
      * @param null $fromDate
      * @param null $toDate
-     *
-     * @return array|int
      */
-    public function findLeadsToCreate($integration, $leadFields, $limit = 25, $fromDate = null, $toDate = null, $internalEntity = 'lead')
+    public function findLeadsToCreate($integration, $leadFields, $limit = 25, $fromDate = null, $toDate = null, $internalEntity = 'lead'): array|int
     {
         if ('company' == $internalEntity) {
             $joinTable = 'companies';
@@ -443,11 +439,9 @@ class IntegrationEntityRepository extends CommonRepository
      * @param $integration
      * @param $integrationEntity
      * @param $internalEntity
-     * @param int|bool $limit
      *
-     * @return array|int
      */
-    public function getIntegrationEntityByLead($leadId, $integration = null, $integrationEntity = null, $internalEntity = null, $limit = 100)
+    public function getIntegrationEntityByLead($leadId, $integration = null, $integrationEntity = null, $internalEntity = null, int|bool $limit = 100): array|int
     {
         $q = $this->_em->getConnection()->createQueryBuilder()
             ->from(MAUTIC_TABLE_PREFIX.'integration_entity', 'i');
@@ -468,9 +462,7 @@ class IntegrationEntityRepository extends CommonRepository
                 ->from(MAUTIC_TABLE_PREFIX.'plugin_integration_settings', 'p')
                 ->where('p.is_published = 1');
             $rows    = $pq->execute()->fetchAll();
-            $plugins = array_map(function ($i) {
-                return "'${i['name']}'";
-            }, $rows);
+            $plugins = array_map(fn($i) => "'${i['name']}'", $rows);
             if (count($plugins) > 0) {
                 $q->andWhere($q->expr()->in('i.integration', $plugins));
             } else {

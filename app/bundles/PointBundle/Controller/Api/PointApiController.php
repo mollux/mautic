@@ -25,7 +25,7 @@ class PointApiController extends CommonApiController
     {
         $this->model            = $this->getModel('point');
         $this->leadModel        = $this->getModel('lead');
-        $this->entityClass      = 'Mautic\PointBundle\Entity\Point';
+        $this->entityClass      = \Mautic\PointBundle\Entity\Point::class;
         $this->entityNameOne    = 'point';
         $this->entityNameMulti  = 'points';
         $this->serializerGroups = ['pointDetails', 'categoryList', 'publishDetails'];

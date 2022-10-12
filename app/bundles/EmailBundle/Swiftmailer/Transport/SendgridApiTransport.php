@@ -10,30 +10,12 @@ use Symfony\Component\HttpFoundation\Request;
 
 class SendgridApiTransport implements \Swift_Transport, TokenTransportInterface, CallbackTransportInterface
 {
-    /**
-     * @var SendGridApiFacade
-     */
-    private $sendGridApiFacade;
+    private ?\Swift_Events_SimpleEventDispatcher $swiftEventDispatcher = null;
 
-    /**
-     * @var \Swift_Events_SimpleEventDispatcher
-     */
-    private $swiftEventDispatcher;
+    private bool $started = false;
 
-    /**
-     * @var bool
-     */
-    private $started = false;
-
-    /**
-     * @var SendGridApiCallback
-     */
-    private $sendGridApiCallback;
-
-    public function __construct(SendGridApiFacade $sendGridApiFacade, SendGridApiCallback $sendGridApiCallback)
+    public function __construct(private SendGridApiFacade $sendGridApiFacade, private SendGridApiCallback $sendGridApiCallback)
     {
-        $this->sendGridApiFacade   = $sendGridApiFacade;
-        $this->sendGridApiCallback = $sendGridApiCallback;
     }
 
     /**

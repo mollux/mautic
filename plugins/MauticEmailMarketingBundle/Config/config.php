@@ -9,15 +9,15 @@ return [
     'services' => [
         'forms' => [
             'mautic.form.type.emailmarketing.mailchimp' => [
-                'class'     => 'MauticPlugin\MauticEmailMarketingBundle\Form\Type\MailchimpType',
+                'class'     => \MauticPlugin\MauticEmailMarketingBundle\Form\Type\MailchimpType::class,
                 'arguments' => ['mautic.helper.integration', 'mautic.plugin.model.plugin', 'session', 'mautic.helper.core_parameters'],
             ],
             'mautic.form.type.emailmarketing.constantcontact' => [
-                'class'     => 'MauticPlugin\MauticEmailMarketingBundle\Form\Type\ConstantContactType',
+                'class'     => \MauticPlugin\MauticEmailMarketingBundle\Form\Type\ConstantContactType::class,
                 'arguments' => ['mautic.helper.integration', 'mautic.plugin.model.plugin', 'session', 'mautic.helper.core_parameters'],
             ],
             'mautic.form.type.emailmarketing.icontact' => [
-                'class'     => 'MauticPlugin\MauticEmailMarketingBundle\Form\Type\IcontactType',
+                'class'     => \MauticPlugin\MauticEmailMarketingBundle\Form\Type\IcontactType::class,
                 'arguments' => ['mautic.helper.integration', 'mautic.plugin.model.plugin', 'session', 'mautic.helper.core_parameters'],
             ],
         ],

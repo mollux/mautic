@@ -6,30 +6,12 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class ParseEmailEvent extends Event
 {
-    /**
-     * @var array
-     */
-    private $messages;
+    private array $criteriaRequests = [];
 
-    /**
-     * @var array
-     */
-    private $keys;
+    private array $markAsSeen = [];
 
-    /**
-     * @var array
-     */
-    private $criteriaRequests = [];
-
-    /**
-     * @var array
-     */
-    private $markAsSeen = [];
-
-    public function __construct(array $messages = [], array $applicableKeys = [])
+    public function __construct(private array $messages = [], private array $keys = [])
     {
-        $this->messages = $messages;
-        $this->keys     = $applicableKeys;
     }
 
     /**

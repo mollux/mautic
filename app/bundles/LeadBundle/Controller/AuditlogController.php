@@ -61,10 +61,7 @@ class AuditlogController extends CommonController
         );
     }
 
-    /**
-     * @return array|\Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\StreamedResponse
-     */
-    public function batchExportAction(Request $request, $leadId)
+    public function batchExportAction(Request $request, $leadId): array|\Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\StreamedResponse
     {
         if (empty($leadId)) {
             return $this->accessDenied();
@@ -97,14 +94,14 @@ class AuditlogController extends CommonController
         $dataType = $this->request->get('filetype', 'csv');
 
         $resultsCallback = function ($event) {
-            $eventLabel = (isset($event['eventLabel'])) ? $event['eventLabel'] : $event['eventType'];
+            $eventLabel = $event['eventLabel'] ?? $event['eventType'];
             if (is_array($eventLabel)) {
                 $eventLabel = $eventLabel['label'];
             }
 
             return [
                 'eventName'      => $eventLabel,
-                'eventType'      => isset($event['eventType']) ? $event['eventType'] : '',
+                'eventType'      => $event['eventType'] ?? '',
                 'eventTimestamp' => $this->get('mautic.helper.template.date')->toText($event['timestamp'], 'local', 'Y-m-d H:i:s', true),
             ];
         };

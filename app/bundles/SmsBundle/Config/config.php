@@ -214,7 +214,7 @@ return [
         ],
         'models' => [
             'mautic.sms.model.sms' => [
-                'class'     => 'Mautic\SmsBundle\Model\SmsModel',
+                'class'     => \Mautic\SmsBundle\Model\SmsModel::class,
                 'arguments' => [
                     'mautic.page.model.trackable',
                     'mautic.lead.model.lead',
@@ -305,7 +305,7 @@ return [
                 'standard_entity' => true,
                 'name'            => 'smses',
                 'path'            => '/smses',
-                'controller'      => 'Mautic\SmsBundle\Controller\Api\SmsApiController',
+                'controller'      => \Mautic\SmsBundle\Controller\Api\SmsApiController::class,
             ],
             'mautic_api_smses_send' => [
                 'path'       => '/smses/{id}/contact/{contactId}/send',

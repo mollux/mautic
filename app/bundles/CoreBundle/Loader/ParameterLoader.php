@@ -7,35 +7,16 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 
 class ParameterLoader
 {
-    /**
-     * @var string
-     */
-    private $rootPath;
+    private \Symfony\Component\HttpFoundation\ParameterBag $parameterBag;
 
-    /**
-     * @var ParameterBag
-     */
-    private $parameterBag;
+    private \Symfony\Component\HttpFoundation\ParameterBag $localParameterBag;
 
-    /**
-     * @var ParameterBag
-     */
-    private $localParameterBag;
+    private array $localParameters = [];
 
-    /**
-     * @var array
-     */
-    private $localParameters = [];
+    private static array $defaultParameters = [];
 
-    /**
-     * @var array
-     */
-    private static $defaultParameters = [];
-
-    public function __construct(string $configRootPath = __DIR__.'/../../../')
+    public function __construct(private string $rootPath = __DIR__.'/../../../')
     {
-        $this->rootPath = $configRootPath;
-
         $this->loadDefaultParameters();
         $this->loadLocalParameters();
         $this->createParameterBags();
@@ -80,6 +61,7 @@ class ParameterLoader
 
     public static function getLocalConfigFile(string $root, $updateDefaultParameters = true): string
     {
+        $paths = [];
         $root = realpath($root);
 
         /** @var array $paths */
@@ -137,6 +119,7 @@ class ParameterLoader
 
     private function loadLocalParameters(): void
     {
+        $parameters = null;
         $compiledParameters = [];
         $localConfigFile    = self::getLocalConfigFile($this->rootPath);
 
@@ -162,7 +145,7 @@ class ParameterLoader
         // Load from environment
         $envParameters = getenv('MAUTIC_CONFIG_PARAMETERS');
         if ($envParameters) {
-            $compiledParameters = array_merge($compiledParameters, json_decode($envParameters, true));
+            $compiledParameters = array_merge($compiledParameters, json_decode($envParameters, true, 512, JSON_THROW_ON_ERROR));
         }
 
         $this->localParameters = $compiledParameters;

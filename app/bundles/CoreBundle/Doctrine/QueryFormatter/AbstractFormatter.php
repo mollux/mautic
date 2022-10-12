@@ -11,7 +11,6 @@ use Doctrine\DBAL\Connection;
  */
 abstract class AbstractFormatter
 {
-    protected $db;
     protected $platform;
     protected $name;
 
@@ -26,9 +25,8 @@ abstract class AbstractFormatter
         return new $class($db);
     }
 
-    public function __construct(Connection $db)
+    public function __construct(protected Connection $db)
     {
-        $this->db       = $db;
         $this->platform = $this->db->getDatabasePlatform();
         $this->name     = $this->platform->getName();
     }

@@ -10,35 +10,17 @@ class ObjectMappingDAO
     public const SYNC_TO_INTEGRATION  = 'integration';
     public const SYNC_BIDIRECTIONALLY = 'bidirectional';
 
-    /**
-     * @var string
-     */
-    private $internalObjectName;
+    private array $internalIdMapping = [];
 
-    /**
-     * @var string
-     */
-    private $integrationObjectName;
-
-    /**
-     * @var array
-     */
-    private $internalIdMapping = [];
-
-    /**
-     * @var array
-     */
-    private $integrationIdMapping = [];
+    private array $integrationIdMapping = [];
 
     /**
      * @var FieldMappingDAO[]
      */
-    private $fieldMappings = [];
+    private array $fieldMappings = [];
 
-    public function __construct(string $internalObjectName, string $integrationObjectName)
+    public function __construct(private string $internalObjectName, private string $integrationObjectName)
     {
-        $this->internalObjectName    = $internalObjectName;
-        $this->integrationObjectName = $integrationObjectName;
     }
 
     /**
@@ -46,8 +28,6 @@ class ObjectMappingDAO
      * @param string $integrationField
      * @param string $direction
      * @param bool   $isRequired
-     *
-     * @return ObjectMappingDAO
      */
     public function addFieldMapping($internalField, $integrationField, $direction = self::SYNC_BIDIRECTIONALLY, $isRequired = false): self
     {
@@ -81,11 +61,9 @@ class ObjectMappingDAO
     }
 
     /**
-     * @param mixed $integrationObjectId
-     *
      * @return mixed|null
      */
-    public function getMappedInternalObjectId($integrationObjectId)
+    public function getMappedInternalObjectId(mixed $integrationObjectId)
     {
         if (array_key_exists($integrationObjectId, $this->integrationIdMapping)) {
             return $this->integrationIdMapping[$integrationObjectId];

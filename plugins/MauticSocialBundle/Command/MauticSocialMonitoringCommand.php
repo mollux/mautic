@@ -12,12 +12,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class MauticSocialMonitoringCommand extends Command
 {
-    private MonitoringModel $monitoringModel;
-
-    public function __construct(MonitoringModel $monitoringModel)
+    public function __construct(private MonitoringModel $monitoringModel)
     {
-        $this->monitoringModel = $monitoringModel;
-
         parent::__construct();
     }
 
@@ -96,11 +92,10 @@ class MauticSocialMonitoringCommand extends Command
     /**
      * @param $listItem
      *
-     * @return bool|int
      *
      * @throws \Exception
      */
-    protected function processMonitorListItem($listItem, float $maxPerIterations, InputInterface $input, OutputInterface $output)
+    protected function processMonitorListItem($listItem, float $maxPerIterations, InputInterface $input, OutputInterface $output): bool|int
     {
         // @todo set this up to use the command type per-monitor record.
         $networkType = $listItem->getNetworkType();

@@ -17,16 +17,6 @@ class ProcessReplySubscriber implements EventSubscriberInterface
     public const CACHE_KEY  = self::BUNDLE.'_'.self::FOLDER_KEY;
 
     /**
-     * @var Reply
-     */
-    private $replier;
-
-    /**
-     * @var CacheStorageHelper
-     */
-    private $cache;
-
-    /**
      * @return array
      */
     public static function getSubscribedEvents()
@@ -41,10 +31,8 @@ class ProcessReplySubscriber implements EventSubscriberInterface
     /**
      * ProcessReplySubscriber constructor.
      */
-    public function __construct(Reply $replier, CacheStorageHelper $cache)
+    public function __construct(private Reply $replier, private CacheStorageHelper $cache)
     {
-        $this->replier = $replier;
-        $this->cache   = $cache;
     }
 
     public function onEmailConfig(MonitoredEmailEvent $event)
@@ -61,7 +49,7 @@ class ProcessReplySubscriber implements EventSubscriberInterface
         $startingUID = $lastFetchedUID + 1;
 
         // Using * will return the last UID even if the starting UID doesn't exist so let's just use a highball number
-        $endingUID = $startingUID + 1000000000;
+        $endingUID = $startingUID + 1_000_000_000;
 
         $event->setCriteriaRequest(self::BUNDLE, self::FOLDER_KEY, Mailbox::CRITERIA_UID." $startingUID:$endingUID");
     }

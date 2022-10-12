@@ -19,7 +19,7 @@ class SmsController extends FormController
      *
      * @return JsonResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function indexAction($page = 1)
+    public function indexAction($page = 1): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         /** @var \Mautic\SmsBundle\Model\SmsModel $model */
         $model = $this->getModel('sms');
@@ -115,7 +115,7 @@ class SmsController extends FormController
                 'permissions' => $permissions,
                 'model'       => $model,
                 'security'    => $this->get('mautic.security'),
-                'configured'  => count($this->get('mautic.sms.transport_chain')->getEnabledTransports()) > 0,
+                'configured'  => (is_countable($this->get('mautic.sms.transport_chain')->getEnabledTransports()) ? count($this->get('mautic.sms.transport_chain')->getEnabledTransports()) : 0) > 0,
             ],
             'contentTemplate' => 'MauticSmsBundle:Sms:list.html.php',
             'passthroughVars' => [
@@ -130,10 +130,8 @@ class SmsController extends FormController
      * Loads a specific form into the detailed panel.
      *
      * @param $objectId
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function viewAction($objectId)
+    public function viewAction($objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         /** @var \Mautic\SmsBundle\Model\SmsModel $model */
         $model    = $this->getModel('sms');
@@ -197,7 +195,7 @@ class SmsController extends FormController
                 'sms'         => $sms,
                 'trackables'  => $trackableLinks,
                 'logs'        => $logs,
-                'isEmbedded'  => $this->request->get('isEmbedded') ? $this->request->get('isEmbedded') : false,
+                'isEmbedded'  => $this->request->get('isEmbedded') ?: false,
                 'permissions' => $security->isGranted([
                     'sms:smses:viewown',
                     'sms:smses:viewother',
@@ -233,10 +231,8 @@ class SmsController extends FormController
      * Generates new form and processes post data.
      *
      * @param Sms $entity
-     *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function newAction($entity = null)
+    public function newAction($entity = null): \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         /** @var \Mautic\SmsBundle\Model\SmsModel $model */
         $model = $this->getModel('sms');
@@ -371,7 +367,7 @@ class SmsController extends FormController
      *
      * @return array|\Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function editAction($objectId, $ignorePost = false, $forceTypeSelection = false)
+    public function editAction($objectId, $ignorePost = false, $forceTypeSelection = false): array|\Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         /** @var \Mautic\SmsBundle\Model\SmsModel $model */
         $model   = $this->getModel('sms');
@@ -536,7 +532,7 @@ class SmsController extends FormController
      *
      * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function cloneAction($objectId)
+    public function cloneAction($objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         $model  = $this->getModel('sms');
         $entity = $model->getEntity($objectId);
@@ -562,10 +558,8 @@ class SmsController extends FormController
      * Deletes the entity.
      *
      * @param $objectId
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function deleteAction($objectId)
+    public function deleteAction($objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         $page      = $this->get('session')->get('mautic.sms.page', 1);
         $returnUrl = $this->generateUrl('mautic_sms_index', ['page' => $page]);
@@ -624,10 +618,8 @@ class SmsController extends FormController
 
     /**
      * Deletes a group of entities.
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function batchDeleteAction()
+    public function batchDeleteAction(): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         $page      = $this->get('session')->get('mautic.sms.page', 1);
         $returnUrl = $this->generateUrl('mautic_sms_index', ['page' => $page]);
@@ -645,7 +637,7 @@ class SmsController extends FormController
 
         if ('POST' == $this->request->getMethod()) {
             $model = $this->getModel('sms');
-            $ids   = json_decode($this->request->query->get('ids', '{}'));
+            $ids   = json_decode($this->request->query->get('ids', '{}'), null, 512, JSON_THROW_ON_ERROR);
 
             $deleteIds = [];
 
@@ -681,7 +673,7 @@ class SmsController extends FormController
                     'type'    => 'notice',
                     'msg'     => 'mautic.sms.notice.batch_deleted',
                     'msgVars' => [
-                        '%count%' => count($entities),
+                        '%count%' => is_countable($entities) ? count($entities) : 0,
                     ],
                 ];
             }
@@ -700,7 +692,7 @@ class SmsController extends FormController
      *
      * @return JsonResponse|Response
      */
-    public function previewAction($objectId)
+    public function previewAction($objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         /** @var \Mautic\SmsBundle\Model\SmsModel $model */
         $model    = $this->getModel('sms');
@@ -725,7 +717,7 @@ class SmsController extends FormController
      *
      * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function contactsAction($objectId, $page = 1)
+    public function contactsAction($objectId, $page = 1): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         return $this->generateContactsGrid(
             $objectId,

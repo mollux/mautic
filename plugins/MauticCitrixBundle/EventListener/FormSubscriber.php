@@ -34,52 +34,18 @@ class FormSubscriber implements EventSubscriberInterface
     use CitrixRegistrationTrait;
     use CitrixStartTrait;
 
-    /**
-     * @var FormModel
-     */
-    private $formModel;
-
-    /**
-     * @var SubmissionModel
-     */
-    private $submissionModel;
-
-    /**
-     * @var CitrixModel
-     */
-    private $citrixModel;
-
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    /**
-     * @var EntityManager
-     */
-    private $entityManager;
-
-    /**
-     * ヽ(ಠ_ಠ)ノ Used in the CitrixStartTrait.
-     *
-     * @var TemplatingHelper
-     */
-    private $templating;
-
     public function __construct(
-        CitrixModel $citrixModel,
-        FormModel $formModel,
-        SubmissionModel $submissionModel,
-        TranslatorInterface $translator,
-        EntityManager $entityManager,
-        TemplatingHelper $templating
-    ) {
-        $this->citrixModel     = $citrixModel;
-        $this->formModel       = $formModel;
-        $this->submissionModel = $submissionModel;
-        $this->translator      = $translator;
-        $this->entityManager   = $entityManager;
-        $this->templating      = $templating;
+        private CitrixModel $citrixModel,
+        private FormModel $formModel,
+        private SubmissionModel $submissionModel,
+        private TranslatorInterface $translator,
+        private EntityManager $entityManager,
+        /**
+         * ヽ(ಠ_ಠ)ノ Used in the CitrixStartTrait.
+         */
+        private TemplatingHelper $templating
+    )
+    {
     }
 
     public static function getSubscribedEvents()
@@ -117,7 +83,7 @@ class FormSubscriber implements EventSubscriberInterface
                 // check if there are products in the actions
                 /** @var Action $action */
                 foreach ($actions as $action) {
-                    if (0 === strpos($action->getType(), 'plugin.citrix.action')) {
+                    if (str_starts_with($action->getType(), 'plugin.citrix.action')) {
                         $actionAction = preg_filter('/^.+\.([^\.]+\.[^\.]+)$/', '$1', $action->getType());
                         $actionAction = str_replace('.', '_', $actionAction);
                         if (!array_key_exists($actionAction, $submission->getResults())) {
@@ -326,7 +292,7 @@ class FormSubscriber implements EventSubscriberInterface
             // check if there are products in the actions
             /** @var Action $action */
             foreach ($actions as $action) {
-                if (0 === strpos($action->getType(), 'plugin.citrix.action')) {
+                if (str_starts_with($action->getType(), 'plugin.citrix.action')) {
                     if (0 === count($productlist)) {
                         $productlist = CitrixHelper::getCitrixChoices($product);
                     }
@@ -406,7 +372,7 @@ class FormSubscriber implements EventSubscriberInterface
 
             /** @var Action $action */
             foreach ($actions as $action) {
-                if (0 === strpos($action->getType(), 'plugin.citrix.action')) {
+                if (str_starts_with($action->getType(), 'plugin.citrix.action')) {
                     $actionProduct = preg_filter('/^.+\.([^\.]+)$/', '$1', $action->getType());
                     if (!CitrixHelper::isAuthorized('Goto'.$actionProduct)) {
                         continue;
@@ -494,9 +460,7 @@ class FormSubscriber implements EventSubscriberInterface
      */
     public function onFormBuilder(Events\FormBuilderEvent $event)
     {
-        $activeProducts = array_filter(CitrixProducts::toArray(), function ($product) {
-            return CitrixHelper::isAuthorized('Goto'.$product);
-        });
+        $activeProducts = array_filter(CitrixProducts::toArray(), fn($product) => CitrixHelper::isAuthorized('Goto'.$product));
 
         if (0 === count($activeProducts)) {
             return;

@@ -137,12 +137,11 @@ trait CustomFieldsApiControllerTrait
     }
 
     /**
-     * @param Lead|Company $entity
      * @param Form         $form
      * @param array        $parameters
      * @param bool         $isPostOrPatch
      */
-    protected function setCustomFieldValues($entity, $form, $parameters, $isPostOrPatch = false)
+    protected function setCustomFieldValues(\Mautic\LeadBundle\Entity\Lead|\Mautic\LeadBundle\Entity\Company $entity, $form, $parameters, $isPostOrPatch = false)
     {
         //set the custom field values
         //pull the data from the form in order to apply the form's formatting

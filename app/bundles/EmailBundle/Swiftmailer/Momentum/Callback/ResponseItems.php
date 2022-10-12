@@ -7,15 +7,12 @@ use Symfony\Component\HttpFoundation\Request;
 
 class ResponseItems implements \Iterator
 {
-    /**
-     * @var int
-     */
-    private $position = 0;
+    private int $position = 0;
 
     /**
      * @var ResponseItem[]
      */
-    private $items = [];
+    private array $items = [];
 
     public function __construct(Request $request)
     {
@@ -43,7 +40,7 @@ class ResponseItems implements \Iterator
 
             try {
                 $this->items[] = new ResponseItem($event);
-            } catch (ResponseItemException $e) {
+            } catch (ResponseItemException) {
             }
         }
     }

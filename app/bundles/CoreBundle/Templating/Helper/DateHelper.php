@@ -20,16 +20,6 @@ class DateHelper extends Helper
     protected $helper;
 
     /**
-     * @var TranslatorInterface
-     */
-    protected $translator;
-
-    /**
-     * @var CoreParametersHelper
-     */
-    private $coreParametersHelper;
-
-    /**
      * @param string $dateFullFormat
      * @param string $dateShortFormat
      * @param string $dateOnlyFormat
@@ -40,8 +30,8 @@ class DateHelper extends Helper
         $dateShortFormat,
         $dateOnlyFormat,
         $timeOnlyFormat,
-        TranslatorInterface $translator,
-        CoreParametersHelper $coreParametersHelper
+        protected TranslatorInterface $translator,
+        private CoreParametersHelper $coreParametersHelper
     ) {
         $this->formats = [
             'datetime' => $dateFullFormat,
@@ -51,19 +41,15 @@ class DateHelper extends Helper
         ];
 
         $this->helper               = new DateTimeHelper(null, null, 'local');
-        $this->translator           = $translator;
-        $this->coreParametersHelper = $coreParametersHelper;
     }
 
     /**
      * @param string           $type
-     * @param \DateTime|string $datetime
      * @param string           $timezone
      * @param string           $fromFormat
-     *
      * @return string
      */
-    protected function format($type, $datetime, $timezone, $fromFormat)
+    protected function format($type, \DateTime|string $datetime, $timezone, $fromFormat)
     {
         if (empty($datetime)) {
             return '';
@@ -79,13 +65,11 @@ class DateHelper extends Helper
     /**
      * Returns full date. eg. October 8, 2014 21:19.
      *
-     * @param \DateTime|string $datetime
      * @param string           $timezone
      * @param string           $fromFormat
-     *
      * @return string
      */
-    public function toFull($datetime, $timezone = 'local', $fromFormat = 'Y-m-d H:i:s')
+    public function toFull(\DateTime|string $datetime, $timezone = 'local', $fromFormat = 'Y-m-d H:i:s')
     {
         return $this->format('datetime', $datetime, $timezone, $fromFormat);
     }
@@ -93,13 +77,11 @@ class DateHelper extends Helper
     /**
      * Returns date and time concat eg 2014-08-02 5:00am.
      *
-     * @param \DateTime|string $datetime
      * @param string           $timezone
      * @param string           $fromFormat
-     *
      * @return string
      */
-    public function toFullConcat($datetime, $timezone = 'local', $fromFormat = 'Y-m-d H:i:s')
+    public function toFullConcat(\DateTime|string $datetime, $timezone = 'local', $fromFormat = 'Y-m-d H:i:s')
     {
         $this->helper->setDateTime($datetime, $fromFormat, $timezone);
 
@@ -111,13 +93,11 @@ class DateHelper extends Helper
     /**
      * Returns short date format eg Sun, Oct 8.
      *
-     * @param \DateTime|string $datetime
      * @param string           $timezone
      * @param string           $fromFormat
-     *
      * @return string
      */
-    public function toShort($datetime, $timezone = 'local', $fromFormat = 'Y-m-d H:i:s')
+    public function toShort(\DateTime|string $datetime, $timezone = 'local', $fromFormat = 'Y-m-d H:i:s')
     {
         return $this->format('short', $datetime, $timezone, $fromFormat);
     }
@@ -125,13 +105,11 @@ class DateHelper extends Helper
     /**
      * Returns date only e.g. 2014-08-09.
      *
-     * @param \DateTime|string $datetime
      * @param string           $timezone
      * @param string           $fromFormat
-     *
      * @return string
      */
-    public function toDate($datetime, $timezone = 'local', $fromFormat = 'Y-m-d H:i:s')
+    public function toDate(\DateTime|string $datetime, $timezone = 'local', $fromFormat = 'Y-m-d H:i:s')
     {
         return $this->format('date', $datetime, $timezone, $fromFormat);
     }
@@ -139,13 +117,11 @@ class DateHelper extends Helper
     /**
      * Returns time only e.g. 21:19.
      *
-     * @param \DateTime|string $datetime
      * @param string           $timezone
      * @param string           $fromFormat
-     *
      * @return string
      */
-    public function toTime($datetime, $timezone = 'local', $fromFormat = 'Y-m-d H:i:s')
+    public function toTime(\DateTime|string $datetime, $timezone = 'local', $fromFormat = 'Y-m-d H:i:s')
     {
         return $this->format('time', $datetime, $timezone, $fromFormat);
     }

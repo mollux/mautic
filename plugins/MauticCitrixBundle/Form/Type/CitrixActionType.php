@@ -17,16 +17,10 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 class CitrixActionType extends AbstractType
 {
     /**
-     * @var FieldModel
-     */
-    protected $model;
-
-    /**
      * CitrixActionType constructor.
      */
-    public function __construct(FieldModel $fieldModel)
+    public function __construct(protected FieldModel $model)
     {
-        $this->model = $fieldModel;
     }
 
     /**
@@ -59,9 +53,7 @@ class CitrixActionType extends AbstractType
                 array_merge(
                     ['button', 'freetext', 'captcha'],
                     array_map(
-                        function ($p) {
-                            return 'plugin.citrix.select.'.$p;
-                        },
+                        fn($p) => 'plugin.citrix.select.'.$p,
                         CitrixProducts::toArray()
                     )
                 ),

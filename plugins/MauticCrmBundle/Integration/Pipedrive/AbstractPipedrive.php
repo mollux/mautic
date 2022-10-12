@@ -14,15 +14,7 @@ abstract class AbstractPipedrive
     public const COMPANY_ENTITY_TYPE         = 'company';
     public const NO_ALLOWED_FIELDS_TO_EXPORT = ['ID'];
 
-    /**
-     * @var PipedriveIntegration
-     */
-    private $integration;
-
-    /**
-     * @var EntityManager
-     */
-    protected $em;
+    private ?\MauticPlugin\MauticCrmBundle\Integration\PipedriveIntegration $integration = null;
 
     public function setIntegration(PipedriveIntegration $integration)
     {
@@ -37,9 +29,8 @@ abstract class AbstractPipedrive
         return $this->integration;
     }
 
-    public function __construct(EntityManager $em)
+    public function __construct(protected EntityManager $em)
     {
-        $this->em = $em;
     }
 
     /**

@@ -15,20 +15,14 @@ use Mautic\LeadBundle\Entity\LeadListRepository;
 class LoadCategorizedLeadListData extends AbstractFixture implements OrderedFixtureInterface
 {
     /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
-
-    /**
      * @var Category
      */
 
     /**
      * {@inheritdoc}
      */
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(private EntityManagerInterface $entityManager)
     {
-        $this->entityManager = $entityManager;
     }
 
     public function load(ObjectManager $manager)

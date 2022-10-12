@@ -16,28 +16,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ListController extends CommonController
 {
-    private PluginCollector $pluginCollector;
-
-    private RequestStack $requestStack;
-
-    private RouteProvider $routeProvider;
-
-    private CorePermissions $corePermissions;
-
-    private Config $config;
-
-    public function __construct(
-        PluginCollector $pluginCollector,
-        RequestStack $requestStack,
-        RouteProvider $routeProvider,
-        CorePermissions $corePermissions,
-        Config $config
-    ) {
-        $this->pluginCollector = $pluginCollector;
-        $this->requestStack    = $requestStack;
-        $this->routeProvider   = $routeProvider;
-        $this->corePermissions = $corePermissions;
-        $this->config          = $config;
+    public function __construct(private PluginCollector $pluginCollector, private RequestStack $requestStack, private RouteProvider $routeProvider, private CorePermissions $corePermissions, private Config $config)
+    {
     }
 
     public function listAction(int $page = 1): Response

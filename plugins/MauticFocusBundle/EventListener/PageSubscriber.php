@@ -13,38 +13,10 @@ use Symfony\Component\Routing\RouterInterface;
 
 class PageSubscriber implements EventSubscriberInterface
 {
-    private $regex = '{focus=(.*?)}';
+    private string $regex = '{focus=(.*?)}';
 
-    /**
-     * @var FocusModel
-     */
-    private $model;
-
-    /**
-     * @var RouterInterface
-     */
-    private $router;
-
-    /**
-     * @var CorePermissions
-     */
-    private $security;
-
-    /**
-     * @var BuilderTokenHelperFactory
-     */
-    private $builderTokenHelperFactory;
-
-    public function __construct(
-        CorePermissions $security,
-        FocusModel $model,
-        RouterInterface $router,
-        BuilderTokenHelperFactory $builderTokenHelperFactory
-    ) {
-        $this->security                  = $security;
-        $this->router                    = $router;
-        $this->model                     = $model;
-        $this->builderTokenHelperFactory = $builderTokenHelperFactory;
+    public function __construct(private CorePermissions $security, private FocusModel $model, private RouterInterface $router, private BuilderTokenHelperFactory $builderTokenHelperFactory)
+    {
     }
 
     /**
@@ -76,7 +48,7 @@ class PageSubscriber implements EventSubscriberInterface
 
         preg_match_all($regex, $content, $matches);
 
-        if (count($matches[0])) {
+        if (is_countable($matches[0]) ? count($matches[0]) : 0) {
             foreach ($matches[1] as $id) {
                 $focus = $this->model->getEntity($id);
                 if (null !== $focus

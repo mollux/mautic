@@ -35,7 +35,7 @@ class InstallController extends CommonController
      *
      * @throws DBALException
      */
-    public function stepAction(float $index = 0)
+    public function stepAction(float $index = 0): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         // We're going to assume a bit here; if the config file exists already and DB info is provided, assume the app
         // is installed and redirect
@@ -236,7 +236,7 @@ class InstallController extends CommonController
      *
      * @throws \Exception
      */
-    public function finalAction()
+    public function finalAction(): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         $session = $this->get('session');
 

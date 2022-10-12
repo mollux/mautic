@@ -153,11 +153,10 @@ class FormModel extends AbstractCommonModel
     /**
      * Determines if an entity is new or not.
      *
-     * @param mixed $entity
      *
      * @return bool
      */
-    public function isNewEntity($entity)
+    public function isNewEntity(mixed $entity)
     {
         if (method_exists($entity, 'isNew')) {
             return $entity->isNew();
@@ -356,14 +355,10 @@ class FormModel extends AbstractCommonModel
      */
     public function getUserContactSubject($subject, $entity)
     {
-        switch ($subject) {
-            case 'locked':
-                $msg = 'mautic.user.user.contact.locked';
-                break;
-            default:
-                $msg = 'mautic.user.user.contact.regarding';
-                break;
-        }
+        $msg = match ($subject) {
+            'locked' => 'mautic.user.user.contact.locked',
+            default => 'mautic.user.user.contact.regarding',
+        };
 
         $nameGetter = $this->getNameGetter();
 

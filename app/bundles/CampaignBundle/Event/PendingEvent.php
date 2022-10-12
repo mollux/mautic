@@ -12,30 +12,15 @@ class PendingEvent extends AbstractLogCollectionEvent
 {
     use ContextTrait;
 
-    /**
-     * @var ArrayCollection
-     */
-    private $failures;
+    private \Doctrine\Common\Collections\ArrayCollection $failures;
 
-    /**
-     * @var ArrayCollection
-     */
-    private $successful;
+    private \Doctrine\Common\Collections\ArrayCollection $successful;
 
-    /**
-     * @var string|null
-     */
-    private $channel;
+    private ?string $channel = null;
 
-    /**
-     * @var int|null
-     */
-    private $channelId;
+    private ?int $channelId = null;
 
-    /**
-     * @var \DateTime
-     */
-    private $now;
+    private \DateTime $now;
 
     /**
      * @throws \Exception
@@ -52,7 +37,7 @@ class PendingEvent extends AbstractLogCollectionEvent
     /**
      * @return LeadEventLog[]|ArrayCollection
      */
-    public function getPending()
+    public function getPending(): array|\Doctrine\Common\Collections\ArrayCollection
     {
         return $this->logs;
     }
@@ -116,7 +101,7 @@ class PendingEvent extends AbstractLogCollectionEvent
      * @param LeadEventLog[]|ArrayCollection $logs
      * @param string                         $reason
      */
-    public function failLogs(ArrayCollection $logs, $reason)
+    public function failLogs(array|\Doctrine\Common\Collections\ArrayCollection $logs, $reason)
     {
         foreach ($logs as $log) {
             $this->fail($log, $reason);
@@ -187,7 +172,7 @@ class PendingEvent extends AbstractLogCollectionEvent
     /**
      * @param LeadEventLog[]|ArrayCollection $logs
      */
-    public function passLogs(ArrayCollection $logs)
+    public function passLogs(array|\Doctrine\Common\Collections\ArrayCollection $logs)
     {
         foreach ($logs as $log) {
             $this->pass($log);
@@ -209,7 +194,7 @@ class PendingEvent extends AbstractLogCollectionEvent
     /**
      * @return LeadEventLog[]|ArrayCollection
      */
-    public function getFailures()
+    public function getFailures(): array|\Doctrine\Common\Collections\ArrayCollection
     {
         return $this->failures;
     }
@@ -217,7 +202,7 @@ class PendingEvent extends AbstractLogCollectionEvent
     /**
      * @return LeadEventLog[]|ArrayCollection
      */
-    public function getSuccessful()
+    public function getSuccessful(): array|\Doctrine\Common\Collections\ArrayCollection
     {
         return $this->successful;
     }

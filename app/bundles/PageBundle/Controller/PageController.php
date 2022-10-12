@@ -33,7 +33,7 @@ class PageController extends FormController
      *
      * @return JsonResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function indexAction($page = 1)
+    public function indexAction($page = 1): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         $model = $this->getModel('page.page');
 
@@ -109,7 +109,7 @@ class PageController extends FormController
         $filter['force'][] = ['column' => 'p.variantParent', 'expr' => 'isNull'];
 
         $langSearchCommand = $translator->trans('mautic.core.searchcommand.lang');
-        if (false === strpos($search, "{$langSearchCommand}:")) {
+        if (!str_contains($search, "{$langSearchCommand}:")) {
             $filter['force'][] = ['column' => 'p.translationParent', 'expr' => 'isNull'];
         }
 
@@ -171,7 +171,7 @@ class PageController extends FormController
      *
      * @return JsonResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function viewAction($objectId)
+    public function viewAction($objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         /** @var \Mautic\PageBundle\Model\PageModel $model */
         $model = $this->getModel('page.page');
@@ -216,7 +216,7 @@ class PageController extends FormController
         $properties              = [];
         $variantError            = false;
         $weight                  = 0;
-        if (count($children)) {
+        if (is_countable($children) ? count($children) : 0) {
             foreach ($children as $c) {
                 $variantSettings = $c->getVariantSettings();
 
@@ -347,7 +347,7 @@ class PageController extends FormController
      *
      * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function newAction($entity = null)
+    public function newAction($entity = null): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         /** @var \Mautic\PageBundle\Model\PageModel $model */
         $model = $this->getModel('page.page');
@@ -470,7 +470,7 @@ class PageController extends FormController
      *
      * @return JsonResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function editAction($objectId, $ignorePost = false)
+    public function editAction($objectId, $ignorePost = false): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         /** @var \Mautic\PageBundle\Model\PageModel $model */
         $model    = $this->getModel('page.page');
@@ -628,7 +628,7 @@ class PageController extends FormController
      *
      * @return JsonResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function cloneAction($objectId)
+    public function cloneAction($objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         /** @var \Mautic\PageBundle\Model\PageModel $model */
         $model  = $this->getModel('page.page');
@@ -664,10 +664,8 @@ class PageController extends FormController
      * Deletes the entity.
      *
      * @param $objectId
-     *
-     * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function deleteAction($objectId)
+    public function deleteAction($objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         $page      = $this->get('session')->get('mautic.page.page', 1);
         $returnUrl = $this->generateUrl('mautic_page_index', ['page' => $page]);
@@ -725,10 +723,8 @@ class PageController extends FormController
 
     /**
      * Deletes a group of entities.
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function batchDeleteAction()
+    public function batchDeleteAction(): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         $page      = $this->get('session')->get('mautic.page.page', 1);
         $returnUrl = $this->generateUrl('mautic_page_index', ['page' => $page]);
@@ -747,7 +743,7 @@ class PageController extends FormController
         if ('POST' == $this->request->getMethod()) {
             /** @var \Mautic\PageBundle\Model\PageModel $model */
             $model     = $this->getModel('page');
-            $ids       = json_decode($this->request->query->get('ids', '{}'));
+            $ids       = json_decode($this->request->query->get('ids', '{}'), null, 512, JSON_THROW_ON_ERROR);
             $deleteIds = [];
 
             // Loop over the IDs to perform access checks pre-delete
@@ -805,7 +801,7 @@ class PageController extends FormController
         $model = $this->getModel('page.page');
 
         //permission check
-        if (false !== strpos($objectId, 'new')) {
+        if (str_contains($objectId, 'new')) {
             $isNew = true;
             if (!$this->get('mautic.security')->isGranted('page:pages:create')) {
                 return $this->accessDenied();
@@ -858,7 +854,7 @@ class PageController extends FormController
      *
      * @return JsonResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function abtestAction($objectId)
+    public function abtestAction($objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         /** @var \Mautic\PageBundle\Model\PageModel $model */
         $model  = $this->getModel('page.page');
@@ -896,10 +892,8 @@ class PageController extends FormController
      * Make the variant the main.
      *
      * @param $objectId
-     *
-     * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function winnerAction($objectId)
+    public function winnerAction($objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         //todo - add confirmation to button click
         $page      = $this->get('session')->get('mautic.page.page', 1);
@@ -997,7 +991,7 @@ class PageController extends FormController
                 $slotConfig['placeholder'] = 'mautic.page.builder.addcontent';
             }
 
-            $value = isset($content[$slot]) ? $content[$slot] : '';
+            $value = $content[$slot] ?? '';
 
             $slotsHelper->set($slot, "<div data-slot=\"text\" id=\"slot-{$slot}\">{$value}</div>");
         }
@@ -1017,7 +1011,7 @@ class PageController extends FormController
      *
      * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function resultsAction($objectId, $page = 1)
+    public function resultsAction($objectId, $page = 1): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         /** @var \Mautic\PageBundle\Model\PageModel $pageModel */
         $pageModel    = $this->getModel('page.page');
@@ -1157,11 +1151,10 @@ class PageController extends FormController
      * @param int    $objectId
      * @param string $format
      *
-     * @return \Symfony\Component\HttpFoundation\StreamedResponse|\Symfony\Component\HttpFoundation\Response
      *
      * @throws \Exception
      */
-    public function exportAction($objectId, $format = 'csv')
+    public function exportAction($objectId, $format = 'csv'): \Symfony\Component\HttpFoundation\StreamedResponse|\Symfony\Component\HttpFoundation\Response
     {
         $pageModel    = $this->getModel('page.page');
         $activePage   = $pageModel->getEntity($objectId);

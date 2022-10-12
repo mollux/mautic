@@ -12,40 +12,26 @@ use Symfony\Contracts\EventDispatcher\Event;
 class CampaignLeadChangeEvent extends Event
 {
     /**
-     * @var Campaign
-     */
-    private $campaign;
-
-    /**
      * @var Lead
      */
     private $lead;
 
-    /**
-     * @var array
-     */
-    private $leads = [];
-
-    /**
-     * @var string
-     */
-    private $action;
+    private array $leads = [];
 
     /**
      * CampaignLeadChangeEvent constructor.
      *
      * @param $leads
      * @param $action
+     * @param string $action
      */
-    public function __construct(Campaign $campaign, $leads, $action)
+    public function __construct(private Campaign $campaign, $leads, private $action)
     {
-        $this->campaign = $campaign;
         if (is_array($leads)) {
             $this->leads = $leads;
         } else {
             $this->lead = $leads;
         }
-        $this->action = $action;
     }
 
     /**

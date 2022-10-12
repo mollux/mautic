@@ -11,28 +11,13 @@ use Symfony\Contracts\EventDispatcher\Event;
  */
 class LogoutEvent extends Event
 {
-    /**
-     * @var User
-     */
-    private $user;
-
-    /**
-     * @var array
-     */
-    private $session = [];
-
-    /**
-     * @var Request
-     */
-    private $request;
+    private array $session = [];
 
     /**
      * LogoutEvent constructor.
      */
-    public function __construct(User $user, Request $request)
+    public function __construct(private User $user, private Request $request)
     {
-        $this->user    = $user;
-        $this->request = $request;
     }
 
     /**

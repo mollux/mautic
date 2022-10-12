@@ -28,8 +28,6 @@ class RedirectRepository extends CommonRepository
     }
 
     /**
-     * @param Email $email
-     *
      * @return array
      */
     public function findByIds(array $ids, Email $email = null)
@@ -62,9 +60,8 @@ class RedirectRepository extends CommonRepository
      *
      * @param            $id
      * @param int        $increaseBy
-     * @param bool|false $unique
      */
-    public function upHitCount($id, $increaseBy = 1, $unique = false)
+    public function upHitCount($id, $increaseBy = 1, bool $unique = false)
     {
         $q = $this->getEntityManager()->getConnection()->createQueryBuilder();
 

@@ -17,24 +17,8 @@ use Symfony\Component\HttpFoundation\Session\Session;
 
 class CampaignSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var DynamicContentModel
-     */
-    private $dynamicContentModel;
-    /**
-     * @var Session
-     */
-    private $session;
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $dispatcher;
-
-    public function __construct(DynamicContentModel $dynamicContentModel, Session $session, EventDispatcherInterface $dispatcher)
+    public function __construct(private DynamicContentModel $dynamicContentModel, private Session $session, private EventDispatcherInterface $dispatcher)
     {
-        $this->dynamicContentModel = $dynamicContentModel;
-        $this->session             = $session;
-        $this->dispatcher          = $dispatcher;
     }
 
     /**
@@ -92,10 +76,7 @@ class CampaignSubscriber implements EventSubscriberInterface
         );
     }
 
-    /**
-     * @return bool|CampaignExecutionEvent
-     */
-    public function onCampaignTriggerDecision(CampaignExecutionEvent $event)
+    public function onCampaignTriggerDecision(CampaignExecutionEvent $event): bool|\Mautic\CampaignBundle\Event\CampaignExecutionEvent
     {
         $eventConfig  = $event->getConfig();
         $eventDetails = $event->getEventDetails();
@@ -132,7 +113,7 @@ class CampaignSubscriber implements EventSubscriberInterface
 
         if ($dwc instanceof DynamicContent) {
             // Use translation if available
-            list($ignore, $dwc) = $this->dynamicContentModel->getTranslatedEntity($dwc, $lead);
+            [$ignore, $dwc] = $this->dynamicContentModel->getTranslatedEntity($dwc, $lead);
 
             if ($slot) {
                 $this->dynamicContentModel->setSlotContentForLead($dwc, $lead, $slot);

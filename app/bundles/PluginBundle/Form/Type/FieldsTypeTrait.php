@@ -54,7 +54,7 @@ trait FieldsTypeTrait
                             if (!isset($choices[$details['group']])) {
                                 $choices[$details['group']] = [];
                             }
-                            $label = (isset($details['optionLabel'])) ? $details['optionLabel'] : $details['label'];
+                            $label = $details['optionLabel'] ?? $details['label'];
                             $group[$field] = $groupName = $details['group'];
                             $choices[$field] = $label;
                         } else {
@@ -82,13 +82,13 @@ trait FieldsTypeTrait
 
                 $sortFieldsFunction = function ($a, $b) {
                     if (is_array($a)) {
-                        $aLabel = (isset($a['optionLabel'])) ? $a['optionLabel'] : $a['label'];
+                        $aLabel = $a['optionLabel'] ?? $a['label'];
                     } else {
                         $aLabel = $a;
                     }
 
                     if (is_array($b)) {
-                        $bLabel = (isset($b['optionLabel'])) ? $b['optionLabel'] : $b['label'];
+                        $bLabel = $b['optionLabel'] ?? $b['label'];
                     } else {
                         $bLabel = $b;
                     }
@@ -136,7 +136,7 @@ trait FieldsTypeTrait
                                 'class'         => 'form-control integration-fields',
                                 'data-required' => $required,
                                 'data-label'    => $choices[$field],
-                                'placeholder'   => isset($group[$field]) ? $group[$field] : '',
+                                'placeholder'   => $group[$field] ?? '',
                                 'readonly'      => true,
                             ],
                             'by_reference' => true,
@@ -239,27 +239,21 @@ trait FieldsTypeTrait
         $resolver->setDefaults(
             [
                 'special_instructions' => function (Options $options) {
-                    list($specialInstructions, $alertType) = $options['integration_object']->getFormNotes('leadfield_match');
+                    [$specialInstructions, $alertType] = $options['integration_object']->getFormNotes('leadfield_match');
 
                     return $specialInstructions;
                 },
                 'alert_type' => function (Options $options) {
-                    list($specialInstructions, $alertType) = $options['integration_object']->getFormNotes('leadfield_match');
+                    [$specialInstructions, $alertType] = $options['integration_object']->getFormNotes('leadfield_match');
 
                     return $alertType;
                 },
                 'allow_extra_fields'   => true,
                 'enable_data_priority' => false,
-                'totalFields'          => function (Options $options) {
-                    return count($options['integration_fields']);
-                },
-                'fixedPageNum' => function (Options $options) {
-                    return ceil($options['totalFields'] / $options['limit']);
-                },
+                'totalFields'          => fn(Options $options) => count($options['integration_fields']),
+                'fixedPageNum' => fn(Options $options) => ceil($options['totalFields'] / $options['limit']),
                 'limit' => 10,
-                'start' => function (Options $options) {
-                    return (1 === (int) $options['page']) ? 0 : ((int) $options['page'] - 1) * (int) $options['limit'];
-                },
+                'start' => fn(Options $options) => (1 === (int) $options['page']) ? 0 : ((int) $options['page'] - 1) * (int) $options['limit'],
             ]
         );
     }

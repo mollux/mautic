@@ -34,39 +34,15 @@ class FormAuthenticator extends AbstractFormLoginAuthenticator implements Passwo
 
     public const LOGIN_ROUTE = 'login';
 
-    private UserPasswordEncoder $encoder;
-
-    private EventDispatcherInterface $dispatcher;
-
-    private IntegrationHelper $integrationHelper;
-
-    private ?RequestStack $requestStack;
-
-    private CsrfTokenManagerInterface $csrfTokenManager;
-
-    private UrlGeneratorInterface $urlGenerator;
-
     /**
      * @var string|null After upgrade to Symfony 5.2 we should use Passport system to store the authenticatingService
      */
     private ?string $authenticatingService = null;
 
-    private ?Response $authEventResponse;
+    private ?Response $authEventResponse = null;
 
-    public function __construct(
-        IntegrationHelper $integrationHelper,
-        UserPasswordEncoder $encoder,
-        EventDispatcherInterface $dispatcher,
-        RequestStack $requestStack,
-        CsrfTokenManagerInterface $csrfTokenManager,
-        UrlGeneratorInterface $urlGenerator
-    ) {
-        $this->encoder           = $encoder;
-        $this->dispatcher        = $dispatcher;
-        $this->integrationHelper = $integrationHelper;
-        $this->requestStack      = $requestStack;
-        $this->csrfTokenManager  = $csrfTokenManager;
-        $this->urlGenerator      = $urlGenerator;
+    public function __construct(private IntegrationHelper $integrationHelper, private UserPasswordEncoder $encoder, private EventDispatcherInterface $dispatcher, private ?\Symfony\Component\HttpFoundation\RequestStack $requestStack, private CsrfTokenManagerInterface $csrfTokenManager, private UrlGeneratorInterface $urlGenerator)
+    {
     }
 
     public function supports(Request $request): bool
@@ -101,7 +77,7 @@ class FormAuthenticator extends AbstractFormLoginAuthenticator implements Passwo
 
         try {
             $user = $userProvider->loadUserByUsername($credentials['username']);
-        } catch (UsernameNotFoundException $e) {
+        } catch (UsernameNotFoundException) {
             $user = $credentials['username'];
         }
 

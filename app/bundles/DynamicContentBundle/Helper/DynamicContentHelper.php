@@ -18,30 +18,16 @@ class DynamicContentHelper
 {
     use MatchFilterForLeadTrait;
 
-    protected RealTimeExecutioner $realTimeExecutioner;
-    protected EventDispatcherInterface $dispatcher;
-    protected DynamicContentModel $dynamicContentModel;
-    protected LeadModel $leadModel;
-
-    public function __construct(
-        DynamicContentModel $dynamicContentModel,
-        RealTimeExecutioner $realTimeExecutioner,
-        EventDispatcherInterface $dispatcher,
-        LeadModel $leadModel
-    ) {
-        $this->dynamicContentModel = $dynamicContentModel;
-        $this->realTimeExecutioner = $realTimeExecutioner;
-        $this->dispatcher          = $dispatcher;
-        $this->leadModel           = $leadModel;
+    public function __construct(protected DynamicContentModel $dynamicContentModel, protected RealTimeExecutioner $realTimeExecutioner, protected EventDispatcherInterface $dispatcher, protected LeadModel $leadModel)
+    {
     }
 
     /**
      * @param string     $slot
-     * @param Lead|array $lead
      *
      * @return string
      */
-    public function getDynamicContentForLead($slot, $lead)
+    public function getDynamicContentForLead($slot, \Mautic\LeadBundle\Entity\Lead|array $lead)
     {
         // Attempt campaign slots first
         $dwcActionResponse = $this->realTimeExecutioner->execute('dwc.decision', $slot, 'dynamicContent')->getActionResponses('dwc.push_content');
@@ -67,11 +53,10 @@ class DynamicContentHelper
 
     /**
      * @param string     $slotName
-     * @param Lead|array $lead
      *
      * @return string
      */
-    public function getDynamicContentSlotForLead($slotName, $lead)
+    public function getDynamicContentSlotForLead($slotName, \Mautic\LeadBundle\Entity\Lead|array $lead)
     {
         $leadArray = [];
         if ($lead instanceof Lead) {
@@ -94,11 +79,10 @@ class DynamicContentHelper
 
     /**
      * @param string     $content
-     * @param Lead|array $lead
      *
      * @return string Content with the {content} tokens replaced with dynamic content
      */
-    public function replaceTokensInContent($content, $lead)
+    public function replaceTokensInContent($content, \Mautic\LeadBundle\Entity\Lead|array $lead)
     {
         // Find all dynamic content tags
         preg_match_all('/{(dynamiccontent)=(\w+)(?:\/}|}(?:([^{]*(?:{(?!\/\1})[^{]*)*){\/\1})?)/is', $content, $matches, PREG_SET_ORDER);
@@ -162,12 +146,12 @@ class DynamicContentHelper
      *
      * @return string
      */
-    public function getRealDynamicContent($slot, $lead, DynamicContent $dwc)
+    public function getRealDynamicContent($slot, \Mautic\LeadBundle\Entity\Lead|array $lead, DynamicContent $dwc)
     {
         $content = $dwc->getContent();
         // Determine a translation based on contact's preferred locale
         /** @var DynamicContent $translation */
-        list($ignore, $translation) = $this->dynamicContentModel->getTranslatedEntity($dwc, $lead);
+        [$ignore, $translation] = $this->dynamicContentModel->getTranslatedEntity($dwc, $lead);
         if ($translation !== $dwc) {
             // Use translated version of content
             $dwc     = $translation;
@@ -184,10 +168,8 @@ class DynamicContentHelper
     /**
      * @param string $slotName
      * @param bool   $publishedOnly
-     *
-     * @return array|\Doctrine\ORM\Tools\Pagination\Paginator
      */
-    public function getDwcsBySlotName($slotName, $publishedOnly = false)
+    public function getDwcsBySlotName($slotName, $publishedOnly = false): array|\Doctrine\ORM\Tools\Pagination\Paginator
     {
         $filter = [
             'where' => [
@@ -226,9 +208,7 @@ class DynamicContentHelper
             $lead->getProfileFields(),
             [
                 'tags' => array_map(
-                    function (Tag $v) {
-                        return $v->getId();
-                    },
+                    fn(Tag $v) => $v->getId(),
                     $lead->getTags()->toArray()
                 ),
             ]

@@ -21,25 +21,14 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class PushDataToPipedriveCommand extends Command
 {
     private SymfonyStyle $io;
-    private IntegrationHelper $integrationHelper;
-    private TranslatorHelper $translatorHelper;
-    private EntityManager $entityManager;
-    private CompanyExport $companyExport;
-    private LeadExport $leadExport;
 
     public function __construct(
-        IntegrationHelper $integrationHelper,
-        TranslatorHelper $translatorHelper,
-        EntityManager $entityManager,
-        CompanyExport $companyExport,
-        LeadExport $leadExport
+        private IntegrationHelper $integrationHelper,
+        private TranslatorHelper $translatorHelper,
+        private EntityManager $entityManager,
+        private CompanyExport $companyExport,
+        private LeadExport $leadExport
     ) {
-        $this->integrationHelper = $integrationHelper;
-        $this->translatorHelper  = $translatorHelper;
-        $this->entityManager     = $entityManager;
-        $this->companyExport     = $companyExport;
-        $this->leadExport        = $leadExport;
-
         parent::__construct();
     }
 

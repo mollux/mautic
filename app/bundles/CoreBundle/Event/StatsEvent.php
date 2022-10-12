@@ -54,20 +54,6 @@ class StatsEvent extends Event
     protected $tableColumns = [];
 
     /**
-     * Array of order by statements.
-     *
-     * @var array
-     */
-    protected $order = [];
-
-    /**
-     * Array of where filters.
-     *
-     * @var array
-     */
-    protected $where = [];
-
-    /**
      * Array of the result data.
      *
      * @var array
@@ -89,25 +75,23 @@ class StatsEvent extends Event
     protected $repository;
 
     /**
-     * @var User
-     */
-    protected $user;
-
-    /**
      * StatsEvent constructor.
      *
      * @param     $table
      * @param int $start
      * @param int $limit
      */
-    public function __construct($table, $start, $limit, array $order, array $where, User $user)
+    public function __construct($table, $start, $limit, /**
+     * Array of order by statements.
+     */
+    protected array $order, /**
+     * Array of where filters.
+     */
+    protected array $where, protected User $user)
     {
         $this->table = strtolower(trim(str_replace(MAUTIC_TABLE_PREFIX, '', strip_tags($table))));
         $this->start = (int) $start;
         $this->limit = (int) $limit;
-        $this->order = $order;
-        $this->where = $where;
-        $this->user  = $user;
     }
 
     /**

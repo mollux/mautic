@@ -12,50 +12,23 @@ class Summary
 {
     public const TABLE_NAME = 'campaign_summary';
 
-    /**
-     * @var int|null
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var \DateTimeInterface|null
-     **/
-    private $dateTriggered;
+    private ?\DateTimeInterface $dateTriggered = null;
 
-    /**
-     * @var int|null
-     */
-    private $scheduledCount = 0;
+    private ?int $scheduledCount = 0;
 
-    /**
-     * @var int|null
-     */
-    private $triggeredCount = 0;
+    private ?int $triggeredCount = 0;
 
-    /**
-     * @var int|null
-     */
-    private $nonActionPathTakenCount = 0;
+    private ?int $nonActionPathTakenCount = 0;
 
-    /**
-     * @var int|null
-     */
-    private $failedCount = 0;
+    private ?int $failedCount = 0;
 
-    /**
-     * @var Event|null
-     */
-    private $event;
+    private ?\Mautic\CampaignBundle\Entity\Event $event = null;
 
-    /**
-     * @var Campaign|null
-     */
-    private $campaign;
+    private ?\Mautic\CampaignBundle\Entity\Campaign $campaign = null;
 
-    /**
-     * @var int|null
-     */
-    private $logCountsProcessed = 0;
+    private ?int $logCountsProcessed = 0;
 
     public static function loadMetadata(ORM\ClassMetadata $metadata): void
     {

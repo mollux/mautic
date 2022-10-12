@@ -21,7 +21,7 @@ class TagController extends FormController
      *
      * @return JsonResponse|Response
      */
-    public function indexAction($page = 1)
+    public function indexAction($page = 1): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         /** @var TagModel $model */
         // Use overwritten tag model so overwritten repository can be fetched,
@@ -142,7 +142,7 @@ class TagController extends FormController
      *
      * @return JsonResponse|RedirectResponse|Response
      */
-    public function newAction()
+    public function newAction(): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         if (!$this->get('mautic.security')->isGranted('tagManager:tagManager:create')) {
             return $this->accessDenied();
@@ -242,9 +242,9 @@ class TagController extends FormController
                 $this->generateUrl('mautic_tagmanager_action', ['objectAction' => 'edit', 'objectId' => $objectId]),
                 $ignorePost
             );
-        } catch (AccessDeniedException $exception) {
+        } catch (AccessDeniedException) {
             return $this->accessDenied();
-        } catch (EntityNotFoundException $exception) {
+        } catch (EntityNotFoundException) {
             return $this->postActionRedirect(
                 array_merge($postActionVars, [
                     'flashes' => [
@@ -420,10 +420,8 @@ class TagController extends FormController
      * Loads a specific form into the detailed panel.
      *
      * @param $objectId
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function viewAction($objectId)
+    public function viewAction($objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         /** @var \Mautic\LeadBundle\Model\TagModel $model */
         $model    = $this->getModel('lead.tag');
@@ -476,10 +474,8 @@ class TagController extends FormController
      * Deletes a tags.
      *
      * @param $objectId
-     *
-     * @return JsonResponse|RedirectResponse
      */
-    public function deleteAction($objectId)
+    public function deleteAction($objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         /** @var TagModel $model */
         $model     = $this->getModel('lead.tag');
@@ -547,10 +543,8 @@ class TagController extends FormController
 
     /**
      * Deletes a group of entities.
-     *
-     * @return JsonResponse|RedirectResponse
      */
-    public function batchDeleteAction()
+    public function batchDeleteAction(): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         $page      = $this->get('session')->get('mautic.tagmanager.page', 1);
         $returnUrl = $this->generateUrl('mautic_tagmanager_index', ['page' => $page]);
@@ -569,7 +563,7 @@ class TagController extends FormController
         if ('POST' == $this->request->getMethod()) {
             /** @var ListModel $model */
             $model           = $this->getModel('lead.tag');
-            $ids             = json_decode($this->request->query->get('ids', '{}'));
+            $ids             = json_decode($this->request->query->get('ids', '{}'), null, 512, JSON_THROW_ON_ERROR);
             $deleteIds       = [];
 
             // Loop over the IDs to perform access checks pre-delete
@@ -593,7 +587,7 @@ class TagController extends FormController
             if (!empty($deleteIds)) {
                 try {
                     $entities = $model->deleteEntities($deleteIds);
-                } catch (ForeignKeyConstraintViolationException $exception) {
+                } catch (ForeignKeyConstraintViolationException) {
                     $flashes[] = [
                         'type'    => 'notice',
                         'msg'     => 'mautic.tagmanager.tag.error.cannotbedeleted',
@@ -610,7 +604,7 @@ class TagController extends FormController
                     'type'    => 'notice',
                     'msg'     => 'mautic.tagmanager.tag.notice.batch_deleted',
                     'msgVars' => [
-                        '%count%' => count($entities),
+                        '%count%' => is_countable($entities) ? count($entities) : 0,
                     ],
                 ];
             }

@@ -74,10 +74,8 @@ class MailchimpIntegration extends EmailAbstractIntegration
     /**
      * @param array $settings
      * @param array $parameters
-     *
-     * @return bool|string
      */
-    public function authCallback($settings = [], $parameters = [])
+    public function authCallback($settings = [], $parameters = []): bool|string
     {
         $error = parent::authCallback($settings, $parameters);
 
@@ -98,6 +96,7 @@ class MailchimpIntegration extends EmailAbstractIntegration
      */
     public function getAvailableLeadFields($settings = [])
     {
+        $leadFields = [];
         if (isset($settings['list'])) {
             // Ajax update
             $listId = $settings['list'];
@@ -117,7 +116,7 @@ class MailchimpIntegration extends EmailAbstractIntegration
 
             $fields = $this->getApiHelper()->getCustomFields($listId);
 
-            if (!empty($fields['merge_fields']) && count($fields['merge_fields'])) {
+            if (!empty($fields['merge_fields']) && (is_countable($fields['merge_fields']) ? count($fields['merge_fields']) : 0)) {
                 foreach ($fields['merge_fields'] as $field) {
                     $leadFields[$field['tag']] = [
                         'label'    => $field['name'],

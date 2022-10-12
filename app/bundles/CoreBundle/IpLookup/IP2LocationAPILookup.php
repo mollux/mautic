@@ -26,7 +26,7 @@ class IP2LocationAPILookup extends AbstractRemoteDataLookup
     protected function parseResponse($response)
     {
         try {
-            $record = json_decode($response);
+            $record = json_decode($response, null, 512, JSON_THROW_ON_ERROR);
             if (isset($record->country_name)) {
                 $this->country   = $record->country_name;
                 $this->region    = $record->region_name;

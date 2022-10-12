@@ -23,65 +23,14 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class FieldHelper
 {
-    /**
-     * @var FieldModel
-     */
-    private $fieldModel;
+    private array $fieldList = [];
 
-    /**
-     * @var VariableExpresserHelperInterface
-     */
-    private $variableExpresserHelper;
+    private array $requiredFieldList = [];
 
-    /**
-     * @var ChannelListHelper
-     */
-    private $channelListHelper;
+    private array $syncFields = [];
 
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    /**
-     * @var array
-     */
-    private $fieldList = [];
-
-    /**
-     * @var array
-     */
-    private $requiredFieldList = [];
-
-    /**
-     * @var array
-     */
-    private $syncFields = [];
-
-    /**
-     * @var EventDispatcher
-     */
-    private $eventDispatcher;
-
-    /**
-     * @var ObjectProvider
-     */
-    private $objectProvider;
-
-    public function __construct(
-        FieldModel $fieldModel,
-        VariableExpresserHelperInterface $variableExpresserHelper,
-        ChannelListHelper $channelListHelper,
-        TranslatorInterface $translator,
-        EventDispatcherInterface $eventDispatcher,
-        ObjectProvider $objectProvider
-    ) {
-        $this->fieldModel              = $fieldModel;
-        $this->variableExpresserHelper = $variableExpresserHelper;
-        $this->channelListHelper       = $channelListHelper;
-        $this->translator              = $translator;
-        $this->eventDispatcher         = $eventDispatcher;
-        $this->objectProvider          = $objectProvider;
+    public function __construct(private FieldModel $fieldModel, private VariableExpresserHelperInterface $variableExpresserHelper, private ChannelListHelper $channelListHelper, private TranslatorInterface $translator, private EventDispatcherInterface $eventDispatcher, private ObjectProvider $objectProvider)
+    {
     }
 
     public function getFieldList(string $object): array
@@ -120,7 +69,7 @@ class FieldHelper
     {
         try {
             return $this->objectProvider->getObjectByName($objectName)->getEntityName();
-        } catch (ObjectNotFoundException $e) {
+        } catch (ObjectNotFoundException) {
             // Throwing different exception to keep BC.
             throw new ObjectNotSupportedException(MauticSyncDataExchange::NAME, $objectName);
         }

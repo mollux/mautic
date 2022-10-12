@@ -52,94 +52,25 @@ class PageModel extends FormModel
     protected $catInUrl;
 
     /**
-     * @var CookieHelper
-     */
-    protected $cookieHelper;
-
-    /**
-     * @var IpLookupHelper
-     */
-    protected $ipLookupHelper;
-
-    /**
-     * @var LeadModel
-     */
-    protected $leadModel;
-
-    /**
-     * @var FieldModel
-     */
-    protected $leadFieldModel;
-
-    /**
-     * @var RedirectModel
-     */
-    protected $pageRedirectModel;
-
-    /**
-     * @var TrackableModel
-     */
-    protected $pageTrackableModel;
-
-    /**
      * @var DateTimeHelper
      */
     protected $dateTimeHelper;
 
-    /**
-     * @var QueueService
-     */
-    protected $queueService;
-
-    /**
-     * @var CoreParametersHelper
-     */
-    protected $coreParametersHelper;
-
-    /**
-     * @var DeviceTracker
-     */
-    private $deviceTracker;
-
-    /**
-     * @var CompanyModel
-     */
-    private $companyModel;
-
-    /**
-     * @var ContactTracker
-     */
-    private $contactTracker;
-
-    private ContactRequestHelper $contactRequestHelper;
-
     public function __construct(
-        CookieHelper $cookieHelper,
-        IpLookupHelper $ipLookupHelper,
-        LeadModel $leadModel,
-        FieldModel $leadFieldModel,
-        RedirectModel $pageRedirectModel,
-        TrackableModel $pageTrackableModel,
-        QueueService $queueService,
-        CompanyModel $companyModel,
-        DeviceTracker $deviceTracker,
-        ContactTracker $contactTracker,
-        CoreParametersHelper $coreParametersHelper,
-        ContactRequestHelper $contactRequestHelper
+        protected CookieHelper $cookieHelper,
+        protected IpLookupHelper $ipLookupHelper,
+        protected LeadModel $leadModel,
+        protected FieldModel $leadFieldModel,
+        protected RedirectModel $pageRedirectModel,
+        protected TrackableModel $pageTrackableModel,
+        protected QueueService $queueService,
+        private CompanyModel $companyModel,
+        private DeviceTracker $deviceTracker,
+        private ContactTracker $contactTracker,
+        protected CoreParametersHelper $coreParametersHelper,
+        private ContactRequestHelper $contactRequestHelper
     ) {
-        $this->cookieHelper         = $cookieHelper;
-        $this->ipLookupHelper       = $ipLookupHelper;
-        $this->leadModel            = $leadModel;
-        $this->leadFieldModel       = $leadFieldModel;
-        $this->pageRedirectModel    = $pageRedirectModel;
-        $this->pageTrackableModel   = $pageTrackableModel;
         $this->dateTimeHelper       = new DateTimeHelper();
-        $this->queueService         = $queueService;
-        $this->companyModel         = $companyModel;
-        $this->deviceTracker        = $deviceTracker;
-        $this->contactTracker       = $contactTracker;
-        $this->coreParametersHelper = $coreParametersHelper;
-        $this->contactRequestHelper = $contactRequestHelper;
     }
 
     /**
@@ -283,7 +214,7 @@ class PageModel extends FormModel
     {
         if (null === $id) {
             $entity = new Page();
-            $entity->setSessionId('new_'.hash('sha1', uniqid(mt_rand())));
+            $entity->setSessionId('new_'.hash('sha1', uniqid(random_int(0, mt_getrandmax()))));
         } else {
             $entity = parent::getEntity($id);
             if (null !== $entity) {
@@ -441,13 +372,11 @@ class PageModel extends FormModel
     }
 
     /**
-     * @param Page|Redirect $page
-     * @param string|int    $code
      * @param array         $query
      *
      * @throws \Exception
      */
-    public function hitPage($page, Request $request, $code = '200', Lead $lead = null, $query = [])
+    public function hitPage(\Mautic\PageBundle\Entity\Page|\Mautic\PageBundle\Entity\Redirect $page, Request $request, string|int $code = '200', Lead $lead = null, $query = [])
     {
         // Don't skew results with user hits
         if (!$this->security->isAnonymous()) {
@@ -535,13 +464,11 @@ class PageModel extends FormModel
     /**
      * Process page hit.
      *
-     * @param Page|Redirect $page
      * @param bool          $trackingNewlyGenerated
      * @param bool          $activeRequest
-     *
      * @throws \Exception
      */
-    public function processPageHit(Hit $hit, $page, Request $request, Lead $lead, $trackingNewlyGenerated, $activeRequest = true)
+    public function processPageHit(Hit $hit, \Mautic\PageBundle\Entity\Page|\Mautic\PageBundle\Entity\Redirect $page, Request $request, Lead $lead, $trackingNewlyGenerated, $activeRequest = true)
     {
         // Store Page/Redirect association
         if ($page) {
@@ -556,7 +483,7 @@ class PageModel extends FormModel
         $clickthrough = $this->generateClickThrough($hit);
         if (!empty($clickthrough)) {
             if (!empty($clickthrough['channel'])) {
-                if (1 === count($clickthrough['channel'])) {
+                if (1 === (is_countable($clickthrough['channel']) ? count($clickthrough['channel']) : 0)) {
                     $channelId = reset($clickthrough['channel']);
                     $channel   = key($clickthrough['channel']);
                 } else {
@@ -578,7 +505,7 @@ class PageModel extends FormModel
             }
         }
 
-        $query = $hit->getQuery() ? $hit->getQuery() : [];
+        $query = $hit->getQuery() ?: [];
 
         if (isset($query['timezone_offset']) && !$lead->getTimezone()) {
             // timezone_offset holds timezone offset in minutes. Multiply by 60 to get seconds.
@@ -607,7 +534,7 @@ class PageModel extends FormModel
         }
 
         $hit->setQuery($query);
-        $hit->setUrl((isset($query['page_url'])) ? $query['page_url'] : $request->getRequestUri());
+        $hit->setUrl($query['page_url'] ?? $request->getRequestUri());
 
         // Add entry to contact log table
         $this->setLeadManipulator($page, $hit, $lead);
@@ -760,7 +687,7 @@ class PageModel extends FormModel
      *
      * @return array
      */
-    public function getBuilderComponents(Page $page = null, $requestedComponents = 'all', $tokenFilter = null)
+    public function getBuilderComponents(Page $page = null, array|string $requestedComponents = 'all', $tokenFilter = null)
     {
         $event = new PageBuilderEvent($this->translator, $page, $requestedComponents, $tokenFilter);
         $this->dispatcher->dispatch($event, PageEvents::PAGE_ON_BUILD);
@@ -771,7 +698,6 @@ class PageModel extends FormModel
     /**
      * Get number of page bounces.
      *
-     * @param \DateTime $fromDate
      *
      * @return int
      */
@@ -910,8 +836,6 @@ class PageModel extends FormModel
     /**
      * Get bar chart data of hits.
      *
-     * @param DateTime $dateFrom
-     * @param DateTime $dateTo
      *
      * @return array
      */
@@ -952,8 +876,6 @@ class PageModel extends FormModel
      * Get a list of popular (by hits) pages.
      *
      * @param int       $limit
-     * @param \DateTime $dateFrom
-     * @param \DateTime $dateTo
      * @param array     $filters
      * @param bool      $canViewOthers
      *
@@ -985,8 +907,6 @@ class PageModel extends FormModel
      * Get a list of pages created in a date range.
      *
      * @param int       $limit
-     * @param \DateTime $dateFrom
-     * @param \DateTime $dateTo
      * @param array     $filters
      * @param bool      $canViewOthers
      *
@@ -1039,7 +959,7 @@ class PageModel extends FormModel
         $queryHasUtmTags = false;
         $query           = $hit->getQuery();
         foreach ($query as $key => $value) {
-            if (false !== strpos($key, 'utm_')) {
+            if (str_contains($key, 'utm_')) {
                 $queryHasUtmTags = true;
                 break;
             }
@@ -1122,13 +1042,13 @@ class PageModel extends FormModel
 
         // Use the current URL
         $isPageEvent = false;
-        if (false !== strpos($request->server->get('REQUEST_URI'), $this->router->generate('mautic_page_tracker'))) {
+        if (str_contains($request->server->get('REQUEST_URI'), $this->router->generate('mautic_page_tracker'))) {
             // Tracking pixel is used
             if ($request->server->get('QUERY_STRING')) {
                 parse_str($request->server->get('QUERY_STRING'), $query);
                 $isPageEvent = true;
             }
-        } elseif (false !== strpos($request->server->get('REQUEST_URI'), $this->router->generate('mautic_page_tracker_cors'))) {
+        } elseif (str_contains($request->server->get('REQUEST_URI'), $this->router->generate('mautic_page_tracker_cors'))) {
             $query       = $request->request->all();
             $isPageEvent = true;
         }

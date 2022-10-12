@@ -19,14 +19,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class StageType extends AbstractType
 {
-    /**
-     * @var CorePermissions
-     */
-    private $security;
-
-    public function __construct(CorePermissions $security)
+    public function __construct(private CorePermissions $security)
     {
-        $this->security = $security;
     }
 
     /**
@@ -130,7 +124,7 @@ class StageType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => 'Mautic\StageBundle\Entity\Stage',
+            'data_class' => \Mautic\StageBundle\Entity\Stage::class,
         ]);
 
         $resolver->setDefined(['stageActions', 'actionType']);

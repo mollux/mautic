@@ -13,54 +13,12 @@ use Symfony\Component\HttpFoundation\RequestStack;
 final class DeviceTrackingService implements DeviceTrackingServiceInterface
 {
     /**
-     * @var CookieHelper
-     */
-    private $cookieHelper;
-
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
-
-    /**
-     * @var LeadDeviceRepository
-     */
-    private $leadDeviceRepository;
-
-    /**
-     * @var RandomHelperInterface
-     */
-    private $randomHelper;
-
-    /**
-     * @var RequestStack
-     */
-    private $requestStack;
-
-    /**
      * @var LeadDevice
      */
     private $trackedDevice;
 
-    /**
-     * @var CorePermissions
-     */
-    private $security;
-
-    public function __construct(
-        CookieHelper $cookieHelper,
-        EntityManagerInterface $entityManager,
-        LeadDeviceRepository $leadDeviceRepository,
-        RandomHelperInterface $randomHelper,
-        RequestStack $requestStack,
-        CorePermissions $security
-    ) {
-        $this->cookieHelper         = $cookieHelper;
-        $this->entityManager        = $entityManager;
-        $this->randomHelper         = $randomHelper;
-        $this->leadDeviceRepository = $leadDeviceRepository;
-        $this->requestStack         = $requestStack;
-        $this->security             = $security;
+    public function __construct(private CookieHelper $cookieHelper, private EntityManagerInterface $entityManager, private LeadDeviceRepository $leadDeviceRepository, private RandomHelperInterface $randomHelper, private RequestStack $requestStack, private CorePermissions $security)
+    {
     }
 
     /**
@@ -176,7 +134,7 @@ final class DeviceTrackingService implements DeviceTrackingServiceInterface
     private function createTrackingCookies(LeadDevice $device)
     {
         // Device cookie
-        $this->cookieHelper->setCookie('mautic_device_id', $device->getTrackingId(), 31536000);
+        $this->cookieHelper->setCookie('mautic_device_id', $device->getTrackingId(), 31_536_000);
 
         // Mainly for landing pages so that JS has the same access as 3rd party tracking code
         $this->cookieHelper->setCookie('mtc_id', $device->getLead()->getId(), null);

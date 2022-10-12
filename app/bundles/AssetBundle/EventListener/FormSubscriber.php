@@ -22,57 +22,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class FormSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var AssetModel
-     */
-    private $assetModel;
-
-    /**
-     * @var TranslatorInterface
-     */
-    protected $translator;
-
-    /**
-     * @var AnalyticsHelper
-     */
-    private $analyticsHelper;
-
-    /**
-     * @var AssetsHelper
-     */
-    private $assetsHelper;
-
-    /**
-     * @var ThemeHelperInterface
-     */
-    private $themeHelper;
-
-    /**
-     * @var TemplatingHelper
-     */
-    private $templatingHelper;
-
-    /**
-     * @var CoreParametersHelper
-     */
-    private $coreParametersHelper;
-
-    public function __construct(
-        AssetModel $assetModel,
-        TranslatorInterface $translator,
-        AnalyticsHelper $analyticsHelper,
-        AssetsHelper $assetsHelper,
-        ThemeHelperInterface $themeHelper,
-        TemplatingHelper $templatingHelper,
-        CoreParametersHelper $coreParametersHelper
-    ) {
-        $this->assetModel           = $assetModel;
-        $this->translator           = $translator;
-        $this->analyticsHelper      = $analyticsHelper;
-        $this->assetsHelper         = $assetsHelper;
-        $this->themeHelper          = $themeHelper;
-        $this->templatingHelper     = $templatingHelper;
-        $this->coreParametersHelper = $coreParametersHelper;
+    public function __construct(private AssetModel $assetModel, protected TranslatorInterface $translator, private AnalyticsHelper $analyticsHelper, private AssetsHelper $assetsHelper, private ThemeHelperInterface $themeHelper, private TemplatingHelper $templatingHelper, private CoreParametersHelper $coreParametersHelper)
+    {
     }
 
     /**
@@ -121,7 +72,7 @@ class FormSubscriber implements EventSubscriberInterface
         } elseif (null !== $categoryId) {
             try {
                 $asset = $this->assetModel->getRepository()->getLatestAssetForCategory($categoryId);
-            } catch (NoResultException|NonUniqueResultException $e) {
+            } catch (NoResultException|NonUniqueResultException) {
                 $asset = null;
             }
         }

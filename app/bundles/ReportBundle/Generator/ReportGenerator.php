@@ -17,29 +17,9 @@ use Symfony\Component\Form\FormFactoryInterface;
 class ReportGenerator
 {
     /**
-     * @var Connection
-     */
-    private $db;
-
-    /**
-     * @var EventDispatcher
-     */
-    private $dispatcher;
-
-    /**
-     * @var \Symfony\Component\Form\FormFactoryInterface
-     */
-    private $formFactory;
-
-    /**
-     * @var \Mautic\ReportBundle\Entity\Report
-     */
-    private $entity;
-
-    /**
      * @var string
      */
-    private $validInterface = 'Mautic\\ReportBundle\\Builder\\ReportBuilderInterface';
+    private $validInterface = \Mautic\ReportBundle\Builder\ReportBuilderInterface::class;
 
     /**
      * @var string
@@ -47,20 +27,10 @@ class ReportGenerator
     private $contentTemplate;
 
     /**
-     * @var ChannelListHelper
-     */
-    private $channelListHelper;
-
-    /**
      * ReportGenerator constructor.
      */
-    public function __construct(EventDispatcherInterface $dispatcher, Connection $db, Report $entity, ChannelListHelper $channelListHelper, FormFactoryInterface $formFactory = null)
+    public function __construct(private EventDispatcherInterface $dispatcher, private Connection $db, private Report $entity, private ChannelListHelper $channelListHelper, private FormFactoryInterface $formFactory = null)
     {
-        $this->db                = $db;
-        $this->dispatcher        = $dispatcher;
-        $this->formFactory       = $formFactory;
-        $this->channelListHelper = $channelListHelper;
-        $this->entity            = $entity;
     }
 
     /**
@@ -113,7 +83,7 @@ class ReportGenerator
      */
     protected function getBuilder()
     {
-        $className = '\\Mautic\\ReportBundle\\Builder\\MauticReportBuilder';
+        $className = '\\' . \Mautic\ReportBundle\Builder\MauticReportBuilder::class;
 
         if (!class_exists($className)) {
             throw new RuntimeException('The MauticReportBuilder does not exist.');

@@ -8,49 +8,33 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 
 class ConfigEvent extends CommonEvent
 {
-    /**
-     * @var array
-     */
-    private $preserve = [];
+    private array $preserve = [];
 
-    /**
-     * @param array
-     */
-    private $config;
+    private array $errors = [];
 
-    /**
-     * @param ParameterBag
-     */
-    private $post;
-
-    /**
-     * @var array
-     */
-    private $errors = [];
-
-    /**
-     * @var array
-     */
-    private $fieldErrors = [];
+    private array $fieldErrors = [];
 
     /**
      * Data got from build form before update.
-     *
-     * @var array
      */
-    private $originalNormData;
+    private ?array $originalNormData = null;
 
     /**
      * Data got from build form after update.
-     *
-     * @var array
      */
-    private $normData;
+    private ?array $normData = null;
 
-    public function __construct(array $config, ParameterBag $post)
+    public function __construct(
+        /**
+         * @param array
+         */
+        private array $config,
+        /**
+         * @param ParameterBag
+         */
+        private ParameterBag $post
+    )
     {
-        $this->config = $config;
-        $this->post   = $post;
     }
 
     /**
@@ -63,7 +47,7 @@ class ConfigEvent extends CommonEvent
     public function getConfig($key = null)
     {
         if ($key) {
-            return (isset($this->config[$key])) ? $this->config[$key] : [];
+            return $this->config[$key] ?? [];
         }
 
         return $this->config;
@@ -91,10 +75,8 @@ class ConfigEvent extends CommonEvent
     /**
      * Set fields such as passwords that will not overwrite existing values
      * if the current is empty.
-     *
-     * @param array|string $fields
      */
-    public function unsetIfEmpty($fields)
+    public function unsetIfEmpty(array|string $fields)
     {
         if (!is_array($fields)) {
             $fields = [$fields];

@@ -32,53 +32,11 @@ class DashboardSubscriber extends MainDashboardSubscriber
     ];
 
     /**
-     * @var AuditLogModel
-     */
-    protected $auditLogModel;
-
-    /**
-     * @var TranslatorInterface
-     */
-    protected $translator;
-
-    /**
-     * @var RouterInterface
-     */
-    protected $router;
-
-    /**
-     * @var CorePermissions
-     */
-    protected $security;
-
-    /**
-     * @var EventDispatcherInterface
-     */
-    protected $dispatcher;
-
-    /**
-     * @var ModelFactory
-     */
-    protected $modelFactory;
-
-    /**
      * @param AuditLogModel   $router
      * @param CorePermissions $dispatcher
      */
-    public function __construct(
-        AuditLogModel $auditLogModel,
-        TranslatorInterface $translator,
-        RouterInterface $router,
-        CorePermissions $security,
-        EventDispatcherInterface $dispatcher,
-        ModelFactory $modelFactory
-    ) {
-        $this->auditLogModel = $auditLogModel;
-        $this->translator    = $translator;
-        $this->router        = $router;
-        $this->security      = $security;
-        $this->dispatcher    = $dispatcher;
-        $this->modelFactory  = $modelFactory;
+    public function __construct(protected AuditLogModel $auditLogModel, protected TranslatorInterface $translator, protected RouterInterface $router, protected CorePermissions $security, protected EventDispatcherInterface $dispatcher, protected ModelFactory $modelFactory)
+    {
     }
 
     /**
@@ -117,7 +75,7 @@ class DashboardSubscriber extends MainDashboardSubscriber
                             } else {
                                 $log['route'] = false;
                             }
-                        } catch (\Exception $e) {
+                        } catch (\Exception) {
                             unset($logs[$key]);
                         }
                     }

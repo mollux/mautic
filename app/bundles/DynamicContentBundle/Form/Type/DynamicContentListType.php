@@ -23,19 +23,17 @@ class DynamicContentListType extends AbstractType
                 'modal_header'        => 'mautic.dynamicContent.header.new',
                 'model'               => 'dynamicContent',
                 'model_lookup_method' => 'getLookupResults',
-                'lookup_arguments'    => function (Options $options) {
-                    return [
-                        'type'    => 'dynamicContent',
-                        'filter'  => '$data',
-                        'limit'   => 0,
-                        'start'   => 0,
-                        'options' => [
-                            'top_level'  => $options['top_level'],
-                            'ignore_ids' => $options['ignore_ids'],
-                            'where'      => $options['where'],
-                        ],
-                    ];
-                },
+                'lookup_arguments'    => fn(Options $options) => [
+                    'type'    => 'dynamicContent',
+                    'filter'  => '$data',
+                    'limit'   => 0,
+                    'start'   => 0,
+                    'options' => [
+                        'top_level'  => $options['top_level'],
+                        'ignore_ids' => $options['ignore_ids'],
+                        'where'      => $options['where'],
+                    ],
+                ],
                 'ajax_lookup_action' => function (Options $options) {
                     $query = [
                         'top_level'  => $options['top_level'],

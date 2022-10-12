@@ -13,16 +13,10 @@ use Symfony\Component\Templating\Helper\Helper;
 class MenuHelper extends Helper
 {
     /**
-     * @var KnpHelper
-     */
-    protected $helper;
-
-    /**
      * MenuHelper constructor.
      */
-    public function __construct(KnpHelper $helper)
+    public function __construct(protected KnpHelper $helper)
     {
-        $this->helper = $helper;
     }
 
     /**
@@ -103,11 +97,10 @@ class MenuHelper extends Helper
     /**
      * Retrieves an item following a path in the tree.
      *
-     * @param \Knp\Menu\ItemInterface|string $menu
      *
      * @return \Knp\Menu\ItemInterface
      */
-    public function get($menu, array $path = [], array $options = [])
+    public function get(\Knp\Menu\ItemInterface|string $menu, array $path = [], array $options = [])
     {
         return $this->helper->get($menu, $path, $options);
     }
@@ -115,12 +108,10 @@ class MenuHelper extends Helper
     /**
      * Renders a menu with the specified renderer.
      *
-     * @param \Knp\Menu\ItemInterface|string|array $menu
      * @param string                               $renderer
-     *
      * @return string
      */
-    public function render($menu, array $options = [], $renderer = null)
+    public function render(\Knp\Menu\ItemInterface|string|array $menu, array $options = [], $renderer = null)
     {
         if (null === $renderer) {
             $renderer = $menu;

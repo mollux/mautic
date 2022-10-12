@@ -46,7 +46,7 @@ trait ChannelTrait
         if ($channelModel = $this->getChannelModel($channel)) {
             try {
                 $channelEntity = $channelModel->getEntity($channelId);
-            } catch (\Exception $exception) {
+            } catch (\Exception) {
                 // Not found
             }
         }
@@ -60,10 +60,8 @@ trait ChannelTrait
      * @param      $channel
      * @param      $channelId
      * @param bool $returnWithViewUrl
-     *
-     * @return array|bool|string
      */
-    protected function getChannelEntityName($channel, $channelId, $returnWithViewUrl = false)
+    protected function getChannelEntityName($channel, $channelId, $returnWithViewUrl = false): array|bool|string
     {
         if ($channelEntity = $this->getChannelEntity($channel, $channelId)) {
             $channelModel = $this->getChannelModel($channel);

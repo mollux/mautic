@@ -37,6 +37,7 @@ class PublicController extends CommonFormController
      */
     public function indexAction($slug, Request $request)
     {
+        $id = null;
         /** @var \Mautic\PageBundle\Model\PageModel $model */
         $model    = $this->getModel('page');
         $security = $this->get('mautic.security');
@@ -106,7 +107,7 @@ class PublicController extends CommonFormController
             // First determine the A/B test to display if applicable
             if (!$userAccess) {
                 // Check to see if a variant should be shown versus the parent but ignore if a user is previewing
-                if (count($childrenVariants)) {
+                if (is_countable($childrenVariants) ? count($childrenVariants) : 0) {
                     $variants      = [];
                     $variantWeight = 0;
                     $totalHits     = $entity->getVariantHits();
@@ -171,23 +172,14 @@ class PublicController extends CommonFormController
                                 $variants,
                                 function ($a, $b) {
                                     if ($a['weight_deficit'] === $b['weight_deficit']) {
-                                        if ($a['hits'] === $b['hits']) {
-                                            return 0;
-                                        }
-
-                                        // if weight is the same - sort by least number displayed
-                                        return ($a['hits'] < $b['hits']) ? -1 : 1;
+                                        return $a['hits'] <=> $b['hits'];
                                     }
 
                                     // sort by the one with the greatest deficit first
                                     return ($a['weight_deficit'] > $b['weight_deficit']) ? -1 : 1;
                                 }
                             );
-
-                            //find the one with the most difference from weight
-
-                            reset($variants);
-                            $useId = key($variants);
+                            $useId = array_key_first($variants);
 
                             //set the cookie - 14 days
                             $this->get('mautic.helper.cookie')->setCookie(
@@ -295,12 +287,11 @@ class PublicController extends CommonFormController
     /**
      * @param $id
      *
-     * @return Response|\Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      *
      * @throws \Exception
      * @throws \Mautic\CoreBundle\Exception\FileNotFoundException
      */
-    public function previewAction($id)
+    public function previewAction($id): \Symfony\Component\HttpFoundation\Response|\Symfony\Component\HttpKernel\Exception\NotFoundHttpException
     {
         $model  = $this->getModel('page');
         $entity = $model->getEntity($id);
@@ -389,7 +380,7 @@ class PublicController extends CommonFormController
 
         try {
             $model->hitPage(null, $this->request);
-        } catch (InvalidDecodedStringException $invalidDecodedStringException) {
+        } catch (InvalidDecodedStringException) {
             // do not track invalid ct
             return $notSuccessResponse;
         }
@@ -499,7 +490,7 @@ class PublicController extends CommonFormController
                 $url = TokenHelper::findLeadTokens($url, $leadArray, true);
             }
 
-            if (false !== strpos($url, $this->generateUrl('mautic_asset_download'))) {
+            if (str_contains($url, $this->generateUrl('mautic_asset_download'))) {
                 $url .= '?ct='.$ct;
             }
         }
@@ -539,7 +530,7 @@ class PublicController extends CommonFormController
 
             if (isset($slotConfig['type']) && 'slideshow' == $slotConfig['type']) {
                 if (isset($content[$slot])) {
-                    $options = json_decode($content[$slot], true);
+                    $options = json_decode($content[$slot], true, 512, JSON_THROW_ON_ERROR);
                 } else {
                     $options = [
                         'width'            => '100%',
@@ -573,9 +564,7 @@ class PublicController extends CommonFormController
                 // Order slides
                 usort(
                     $options['slides'],
-                    function ($a, $b) {
-                        return strcmp($a['order'], $b['order']);
-                    }
+                    fn($a, $b) => strcmp($a['order'], $b['order'])
                 );
 
                 $options['slot']   = $slot;
@@ -588,7 +577,7 @@ class PublicController extends CommonFormController
                 $slotsHelper->set($slot, $value);
             } else {
                 // Fallback for other types like html, text, textarea and all unknown
-                $value = isset($content[$slot]) ? $content[$slot] : '';
+                $value = $content[$slot] ?? '';
                 $slotsHelper->set($slot, $value);
             }
         }
@@ -610,7 +599,7 @@ class PublicController extends CommonFormController
 
             try {
                 $model->hitVideo($this->request);
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 return new JsonResponse(['success' => false]);
             }
 

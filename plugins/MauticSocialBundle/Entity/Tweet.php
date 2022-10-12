@@ -23,85 +23,49 @@ class Tweet extends FormEntity
 {
     /**
      * Internal Mautic ID of the tweet.
-     *
-     * @var int
      */
-    private $id;
+    private ?int $id = null;
 
     /**
      * ID of the Twitter media object attached to the tweet.
-     *
-     * @var string
      */
-    private $mediaId;
+    private ?string $mediaId = null;
 
     /**
      * Path to the local media file.
-     *
-     * @var string
      */
-    private $mediaPath;
+    private ?string $mediaPath = null;
 
     /**
      * Internal Mautic name of the tweet.
-     *
-     * @var string
      */
-    private $name;
+    private ?string $name = null;
 
     /**
      * The actual messge of the tweet.
-     *
-     * @var string
      */
-    private $text;
+    private ?string $text = null;
 
     /**
      * Internal Mautic description.
-     *
-     * @var string
      */
-    private $description;
+    private ?string $description = null;
 
-    /**
-     * @var string
-     */
-    private $language = 'en';
+    private string $language = 'en';
 
-    /**
-     * @var int
-     */
-    private $sentCount = 0;
+    private int $sentCount = 0;
 
-    /**
-     * @var int
-     */
-    private $favoriteCount = 0;
+    private int $favoriteCount = 0;
 
-    /**
-     * @var int
-     */
-    private $retweetCount = 0;
+    private int $retweetCount = 0;
 
-    /**
-     * @var Page
-     */
-    private $page;
+    private ?\Mautic\PageBundle\Entity\Page $page = null;
 
-    /**
-     * @var Asset
-     */
-    private $asset;
+    private ?\Mautic\AssetBundle\Entity\Asset $asset = null;
 
-    /**
-     * @var Category
-     **/
-    private $category;
+    private ?\Mautic\CategoryBundle\Entity\Category $category = null;
 
-    /**
-     * @var ArrayCollection
-     */
-    private $stats;
+    private \Doctrine\Common\Collections\ArrayCollection $stats;
 
     public function __construct()
     {

@@ -7,28 +7,15 @@ use MauticPlugin\MauticCrmBundle\Integration\Salesforce\Object\Lead;
 
 class Organizer
 {
-    /**
-     * @var array
-     */
-    private $records;
+    private array $leads = [];
 
-    /**
-     * @var array
-     */
-    private $leads = [];
-
-    /**
-     * @var array
-     */
-    private $contacts = [];
+    private array $contacts = [];
 
     /**
      * ObjectOrganizer constructor.
      */
-    public function __construct(array $records)
+    public function __construct(private array $records)
     {
-        $this->records = $records;
-
         $this->organize();
     }
 

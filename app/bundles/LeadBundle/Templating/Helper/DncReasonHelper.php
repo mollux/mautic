@@ -12,14 +12,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class DncReasonHelper extends Helper
 {
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    public function __construct(TranslatorInterface $translator)
+    public function __construct(private TranslatorInterface $translator)
     {
-        $this->translator = $translator;
     }
 
     /**
@@ -33,22 +27,13 @@ class DncReasonHelper extends Helper
      */
     public function toText($reasonId)
     {
-        switch ($reasonId) {
-            case DoNotContact::IS_CONTACTABLE:
-                $reasonKey = 'mautic.lead.event.donotcontact_contactable';
-                break;
-            case DoNotContact::UNSUBSCRIBED:
-                $reasonKey = 'mautic.lead.event.donotcontact_unsubscribed';
-                break;
-            case DoNotContact::BOUNCED:
-                $reasonKey = 'mautic.lead.event.donotcontact_bounced';
-                break;
-            case DoNotContact::MANUAL:
-                $reasonKey = 'mautic.lead.event.donotcontact_manual';
-                break;
-            default:
-                throw new UnknownDncReasonException(sprintf("Unknown DNC reason ID '%c'", $reasonId));
-        }
+        $reasonKey = match ($reasonId) {
+            DoNotContact::IS_CONTACTABLE => 'mautic.lead.event.donotcontact_contactable',
+            DoNotContact::UNSUBSCRIBED => 'mautic.lead.event.donotcontact_unsubscribed',
+            DoNotContact::BOUNCED => 'mautic.lead.event.donotcontact_bounced',
+            DoNotContact::MANUAL => 'mautic.lead.event.donotcontact_manual',
+            default => throw new UnknownDncReasonException(sprintf("Unknown DNC reason ID '%c'", $reasonId)),
+        };
 
         return $this->translator->trans($reasonKey);
     }

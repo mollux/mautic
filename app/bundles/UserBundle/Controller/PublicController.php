@@ -34,7 +34,7 @@ class PublicController extends FormController
                     try {
                         $model->sendResetEmail($user);
                         $this->addFlash('mautic.user.user.notice.passwordreset');
-                    } catch (\Exception $exception) {
+                    } catch (\Exception) {
                         $this->addFlash('mautic.user.user.notice.passwordreset.error', [], 'error');
                     }
 

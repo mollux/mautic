@@ -9,16 +9,10 @@ use Psr\Http\Message\ResponseInterface;
 class CitrixApi
 {
     /**
-     * @var CitrixAbstractIntegration
-     */
-    protected $integration;
-
-    /**
      * CitrixApi constructor.
      */
-    public function __construct(CitrixAbstractIntegration $integration)
+    public function __construct(protected CitrixAbstractIntegration $integration)
     {
-        $this->integration = $integration;
     }
 
     /**

@@ -10,14 +10,8 @@ use Symfony\Component\Templating\Helper\Helper;
  */
 class VersionHelper extends Helper
 {
-    /**
-     * @var AppVersion
-     */
-    private $appVersion;
-
-    public function __construct(AppVersion $appVersion)
+    public function __construct(private AppVersion $appVersion)
     {
-        $this->appVersion = $appVersion;
     }
 
     /**

@@ -18,15 +18,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class CleanupMaintenanceCommand extends Command
 {
-    private TranslatorInterface $translator;
-    private EventDispatcherInterface $dispatcher;
-
-    public function __construct(TranslatorInterface $translator, EventDispatcherInterface $dispatcher)
+    public function __construct(private TranslatorInterface $translator, private EventDispatcherInterface $dispatcher)
     {
         parent::__construct();
-
-        $this->translator = $translator;
-        $this->dispatcher = $dispatcher;
     }
 
     protected function configure()

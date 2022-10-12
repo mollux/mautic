@@ -16,24 +16,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class DetailController extends CommonController
 {
-    private PackageModel $packageModel;
-    private RouteProvider $routeProvider;
-    private CorePermissions $corePermissions;
-    private Config $config;
-    private ComposerHelper $composer;
-
-    public function __construct(
-        PackageModel $packageModel,
-        RouteProvider $routeProvider,
-        CorePermissions $corePermissions,
-        Config $config,
-        ComposerHelper $composer
-    ) {
-        $this->packageModel    = $packageModel;
-        $this->routeProvider   = $routeProvider;
-        $this->corePermissions = $corePermissions;
-        $this->config          = $config;
-        $this->composer        = $composer;
+    public function __construct(private PackageModel $packageModel, private RouteProvider $routeProvider, private CorePermissions $corePermissions, private Config $config, private ComposerHelper $composer)
+    {
     }
 
     public function ViewAction(string $vendor, string $package): Response

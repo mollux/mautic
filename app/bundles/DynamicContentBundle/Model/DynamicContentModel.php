@@ -131,11 +131,10 @@ class DynamicContentModel extends FormModel implements AjaxLookupModelInterface
 
     /**
      * @param string     $slot
-     * @param Lead|array $lead
      *
      * @return DynamicContent
      */
-    public function getSlotContentForLead($slot, $lead)
+    public function getSlotContentForLead($slot, \Mautic\LeadBundle\Entity\Lead|array $lead)
     {
         if (!$lead) {
             return [];
@@ -160,10 +159,9 @@ class DynamicContentModel extends FormModel implements AjaxLookupModelInterface
     }
 
     /**
-     * @param Lead|array $lead
      * @param string     $source
      */
-    public function createStatEntry(DynamicContent $dynamicContent, $lead, $source = null)
+    public function createStatEntry(DynamicContent $dynamicContent, \Mautic\LeadBundle\Entity\Lead|array $lead, $source = null)
     {
         if (empty($lead)) {
             return;
@@ -312,9 +310,9 @@ class DynamicContentModel extends FormModel implements AjaxLookupModelInterface
                     $limit,
                     $start,
                     $this->security->isGranted($this->getPermissionBase().':viewother'),
-                    isset($options['top_level']) ? $options['top_level'] : false,
-                    isset($options['ignore_ids']) ? $options['ignore_ids'] : [],
-                    isset($options['where']) ? $options['where'] : ''
+                    $options['top_level'] ?? false,
+                    $options['ignore_ids'] ?? [],
+                    $options['where'] ?? ''
                 );
 
                 foreach ($entities as $entity) {

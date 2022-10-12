@@ -33,7 +33,7 @@ return [
                 'standard_entity' => true,
                 'name'            => 'campaigns',
                 'path'            => '/campaigns',
-                'controller'      => 'Mautic\CampaignBundle\Controller\Api\CampaignApiController',
+                'controller'      => \Mautic\CampaignBundle\Controller\Api\CampaignApiController::class,
             ],
             'mautic_api_campaigneventsstandard'       => [
                 'standard_entity'     => true,
@@ -43,7 +43,7 @@ return [
                 ],
                 'name'                => 'events',
                 'path'                => '/campaigns/events',
-                'controller'          => 'Mautic\CampaignBundle\Controller\Api\EventApiController',
+                'controller'          => \Mautic\CampaignBundle\Controller\Api\EventApiController::class,
             ],
             'mautic_api_campaigns_events_contact'     => [
                 'path'       => '/campaigns/events/contact/{contactId}',
@@ -175,17 +175,17 @@ return [
         ],
         'forms'        => [
             'mautic.campaign.type.form'                 => [
-                'class'     => 'Mautic\CampaignBundle\Form\Type\CampaignType',
+                'class'     => \Mautic\CampaignBundle\Form\Type\CampaignType::class,
                 'arguments' => [
                     'mautic.security',
                     'translator',
                 ],
             ],
             'mautic.campaignrange.type.action'          => [
-                'class' => 'Mautic\CampaignBundle\Form\Type\EventType',
+                'class' => \Mautic\CampaignBundle\Form\Type\EventType::class,
             ],
             'mautic.campaign.type.campaignlist'         => [
-                'class'     => 'Mautic\CampaignBundle\Form\Type\CampaignListType',
+                'class'     => \Mautic\CampaignBundle\Form\Type\CampaignListType::class,
                 'arguments' => [
                     'mautic.campaign.model.campaign',
                     'translator',
@@ -193,23 +193,23 @@ return [
                 ],
             ],
             'mautic.campaign.type.trigger.leadchange'   => [
-                'class' => 'Mautic\CampaignBundle\Form\Type\CampaignEventLeadChangeType',
+                'class' => \Mautic\CampaignBundle\Form\Type\CampaignEventLeadChangeType::class,
             ],
             'mautic.campaign.type.action.addremovelead' => [
-                'class' => 'Mautic\CampaignBundle\Form\Type\CampaignEventAddRemoveLeadType',
+                'class' => \Mautic\CampaignBundle\Form\Type\CampaignEventAddRemoveLeadType::class,
             ],
             'mautic.campaign.type.action.jump_to_event' => [
                 'class' => \Mautic\CampaignBundle\Form\Type\CampaignEventJumpToEventType::class,
             ],
             'mautic.campaign.type.canvassettings'       => [
-                'class' => 'Mautic\CampaignBundle\Form\Type\EventCanvasSettingsType',
+                'class' => \Mautic\CampaignBundle\Form\Type\EventCanvasSettingsType::class,
             ],
             'mautic.campaign.type.leadsource'           => [
-                'class'     => 'Mautic\CampaignBundle\Form\Type\CampaignLeadSourceType',
+                'class'     => \Mautic\CampaignBundle\Form\Type\CampaignLeadSourceType::class,
                 'arguments' => 'mautic.factory',
             ],
             'mautic.form.type.campaignconfig'           => [
-                'class'     => 'Mautic\CampaignBundle\Form\Type\ConfigType',
+                'class'     => \Mautic\CampaignBundle\Form\Type\ConfigType::class,
                 'arguments' => 'translator',
             ],
         ],

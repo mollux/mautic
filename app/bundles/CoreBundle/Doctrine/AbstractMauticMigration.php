@@ -86,6 +86,7 @@ abstract class AbstractMauticMigration extends AbstractMigration implements Cont
      */
     protected function findPropertyName($table, $type, $suffix)
     {
+        $localName = null;
         static $schemaManager;
         static $tables = [];
 
@@ -165,9 +166,7 @@ abstract class AbstractMauticMigration extends AbstractMigration implements Cont
         $hash        = implode(
             '',
             array_map(
-                function ($column) {
-                    return dechex(crc32($column));
-                },
+                fn($column) => dechex(crc32($column)),
                 $columnNames
             )
         );

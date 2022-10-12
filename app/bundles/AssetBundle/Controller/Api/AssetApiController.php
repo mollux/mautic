@@ -11,7 +11,7 @@ class AssetApiController extends CommonApiController
     public function initialize(ControllerEvent $event)
     {
         $this->model            = $this->getModel('asset');
-        $this->entityClass      = 'Mautic\AssetBundle\Entity\Asset';
+        $this->entityClass      = \Mautic\AssetBundle\Entity\Asset::class;
         $this->entityNameOne    = 'asset';
         $this->entityNameMulti  = 'assets';
         $this->serializerGroups = ['assetDetails', 'categoryList', 'publishDetails'];

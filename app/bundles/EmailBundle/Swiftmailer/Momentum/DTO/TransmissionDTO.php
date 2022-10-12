@@ -12,45 +12,24 @@ use Mautic\EmailBundle\Swiftmailer\Momentum\DTO\TransmissionDTO\RecipientDTO;
 class TransmissionDTO implements \JsonSerializable
 {
     /**
-     * @var OptionsDTO|null
-     */
-    private $options;
-
-    /**
      * @var RecipientDTO[]
      */
-    private $recipients = [];
+    private array $recipients = [];
 
     /**
      * @var string|null
      */
     private $campaignId;
 
-    /**
-     * @var string|null
-     */
-    private $description;
-
-    /**
-     * @var string
-     */
-    private $returnPath;
-
-    /**
-     * @var ContentDTO
-     */
-    private $content;
+    private ?string $description = null;
 
     /**
      * TransmissionDTO constructor.
      *
      * @param string $returnPath
      */
-    public function __construct(ContentDTO $content, $returnPath, OptionsDTO $options = null)
+    public function __construct(private ContentDTO $content, private $returnPath, private ?\Mautic\EmailBundle\Swiftmailer\Momentum\DTO\TransmissionDTO\OptionsDTO $options = null)
     {
-        $this->content    = $content;
-        $this->returnPath = $returnPath;
-        $this->options    = $options;
     }
 
     /**

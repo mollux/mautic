@@ -19,14 +19,8 @@ class FieldModel extends CommonFormModel
      */
     protected $session;
 
-    /**
-     * @var LeadFieldModel
-     */
-    protected $leadFieldModel;
-
-    public function __construct(LeadFieldModel $leadFieldModel)
+    public function __construct(protected LeadFieldModel $leadFieldModel)
     {
-        $this->leadFieldModel = $leadFieldModel;
     }
 
     public function setSession(Session $session)
@@ -44,13 +38,13 @@ class FieldModel extends CommonFormModel
      */
     public function createForm($entity, $formFactory, $action = null, $options = [])
     {
-        list($fields, $choices)               = $this->getObjectFields('lead');
-        list($companyFields, $companyChoices) = $this->getObjectFields('company');
+        [$fields, $choices]               = $this->getObjectFields('lead');
+        [$companyFields, $companyChoices] = $this->getObjectFields('company');
 
         // Only show the lead fields not already used
         $usedLeadFields   = $this->session->get('mautic.form.'.$entity['formId'].'.fields.leadfields', []);
         $testLeadFields   = array_flip($usedLeadFields);
-        $currentLeadField = (isset($entity['leadField'])) ? $entity['leadField'] : null;
+        $currentLeadField = $entity['leadField'] ?? null;
         if (!empty($currentLeadField) && isset($testLeadFields[$currentLeadField])) {
             unset($testLeadFields[$currentLeadField]);
         }

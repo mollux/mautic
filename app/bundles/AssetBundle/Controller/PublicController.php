@@ -62,7 +62,7 @@ class PublicController extends CommonFormController
                     $entity->setUploadDir($this->get('mautic.helper.core_parameters')->get('upload_dir'));
                     $contents = $entity->getFileContents();
                     $model->trackDownload($entity, $this->request, 200);
-                } catch (\Exception $e) {
+                } catch (\Exception) {
                     $model->trackDownload($entity, $this->request, 404);
 
                     return $this->notFound();

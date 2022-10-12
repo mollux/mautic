@@ -13,7 +13,7 @@ class RoleApiController extends CommonApiController
     public function initialize(ControllerEvent $event)
     {
         $this->model            = $this->getModel('user.role');
-        $this->entityClass      = 'Mautic\UserBundle\Entity\Role';
+        $this->entityClass      = \Mautic\UserBundle\Entity\Role::class;
         $this->entityNameOne    = 'role';
         $this->entityNameMulti  = 'roles';
         $this->serializerGroups = ['roleDetails', 'publishDetails'];

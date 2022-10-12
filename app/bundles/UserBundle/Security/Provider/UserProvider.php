@@ -23,43 +23,8 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
  */
 class UserProvider implements UserProviderInterface
 {
-    /**
-     * @var UserRepository
-     */
-    protected $userRepository;
-
-    /**
-     * @var PermissionRepository
-     */
-    protected $permissionRepository;
-
-    /**
-     * @var Session
-     */
-    protected $session;
-
-    /**
-     * @var EventDispatcherInterface
-     */
-    protected $dispatcher;
-
-    /**
-     * @var UserPasswordEncoder
-     */
-    protected $encoder;
-
-    public function __construct(
-        UserRepository $userRepository,
-        PermissionRepository $permissionRepository,
-        Session $session,
-        EventDispatcherInterface $dispatcher,
-        UserPasswordEncoder $encoder
-    ) {
-        $this->userRepository       = $userRepository;
-        $this->permissionRepository = $permissionRepository;
-        $this->session              = $session;
-        $this->dispatcher           = $dispatcher;
-        $this->encoder              = $encoder;
+    public function __construct(protected UserRepository $userRepository, protected PermissionRepository $permissionRepository, protected Session $session, protected EventDispatcherInterface $dispatcher, protected UserPasswordEncoder $encoder)
+    {
     }
 
     /**
@@ -104,7 +69,7 @@ class UserProvider implements UserProviderInterface
      */
     public function refreshUser(UserInterface $user)
     {
-        $class = get_class($user);
+        $class = $user::class;
         if (!$this->supportsClass($class)) {
             throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', $class));
         }
@@ -197,11 +162,11 @@ class UserProvider implements UserProviderInterface
             $user = $this->loadUserByUsername($user->getUsername());
 
             return $user;
-        } catch (UsernameNotFoundException $exception) {
+        } catch (UsernameNotFoundException) {
             // Try by email
             try {
                 return $this->loadUserByUsername($user->getEmail());
-            } catch (UsernameNotFoundException $exception) {
+            } catch (UsernameNotFoundException) {
             }
         }
 

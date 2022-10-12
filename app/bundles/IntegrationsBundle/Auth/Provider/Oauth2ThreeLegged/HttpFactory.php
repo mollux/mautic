@@ -38,22 +38,16 @@ class HttpFactory implements AuthProviderInterface
      */
     private $credentials;
 
-    /**
-     * @var ConfigCredentialsSignerInterface|ConfigTokenPersistenceInterface|ConfigTokenSignerInterface|ConfigTokenFactoryInterface
-     */
-    private $config;
+    private \Mautic\IntegrationsBundle\Auth\Support\Oauth2\ConfigAccess\ConfigCredentialsSignerInterface|\Mautic\IntegrationsBundle\Auth\Support\Oauth2\ConfigAccess\ConfigTokenPersistenceInterface|\Mautic\IntegrationsBundle\Auth\Support\Oauth2\ConfigAccess\ConfigTokenSignerInterface|\Mautic\IntegrationsBundle\Auth\Support\Oauth2\ConfigAccess\ConfigTokenFactoryInterface|null $config = null;
 
-    /**
-     * @var Client
-     */
-    private $reAuthClient;
+    private ?\GuzzleHttp\Client $reAuthClient = null;
 
     /**
      * Cache of initialized clients.
      *
      * @var Client[]
      */
-    private $initializedClients = [];
+    private array $initializedClients = [];
 
     public function getAuthType(): string
     {

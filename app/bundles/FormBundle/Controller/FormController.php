@@ -20,7 +20,7 @@ class FormController extends CommonFormController
      *
      * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function indexAction($page = 1)
+    public function indexAction($page = 1): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         //set some permissions
         $permissions = $this->get('mautic.security')->isGranted(
@@ -123,7 +123,7 @@ class FormController extends CommonFormController
      *
      * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function viewAction($objectId)
+    public function viewAction($objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         /** @var \Mautic\FormBundle\Model\FormModel $model */
         $model      = $this->getModel('form');
@@ -254,7 +254,7 @@ class FormController extends CommonFormController
      *
      * @throws \Exception
      */
-    public function newAction()
+    public function newAction(): array|\Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         /** @var \Mautic\FormBundle\Model\FormModel $model */
         $model   = $this->getModel('form');
@@ -268,7 +268,7 @@ class FormController extends CommonFormController
         //set the page we came from
         $page       = $this->get('session')->get('mautic.form.page', 1);
         $mauticform = $this->request->request->get('mauticform', []);
-        $sessionId  = $mauticform['sessionId'] ?? 'mautic_'.sha1(uniqid(mt_rand(), true));
+        $sessionId  = $mauticform['sessionId'] ?? 'mautic_'.sha1(uniqid(random_int(0, mt_getrandmax()), true));
 
         //set added/updated fields
         $modifiedFields = $session->get('mautic.form.'.$sessionId.'.fields.modified', []);
@@ -398,7 +398,7 @@ class FormController extends CommonFormController
             $form->get('sessionId')->setData($sessionId);
 
             //add a submit button
-            $keyId = 'new'.hash('sha1', uniqid(mt_rand()));
+            $keyId = 'new'.hash('sha1', uniqid(random_int(0, mt_getrandmax())));
             $field = new Field();
 
             $modifiedFields[$keyId]                    = $field->convertToArray();
@@ -414,7 +414,7 @@ class FormController extends CommonFormController
         }
 
         //fire the form builder event
-        $customComponents = $model->getCustomComponents($sessionId);
+        $customComponents = $model->getCustomComponents();
 
         /** @var FormFieldHelper $fieldHelper */
         $fieldHelper = $this->get('mautic.helper.form.field_helper');
@@ -462,17 +462,17 @@ class FormController extends CommonFormController
      *
      * @return \Symfony\Component\HttpFoundation\JsonResponse|Response
      */
-    public function editAction($objectId, $ignorePost = false, $forceTypeSelection = false)
+    public function editAction($objectId, $ignorePost = false, $forceTypeSelection = false): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         /** @var \Mautic\FormBundle\Model\FormModel $model */
         $model            = $this->getModel('form');
         $formData         = $this->request->request->get('mauticform');
-        $sessionId        = isset($formData['sessionId']) ? $formData['sessionId'] : null;
+        $sessionId        = $formData['sessionId'] ?? null;
         $customComponents = $model->getCustomComponents();
 
         if ($objectId instanceof Form) {
             $entity   = $objectId;
-            $objectId = 'mautic_'.sha1(uniqid(mt_rand(), true));
+            $objectId = 'mautic_'.sha1(uniqid(random_int(0, mt_getrandmax()), true));
         } else {
             $entity = $model->getEntity($objectId);
 
@@ -715,7 +715,7 @@ class FormController extends CommonFormController
 
                 if (!$id) {
                     // Cloned entity
-                    $id = $field['id'] = $field['sessionId'] = 'new'.hash('sha1', uniqid(mt_rand()));
+                    $id = $field['id'] = $field['sessionId'] = 'new'.hash('sha1', uniqid(random_int(0, mt_getrandmax())));
                 }
 
                 unset($field['form']);
@@ -734,7 +734,7 @@ class FormController extends CommonFormController
             }
             if (!$submitButton) { //means something deleted the submit button from the form
                 //add a submit button
-                $keyId = 'new'.hash('sha1', uniqid(mt_rand()));
+                $keyId = 'new'.hash('sha1', uniqid(random_int(0, mt_getrandmax())));
                 $field = new Field();
 
                 $modifiedFields[$keyId]                    = $field->convertToArray();
@@ -752,13 +752,7 @@ class FormController extends CommonFormController
             if (!empty($reorder)) {
                 uasort(
                     $modifiedFields,
-                    function ($a, $b) {
-                        if ($a['order'] == $b['order']) {
-                            return 0;
-                        }
-
-                        return $a['order'] < $b['order'] ? -1 : 1;
-                    }
+                    fn($a, $b) => $a['order'] <=> $b['order']
                 );
             }
 
@@ -780,7 +774,7 @@ class FormController extends CommonFormController
 
                 if (!$id) {
                     // Cloned entity so use a random Id instead
-                    $action['id'] = $id = 'new'.hash('sha1', uniqid(mt_rand()));
+                    $action['id'] = $id = 'new'.hash('sha1', uniqid(random_int(0, mt_getrandmax())));
                 }
                 unset($action['form']);
 
@@ -790,13 +784,7 @@ class FormController extends CommonFormController
             if (!empty($reorder)) {
                 uasort(
                     $modifiedActions,
-                    function ($a, $b) {
-                        if ($a['order'] == $b['order']) {
-                            return 0;
-                        }
-
-                        return $a['order'] < $b['order'] ? -1 : 1;
-                    }
+                    fn($a, $b) => $a['order'] <=> $b['order']
                 );
             }
 
@@ -847,7 +835,7 @@ class FormController extends CommonFormController
      *
      * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function cloneAction($objectId)
+    public function cloneAction($objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         $model = $this->getModel('form.form');
 
@@ -975,10 +963,8 @@ class FormController extends CommonFormController
      * Deletes the entity.
      *
      * @param int $objectId
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function deleteAction($objectId)
+    public function deleteAction($objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         $page      = $this->get('session')->get('mautic.form.page', 1);
         $returnUrl = $this->generateUrl('mautic_form_index', ['page' => $page]);
@@ -1040,10 +1026,8 @@ class FormController extends CommonFormController
 
     /**
      * Deletes a group of entities.
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function batchDeleteAction()
+    public function batchDeleteAction(): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         $page      = $this->get('session')->get('mautic.form.page', 1);
         $returnUrl = $this->generateUrl('mautic_form_index', ['page' => $page]);
@@ -1061,7 +1045,7 @@ class FormController extends CommonFormController
 
         if ('POST' == $this->request->getMethod()) {
             $model     = $this->getModel('form');
-            $ids       = json_decode($this->request->query->get('ids', ''));
+            $ids       = json_decode($this->request->query->get('ids', ''), null, 512, JSON_THROW_ON_ERROR);
             $deleteIds = [];
 
             // Loop over the IDs to perform access checks pre-delete
@@ -1097,7 +1081,7 @@ class FormController extends CommonFormController
                     'type'    => 'notice',
                     'msg'     => 'mautic.form.notice.batch_deleted',
                     'msgVars' => [
-                        '%count%' => count($entities),
+                        '%count%' => is_countable($entities) ? count($entities) : 0,
                     ],
                 ];
             }
@@ -1146,7 +1130,7 @@ class FormController extends CommonFormController
         if ('POST' == $this->request->getMethod()) {
             /** @var \Mautic\FormBundle\Model\FormModel $model */
             $model = $this->getModel('form');
-            $ids   = json_decode($this->request->query->get('ids', ''));
+            $ids   = json_decode($this->request->query->get('ids', ''), null, 512, JSON_THROW_ON_ERROR);
             $count = 0;
             // Loop over the IDs to perform access checks pre-delete
             foreach ($ids as $objectId) {

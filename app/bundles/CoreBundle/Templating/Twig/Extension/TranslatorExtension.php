@@ -10,11 +10,8 @@ use Twig\TwigFunction;
 
 class TranslatorExtension extends AbstractExtension
 {
-    private TranslatorHelper $translatorHelper;
-
-    public function __construct(TranslatorHelper $translatorHelper)
+    public function __construct(private TranslatorHelper $translatorHelper)
     {
-        $this->translatorHelper = $translatorHelper;
     }
 
     public function getFunctions()

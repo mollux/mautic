@@ -144,7 +144,6 @@ class DownloadRepository extends CommonRepository
 
     /**
      * @param           $pageId
-     * @param \DateTime $fromDate
      *
      * @return mixed
      */
@@ -187,7 +186,6 @@ class DownloadRepository extends CommonRepository
      * same tracking ID as an asset download tracking ID and thus assumed happened in the same session.
      *
      * @param           $emailId
-     * @param \DateTime $fromDate
      *
      * @return mixed
      */

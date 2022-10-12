@@ -11,30 +11,13 @@ use Symfony\Contracts\EventDispatcher\Event;
 class PageDisplayEvent extends Event
 {
     /**
-     * @var string
-     */
-    private $content;
-
-    /**
-     * @var Page
-     */
-    private $page;
-
-    /**
-     * @var array
-     */
-    private $params;
-
-    /**
      * PageDisplayEvent constructor.
      *
      * @param $content
+     * @param string $content
      */
-    public function __construct($content, Page $page, array $params = [])
+    public function __construct(private $content, private Page $page, private array $params = [])
     {
-        $this->page    = $page;
-        $this->content = $content;
-        $this->params  = $params;
     }
 
     /**

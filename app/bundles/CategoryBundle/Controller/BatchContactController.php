@@ -39,12 +39,12 @@ class BatchContactController extends AbstractFormController
     public function execAction()
     {
         $params = $this->request->get('lead_batch');
-        $ids    = empty($params['ids']) ? [] : json_decode($params['ids']);
+        $ids    = empty($params['ids']) ? [] : json_decode($params['ids'], null, 512, JSON_THROW_ON_ERROR);
 
         if ($ids && is_array($ids)) {
-            $categoriesToAdd    = isset($params['add']) ? $params['add'] : [];
-            $categoriesToRemove = isset($params['remove']) ? $params['remove'] : [];
-            $contactIds         = json_decode($params['ids']);
+            $categoriesToAdd    = $params['add'] ?? [];
+            $categoriesToRemove = $params['remove'] ?? [];
+            $contactIds         = json_decode($params['ids'], null, 512, JSON_THROW_ON_ERROR);
 
             $this->actionModel->addContactsToCategories($contactIds, $categoriesToAdd);
             $this->actionModel->removeContactsFromCategories($contactIds, $categoriesToRemove);
@@ -67,7 +67,7 @@ class BatchContactController extends AbstractFormController
      *
      * @return JsonResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function indexAction()
+    public function indexAction(): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         $route = $this->generateUrl('mautic_category_batch_contact_set');
         $rows  = $this->categoryModel->getLookupResults('global', '', 300);

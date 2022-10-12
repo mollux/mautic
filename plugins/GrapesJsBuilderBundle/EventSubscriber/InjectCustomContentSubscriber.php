@@ -19,46 +19,10 @@ use Symfony\Component\Routing\RouterInterface;
 class InjectCustomContentSubscriber implements EventSubscriberInterface
 {
     /**
-     * @var Config
-     */
-    private $config;
-
-    /**
-     * @var GrapesJsBuilderModel
-     */
-    private $grapesJsBuilderModel;
-
-    /**
-     * @var FileManager
-     */
-    private $fileManager;
-
-    /**
-     * @var TemplatingHelper
-     */
-    private $templatingHelper;
-
-    /**
-     * @var RequestStack
-     */
-    private $requestStack;
-
-    /**
-     * @var RouterInterface
-     */
-    private $router;
-
-    /**
      * InjectCustomContentSubscriber constructor.
      */
-    public function __construct(Config $config, GrapesJsBuilderModel $grapesJsBuilderModel, FileManager $fileManager, TemplatingHelper $templatingHelper, RequestStack $requestStack, RouterInterface $router)
+    public function __construct(private Config $config, private GrapesJsBuilderModel $grapesJsBuilderModel, private FileManager $fileManager, private TemplatingHelper $templatingHelper, private RequestStack $requestStack, private RouterInterface $router)
     {
-        $this->config               = $config;
-        $this->grapesJsBuilderModel = $grapesJsBuilderModel;
-        $this->fileManager          = $fileManager;
-        $this->templatingHelper     = $templatingHelper;
-        $this->requestStack         = $requestStack;
-        $this->router               = $router;
     }
 
     public static function getSubscribedEvents()
@@ -112,7 +76,7 @@ class InjectCustomContentSubscriber implements EventSubscriberInterface
             $customContentEvent->addContent($content);
         } elseif ('page.header.left' === $customContentEvent->getContext()) {
             // Inject fileManager URL and list of images within all pages
-            $passParams['assets']     = json_encode($this->fileManager->getImages());
+            $passParams['assets']     = json_encode($this->fileManager->getImages(), JSON_THROW_ON_ERROR);
             $passParams['dataUpload'] = $this->router->generate('grapesjsbuilder_upload', [], \Symfony\Component\Routing\Generator\UrlGeneratorInterface::ABSOLUTE_URL);
             $passParams['dataDelete'] = $this->router->generate('grapesjsbuilder_delete', [], \Symfony\Component\Routing\Generator\UrlGeneratorInterface::ABSOLUTE_URL);
 

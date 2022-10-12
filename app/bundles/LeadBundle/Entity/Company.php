@@ -20,20 +20,14 @@ class Company extends FormEntity implements CustomFieldEntityInterface, Identifi
      */
     private $id;
 
-    /**
-     * @var int
-     */
-    private $score = 0;
+    private int $score = 0;
 
-    /**
-     * @var User
-     */
-    private $owner;
+    private ?\Mautic\UserBundle\Entity\User $owner = null;
 
     /**
      * @var mixed[]
      */
-    private $socialCache = [];
+    private array $socialCache = [];
 
     private $email;
 
@@ -98,7 +92,7 @@ class Company extends FormEntity implements CustomFieldEntityInterface, Identifi
             ->nullable()
             ->build();
 
-        $builder->createManyToOne('owner', 'Mautic\UserBundle\Entity\User')
+        $builder->createManyToOne('owner', \Mautic\UserBundle\Entity\User::class)
             ->cascadeMerge()
             ->addJoinColumn('owner_id', 'id', true, false, 'SET NULL')
             ->build();
@@ -223,8 +217,6 @@ class Company extends FormEntity implements CustomFieldEntityInterface, Identifi
     }
 
     /**
-     * @param User $owner
-     *
      * @return Company
      */
     public function setOwner(User $owner = null)
@@ -245,12 +237,10 @@ class Company extends FormEntity implements CustomFieldEntityInterface, Identifi
 
     /**
      * Returns the user to be used for permissions.
-     *
-     * @return User|int
      */
-    public function getPermissionUser()
+    public function getPermissionUser(): \Mautic\UserBundle\Entity\User|int
     {
-        return (null === $this->getOwner()) ? $this->getCreatedBy() : $this->getOwner();
+        return $this->getOwner() ?? $this->getCreatedBy();
     }
 
     /**
@@ -285,11 +275,9 @@ class Company extends FormEntity implements CustomFieldEntityInterface, Identifi
     }
 
     /**
-     * @param mixed $name
-     *
      * @return Company
      */
-    public function setName($name)
+    public function setName(mixed $name)
     {
         $this->name = $name;
 
@@ -305,11 +293,9 @@ class Company extends FormEntity implements CustomFieldEntityInterface, Identifi
     }
 
     /**
-     * @param mixed $email
-     *
      * @return Company
      */
-    public function setEmail($email)
+    public function setEmail(mixed $email)
     {
         $this->email = $email;
 
@@ -325,11 +311,9 @@ class Company extends FormEntity implements CustomFieldEntityInterface, Identifi
     }
 
     /**
-     * @param mixed $address1
-     *
      * @return Company
      */
-    public function setAddress1($address1)
+    public function setAddress1(mixed $address1)
     {
         $this->address1 = $address1;
 
@@ -345,11 +329,9 @@ class Company extends FormEntity implements CustomFieldEntityInterface, Identifi
     }
 
     /**
-     * @param mixed $address2
-     *
      * @return Company
      */
-    public function setAddress2($address2)
+    public function setAddress2(mixed $address2)
     {
         $this->address2 = $address2;
 
@@ -365,11 +347,9 @@ class Company extends FormEntity implements CustomFieldEntityInterface, Identifi
     }
 
     /**
-     * @param mixed $phone
-     *
      * @return Company
      */
-    public function setPhone($phone)
+    public function setPhone(mixed $phone)
     {
         $this->phone = $phone;
 
@@ -385,11 +365,9 @@ class Company extends FormEntity implements CustomFieldEntityInterface, Identifi
     }
 
     /**
-     * @param mixed $city
-     *
      * @return Company
      */
-    public function setCity($city)
+    public function setCity(mixed $city)
     {
         $this->city = $city;
 
@@ -405,11 +383,9 @@ class Company extends FormEntity implements CustomFieldEntityInterface, Identifi
     }
 
     /**
-     * @param mixed $state
-     *
      * @return Company
      */
-    public function setState($state)
+    public function setState(mixed $state)
     {
         $this->state = $state;
 
@@ -425,11 +401,9 @@ class Company extends FormEntity implements CustomFieldEntityInterface, Identifi
     }
 
     /**
-     * @param mixed $zipcode
-     *
      * @return Company
      */
-    public function setZipcode($zipcode)
+    public function setZipcode(mixed $zipcode)
     {
         $this->zipcode = $zipcode;
 
@@ -445,11 +419,9 @@ class Company extends FormEntity implements CustomFieldEntityInterface, Identifi
     }
 
     /**
-     * @param mixed $country
-     *
      * @return Company
      */
-    public function setCountry($country)
+    public function setCountry(mixed $country)
     {
         $this->country = $country;
 
@@ -465,11 +437,9 @@ class Company extends FormEntity implements CustomFieldEntityInterface, Identifi
     }
 
     /**
-     * @param mixed $website
-     *
      * @return Company
      */
-    public function setWebsite($website)
+    public function setWebsite(mixed $website)
     {
         $this->website = $website;
 
@@ -485,11 +455,9 @@ class Company extends FormEntity implements CustomFieldEntityInterface, Identifi
     }
 
     /**
-     * @param mixed $industry
-     *
      * @return Company
      */
-    public function setIndustry($industry)
+    public function setIndustry(mixed $industry)
     {
         $this->industry = $industry;
 
@@ -505,11 +473,9 @@ class Company extends FormEntity implements CustomFieldEntityInterface, Identifi
     }
 
     /**
-     * @param mixed $description
-     *
      * @return Company
      */
-    public function setDescription($description)
+    public function setDescription(mixed $description)
     {
         $this->description = $description;
 

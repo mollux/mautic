@@ -16,52 +16,27 @@ class ReportGeneratorEvent extends AbstractReportEvent
     public const COMPANY_PREFIX     = 'comp';
     public const IP_ADDRESS_PREFIX  = 'i';
 
-    /**
-     * @var array
-     */
-    private $selectColumns = [];
-
-    /**
-     * QueryBuilder object.
-     *
-     * @var QueryBuilder
-     */
-    private $queryBuilder;
+    private array $selectColumns = [];
 
     /**
      * contentTemplate.
-     *
-     * @var string
      */
-    private $contentTemplate;
+    private ?string $contentTemplate = null;
 
-    /**
-     * @var array
-     */
-    private $options = [];
-
-    /**
-     * @var ExpressionBuilder|null
-     */
-    private $filterExpression;
-
-    /**
-     * @var ChannelListHelper
-     */
-    private $channelListHelper;
+    private ?\Doctrine\DBAL\Query\Expression\ExpressionBuilder $filterExpression = null;
 
     /**
      * @var array|null
      */
     private $sortedFilters;
 
-    public function __construct(Report $report, array $options, QueryBuilder $qb, ChannelListHelper $channelListHelper)
+    public function __construct(Report $report, private array $options, /**
+     * QueryBuilder object.
+     */
+    private QueryBuilder $queryBuilder, private ChannelListHelper $channelListHelper)
     {
         $this->report            = $report;
         $this->context           = $report->getSource();
-        $this->options           = $options;
-        $this->queryBuilder      = $qb;
-        $this->channelListHelper = $channelListHelper;
     }
 
     /**
@@ -391,15 +366,13 @@ class ReportGeneratorEvent extends AbstractReportEvent
         $columns = $this->getReport()->getSelectAndAggregatorAndOrderAndGroupByColumns();
         $pattern = "/^{$prefix}\./";
 
-        return count(preg_grep($pattern, $columns)) > 0;
+        return (is_countable(preg_grep($pattern, $columns)) ? count(preg_grep($pattern, $columns)) : 0) > 0;
     }
 
     /**
      * Returns true if the report uses the column anywhere in the query.
-     *
-     * @param string|array $column
      */
-    public function usesColumn($column): bool
+    public function usesColumn(string|array $column): bool
     {
         return $this->hasColumn($column) || $this->hasFilter($column);
     }
@@ -417,17 +390,16 @@ class ReportGeneratorEvent extends AbstractReportEvent
 
         $pattern = "/^{$prefix}\./";
 
-        return count(preg_grep($pattern, array_keys($this->sortedFilters))) > 0;
+        return (is_countable(preg_grep($pattern, array_keys($this->sortedFilters))) ? count(preg_grep($pattern, array_keys($this->sortedFilters))) : 0) > 0;
     }
 
     /**
      * Check if the report has a specific column.
      *
-     * @param array|string $column
      *
      * @return bool
      */
-    public function hasColumn($column)
+    public function hasColumn(array|string $column)
     {
         $columns = $this->getReport()->getSelectAndAggregatorAndOrderAndGroupByColumns();
 
@@ -447,11 +419,10 @@ class ReportGeneratorEvent extends AbstractReportEvent
     /**
      * Check if the report has a specific filter.
      *
-     * @param array|string $column
      *
      * @return bool
      */
-    public function hasFilter($column)
+    public function hasFilter(array|string $column)
     {
         $this->buildSortedFilters();
 

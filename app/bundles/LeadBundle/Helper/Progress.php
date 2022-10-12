@@ -23,18 +23,12 @@ class Progress
     protected $done = 0;
 
     /**
-     * @var OutputInterface|null
-     */
-    protected $output;
-
-    /**
      * @var ProgressBar|null
      */
     protected $bar;
 
-    public function __construct(OutputInterface $output = null)
+    public function __construct(protected ?\Symfony\Component\Console\Output\OutputInterface $output = null)
     {
-        $this->output = $output;
     }
 
     /**

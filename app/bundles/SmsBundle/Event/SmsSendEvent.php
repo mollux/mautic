@@ -16,22 +16,10 @@ class SmsSendEvent extends CommonEvent
     protected $smsId;
 
     /**
-     * @var string
-     */
-    protected $content;
-
-    /**
-     * @var Lead
-     */
-    protected $lead;
-
-    /**
      * @param string $content
      */
-    public function __construct($content, Lead $lead)
+    public function __construct(protected $content, protected Lead $lead)
     {
-        $this->content = $content;
-        $this->lead    = $lead;
     }
 
     /**

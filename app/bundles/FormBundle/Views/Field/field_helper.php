@@ -81,7 +81,7 @@ $containerAttr = 'id="mauticform'.$formName.'_'.$id.'" '.htmlspecialchars_decode
 if (!isset($containerClass)) {
     $containerClass = $containerType;
 }
-$order                 = (isset($field['order'])) ? $field['order'] : 0;
+$order                 = $field['order'] ?? 0;
 $defaultContainerClass = 'mauticform-row mauticform-'.$containerClass.' mauticform-field-'.$order;
 
 if ($field['parent'] && isset($fields[$field['parent']])) {

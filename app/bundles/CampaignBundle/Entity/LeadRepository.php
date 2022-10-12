@@ -148,7 +148,7 @@ class LeadRepository extends CommonRepository
         $q->where(
                 $q->expr()->andX(
                     $q->expr()->eq('l.lead_id', ':leadId'),
-                    $q->expr()->in('l.campaign_id', $options['campaigns'], \Doctrine\DBAL\Connection::PARAM_INT_ARRAY)
+                    $q->expr()->in('l.campaign_id', $options['campaigns'])
                 )
             );
 

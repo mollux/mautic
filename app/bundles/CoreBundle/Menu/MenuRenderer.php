@@ -10,25 +10,13 @@ use Symfony\Bundle\FrameworkBundle\Templating\DelegatingEngine;
 
 class MenuRenderer implements RendererInterface
 {
-    /**
-     * @var DelegatingEngine
-     */
-    private $engine;
+    private \Symfony\Bundle\FrameworkBundle\Templating\DelegatingEngine $engine;
 
-    /**
-     * @var MatcherInterface
-     */
-    private $matcher;
+    private array $defaultOptions;
 
-    /**
-     * @var array
-     */
-    private $defaultOptions;
-
-    public function __construct(MatcherInterface $matcher, TemplatingHelper $templatingHelper, array $defaultOptions = [])
+    public function __construct(private MatcherInterface $matcher, TemplatingHelper $templatingHelper, array $defaultOptions = [])
     {
         $this->engine         = $templatingHelper->getTemplating();
-        $this->matcher        = $matcher;
         $this->defaultOptions = array_merge(
             [
                 'depth'             => null,

@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 class SourceController extends CommonFormController
 {
-    private $supportedSourceTypes = ['lists', 'forms'];
+    private array $supportedSourceTypes = ['lists', 'forms'];
 
     /**
      * @param int $objectId
@@ -17,6 +17,7 @@ class SourceController extends CommonFormController
      */
     public function newAction($objectId = 0)
     {
+        $modifiedSources = [];
         $success = 0;
         $valid   = $cancelled   = false;
         $method  = $this->request->getMethod();
@@ -223,10 +224,8 @@ class SourceController extends CommonFormController
      * Deletes the entity.
      *
      * @param $objectId
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function deleteAction($objectId)
+    public function deleteAction($objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         $session         = $this->get('session');
         $modifiedSources = $session->get('mautic.campaign.'.$objectId.'.leadsources.modified', []);

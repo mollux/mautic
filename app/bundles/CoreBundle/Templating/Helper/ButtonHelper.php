@@ -60,21 +60,6 @@ class ButtonHelper extends Helper
     private $location;
 
     /**
-     * @var \Symfony\Bundle\FrameworkBundle\Templating\DelegatingEngine
-     */
-    private $templating;
-
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $dispatcher;
-
-    /**
      * @var string|null
      */
     private $wrapOpeningTag;
@@ -97,35 +82,20 @@ class ButtonHelper extends Helper
     /**
      * @var array<array<string,mixed>>
      */
-    private $buttons = [];
+    private array $buttons = [];
 
-    /**
-     * @var int
-     */
-    private $buttonCount = 0;
+    private int $buttonCount = 0;
 
-    /**
-     * @var bool
-     */
-    private $buttonsFetched = false;
+    private bool $buttonsFetched = false;
 
-    /**
-     * @var Request
-     */
-    private $request;
+    private ?\Symfony\Component\HttpFoundation\Request $request = null;
 
     private $item;
 
-    /**
-     * @var int
-     */
-    private $listMarker = 3;
+    private int $listMarker = 3;
 
-    public function __construct(EngineInterface $templating, TranslatorInterface $translator, EventDispatcherInterface $dispatcher)
+    public function __construct(private EngineInterface $templating, private TranslatorInterface $translator, private EventDispatcherInterface $dispatcher)
     {
-        $this->templating = $templating;
-        $this->translator = $translator;
-        $this->dispatcher = $dispatcher;
     }
 
     /**
@@ -243,11 +213,9 @@ class ButtonHelper extends Helper
     }
 
     /**
-     * @param mixed $location
-     *
      * @return ButtonHelper
      */
-    public function setLocation($location)
+    public function setLocation(mixed $location)
     {
         $this->location = $location;
 

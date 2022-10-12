@@ -11,39 +11,22 @@ class CampaignBuilderEvent extends Event
 {
     use ComponentValidationTrait;
 
-    /**
-     * @var array
-     */
-    private $decisions = [];
+    private array $decisions = [];
 
-    /**
-     * @var array
-     */
-    private $conditions = [];
+    private array $conditions = [];
 
-    /**
-     * @var array
-     */
-    private $actions = [];
-
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
+    private array $actions = [];
 
     /**
      * Holds info if some property has been already sorted or not.
-     *
-     * @var array
      */
-    private $sortCache = [];
+    private array $sortCache = [];
 
     /**
      * CampaignBuilderEvent constructor.
      */
-    public function __construct(TranslatorInterface $translator)
+    public function __construct(private TranslatorInterface $translator)
     {
-        $this->translator = $translator;
     }
 
     /**
@@ -205,12 +188,10 @@ class CampaignBuilderEvent extends Event
         if (empty($this->sortCache[$property])) {
             uasort(
                 $this->{$property},
-                function ($a, $b) {
-                    return strnatcasecmp(
-                        $a['label'],
-                        $b['label']
-                    );
-                }
+                fn($a, $b) => strnatcasecmp(
+                    $a['label'],
+                    $b['label']
+                )
             );
             $this->sortCache[$property] = true;
         }

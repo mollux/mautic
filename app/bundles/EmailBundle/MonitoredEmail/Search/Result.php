@@ -7,20 +7,14 @@ use Mautic\LeadBundle\Entity\Lead;
 
 class Result
 {
-    /**
-     * @var Stat
-     */
-    private $stat;
+    private ?\Mautic\EmailBundle\Entity\Stat $stat = null;
 
     /**
      * @var Lead[]
      */
-    private $contacts = [];
+    private array $contacts = [];
 
-    /**
-     * @var string
-     */
-    private $email;
+    private ?string $email = null;
 
     /**
      * @return Stat
@@ -79,11 +73,9 @@ class Result
     }
 
     /**
-     * @param mixed $email
-     *
      * @return Result
      */
-    public function setEmail($email)
+    public function setEmail(mixed $email)
     {
         $this->email = $email;
 

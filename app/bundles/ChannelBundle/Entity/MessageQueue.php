@@ -20,100 +20,54 @@ class MessageQueue
     public const PRIORITY_NORMAL = 2;
     public const PRIORITY_HIGH   = 1;
 
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var string
-     */
-    private $channel;
+    private ?string $channel = null;
 
     private $channelId;
 
-    /**
-     * @var Event
-     */
-    private $event;
+    private ?\Mautic\CampaignBundle\Entity\Event $event = null;
 
-    /**
-     * @var \Mautic\LeadBundle\Entity\Lead
-     */
-    private $lead;
+    private ?\Mautic\LeadBundle\Entity\Lead $lead = null;
 
-    /**
-     * @var int
-     */
-    private $priority = 2;
+    private int $priority = 2;
 
-    /**
-     * @var int
-     */
-    private $maxAttempts = 3;
+    private int $maxAttempts = 3;
 
-    /**
-     * @var int
-     */
-    private $attempts = 0;
+    private int $attempts = 0;
 
-    /**
-     * @var bool
-     */
-    private $success = false;
+    private bool $success = false;
 
-    /**
-     * @var string
-     */
-    private $status = self::STATUS_PENDING;
+    private string $status = self::STATUS_PENDING;
 
-    /**
-     * @var \DateTime
-     **/
-    private $datePublished;
+    private ?\DateTime $datePublished = null;
 
-    /**
-     * @var \DateTime|null
-     */
-    private $scheduledDate;
+    private ?\DateTime $scheduledDate = null;
 
-    /**
-     * @var \DateTime|null
-     */
-    private $lastAttempt;
+    private ?\DateTime $lastAttempt = null;
 
-    /**
-     * @var \DateTime|null
-     */
-    private $dateSent;
+    private ?\DateTime $dateSent = null;
 
-    private $options = [];
+    private array $options = [];
 
     /**
      * Used by listeners to note if the message had been processed in bulk.
-     *
-     * @var bool
      */
-    private $processed = false;
+    private bool $processed = false;
 
     /**
      * Used by listeners to tell the event dispatcher the message needs to be retried in 15 minutes.
-     *
-     * @var bool
      */
-    private $failed = false;
+    private bool $failed = false;
 
-    /**
-     * @var bool
-     */
-    private $metadataUpdated = false;
+    private bool $metadataUpdated = false;
 
     public static function loadMetadata(ORM\ClassMetadata $metadata)
     {
         $builder = new ClassMetadataBuilder($metadata);
 
         $builder->setTable('message_queue')
-            ->setCustomRepositoryClass('Mautic\ChannelBundle\Entity\MessageQueueRepository')
+            ->setCustomRepositoryClass(\Mautic\ChannelBundle\Entity\MessageQueueRepository::class)
             ->addIndex(['status'], 'message_status_search')
             ->addIndex(['date_sent'], 'message_date_sent')
             ->addIndex(['scheduled_date'], 'message_scheduled_date')
@@ -126,7 +80,7 @@ class MessageQueue
         $builder->addField('channel', 'string');
         $builder->addNamedField('channelId', 'integer', 'channel_id');
 
-        $builder->createManyToOne('event', 'Mautic\CampaignBundle\Entity\Event')
+        $builder->createManyToOne('event', \Mautic\CampaignBundle\Entity\Event::class)
             ->addJoinColumn('event_id', 'id', true, false, 'CASCADE')
             ->build();
 
@@ -242,11 +196,9 @@ class MessageQueue
     }
 
     /**
-     * @param mixed $channelId
-     *
      * @return MessageQueue
      */
-    public function setChannelId($channelId)
+    public function setChannelId(mixed $channelId)
     {
         $this->channelId = $channelId;
 
@@ -372,10 +324,7 @@ class MessageQueue
         return $this->scheduledDate;
     }
 
-    /**
-     * @param mixed $scheduledDate
-     */
-    public function setScheduledDate($scheduledDate)
+    public function setScheduledDate(mixed $scheduledDate)
     {
         $this->scheduledDate = $scheduledDate;
     }
@@ -465,7 +414,7 @@ class MessageQueue
      */
     public function getMetadata()
     {
-        return (isset($this->options['metadata'])) ? $this->options['metadata'] : [];
+        return $this->options['metadata'] ?? [];
     }
 
     public function setMetadata(array $metadata = [])

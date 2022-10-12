@@ -43,39 +43,18 @@ class MauticCoreExtension extends Extension
             if (!empty($bundle['config']['services'])) {
                 $config = $bundle['config']['services'];
                 foreach ($config as $type => $services) {
-                    switch ($type) {
-                        case 'events':
-                            $defaultTag = 'kernel.event_subscriber';
-                            break;
-                        case 'forms':
-                            $defaultTag = 'form.type';
-                            break;
-                        case 'helpers':
-                            $defaultTag = 'templating.helper';
-                            break;
-                        case 'menus':
-                            $defaultTag = 'knp_menu.menu';
-                            break;
-                        case 'models':
-                            $defaultTag = 'mautic.model';
-                            break;
-                        case 'permissions':
-                            $defaultTag = 'mautic.permissions';
-                            break;
-                        case 'integrations':
-                            $defaultTag = 'mautic.integration';
-                            break;
-                        case 'command':
-                        case 'commands':
-                            $defaultTag = 'console.command';
-                            break;
-                        case 'controllers':
-                            $defaultTag = 'controller.service_arguments';
-                            break;
-                        default:
-                            $defaultTag = false;
-                            break;
-                    }
+                    $defaultTag = match ($type) {
+                        'events' => 'kernel.event_subscriber',
+                        'forms' => 'form.type',
+                        'helpers' => 'templating.helper',
+                        'menus' => 'knp_menu.menu',
+                        'models' => 'mautic.model',
+                        'permissions' => 'mautic.permissions',
+                        'integrations' => 'mautic.integration',
+                        'command', 'commands' => 'console.command',
+                        'controllers' => 'controller.service_arguments',
+                        default => false,
+                    };
 
                     foreach ($services as $name => $details) {
                         if (isset($serviceNames[$name])) {
@@ -93,13 +72,13 @@ class MauticCoreExtension extends Extension
                         if ('menus' == $type) {
                             $details = array_merge(
                                 [
-                                    'class'   => 'Knp\Menu\MenuItem',
+                                    'class'   => \Knp\Menu\MenuItem::class,
                                     'factory' => ['@mautic.menu.builder', $details['alias'].'Menu'],
                                 ],
                                 $details
                             );
 
-                            $menus[$details['alias']] = (isset($details['options'])) ? $details['options'] : [];
+                            $menus[$details['alias']] = $details['options'] ?? [];
                         }
 
                         // Set service alias
@@ -221,12 +200,12 @@ class MauticCoreExtension extends Extension
                              *
                              * Services must always be prefaced with an @ symbol (similar to "normal" config files)
                              */
-                            if (is_string($factory) && false !== strpos($factory, '::')) {
+                            if (is_string($factory) && str_contains($factory, '::')) {
                                 $factory = explode('::', $factory, 2);
                             }
 
                             // Check if the first item in the factory array is a service and if so fetch its reference
-                            if (is_array($factory) && 0 === strpos($factory[0], '@')) {
+                            if (is_array($factory) && str_starts_with($factory[0], '@')) {
                                 // Exclude the leading @ character in the service ID
                                 $factory[0] = new Reference(substr($factory[0], 1));
                             }
@@ -296,27 +275,27 @@ class MauticCoreExtension extends Extension
             $definitionArguments[] = '';
         } elseif (is_array($argument) || is_object($argument)) {
             foreach ($argument as &$v) {
-                if (0 === strpos($v, '%')) {
+                if (str_starts_with($v, '%')) {
                     $v = str_replace('%%', '%', $v);
                     $v = $container->getParameter(substr($v, 1, -1));
                 }
             }
             $definitionArguments[] = $argument;
-        } elseif (0 === strpos($argument, '%')) {
+        } elseif (str_starts_with($argument, '%')) {
             // Parameter
             $argument              = str_replace('%%', '%', $argument);
             $definitionArguments[] = $container->getParameter(substr($argument, 1, -1));
-        } elseif (is_bool($argument) || false !== strpos($argument, '\\')) {
+        } elseif (is_bool($argument) || str_contains($argument, '\\')) {
             // Parameter or Class
             $definitionArguments[] = $argument;
-        } elseif (0 === strpos($argument, '"')) {
+        } elseif (str_starts_with($argument, '"')) {
             // String
             $definitionArguments[] = substr($argument, 1, -1);
-        } elseif (0 === strpos($argument, '@=')) {
+        } elseif (str_starts_with($argument, '@=')) {
             // Expression
             $argument              = substr($argument, 2);
             $definitionArguments[] = new Expression($argument);
-        } elseif (0 === strpos($argument, '@')) {
+        } elseif (str_starts_with($argument, '@')) {
             // Service
             $argument              = substr($argument, 1);
             $definitionArguments[] = new Reference($argument);

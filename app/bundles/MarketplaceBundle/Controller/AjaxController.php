@@ -13,20 +13,13 @@ use Symfony\Component\HttpFoundation\Request;
 
 class AjaxController extends CommonAjaxController
 {
-    private ComposerHelper $composer;
-    private CacheHelper $cacheHelper;
-    private LoggerInterface $logger;
-
-    public function __construct(ComposerHelper $composer, CacheHelper $cacheHelper, LoggerInterface $logger)
+    public function __construct(private ComposerHelper $composer, private CacheHelper $cacheHelper, private LoggerInterface $logger)
     {
-        $this->composer    = $composer;
-        $this->cacheHelper = $cacheHelper;
-        $this->logger      = $logger;
     }
 
     public function installPackageAction(Request $request): JsonResponse
     {
-        $data   = json_decode($request->getContent(), true);
+        $data   = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
 
         if (empty($data['vendor']) || empty($data['package'])) {
             return $this->sendJsonResponse([
@@ -64,7 +57,7 @@ class AjaxController extends CommonAjaxController
 
     public function removePackageAction(Request $request): JsonResponse
     {
-        $data   = json_decode($request->getContent(), true);
+        $data   = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
 
         if (empty($data['vendor']) || empty($data['package'])) {
             return $this->sendJsonResponse([

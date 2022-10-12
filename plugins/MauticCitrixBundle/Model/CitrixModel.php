@@ -16,20 +16,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class CitrixModel extends FormModel
 {
-    /**
-     * @var LeadModel
-     */
-    protected $leadModel;
-
-    /**
-     * @var EventModel
-     */
-    protected $eventModel;
-
-    public function __construct(LeadModel $leadModel, EventModel $eventModel)
+    public function __construct(protected LeadModel $leadModel, protected EventModel $eventModel)
     {
-        $this->leadModel  = $leadModel;
-        $this->eventModel = $eventModel;
     }
 
     /**
@@ -49,7 +37,6 @@ class CitrixModel extends FormModel
      * @param string    $eventDesc
      * @param Lead      $lead
      * @param string    $eventType
-     * @param \DateTime $eventDate
      * @param string    $joinURL
      *
      * @throws \Doctrine\ORM\ORMInvalidArgumentException
@@ -123,9 +110,7 @@ class CitrixModel extends FormModel
         $emails = [];
         if (0 !== count($citrixEvents)) {
             $emails = array_map(
-                function (CitrixEvent $citrixEvent) {
-                    return $citrixEvent->getEmail();
-                },
+                fn(CitrixEvent $citrixEvent) => $citrixEvent->getEmail(),
                 $citrixEvents
             );
         }
@@ -151,9 +136,7 @@ class CitrixModel extends FormModel
         $items = $query->getResult();
 
         return array_map(
-            function ($item) {
-                return array_pop($item);
-            },
+            fn($item) => array_pop($item),
             $items
         );
     }
@@ -187,7 +170,7 @@ class CitrixModel extends FormModel
             $pos     = strpos($eventId, '_#');
             $eventId = substr($eventId, $pos);
             foreach ($result as $k => $v) {
-                if (false !== strpos($k, $eventId)) {
+                if (str_contains($k, $eventId)) {
                     unset($result[$k]);
                 }
             }
@@ -230,14 +213,10 @@ class CitrixModel extends FormModel
     }
 
     /**
-     * @param mixed                $product
-     * @param mixed                $productId
-     * @param mixed                $eventName
-     * @param mixed                $eventDesc
      * @param int                  $count
      * @param OutputInterface|null $output
      */
-    public function syncEvent($product, $productId, $eventName, $eventDesc, &$count = 0, $output = null)
+    public function syncEvent(mixed $product, mixed $productId, mixed $eventName, mixed $eventDesc, &$count = 0, $output = null)
     {
         $registrants      = CitrixHelper::getRegistrants($product, $productId);
         $knownRegistrants = $this->getEmailsByEvent(
@@ -246,7 +225,7 @@ class CitrixModel extends FormModel
             CitrixEventTypes::REGISTERED
         );
 
-        list($registrantsToAdd, $registrantsToDelete) = $this->filterEventContacts($registrants, $knownRegistrants);
+        [$registrantsToAdd, $registrantsToDelete] = $this->filterEventContacts($registrants, $knownRegistrants);
         $count += $this->batchAddAndRemove(
             $product,
             $eventName,
@@ -265,7 +244,7 @@ class CitrixModel extends FormModel
             CitrixEventTypes::ATTENDED
         );
 
-        list($attendeesToAdd, $attendeesToDelete) = $this->filterEventContacts($attendees, $knownAttendees);
+        [$attendeesToAdd, $attendeesToDelete] = $this->filterEventContacts($attendees, $knownAttendees);
         $count += $this->batchAddAndRemove(
             $product,
             $eventName,
@@ -283,7 +262,6 @@ class CitrixModel extends FormModel
      * @param string          $eventName
      * @param string          $eventDesc
      * @param string          $eventType
-     * @param OutputInterface $output
      *
      * @return int
      *
@@ -416,9 +394,7 @@ class CitrixModel extends FormModel
         $delete = array_diff($known, array_map('strtolower', array_keys($found)));
         $add    = array_filter(
             $found,
-            function ($key) use ($known) {
-                return !in_array(strtolower($key), $known);
-            },
+            fn($key) => !in_array(strtolower($key), $known),
             ARRAY_FILTER_USE_KEY
         );
 

@@ -74,7 +74,7 @@ class ConnectwiseApi extends CrmApi
             'page'     => $page,
             'pageSize' => ConnectwiseIntegration::PAGESIZE,
         ];
-        $conditions = isset($params['conditions']) ? $params['conditions'] : [];
+        $conditions = $params['conditions'] ?? [];
 
         if (isset($params['start'])) {
             $conditions[] = 'lastUpdated > ['.$params['start'].']';
@@ -212,7 +212,7 @@ class ConnectwiseApi extends CrmApi
                 $allRecords = array_merge($allRecords, $pagedRecords);
                 ++$page;
 
-                if (count($pagedRecords) < $pageSize) {
+                if ((is_countable($pagedRecords) ? count($pagedRecords) : 0) < $pageSize) {
                     // Received less than page size so we know there are no more records to fetch
                     break;
                 }

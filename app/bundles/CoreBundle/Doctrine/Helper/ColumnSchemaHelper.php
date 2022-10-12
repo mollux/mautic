@@ -13,19 +13,9 @@ use Mautic\CoreBundle\Exception\SchemaException;
 class ColumnSchemaHelper
 {
     /**
-     * @var Connection
-     */
-    protected $db;
-
-    /**
      * @var \Doctrine\DBAL\Schema\AbstractSchemaManager
      */
     protected $sm;
-
-    /**
-     * @var string
-     */
-    protected $prefix;
 
     /**
      * @var string
@@ -47,11 +37,9 @@ class ColumnSchemaHelper
     /**
      * @param string $prefix
      */
-    public function __construct(Connection $db, $prefix)
+    public function __construct(protected Connection $db, protected $prefix)
     {
-        $this->db     = $db;
         $this->sm     = $db->getSchemaManager();
-        $this->prefix = $prefix;
     }
 
     /**
@@ -157,8 +145,8 @@ class ColumnSchemaHelper
             $this->checkColumnExists($column['name'], true);
         }
 
-        $type    = (isset($column['type'])) ? $column['type'] : 'text';
-        $options = (isset($column['options'])) ? $column['options'] : [];
+        $type    = $column['type'] ?? 'text';
+        $options = $column['options'] ?? [];
 
         $this->toTable->addColumn($column['name'], $type, $options);
 
@@ -223,13 +211,11 @@ class ColumnSchemaHelper
      * Determine if a table exists.
      *
      * @param            $table
-     * @param bool|false $throwException
      *
      * @return bool
-     *
      * @throws SchemaException
      */
-    public function checkTableExists($table, $throwException = false)
+    public function checkTableExists($table, bool $throwException = false)
     {
         if (!$this->sm->tablesExist($table)) {
             if ($throwException) {

@@ -7,22 +7,13 @@ use Mautic\LeadBundle\Entity\Lead;
 
 class GroupExecutionDateDAO
 {
-    /**
-     * @var \DateTime
-     */
-    private $executionDate;
-
-    /**
-     * @var ArrayCollection
-     */
-    private $contacts;
+    private \Doctrine\Common\Collections\ArrayCollection $contacts;
 
     /**
      * GroupExecutionDateDAO constructor.
      */
-    public function __construct(\DateTime $executionDate)
+    public function __construct(private \DateTime $executionDate)
     {
-        $this->executionDate = $executionDate;
         $this->contacts      = new ArrayCollection();
     }
 

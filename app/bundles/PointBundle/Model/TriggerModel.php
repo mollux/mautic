@@ -22,45 +22,17 @@ class TriggerModel extends CommonFormModel
 {
     protected $triggers = [];
 
-    /**
-     * @var IpLookupHelper
-     */
-    protected $ipLookupHelper;
-
-    /**
-     * @var LeadModel
-     */
-    protected $leadModel;
-
-    /**
-     * @var TriggerEventModel
-     */
-    protected $pointTriggerEventModel;
-
-    /**
-     * @deprecated https://github.com/mautic/mautic/issues/8229
-     *
-     * @var MauticFactory
-     */
-    protected $mauticFactory;
-
-    /**
-     * @var ContactTracker
-     */
-    private $contactTracker;
-
     public function __construct(
-        IpLookupHelper $ipLookupHelper,
-        LeadModel $leadModel,
-        TriggerEventModel $pointTriggerEventModel,
-        MauticFactory $mauticFactory,
-        ContactTracker $contactTracker
-    ) {
-        $this->ipLookupHelper         = $ipLookupHelper;
-        $this->leadModel              = $leadModel;
-        $this->pointTriggerEventModel = $pointTriggerEventModel;
-        $this->mauticFactory          = $mauticFactory;
-        $this->contactTracker         = $contactTracker;
+        protected IpLookupHelper $ipLookupHelper,
+        protected LeadModel $leadModel,
+        protected TriggerEventModel $pointTriggerEventModel,
+        /**
+         * @deprecated https://github.com/mautic/mautic/issues/8229
+         */
+        protected MauticFactory $mauticFactory,
+        private ContactTracker $contactTracker
+    )
+    {
     }
 
     /**
@@ -372,7 +344,7 @@ class TriggerModel extends CommonFormModel
 
         if (is_array($settings['callback'])) {
             $reflection = new \ReflectionMethod($settings['callback'][0], $settings['callback'][1]);
-        } elseif (false !== strpos($settings['callback'], '::')) {
+        } elseif (str_contains($settings['callback'], '::')) {
             $parts      = explode('::', $settings['callback']);
             $reflection = new \ReflectionMethod($parts[0], $parts[1]);
         } else {
@@ -427,8 +399,8 @@ class TriggerModel extends CommonFormModel
             if (!empty($persist)) {
                 $this->getEventRepository()->saveEntities($persist);
 
-                $this->em->clear('Mautic\PointBundle\Entity\LeadTriggerLog');
-                $this->em->clear('Mautic\PointBundle\Entity\TriggerEvent');
+                $this->em->clear(\Mautic\PointBundle\Entity\LeadTriggerLog::class);
+                $this->em->clear(\Mautic\PointBundle\Entity\TriggerEvent::class);
             }
         }
     }

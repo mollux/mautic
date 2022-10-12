@@ -24,45 +24,17 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class PointModel extends CommonFormModel
 {
-    /**
-     * @var Session
-     */
-    protected $session;
-
-    /**
-     * @var IpLookupHelper
-     */
-    protected $ipLookupHelper;
-
-    /**
-     * @var LeadModel
-     */
-    protected $leadModel;
-
-    /**
-     * @deprecated https://github.com/mautic/mautic/issues/8229
-     *
-     * @var MauticFactory
-     */
-    protected $mauticFactory;
-
-    /**
-     * @var ContactTracker
-     */
-    private $contactTracker;
-
     public function __construct(
-        Session $session,
-        IpLookupHelper $ipLookupHelper,
-        LeadModel $leadModel,
-        MauticFactory $mauticFactory,
-        ContactTracker $contactTracker
-    ) {
-        $this->session            = $session;
-        $this->ipLookupHelper     = $ipLookupHelper;
-        $this->leadModel          = $leadModel;
-        $this->mauticFactory      = $mauticFactory;
-        $this->contactTracker     = $contactTracker;
+        protected Session $session,
+        protected IpLookupHelper $ipLookupHelper,
+        protected LeadModel $leadModel,
+        /**
+         * @deprecated https://github.com/mautic/mautic/issues/8229
+         */
+        protected MauticFactory $mauticFactory,
+        private ContactTracker $contactTracker
+    )
+    {
     }
 
     /**
@@ -189,12 +161,10 @@ class PointModel extends CommonFormModel
      * @param       $type
      * @param mixed $eventDetails     passthrough from function triggering action to the callback function
      * @param mixed $typeId           Something unique to the triggering event to prevent  unnecessary duplicate calls
-     * @param Lead  $lead
      * @param bool  $allowUserRequest
-     *
      * @throws \ReflectionException
      */
-    public function triggerAction($type, $eventDetails = null, $typeId = null, Lead $lead = null, $allowUserRequest = false)
+    public function triggerAction($type, mixed $eventDetails = null, mixed $typeId = null, Lead $lead = null, $allowUserRequest = false)
     {
         //only trigger actions for not logged Mautic users
         if (!$this->security->isAnonymous() && !$allowUserRequest) {
@@ -257,13 +227,12 @@ class PointModel extends CommonFormModel
                 'eventDetails' => $eventDetails,
             ];
 
-            $callback = (isset($settings['callback'])) ? $settings['callback'] :
-                ['\\Mautic\\PointBundle\\Helper\\EventHelper', 'engagePointAction'];
+            $callback = $settings['callback'] ?? ['\\' . \Mautic\PointBundle\Helper\EventHelper::class, 'engagePointAction'];
 
             if (is_callable($callback)) {
                 if (is_array($callback)) {
                     $reflection = new \ReflectionMethod($callback[0], $callback[1]);
-                } elseif (false !== strpos($callback, '::')) {
+                } elseif (str_contains($callback, '::')) {
                     $parts      = explode('::', $callback);
                     $reflection = new \ReflectionMethod($parts[0], $parts[1]);
                 } else {
@@ -310,7 +279,7 @@ class PointModel extends CommonFormModel
         if (!empty($persist)) {
             $this->getRepository()->saveEntities($persist);
             // Detach logs to reserve memory
-            $this->em->clear('Mautic\PointBundle\Entity\LeadPointLog');
+            $this->em->clear(\Mautic\PointBundle\Entity\LeadPointLog::class);
         }
 
         if (!empty($lead->getpointchanges())) {

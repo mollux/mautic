@@ -10,10 +10,8 @@ use Mautic\LeadBundle\Entity\Lead;
 interface EmailReplyRepositoryInterface
 {
     /**
-     * @param int|Lead $leadId
      * @param array    $options
-     *
      * @return array
      */
-    public function getByLeadIdForTimeline($leadId, $options);
+    public function getByLeadIdForTimeline(int|\Mautic\LeadBundle\Entity\Lead $leadId, $options);
 }

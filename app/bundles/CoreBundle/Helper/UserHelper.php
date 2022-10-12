@@ -11,16 +11,10 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 class UserHelper
 {
     /**
-     * @var TokenStorageInterface
-     */
-    protected $tokenStorage;
-
-    /**
      * UserHelper constructor.
      */
-    public function __construct(TokenStorageInterface $tokenStorage)
+    public function __construct(protected TokenStorageInterface $tokenStorage)
     {
-        $this->tokenStorage = $tokenStorage;
     }
 
     /**

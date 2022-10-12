@@ -16,20 +16,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class LeadSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var CitrixModel
-     */
-    private $model;
-
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    public function __construct(CitrixModel $model, TranslatorInterface $translator)
+    public function __construct(private CitrixModel $model, private TranslatorInterface $translator)
     {
-        $this->model      = $model;
-        $this->translator = $translator;
     }
 
     /**
@@ -124,7 +112,7 @@ class LeadSubscriber implements EventSubscriberInterface
      */
     public function onListChoicesGenerate(LeadListFiltersChoicesEvent $event)
     {
-        if (false === strpos($event->getRoute(), 'mautic_segment_action')) {
+        if (!str_contains($event->getRoute(), 'mautic_segment_action')) {
             return;
         }
 
@@ -239,9 +227,7 @@ class LeadSubscriber implements EventSubscriberInterface
                     $eventNames = [$eventNames];
                 }
                 $isAnyEvent = in_array('any', $eventNames, true);
-                $eventNames = array_map(function ($v) use ($q) {
-                    return $q->expr()->literal($v);
-                }, $eventNames);
+                $eventNames = array_map(fn($v) => $q->expr()->literal($v), $eventNames);
                 $subQueriesSQL = [];
 
                 $eventTypes = [CitrixEventTypes::REGISTERED, CitrixEventTypes::ATTENDED];

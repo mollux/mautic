@@ -7,21 +7,15 @@ class DayStat implements StatInterface
     /**
      * @var HourStat[]
      */
-    private $stats = [];
-
-    /**
-     * @var string
-     */
-    private $day;
+    private array $stats = [];
 
     /**
      * DayStat constructor.
      *
      * @param string $day "2019-11-07" format
      */
-    public function __construct($day)
+    public function __construct(private $day)
     {
-        $this->day = $day;
     }
 
     /**

@@ -9,126 +9,66 @@ use Mautic\LeadBundle\Entity\Lead;
 
 class VideoHit
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var string
-     */
-    private $guid;
+    private ?string $guid = null;
 
-    /**
-     * @var \DateTime
-     */
-    private $dateHit;
+    private ?\DateTime $dateHit = null;
 
-    /**
-     * @var \DateTime
-     */
-    private $dateLeft;
+    private ?\DateTime $dateLeft = null;
 
     /**
      * @var int
      */
     private $timeWatched;
 
-    /**
-     * @var int
-     */
-    private $duration;
+    private ?int $duration = null;
 
-    /**
-     * @var Redirect
-     */
-    private $redirect;
+    private ?\Mautic\PageBundle\Entity\Redirect $redirect = null;
 
-    /**
-     * @var \Mautic\LeadBundle\Entity\Lead
-     */
-    private $lead;
+    private ?\Mautic\LeadBundle\Entity\Lead $lead = null;
 
-    /**
-     * @var \Mautic\CoreBundle\Entity\IpAddress
-     */
-    private $ipAddress;
+    private ?\Mautic\CoreBundle\Entity\IpAddress $ipAddress = null;
 
-    /**
-     * @var string
-     */
-    private $country;
+    private ?string $country = null;
 
-    /**
-     * @var string
-     */
-    private $region;
+    private ?string $region = null;
 
-    /**
-     * @var string
-     */
-    private $city;
+    private ?string $city = null;
 
-    /**
-     * @var string
-     */
-    private $isp;
+    private ?string $isp = null;
 
-    /**
-     * @var string
-     */
-    private $organization;
+    private ?string $organization = null;
 
-    /**
-     * @var int
-     */
-    private $code;
+    private ?int $code = null;
 
     private $referer;
 
     private $url;
 
-    /**
-     * @var string
-     */
-    private $userAgent;
+    private ?string $userAgent = null;
 
-    /**
-     * @var string
-     */
-    private $remoteHost;
+    private ?string $remoteHost = null;
 
-    /**
-     * @var string
-     */
-    private $pageLanguage;
+    private ?string $pageLanguage = null;
 
     /**
      * @var array<string>
      */
-    private $browserLanguages = [];
+    private array $browserLanguages = [];
 
-    /**
-     * @var string
-     */
-    private $channel;
+    private ?string $channel = null;
 
-    /**
-     * @var int
-     */
-    private $channelId;
+    private ?int $channelId = null;
 
-    /**
-     * @var array
-     */
-    private $query = [];
+    private array $query = [];
 
     public static function loadMetadata(ORM\ClassMetadata $metadata)
     {
         $builder = new ClassMetadataBuilder($metadata);
 
         $builder->setTable('video_hits')
-            ->setCustomRepositoryClass('Mautic\PageBundle\Entity\VideoHitRepository')
+            ->setCustomRepositoryClass(\Mautic\PageBundle\Entity\VideoHitRepository::class)
             ->addIndex(['date_hit'], 'video_date_hit')
             ->addIndex(['channel', 'channel_id'], 'video_channel_search')
             ->addIndex(['guid', 'lead_id'], 'video_guid_lead_search');

@@ -15,17 +15,13 @@ class ReportBuilderEvent extends AbstractReportEvent
 {
     /**
      * Container with registered tables and columns.
-     *
-     * @var array
      */
-    private $tableArray = [];
+    private array $tableArray = [];
 
     /**
      * Supported graphs.
-     *
-     * @var array
      */
-    private $supportedGraphs = [
+    private array $supportedGraphs = [
         'table',
         'bar',
         'pie',
@@ -33,43 +29,22 @@ class ReportBuilderEvent extends AbstractReportEvent
     ];
 
     /**
-     * @var ChannelListHelper
-     */
-    private $channelListHelper;
-
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    /**
      * Container with registered graphs.
-     *
-     * @var array
      */
-    private $graphArray = [];
-
-    /**
-     * List of published array of lead fields.
-     *
-     * @var array
-     */
-    private $leadFields = [];
-
-    private $reportHelper;
+    private array $graphArray = [];
 
     /**
      * ReportBuilderEvent constructor.
      *
      * @param string $context
+     * @param mixed[] $leadFields
      */
-    public function __construct(TranslatorInterface $translator, ChannelListHelper $channelListHelper, $context, $leadFields, ReportHelper $reportHelper)
+    public function __construct(private TranslatorInterface $translator, private ChannelListHelper $channelListHelper, $context, /**
+     * List of published array of lead fields.
+     */
+    private $leadFields, private ReportHelper $reportHelper)
     {
         $this->context           = $context;
-        $this->translator        = $translator;
-        $this->channelListHelper = $channelListHelper;
-        $this->leadFields        = $leadFields;
-        $this->reportHelper      = $reportHelper;
     }
 
     /**
@@ -100,9 +75,7 @@ class ReportBuilderEvent extends AbstractReportEvent
 
         uasort(
             $data['columns'],
-            function ($a, $b) {
-                return strnatcmp($a['label'], $b['label']);
-            }
+            fn($a, $b) => strnatcmp($a['label'], $b['label'])
         );
 
         if (isset($data['filters'])) {
@@ -118,9 +91,7 @@ class ReportBuilderEvent extends AbstractReportEvent
 
             uasort(
                 $data['filters'],
-                function ($a, $b) {
-                    return strnatcmp($a['label'], $b['label']);
-                }
+                fn($a, $b) => strnatcmp($a['label'], $b['label'])
             );
         }
 

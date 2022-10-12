@@ -14,16 +14,10 @@ use Psr\Http\Client\ClientInterface;
 
 class TransifexFactory
 {
-    private $client;
-    private $coreParametersHelper;
     private $transifex;
 
-    public function __construct(
-        ClientInterface $client,
-        CoreParametersHelper $coreParametersHelper
-    ) {
-        $this->client               = $client;
-        $this->coreParametersHelper = $coreParametersHelper;
+    public function __construct(private ClientInterface $client, private CoreParametersHelper $coreParametersHelper)
+    {
     }
 
     public function getTransifex(): TransifexInterface

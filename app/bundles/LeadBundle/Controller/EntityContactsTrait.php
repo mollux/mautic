@@ -8,7 +8,6 @@ use Mautic\LeadBundle\Entity\LeadRepository;
 trait EntityContactsTrait
 {
     /**
-     * @param string|int              $entityId
      * @param int                     $page
      * @param string                  $permission
      * @param string                  $sessionVar
@@ -25,11 +24,10 @@ trait EntityContactsTrait
      * @param int|null                $count              optional $count if already known to avoid an extra query
      * @param \DateTimeInterface|null $dateFrom           optionally limit to leads added between From and To dates
      * @param \DateTimeInterface|null $dateTo             optionally limit to leads added between From and To dates
-     *
      * @return mixed
      */
     protected function generateContactsGrid(
-        $entityId,
+        string|int $entityId,
         $page,
         $permission,
         $sessionVar,

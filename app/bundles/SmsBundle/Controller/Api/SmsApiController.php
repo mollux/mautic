@@ -24,7 +24,7 @@ class SmsApiController extends CommonApiController
     public function initialize(ControllerEvent $event)
     {
         $this->model           = $this->getModel('sms');
-        $this->entityClass     = 'Mautic\SmsBundle\Entity\Sms';
+        $this->entityClass     = \Mautic\SmsBundle\Entity\Sms::class;
         $this->entityNameOne   = 'sms';
         $this->entityNameMulti = 'smses';
 
@@ -37,7 +37,7 @@ class SmsApiController extends CommonApiController
      *
      * @return JsonResponse|Response
      */
-    public function sendAction($id, $contactId)
+    public function sendAction($id, $contactId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         if (!$this->get('mautic.sms.transport_chain')->getEnabledTransports()) {
             return new JsonResponse(json_encode(['error' => ['message' => 'SMS transport is disabled.', 'code' => Response::HTTP_EXPECTATION_FAILED]]));

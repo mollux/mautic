@@ -12,7 +12,7 @@ class EntityResultHelper
      *
      * @return array<mixed>|\ArrayObject<int,mixed>
      */
-    public function getArray($results, $callback = null)
+    public function getArray(array|\Doctrine\ORM\Tools\Pagination\Paginator $results, $callback = null): array|\ArrayObject
     {
         $entities = [];
 
@@ -35,11 +35,9 @@ class EntityResultHelper
     }
 
     /**
-     * @param mixed $entityRow
-     *
      * @return mixed
      */
-    private function getEntityData($entityRow)
+    private function getEntityData(mixed $entityRow)
     {
         if (is_array($entityRow) && isset($entityRow[0])) {
             return $this->getDataForArray($entityRow);
@@ -85,7 +83,7 @@ class EntityResultHelper
      *
      * @return bool
      */
-    private function isKeyedById($results)
+    private function isKeyedById(array|\Doctrine\ORM\Tools\Pagination\Paginator $results)
     {
         return !$results instanceof Paginator;
     }

@@ -15,8 +15,6 @@ class Clearbit_Base
     protected $_baseUri     = '';
     protected $_resourceUri = '';
     protected $_version     = 'v2';
-
-    protected $_apiKey;
     protected $_webhookId;
 
     public $response_obj;
@@ -51,11 +49,10 @@ class Clearbit_Base
      * The base constructor Sets the API key available from here:
      * https://dashboard.clearbit.com/keys.
      *
-     * @param string $api_key
+     * @param string $_apiKey
      */
-    public function __construct($api_key)
+    public function __construct(protected $_apiKey)
     {
-        $this->_apiKey        = $api_key;
         $this->_next_req_time = new \DateTime('@0');
     }
 
@@ -97,7 +94,7 @@ class Clearbit_Base
         //execute request
         $resp = curl_exec($connection);
 
-        list($response_headers, $this->response_json) = explode("\r\n\r\n", $resp, 2);
+        [$response_headers, $this->response_json] = explode("\r\n\r\n", $resp, 2);
         // $response_headers now has a string of the HTTP headers
         // $response_json is the body of the HTTP response
 
@@ -107,13 +104,13 @@ class Clearbit_Base
             if (0 === $i) {
                 $headers['http_code'] = $line;
             } else {
-                list($key, $value) = explode(': ', $line);
+                [$key, $value] = explode(': ', $line);
                 $headers[$key]     = $value;
             }
         }
 
         $this->response_code = curl_getinfo($connection, CURLINFO_HTTP_CODE);
-        $this->response_obj  = json_decode($this->response_json);
+        $this->response_obj  = json_decode($this->response_json, null, 512, JSON_THROW_ON_ERROR);
 
         if (!in_array($this->response_code, [200, 201, 202], true)) {
             throw new \Exception($this->response_obj->error->message);

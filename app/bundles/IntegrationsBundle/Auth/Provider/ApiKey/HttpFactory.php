@@ -31,12 +31,9 @@ class HttpFactory implements AuthProviderInterface
      *
      * @var Client[]
      */
-    private $initializedClients = [];
+    private array $initializedClients = [];
 
-    /**
-     * @var HeaderCredentialsInterface|ParameterCredentialsInterface
-     */
-    private $credentials;
+    private \Mautic\IntegrationsBundle\Auth\Provider\ApiKey\Credentials\HeaderCredentialsInterface|\Mautic\IntegrationsBundle\Auth\Provider\ApiKey\Credentials\ParameterCredentialsInterface|null $credentials = null;
 
     public function getAuthType(): string
     {
@@ -85,7 +82,7 @@ class HttpFactory implements AuthProviderInterface
     /**
      * @param HeaderCredentialsInterface|ParameterCredentialsInterface|AuthCredentialsInterface $credentials
      */
-    private function credentialsAreConfigured(AuthCredentialsInterface $credentials): bool
+    private function credentialsAreConfigured(\Mautic\IntegrationsBundle\Auth\Provider\ApiKey\Credentials\HeaderCredentialsInterface|\Mautic\IntegrationsBundle\Auth\Provider\ApiKey\Credentials\ParameterCredentialsInterface|\Mautic\IntegrationsBundle\Auth\Provider\AuthCredentialsInterface $credentials): bool
     {
         return !empty($credentials->getApiKey());
     }
@@ -106,11 +103,9 @@ class HttpFactory implements AuthProviderInterface
 
         $handler->unshift(
             Middleware::mapRequest(
-                function (Request $request) {
-                    return $request->withUri(
-                        Uri::withQueryValue($request->getUri(), $this->credentials->getKeyName(), $this->credentials->getApiKey())
-                    );
-                }
+                fn(Request $request) => $request->withUri(
+                    Uri::withQueryValue($request->getUri(), $this->credentials->getKeyName(), $this->credentials->getApiKey())
+                )
             )
         );
 

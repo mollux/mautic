@@ -10,47 +10,26 @@ use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
  */
 class CompanyChangeLog
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var Lead
-     */
-    private $lead;
+    private ?\Mautic\LeadBundle\Entity\Lead $lead = null;
 
-    /**
-     * @var string
-     */
-    private $type;
+    private ?string $type = null;
 
-    /**
-     * @var string
-     */
-    private $eventName;
+    private ?string $eventName = null;
 
-    /**
-     * @var string
-     */
-    private $actionName;
+    private ?string $actionName = null;
 
-    /**
-     * @var Company
-     */
-    private $company;
+    private ?\Mautic\LeadBundle\Entity\Company $company = null;
 
-    /**
-     * @var \DateTime
-     */
-    private $dateAdded;
+    private ?\DateTime $dateAdded = null;
 
     public static function loadMetadata(ORM\ClassMetadata $metadata)
     {
         $builder = new ClassMetadataBuilder($metadata);
 
         $builder->setTable('lead_companies_change_log')
-            ->setCustomRepositoryClass('Mautic\LeadBundle\Entity\CompanyChangeLogRepository')
+            ->setCustomRepositoryClass(\Mautic\LeadBundle\Entity\CompanyChangeLogRepository::class)
             ->addIndex(['date_added'], 'company_date_added');
 
         $builder->addId();

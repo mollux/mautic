@@ -14,45 +14,24 @@ use Mautic\PageBundle\Entity\Page;
  */
 class Submission
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var Form
-     **/
-    private $form;
+    private ?\Mautic\FormBundle\Entity\Form $form = null;
 
-    /**
-     * @var \Mautic\CoreBundle\Entity\IpAddress
-     */
-    private $ipAddress;
+    private ?\Mautic\CoreBundle\Entity\IpAddress $ipAddress = null;
 
-    /**
-     * @var \Mautic\LeadBundle\Entity\Lead
-     */
-    private $lead;
+    private ?\Mautic\LeadBundle\Entity\Lead $lead = null;
 
     /**
      * @var string
      */
     private $trackingId;
 
-    /**
-     * @var \DateTime
-     */
-    private $dateSubmitted;
+    private ?\DateTime $dateSubmitted = null;
 
-    /**
-     * @var string
-     */
-    private $referer;
+    private ?string $referer = null;
 
-    /**
-     * @var \Mautic\PageBundle\Entity\Page
-     */
-    private $page;
+    private ?\Mautic\PageBundle\Entity\Page $page = null;
 
     /**
      * @var array
@@ -64,7 +43,7 @@ class Submission
         $builder = new ClassMetadataBuilder($metadata);
 
         $builder->setTable('form_submissions')
-            ->setCustomRepositoryClass('Mautic\FormBundle\Entity\SubmissionRepository')
+            ->setCustomRepositoryClass(\Mautic\FormBundle\Entity\SubmissionRepository::class)
             ->addIndex(['tracking_id'], 'form_submission_tracking_search')
             ->addIndex(['date_submitted'], 'form_date_submitted');
 
@@ -90,7 +69,7 @@ class Submission
 
         $builder->addField('referer', 'text');
 
-        $builder->createManyToOne('page', 'Mautic\PageBundle\Entity\Page')
+        $builder->createManyToOne('page', \Mautic\PageBundle\Entity\Page::class)
             ->addJoinColumn('page_id', 'id', true, false, 'SET NULL')
             ->fetchExtraLazy()
             ->build();
@@ -216,7 +195,6 @@ class Submission
     /**
      * Set ipAddress.
      *
-     * @param \Mautic\CoreBundle\Entity\IpAddress $ipAddress
      *
      * @return Submission
      */
@@ -264,7 +242,6 @@ class Submission
     /**
      * Set page.
      *
-     * @param \Mautic\PageBundle\Entity\Page $page
      *
      * @return Submission
      */

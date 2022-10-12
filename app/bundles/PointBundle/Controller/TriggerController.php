@@ -16,7 +16,7 @@ class TriggerController extends FormController
      *
      * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function indexAction($page = 1)
+    public function indexAction($page = 1): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         //set some permissions
         $permissions = $this->get('mautic.security')->isGranted([
@@ -99,7 +99,7 @@ class TriggerController extends FormController
      *
      * @return array|JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function viewAction($objectId)
+    public function viewAction($objectId): array|\Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         $entity = $this->getModel('point.trigger')->getEntity($objectId);
 
@@ -163,7 +163,7 @@ class TriggerController extends FormController
      *
      * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function newAction($entity = null)
+    public function newAction($entity = null): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         /** @var \Mautic\PointBundle\Model\TriggerModel $model */
         $model = $this->getModel('point.trigger');
@@ -283,7 +283,7 @@ class TriggerController extends FormController
      *
      * @return JsonResponse|Response
      */
-    public function editAction($objectId, $ignorePost = false)
+    public function editAction($objectId, $ignorePost = false): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         /** @var \Mautic\PointBundle\Model\TriggerModel $model */
         $model      = $this->getModel('point.trigger');
@@ -355,7 +355,7 @@ class TriggerController extends FormController
                         $model->saveEntity($entity, $form->get('buttons')->get('save')->isClicked());
 
                         //delete entities
-                        if (count($deletedEvents)) {
+                        if (is_countable($deletedEvents) ? count($deletedEvents) : 0) {
                             $this->getModel('point.triggerevent')->deleteEntities($deletedEvents);
                         }
 
@@ -446,7 +446,7 @@ class TriggerController extends FormController
      *
      * @return array|JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function cloneAction($objectId)
+    public function cloneAction($objectId): array|\Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         $model  = $this->getModel('point.trigger');
         $entity = $model->getEntity($objectId);
@@ -467,10 +467,8 @@ class TriggerController extends FormController
      * Deletes the entity.
      *
      * @param $objectId
-     *
-     * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function deleteAction($objectId)
+    public function deleteAction($objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         $page      = $this->get('session')->get('mautic.point.trigger.page', 1);
         $returnUrl = $this->generateUrl('mautic_pointtrigger_index', ['page' => $page]);
@@ -524,10 +522,8 @@ class TriggerController extends FormController
 
     /**
      * Deletes a group of entities.
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function batchDeleteAction()
+    public function batchDeleteAction(): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         $page      = $this->get('session')->get('mautic.point.trigger.page', 1);
         $returnUrl = $this->generateUrl('mautic_pointtrigger_index', ['page' => $page]);
@@ -545,7 +541,7 @@ class TriggerController extends FormController
 
         if ('POST' == $this->request->getMethod()) {
             $model     = $this->getModel('point.trigger');
-            $ids       = json_decode($this->request->query->get('ids', '{}'));
+            $ids       = json_decode($this->request->query->get('ids', '{}'), null, 512, JSON_THROW_ON_ERROR);
             $deleteIds = [];
 
             // Loop over the IDs to perform access checks pre-delete
@@ -575,7 +571,7 @@ class TriggerController extends FormController
                     'type'    => 'notice',
                     'msg'     => 'mautic.point.trigger.notice.batch_deleted',
                     'msgVars' => [
-                        '%count%' => count($entities),
+                        '%count%' => is_countable($entities) ? count($entities) : 0,
                     ],
                 ];
             }

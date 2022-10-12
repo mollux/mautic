@@ -6,15 +6,9 @@ use Mautic\EmailBundle\Entity\Stat;
 
 class Reference
 {
-    /**
-     * @var int
-     */
-    private $emailId;
+    private int $emailId;
 
-    /**
-     * @var int
-     */
-    private $leadId = 0;
+    private int $leadId = 0;
 
     /**
      * @var int|null

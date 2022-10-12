@@ -27,50 +27,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class BuilderSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var CoreParametersHelper
-     */
-    private $coreParametersHelper;
-
-    /**
-     * @var EmailModel
-     */
-    private $emailModel;
-
-    /**
-     * @var TrackableModel
-     */
-    private $pageTrackableModel;
-
-    /**
-     * @var RedirectModel
-     */
-    private $pageRedirectModel;
-
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    /**
-     * @var EntityManager
-     */
-    private $entityManager;
-
-    public function __construct(
-        CoreParametersHelper $coreParametersHelper,
-        EmailModel $emailModel,
-        TrackableModel $trackableModel,
-        RedirectModel $redirectModel,
-        TranslatorInterface $translator,
-        EntityManager $entityManager
-    ) {
-        $this->coreParametersHelper = $coreParametersHelper;
-        $this->emailModel           = $emailModel;
-        $this->pageTrackableModel   = $trackableModel;
-        $this->pageRedirectModel    = $redirectModel;
-        $this->translator           = $translator;
-        $this->entityManager        = $entityManager;
+    public function __construct(private CoreParametersHelper $coreParametersHelper, private EmailModel $emailModel, private TrackableModel $pageTrackableModel, private RedirectModel $pageRedirectModel, private TranslatorInterface $translator, private EntityManager $entityManager)
+    {
     }
 
     /**
@@ -327,6 +285,7 @@ class BuilderSubscriber implements EventSubscriberInterface
      */
     public function convertUrlsToTokens(EmailSendEvent $event)
     {
+        $emailId = null;
         if ($event->isInternalSend() || $this->coreParametersHelper->get('disable_trackable_urls')) {
             // Don't convert urls
             return;

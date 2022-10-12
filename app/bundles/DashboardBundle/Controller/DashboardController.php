@@ -27,7 +27,7 @@ class DashboardController extends AbstractFormController
      *
      * @return JsonResponse|Response
      */
-    public function indexAction()
+    public function indexAction(): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         /** @var DashboardModel $model */
         $model   = $this->getModel('dashboard');
@@ -93,7 +93,7 @@ class DashboardController extends AbstractFormController
     /**
      * @return JsonResponse|Response
      */
-    public function widgetAction($widgetId)
+    public function widgetAction($widgetId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         if (!$this->request->isXmlHttpRequest()) {
             throw new NotFoundHttpException('Not found.');
@@ -127,8 +127,9 @@ class DashboardController extends AbstractFormController
      *
      * @return JsonResponse|RedirectResponse|Response
      */
-    public function newAction()
+    public function newAction(): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
+        $cancelled = null;
         //retrieve the entity
         $widget = new Widget();
 
@@ -192,8 +193,9 @@ class DashboardController extends AbstractFormController
      *
      * @return JsonResponse|RedirectResponse|Response
      */
-    public function editAction($objectId)
+    public function editAction($objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
+        $cancelled = null;
         $model  = $this->getModel('dashboard');
         $widget = $model->getEntity($objectId);
         $action = $this->generateUrl('mautic_dashboard_action', ['objectAction' => 'edit', 'objectId' => $objectId]);
@@ -251,10 +253,8 @@ class DashboardController extends AbstractFormController
      * Deletes entity if exists.
      *
      * @param int $objectId
-     *
-     * @return JsonResponse|RedirectResponse
      */
-    public function deleteAction($objectId)
+    public function deleteAction($objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         /** @var Request $request */
         $request = $this->get('request_stack')->getCurrentRequest();
@@ -370,7 +370,7 @@ class DashboardController extends AbstractFormController
      *
      * @return JsonResponse|Response
      */
-    public function deleteDashboardFileAction()
+    public function deleteDashboardFileAction(): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         $file = $this->request->get('file');
 
@@ -395,7 +395,7 @@ class DashboardController extends AbstractFormController
      *
      * @return JsonResponse|Response
      */
-    public function applyDashboardFileAction($file = null)
+    public function applyDashboardFileAction($file = null): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         if (!$file) {
             $file = $this->request->get('file');
@@ -414,7 +414,7 @@ class DashboardController extends AbstractFormController
             return $this->redirectToRoute('mautic_dashboard_action', ['objectAction' => 'import']);
         }
 
-        $widgets = json_decode(file_get_contents($path), true);
+        $widgets = json_decode(file_get_contents($path), true, 512, JSON_THROW_ON_ERROR);
         if (isset($widgets['widgets'])) {
             $widgets = $widgets['widgets'];
         }
@@ -435,7 +435,7 @@ class DashboardController extends AbstractFormController
 
             $filter = $model->getDefaultFilter();
             foreach ($widgets as $widget) {
-                $widget = $model->populateWidgetEntity($widget, $filter);
+                $widget = $model->populateWidgetEntity($widget);
                 $model->saveEntity($widget);
             }
         }
@@ -446,7 +446,7 @@ class DashboardController extends AbstractFormController
     /**
      * @return JsonResponse|Response
      */
-    public function importAction()
+    public function importAction(): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         $preview = $this->request->get('preview');
 
@@ -508,23 +508,23 @@ class DashboardController extends AbstractFormController
                 $dashboard = str_replace('.json', '', $dashboard);
                 $config    = json_decode(
                     file_get_contents($directories[$type].'/'.$dirDashboardFiles[$dashId]),
-                    true
+                    true,
+                    512,
+                    JSON_THROW_ON_ERROR
                 );
 
                 // Check for name, description, etc
                 $tempDashboard[$dashboard] = [
                     'type'        => $type,
-                    'name'        => (isset($config['name'])) ? $config['name'] : $dashboard,
-                    'description' => (isset($config['description'])) ? $config['description'] : '',
-                    'widgets'     => (isset($config['widgets'])) ? $config['widgets'] : $config,
+                    'name'        => $config['name'] ?? $dashboard,
+                    'description' => $config['description'] ?? '',
+                    'widgets'     => $config['widgets'] ?? $config,
                 ];
             }
 
             // Sort by name
             uasort($tempDashboard,
-                function ($a, $b) {
-                    return strnatcasecmp($a['name'], $b['name']);
-                }
+                fn($a, $b) => strnatcasecmp($a['name'], $b['name'])
             );
 
             $dashboards = array_merge(

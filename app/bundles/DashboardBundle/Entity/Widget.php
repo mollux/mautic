@@ -15,70 +15,40 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
  */
 class Widget extends FormEntity
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
     /**
      * @var string
      */
     private $name;
 
-    /**
-     * @var int
-     */
-    private $width;
+    private ?int $width = null;
 
-    /**
-     * @var int
-     */
-    private $height;
+    private ?int $height = null;
 
-    /**
-     * @var int
-     */
-    private $ordering;
+    private ?int $ordering = null;
 
     /**
      * @var string
      */
     private $type;
 
-    /**
-     * @var array
-     */
-    private $params = [];
+    private array $params = [];
 
-    /**
-     * @var string
-     */
-    private $template;
+    private ?string $template = null;
 
-    /**
-     * @var string
-     */
-    private $errorMessage;
+    private ?string $errorMessage = null;
 
-    /**
-     * @var bool
-     */
-    private $cached = false;
+    private bool $cached = false;
 
-    /**
-     * @var int
-     */
-    private $loadTime = 0;
+    private int $loadTime = 0;
 
     /**
      * @var int (minutes)
      */
-    private $cacheTimeout;
+    private ?int $cacheTimeout = null;
 
-    /**
-     * @var array
-     */
-    private $templateData = [];
+    private array $templateData = [];
 
     public function __clone()
     {

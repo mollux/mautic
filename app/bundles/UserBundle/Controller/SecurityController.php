@@ -23,18 +23,14 @@ class SecurityController extends CommonController
             $authChecker->isGranted('IS_AUTHENTICATED_REMEMBERED')
         ) {
             $redirectUrl = $this->generateUrl('mautic_dashboard_index');
-            $event->setController(function () use ($redirectUrl) {
-                return new RedirectResponse($redirectUrl);
-            });
+            $event->setController(fn() => new RedirectResponse($redirectUrl));
         }
     }
 
     /**
      * Generates login form and processes login.
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function loginAction(AuthenticationUtils $authenticationUtils)
+    public function loginAction(AuthenticationUtils $authenticationUtils): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         // A way to keep the upgrade from failing if the session is lost after
         // the cache is cleared by upgrade.php

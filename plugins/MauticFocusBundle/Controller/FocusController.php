@@ -33,7 +33,7 @@ class FocusController extends AbstractStandardFormController
      *
      * @return JsonResponse|RedirectResponse|Response
      */
-    public function indexAction($page = 1)
+    public function indexAction($page = 1): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         return parent::indexStandard($page);
     }
@@ -43,7 +43,7 @@ class FocusController extends AbstractStandardFormController
      *
      * @return JsonResponse|Response
      */
-    public function newAction()
+    public function newAction(): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         return parent::newStandard();
     }
@@ -56,7 +56,7 @@ class FocusController extends AbstractStandardFormController
      *
      * @return JsonResponse|Response
      */
-    public function editAction($objectId, $ignorePost = false)
+    public function editAction($objectId, $ignorePost = false): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         return parent::editStandard($objectId, $ignorePost);
     }
@@ -68,7 +68,7 @@ class FocusController extends AbstractStandardFormController
      *
      * @return array|JsonResponse|RedirectResponse|Response
      */
-    public function viewAction($objectId)
+    public function viewAction($objectId): array|\Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         return parent::viewStandard($objectId, 'focus', 'plugin.focus');
     }
@@ -80,7 +80,7 @@ class FocusController extends AbstractStandardFormController
      *
      * @return JsonResponse|RedirectResponse|Response
      */
-    public function cloneAction($objectId)
+    public function cloneAction($objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         return parent::cloneStandard($objectId);
     }
@@ -89,20 +89,16 @@ class FocusController extends AbstractStandardFormController
      * Deletes the entity.
      *
      * @param int $objectId
-     *
-     * @return JsonResponse|RedirectResponse
      */
-    public function deleteAction($objectId)
+    public function deleteAction($objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         return parent::deleteStandard($objectId);
     }
 
     /**
      * Deletes a group of entities.
-     *
-     * @return JsonResponse|RedirectResponse
      */
-    public function batchDeleteAction()
+    public function batchDeleteAction(): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         return parent::batchDeleteStandard();
     }

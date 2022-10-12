@@ -16,57 +16,30 @@ class FrequencyRule extends CommonEntity
     public const TIME_WEEK  = 'WEEK';
     public const TIME_MONTH = 'MONTH';
 
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var Lead
-     */
-    private $lead;
+    private ?\Mautic\LeadBundle\Entity\Lead $lead = null;
 
-    /**
-     * @var \DateTime
-     */
-    private $dateAdded;
+    private ?\DateTime $dateAdded = null;
 
-    /**
-     * @var int
-     */
-    private $frequencyNumber;
+    private ?int $frequencyNumber = null;
 
-    /**
-     * @var string
-     */
-    private $frequencyTime;
+    private ?string $frequencyTime = null;
 
-    /**
-     * @var string
-     */
-    private $channel;
+    private ?string $channel = null;
 
-    /**
-     * @var bool
-     */
-    private $preferredChannel = 0;
+    private int|bool $preferredChannel = 0;
 
-    /**
-     * @var \DateTime
-     */
-    private $pauseFromDate;
+    private ?\DateTime $pauseFromDate = null;
 
-    /**
-     * @var \DateTime
-     */
-    private $pauseToDate;
+    private ?\DateTime $pauseToDate = null;
 
     public static function loadMetadata(ORM\ClassMetadata $metadata)
     {
         $builder = new ClassMetadataBuilder($metadata);
 
         $builder->setTable('lead_frequencyrules')
-            ->setCustomRepositoryClass('Mautic\LeadBundle\Entity\FrequencyRuleRepository')
+            ->setCustomRepositoryClass(\Mautic\LeadBundle\Entity\FrequencyRuleRepository::class)
             ->addIndex(['channel'], 'channel_frequency');
 
         $builder->addId();
@@ -283,8 +256,6 @@ class FrequencyRule extends CommonEntity
     }
 
     /**
-     * @param \DateTime $pauseFromDate
-     *
      * @return FrequencyRule
      */
     public function setPauseFromDate(\DateTime $pauseFromDate = null)
@@ -305,8 +276,6 @@ class FrequencyRule extends CommonEntity
     }
 
     /**
-     * @param \DateTime $pauseToDate
-     *
      * @return FrequencyRule
      */
     public function setPauseToDate(\DateTime $pauseToDate = null)

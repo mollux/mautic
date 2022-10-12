@@ -14,135 +14,66 @@ use Mautic\LeadBundle\Entity\LeadDevice;
  */
 class Hit
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var \DateTime
-     */
-    private $dateHit;
+    private ?\DateTime $dateHit = null;
 
-    /**
-     * @var \DateTime
-     */
-    private $dateLeft;
+    private ?\DateTime $dateLeft = null;
 
-    /**
-     * @var Page
-     */
-    private $page;
+    private ?\Mautic\PageBundle\Entity\Page $page = null;
 
-    /**
-     * @var Redirect
-     */
-    private $redirect;
+    private ?\Mautic\PageBundle\Entity\Redirect $redirect = null;
 
-    /**
-     * @var \Mautic\EmailBundle\Entity\Email
-     */
-    private $email;
+    private ?\Mautic\EmailBundle\Entity\Email $email = null;
 
-    /**
-     * @var \Mautic\LeadBundle\Entity\Lead
-     */
-    private $lead;
+    private ?\Mautic\LeadBundle\Entity\Lead $lead = null;
 
-    /**
-     * @var \Mautic\CoreBundle\Entity\IpAddress
-     */
-    private $ipAddress;
+    private ?\Mautic\CoreBundle\Entity\IpAddress $ipAddress = null;
 
-    /**
-     * @var string
-     */
-    private $country;
+    private ?string $country = null;
 
-    /**
-     * @var string
-     */
-    private $region;
+    private ?string $region = null;
 
-    /**
-     * @var string
-     */
-    private $city;
+    private ?string $city = null;
 
-    /**
-     * @var string
-     */
-    private $isp;
+    private ?string $isp = null;
 
-    /**
-     * @var string
-     */
-    private $organization;
+    private ?string $organization = null;
 
-    /**
-     * @var int
-     */
-    private $code;
+    private ?int $code = null;
 
     private $referer;
 
     private $url;
 
-    /**
-     * @var string
-     */
-    private $urlTitle;
+    private ?string $urlTitle = null;
 
-    /**
-     * @var string
-     */
-    private $userAgent;
+    private ?string $userAgent = null;
 
-    /**
-     * @var string
-     */
-    private $remoteHost;
+    private ?string $remoteHost = null;
 
-    /**
-     * @var string
-     */
-    private $pageLanguage;
+    private ?string $pageLanguage = null;
 
     /**
      * @var array<string>
      */
-    private $browserLanguages = [];
+    private array $browserLanguages = [];
 
-    /**
-     * @var string
-     **/
-    private $trackingId;
+    private ?string $trackingId = null;
 
-    /**
-     * @var string
-     */
-    private $source;
+    private ?string $source = null;
 
-    /**
-     * @var int
-     */
-    private $sourceId;
+    private ?int $sourceId = null;
 
-    /**
-     * @var array
-     */
-    private $query = [];
-    /**
-     * @var LeadDevice
-     */
-    private $device;
+    private array $query = [];
+    private ?\Mautic\LeadBundle\Entity\LeadDevice $device = null;
 
     public static function loadMetadata(ORM\ClassMetadata $metadata)
     {
         $builder = new ClassMetadataBuilder($metadata);
 
         $builder->setTable('page_hits')
-            ->setCustomRepositoryClass('Mautic\PageBundle\Entity\HitRepository')
+            ->setCustomRepositoryClass(\Mautic\PageBundle\Entity\HitRepository::class)
             ->addIndex(['tracking_id'], 'page_hit_tracking_search')
             ->addIndex(['code'], 'page_hit_code_search')
             ->addIndex(['source', 'source_id'], 'page_hit_source_search')
@@ -168,7 +99,7 @@ class Hit
             ->addJoinColumn('redirect_id', 'id', true, false, 'SET NULL')
             ->build();
 
-        $builder->createManyToOne('email', 'Mautic\EmailBundle\Entity\Email')
+        $builder->createManyToOne('email', \Mautic\EmailBundle\Entity\Email::class)
             ->addJoinColumn('email_id', 'id', true, false, 'SET NULL')
             ->build();
 
@@ -246,7 +177,7 @@ class Hit
 
         $builder->addNullableField('query', 'array');
 
-        $builder->createManyToOne('device', 'Mautic\LeadBundle\Entity\LeadDevice')
+        $builder->createManyToOne('device', \Mautic\LeadBundle\Entity\LeadDevice::class)
             ->addJoinColumn('device_id', 'id', true, false, 'SET NULL')
             ->cascadePersist()
             ->build();
@@ -614,7 +545,6 @@ class Hit
     /**
      * Set page.
      *
-     * @param Page $page
      *
      * @return Hit
      */

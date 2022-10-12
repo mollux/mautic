@@ -35,50 +35,29 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
     use TranslationEntityTrait;
     use DynamicContentEntityTrait;
 
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
     /**
      * @var string
      */
     private $name;
 
-    /**
-     * @var string
-     */
-    private $description;
+    private ?string $description = null;
 
     /**
      * @var string
      */
     private $subject;
 
-    /**
-     * @var bool
-     */
-    private $useOwnerAsMailer;
+    private ?bool $useOwnerAsMailer = null;
 
-    /**
-     * @var string
-     */
-    private $fromAddress;
+    private ?string $fromAddress = null;
 
-    /**
-     * @var string
-     */
-    private $fromName;
+    private ?string $fromName = null;
 
-    /**
-     * @var string
-     */
-    private $replyToAddress;
+    private ?string $replyToAddress = null;
 
-    /**
-     * @var string
-     */
-    private $bccAddress;
+    private ?string $bccAddress = null;
 
     /**
      * @var string
@@ -90,10 +69,7 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
      */
     private $content = [];
 
-    /**
-     * @var array
-     */
-    private $utmTags = [];
+    private array $utmTags = [];
 
     /**
      * @var string
@@ -105,10 +81,7 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
      */
     private $customHtml;
 
-    /**
-     * @var string
-     */
-    private $emailType = 'template';
+    private string $emailType = 'template';
 
     /**
      * @var \DateTime
@@ -120,92 +93,48 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
      */
     private $publishDown;
 
-    /**
-     * @var bool
-     */
-    private $publicPreview = 0;
+    private int|bool $publicPreview = 0;
 
-    /**
-     * @var int
-     */
-    private $readCount = 0;
+    private int $readCount = 0;
 
-    /**
-     * @var int
-     */
-    private $sentCount = 0;
+    private int $sentCount = 0;
 
-    /**
-     * @var int
-     */
-    private $revision = 1;
+    private int $revision = 1;
 
     /**
      * @var \Mautic\CategoryBundle\Entity\Category
      **/
     private $category;
 
-    /**
-     * @var ArrayCollection
-     */
-    private $lists;
+    private \Doctrine\Common\Collections\ArrayCollection $lists;
 
-    /**
-     * @var ArrayCollection
-     */
-    private $stats;
+    private \Doctrine\Common\Collections\ArrayCollection $stats;
 
-    /**
-     * @var int
-     */
-    private $variantSentCount = 0;
+    private int $variantSentCount = 0;
 
-    /**
-     * @var int
-     */
-    private $variantReadCount = 0;
+    private int $variantReadCount = 0;
 
-    /**
-     * @var \Mautic\FormBundle\Entity\Form
-     */
-    private $unsubscribeForm;
+    private ?\Mautic\FormBundle\Entity\Form $unsubscribeForm = null;
 
-    /**
-     * @var \Mautic\PageBundle\Entity\Page
-     */
-    private $preferenceCenter;
+    private ?\Mautic\PageBundle\Entity\Page $preferenceCenter = null;
 
-    /**
-     * @var ArrayCollection
-     */
-    private $assetAttachments;
+    private \Doctrine\Common\Collections\ArrayCollection $assetAttachments;
 
     /**
      * Used to identify the page for the builder.
      */
     private $sessionId;
 
-    /**
-     * @var array
-     */
-    private $headers = [];
+    private array $headers = [];
 
-    /**
-     * @var int
-     */
-    private $pendingCount = 0;
+    private int $pendingCount = 0;
 
-    /**
-     * @var int
-     */
-    private $queuedCount = 0;
+    private int $queuedCount = 0;
 
     /**
      * In some use cases, we need to get the original email ID after it's been cloned.
-     *
-     * @var int
      */
-    private $clonedId;
+    private ?int $clonedId = null;
 
     public function __clone()
     {
@@ -218,7 +147,7 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
         $this->variantReadCount = 0;
         $this->variantStartDate = null;
         $this->emailType        = null;
-        $this->sessionId        = 'new_'.hash('sha1', uniqid(mt_rand()));
+        $this->sessionId        = 'new_'.hash('sha1', uniqid(random_int(0, mt_getrandmax())));
         $this->clearTranslations();
         $this->clearVariants();
         $this->clearStats();
@@ -512,11 +441,9 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
     }
 
     /**
-     * @param mixed $description
-     *
      * @return Email
      */
-    public function setDescription($description)
+    public function setDescription(mixed $description)
     {
         $this->description = $description;
 
@@ -707,11 +634,9 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
     }
 
     /**
-     * @param mixed $fromAddress
-     *
      * @return Email
      */
-    public function setFromAddress($fromAddress)
+    public function setFromAddress(mixed $fromAddress)
     {
         $this->isChanged('fromAddress', $fromAddress);
         $this->fromAddress = $fromAddress;
@@ -728,11 +653,9 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
     }
 
     /**
-     * @param mixed $fromName
-     *
      * @return Email
      */
-    public function setFromName($fromName)
+    public function setFromName(mixed $fromName)
     {
         $this->isChanged('fromName', $fromName);
         $this->fromName = $fromName;
@@ -749,11 +672,9 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
     }
 
     /**
-     * @param mixed $replyToAddress
-     *
      * @return Email
      */
-    public function setReplyToAddress($replyToAddress)
+    public function setReplyToAddress(mixed $replyToAddress)
     {
         $this->isChanged('replyToAddress', $replyToAddress);
         $this->replyToAddress = $replyToAddress;
@@ -770,11 +691,9 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
     }
 
     /**
-     * @param mixed $bccAddress
-     *
      * @return Email
      */
-    public function setBccAddress($bccAddress)
+    public function setBccAddress(mixed $bccAddress)
     {
         $this->isChanged('bccAddress', $bccAddress);
         $this->bccAddress = $bccAddress;
@@ -1002,8 +921,6 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
     }
 
     /**
-     * @param Form $unsubscribeForm
-     *
      * @return $this
      */
     public function setUnsubscribeForm(Form $unsubscribeForm = null)
@@ -1022,8 +939,6 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
     }
 
     /**
-     * @param Page $preferenceCenter
-     *
      * @return $this
      */
     public function setPreferenceCenter(Page $preferenceCenter = null)
@@ -1042,11 +957,9 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
     }
 
     /**
-     * @param mixed $emailType
-     *
      * @return Email
      */
-    public function setEmailType($emailType)
+    public function setEmailType(mixed $emailType)
     {
         $this->emailType = $emailType;
 
@@ -1124,7 +1037,7 @@ class Email extends FormEntity implements VariantEntityInterface, TranslationEnt
             foreach ($matches[0] as $url) {
                 $newUrl = $url;
 
-                while (false !== strpos($newUrl, '&amp;')) {
+                while (str_contains($newUrl, '&amp;')) {
                     $newUrl = str_replace('&amp;', '&', $newUrl);
                 }
 

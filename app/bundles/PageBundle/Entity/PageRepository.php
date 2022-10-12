@@ -128,7 +128,7 @@ class PageRepository extends CommonRepository
      */
     protected function addSearchCommandWhereClause($q, $filter)
     {
-        list($expr, $parameters) = $this->addStandardSearchCommandWhereClause($q, $filter);
+        [$expr, $parameters] = $this->addStandardSearchCommandWhereClause($q, $filter);
         if ($expr) {
             return [$expr, $parameters];
         }
@@ -237,10 +237,8 @@ class PageRepository extends CommonRepository
      *
      * @param            $id
      * @param int        $increaseBy
-     * @param bool|false $unique
-     * @param bool|false $variant
      */
-    public function upHitCount($id, $increaseBy = 1, $unique = false, $variant = false)
+    public function upHitCount($id, $increaseBy = 1, bool $unique = false, bool $variant = false)
     {
         $q = $this->getEntityManager()->getConnection()->createQueryBuilder();
 

@@ -16,32 +16,8 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class NotificationSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var TrackableModel
-     */
-    private $trackableModel;
-
-    /**
-     * @var PageTokenHelper
-     */
-    private $pageTokenHelper;
-
-    /**
-     * @var AssetTokenHelper
-     */
-    private $assetTokenHelper;
-
-    /**
-     * @var AuditLogModel
-     */
-    private $auditLogModel;
-
-    public function __construct(AuditLogModel $auditLogModel, TrackableModel $trackableModel, PageTokenHelper $pageTokenHelper, AssetTokenHelper $assetTokenHelper)
+    public function __construct(private AuditLogModel $auditLogModel, private TrackableModel $trackableModel, private PageTokenHelper $pageTokenHelper, private AssetTokenHelper $assetTokenHelper)
     {
-        $this->auditLogModel    = $auditLogModel;
-        $this->trackableModel   = $trackableModel;
-        $this->pageTokenHelper  = $pageTokenHelper;
-        $this->assetTokenHelper = $assetTokenHelper;
     }
 
     /**
@@ -104,7 +80,7 @@ class NotificationSubscriber implements EventSubscriberInterface
                 $this->assetTokenHelper->findAssetTokens($content, $clickthrough)
             );
 
-            list($content, $trackables) = $this->trackableModel->parseContentForTrackables(
+            [$content, $trackables] = $this->trackableModel->parseContentForTrackables(
                 $content,
                 $tokens,
                 'notification',

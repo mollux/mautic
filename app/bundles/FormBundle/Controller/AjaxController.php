@@ -109,7 +109,7 @@ class AjaxController extends CommonAjaxController
     public function submitAction()
     {
         $response     = $this->forwardWithPost('Mautic\FormBundle\Controller\PublicController::submitAction', $this->request->request->all(), [], ['ajax' => true]);
-        $responseData = json_decode($response->getContent(), true);
+        $responseData = json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR);
         $success      = (!in_array($response->getStatusCode(), [404, 500]) && empty($responseData['errorMessage'])
             && empty($responseData['validationErrors']));
 

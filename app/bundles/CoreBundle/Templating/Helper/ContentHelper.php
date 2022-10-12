@@ -11,22 +11,10 @@ use Symfony\Component\Templating\Helper\Helper;
 class ContentHelper extends Helper
 {
     /**
-     * @var DelegatingEngine
-     */
-    protected $templating;
-
-    /**
-     * @var EventDispatcherInterface
-     */
-    protected $dispatcher;
-
-    /**
      * UIHelper constructor.
      */
-    public function __construct(DelegatingEngine $templating, EventDispatcherInterface $dispatcher)
+    public function __construct(protected DelegatingEngine $templating, protected EventDispatcherInterface $dispatcher)
     {
-        $this->templating = $templating;
-        $this->dispatcher = $dispatcher;
     }
 
     /**

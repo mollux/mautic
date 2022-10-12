@@ -16,36 +16,8 @@ class FlashBag
     public const LEVEL_WARNING   = 'warning';
     public const LEVEL_NOTICE    = 'notice';
 
-    /**
-     * @var Session
-     */
-    private $session;
-
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    /**
-     * @var NotificationModel
-     */
-    private $notificationModel;
-
-    /**
-     * @var RequestStack
-     */
-    private $requestStack;
-
-    public function __construct(
-        Session $session,
-        TranslatorInterface $translator,
-        RequestStack $requestStack,
-        NotificationModel $notificationModel
-    ) {
-        $this->session           = $session;
-        $this->translator        = $translator;
-        $this->requestStack      = $requestStack;
-        $this->notificationModel = $notificationModel;
+    public function __construct(private Session $session, private TranslatorInterface $translator, private RequestStack $requestStack, private NotificationModel $notificationModel)
+    {
     }
 
     /**

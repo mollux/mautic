@@ -11,16 +11,10 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class FormFieldEmailType extends AbstractType
 {
     /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    /**
      * FormFieldTelType constructor.
      */
-    public function __construct(TranslatorInterface $translator)
+    public function __construct(private TranslatorInterface $translator)
     {
-        $this->translator = $translator;
     }
 
     /**
@@ -33,7 +27,7 @@ class FormFieldEmailType extends AbstractType
             YesNoButtonGroupType::class,
             [
                 'label' => 'mautic.form.field.type.donotsubmit',
-                'data'  => isset($options['data']['donotsubmit']) ? $options['data']['donotsubmit'] : false,
+                'data'  => $options['data']['donotsubmit'] ?? false,
             ]
         );
 
@@ -47,7 +41,7 @@ class FormFieldEmailType extends AbstractType
                     'class'        => 'form-control',
                     'data-show-on' => '{"formfield_validation_donotsubmit_1": "checked"}',
                 ],
-                'data'     => isset($options['data']['donotsubmit_validationmsg']) ? $options['data']['donotsubmit_validationmsg'] : $this->translator->trans('mautic.form.submission.email.donotsubmit.invalid', [], 'validators'),
+                'data'     => $options['data']['donotsubmit_validationmsg'] ?? $this->translator->trans('mautic.form.submission.email.donotsubmit.invalid', [], 'validators'),
                 'required' => false,
             ]
         );

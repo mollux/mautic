@@ -421,64 +421,8 @@ class FieldModel extends FormModel
         ],
     ];
 
-    /**
-     * @var ColumnSchemaHelper
-     */
-    private $columnSchemaHelper;
-
-    /**
-     * @var CustomFieldColumn
-     */
-    private $customFieldColumn;
-
-    /**
-     * @var FieldSaveDispatcher
-     */
-    private $fieldSaveDispatcher;
-
-    /**
-     * @var LeadFieldRepository
-     */
-    private $leadFieldRepository;
-
-    /**
-     * @var ListModel
-     */
-    private $leadListModel;
-
-    /**
-     * @var FieldsWithUniqueIdentifier
-     */
-    private $fieldsWithUniqueIdentifier;
-
-    /**
-     * @var FieldList
-     */
-    private $fieldList;
-
-    /**
-     * @var LeadFieldSaver
-     */
-    private $leadFieldSaver;
-
-    public function __construct(
-        ColumnSchemaHelper $columnSchemaHelper,
-        ListModel $leadListModel,
-        CustomFieldColumn $customFieldColumn,
-        FieldSaveDispatcher $fieldSaveDispatcher,
-        LeadFieldRepository $leadFieldRepository,
-        FieldsWithUniqueIdentifier $fieldsWithUniqueIdentifier,
-        FieldList $fieldList,
-        LeadFieldSaver $leadFieldSaver
-    ) {
-        $this->columnSchemaHelper         = $columnSchemaHelper;
-        $this->leadListModel              = $leadListModel;
-        $this->customFieldColumn          = $customFieldColumn;
-        $this->fieldSaveDispatcher        = $fieldSaveDispatcher;
-        $this->leadFieldRepository        = $leadFieldRepository;
-        $this->fieldsWithUniqueIdentifier = $fieldsWithUniqueIdentifier;
-        $this->fieldList                  = $fieldList;
-        $this->leadFieldSaver             = $leadFieldSaver;
+    public function __construct(private ColumnSchemaHelper $columnSchemaHelper, private ListModel $leadListModel, private CustomFieldColumn $customFieldColumn, private FieldSaveDispatcher $fieldSaveDispatcher, private LeadFieldRepository $leadFieldRepository, private FieldsWithUniqueIdentifier $fieldsWithUniqueIdentifier, private FieldList $fieldList, private LeadFieldSaver $leadFieldSaver)
+    {
     }
 
     /**
@@ -697,9 +641,7 @@ class FieldModel extends FormModel
      */
     public function filterUsedFieldIds(array $ids)
     {
-        return array_filter($ids, function ($id) {
-            return false === $this->isUsedField($this->getEntity($id));
-        });
+        return array_filter($ids, fn($id) => false === $this->isUsedField($this->getEntity($id)));
     }
 
     /**
@@ -860,7 +802,7 @@ class FieldModel extends FormModel
 
         try {
             return $this->fieldSaveDispatcher->dispatchEvent($action, $entity, $isNew, $event);
-        } catch (NoListenerException $exception) {
+        } catch (NoListenerException) {
             return $event;
         }
     }
@@ -914,6 +856,7 @@ class FieldModel extends FormModel
      */
     public function getFieldListWithProperties($object = 'lead')
     {
+        $forceFilters = [];
         $forceFilters[] = [
             'column' => 'f.object',
             'expr'   => 'eq',

@@ -13,48 +13,13 @@ use Mautic\LeadBundle\Segment\Query\QueryBuilder;
 /**
  * Class ContactSegmentFilter is used for accessing $filter as an object and to keep logic in an object.
  */
-class ContactSegmentFilter
+class ContactSegmentFilter implements \Stringable
 {
-    /**
-     * @var ContactSegmentFilterCrate
-     */
-    public $contactSegmentFilterCrate;
-
-    /**
-     * @var FilterDecoratorInterface
-     */
-    private $filterDecorator;
-
-    /**
-     * @var FilterQueryBuilderInterface
-     */
-    private $filterQueryBuilder;
-
-    /**
-     * @var TableSchemaColumnsCache
-     */
-    private $schemaCache;
-
-    /**
-     * @var array<string, mixed>
-     */
-    private $batchLimiters = [];
-
     /**
      * @param array<string, mixed> $batchLimiters
      */
-    public function __construct(
-        ContactSegmentFilterCrate $contactSegmentFilterCrate,
-        FilterDecoratorInterface $filterDecorator,
-        TableSchemaColumnsCache $cache,
-        FilterQueryBuilderInterface $filterQueryBuilder,
-        array $batchLimiters = []
-    ) {
-        $this->contactSegmentFilterCrate = $contactSegmentFilterCrate;
-        $this->filterDecorator           = $filterDecorator;
-        $this->schemaCache               = $cache;
-        $this->filterQueryBuilder        = $filterQueryBuilder;
-        $this->batchLimiters             = $batchLimiters;
+    public function __construct(public ContactSegmentFilterCrate $contactSegmentFilterCrate, private FilterDecoratorInterface $filterDecorator, private TableSchemaColumnsCache $schemaCache, private FilterQueryBuilderInterface $filterQueryBuilder, private array $batchLimiters = [])
+    {
     }
 
     /**
@@ -214,7 +179,7 @@ class ContactSegmentFilter
         return new IntegrationCampaignParts($this->getParameterValue());
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return sprintf(
             'table: %s,  %s on %s %s %s',
@@ -222,7 +187,7 @@ class ContactSegmentFilter
             $this->getField(),
             $this->getQueryType(),
             $this->getOperator(),
-            json_encode($this->getParameterValue())
+            json_encode($this->getParameterValue(), JSON_THROW_ON_ERROR)
         );
     }
 

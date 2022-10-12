@@ -21,8 +21,9 @@ class FullContactController extends FormController
      */
     public function lookupPersonAction($objectId = '')
     {
+        $data = [];
         if ('POST' === $this->request->getMethod()) {
-            $data     = $this->request->request->get('fullcontact_lookup', [], true);
+            $data     = $this->request->request->get('fullcontact_lookup', []);
             $objectId = $data['objectId'];
         }
         /** @var \Mautic\LeadBundle\Model\LeadModel $model */
@@ -119,9 +120,9 @@ class FullContactController extends FormController
         /** @var \Mautic\LeadBundle\Model\LeadModel $model */
         $model = $this->getModel('lead');
         if ('GET' === $this->request->getMethod()) {
-            $data = $this->request->query->get('fullcontact_batch_lookup', [], true);
+            $data = $this->request->query->get('fullcontact_batch_lookup', []);
         } else {
-            $data = $this->request->request->get('fullcontact_batch_lookup', [], true);
+            $data = $this->request->request->get('fullcontact_batch_lookup', []);
         }
 
         $entities = [];
@@ -129,7 +130,7 @@ class FullContactController extends FormController
             $ids = $data['ids'];
 
             if (!is_array($ids)) {
-                $ids = json_decode($ids, true);
+                $ids = json_decode($ids, true, 512, JSON_THROW_ON_ERROR);
             }
 
             if (is_array($ids) && count($ids)) {
@@ -275,8 +276,9 @@ class FullContactController extends FormController
      */
     public function lookupCompanyAction($objectId = '')
     {
+        $data = [];
         if ('POST' === $this->request->getMethod()) {
-            $data     = $this->request->request->get('fullcontact_lookup', [], true);
+            $data     = $this->request->request->get('fullcontact_lookup', []);
             $objectId = $data['objectId'];
         }
         /** @var \Mautic\LeadBundle\Model\CompanyModel $model */
@@ -372,9 +374,9 @@ class FullContactController extends FormController
         /** @var \Mautic\LeadBundle\Model\CompanyModel $model */
         $model = $this->getModel('lead.company');
         if ('GET' === $this->request->getMethod()) {
-            $data = $this->request->query->get('fullcontact_batch_lookup', [], true);
+            $data = $this->request->query->get('fullcontact_batch_lookup', []);
         } else {
-            $data = $this->request->request->get('fullcontact_batch_lookup', [], true);
+            $data = $this->request->request->get('fullcontact_batch_lookup', []);
         }
 
         $entities = [];
@@ -382,7 +384,7 @@ class FullContactController extends FormController
             $ids = $data['ids'];
 
             if (!is_array($ids)) {
-                $ids = json_decode($ids, true);
+                $ids = json_decode($ids, true, 512, JSON_THROW_ON_ERROR);
             }
 
             if (is_array($ids) && count($ids)) {

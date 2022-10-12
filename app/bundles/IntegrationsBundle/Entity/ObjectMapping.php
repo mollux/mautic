@@ -10,60 +10,27 @@ use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
 
 class ObjectMapping
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var \DateTime|null
-     */
-    private $dateCreated;
+    private ?\DateTime $dateCreated;
 
-    /**
-     * @var string
-     */
-    private $integration;
+    private ?string $integration = null;
 
-    /**
-     * @var string
-     */
-    private $internalObjectName;
+    private ?string $internalObjectName = null;
 
-    /**
-     * @var int
-     */
-    private $internalObjectId;
+    private ?int $internalObjectId = null;
 
-    /**
-     * @var string
-     */
-    private $integrationObjectName;
+    private ?string $integrationObjectName = null;
 
-    /**
-     * @var string
-     */
-    private $integrationObjectId;
+    private ?string $integrationObjectId = null;
 
-    /**
-     * @var \DateTimeInterface
-     */
-    private $lastSyncDate;
+    private \DateTimeInterface $lastSyncDate;
 
-    /**
-     * @var array
-     */
-    private $internalStorage = [];
+    private array $internalStorage = [];
 
-    /**
-     * @var bool
-     */
-    private $isDeleted = false;
+    private bool $isDeleted = false;
 
-    /**
-     * @var string|null
-     */
-    private $integrationReferenceId;
+    private ?string $integrationReferenceId = null;
 
     public static function loadMetadata(ORM\ClassMetadata $metadata): void
     {

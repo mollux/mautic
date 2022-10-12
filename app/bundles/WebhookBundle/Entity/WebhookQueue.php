@@ -11,30 +11,15 @@ use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
  */
 class WebhookQueue
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var Webhook
-     */
-    private $webhook;
+    private ?\Mautic\WebhookBundle\Entity\Webhook $webhook = null;
 
-    /**
-     * @var \DateTime
-     */
-    private $dateAdded;
+    private ?\DateTime $dateAdded = null;
 
-    /**
-     * @var string
-     */
-    private $payload;
+    private ?string $payload = null;
 
-    /**
-     * @var Event
-     **/
-    private $event;
+    private ?\Mautic\WebhookBundle\Entity\Event $event = null;
 
     public static function loadMetadata(ORM\ClassMetadata $metadata)
     {
@@ -71,10 +56,7 @@ class WebhookQueue
         return $this->webhook;
     }
 
-    /**
-     * @param mixed $webhook
-     */
-    public function setWebhook($webhook)
+    public function setWebhook(mixed $webhook)
     {
         $this->webhook = $webhook;
 
@@ -89,10 +71,7 @@ class WebhookQueue
         return $this->dateAdded;
     }
 
-    /**
-     * @param mixed $dateAdded
-     */
-    public function setDateAdded($dateAdded)
+    public function setDateAdded(mixed $dateAdded)
     {
         $this->dateAdded = $dateAdded;
 
@@ -107,10 +86,7 @@ class WebhookQueue
         return $this->payload;
     }
 
-    /**
-     * @param mixed $payload
-     */
-    public function setPayload($payload)
+    public function setPayload(mixed $payload)
     {
         $this->payload = $payload;
 
@@ -125,10 +101,7 @@ class WebhookQueue
         return $this->event;
     }
 
-    /**
-     * @param mixed $event
-     */
-    public function setEvent($event)
+    public function setEvent(mixed $event)
     {
         $this->event = $event;
 

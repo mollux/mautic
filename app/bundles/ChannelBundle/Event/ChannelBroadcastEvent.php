@@ -32,46 +32,32 @@ class ChannelBroadcastEvent extends Event
     protected $results = [];
 
     /**
-     * @var OutputInterface
-     */
-    protected $output;
-
-    /**
      * Min contact ID filter can be used for process parallelization.
-     *
-     * @var int
      */
-    private $minContactIdFilter;
+    private ?int $minContactIdFilter = null;
 
     /**
      * Max contact ID filter can be used for process parallelization.
-     *
-     * @var int
      */
-    private $maxContactIdFilter;
+    private ?int $maxContactIdFilter = null;
 
     /**
      * How many contacts to load from the database.
-     *
-     * @var int
      */
-    private $limit = 100;
+    private int $limit = 100;
 
     /**
      * How big batches to use to actually send.
-     *
-     * @var int
      */
-    private $batch = 50;
+    private int $batch = 50;
 
     /**
      * MaintenanceEvent constructor.
      */
-    public function __construct($channel, $channelId, OutputInterface $output)
+    public function __construct($channel, $channelId, protected OutputInterface $output)
     {
         $this->channel = $channel;
         $this->id      = $channelId;
-        $this->output  = $output;
     }
 
     /**

@@ -11,28 +11,11 @@ use Mautic\WebhookBundle\Entity\Webhook;
 class WebhookEvent extends CommonEvent
 {
     /**
-     * @var Webhook
-     */
-    protected $entity;
-
-    /**
-     * @var bool
-     */
-    protected $isNew = false;
-
-    /**
-     * @var string
-     */
-    private $reason = '';
-
-    /**
      * @param bool $isNew
+     * @param string $reason
      */
-    public function __construct(Webhook $webhook, $isNew = false, $reason = '')
+    public function __construct(protected Webhook $entity, protected $isNew = false, private $reason = '')
     {
-        $this->entity = $webhook;
-        $this->isNew  = $isNew;
-        $this->reason = $reason;
     }
 
     /**

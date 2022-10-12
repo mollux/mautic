@@ -229,10 +229,10 @@ return [
         ],
         'other' => [
             'mautic_integration.pipedrive.guzzle.client' => [
-                'class' => 'GuzzleHttp\Client',
+                'class' => \GuzzleHttp\Client::class,
             ],
             'mautic_integration.service.transport' => [
-                'class'     => 'MauticPlugin\MauticCrmBundle\Services\Transport',
+                'class'     => \MauticPlugin\MauticCrmBundle\Services\Transport::class,
                 'arguments' => [
                     'mautic_integration.pipedrive.guzzle.client',
                 ],

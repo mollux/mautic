@@ -24,16 +24,14 @@ class WidgetDetailEvent extends CommonEvent
     protected $cacheTimeout;
     protected $startTime = 0;
     protected $loadTime  = 0;
-    protected $translator;
 
     /**
      * @var CorePermissions
      */
     protected $security;
 
-    public function __construct(TranslatorInterface $translator)
+    public function __construct(protected TranslatorInterface $translator)
     {
-        $this->translator = $translator;
         $this->startTime  = microtime(true);
     }
 
@@ -212,7 +210,7 @@ class WidgetDetailEvent extends CommonEvent
             'locale' => $this->translator->getLocale(),
         ];
 
-        return $this->uniqueId = $this->getType().'_'.substr(md5(json_encode($uniqueSettings)), 0, 16);
+        return $this->uniqueId = $this->getType().'_'.substr(md5(json_encode($uniqueSettings, JSON_THROW_ON_ERROR)), 0, 16);
     }
 
     /**

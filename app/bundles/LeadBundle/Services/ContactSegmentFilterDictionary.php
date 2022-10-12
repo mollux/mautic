@@ -20,16 +20,10 @@ class ContactSegmentFilterDictionary
     /**
      * @var mixed[]
      */
-    private $filters = [];
+    private array $filters = [];
 
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $dispatcher;
-
-    public function __construct(EventDispatcherInterface $dispatcher)
+    public function __construct(private EventDispatcherInterface $dispatcher)
     {
-        $this->dispatcher = $dispatcher;
     }
 
     /**
@@ -65,11 +59,10 @@ class ContactSegmentFilterDictionary
      * @param string $filterKey
      * @param string $property
      *
-     * @return string|int
      *
      * @throws FilterNotFoundException
      */
-    public function getFilterProperty($filterKey, $property)
+    public function getFilterProperty($filterKey, $property): string|int
     {
         $filter = $this->getFilter($filterKey);
 

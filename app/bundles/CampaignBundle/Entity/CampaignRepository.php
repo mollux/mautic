@@ -116,11 +116,10 @@ class CampaignRepository extends CommonRepository
     /**
      * Returns a list of all published (and active) campaigns that specific lead lists are part of.
      *
-     * @param int|array $leadLists
      *
      * @return array
      */
-    public function getPublishedCampaignsByLeadLists($leadLists)
+    public function getPublishedCampaignsByLeadLists(int|array $leadLists)
     {
         if (!is_array($leadLists)) {
             $leadLists = [(int) $leadLists];
@@ -511,12 +510,10 @@ class CampaignRepository extends CommonRepository
      *
      * @param            $campaignId
      * @param int        $start
-     * @param bool|false $limit
      * @param array      $select
-     *
      * @return mixed
      */
-    public function getCampaignLeads($campaignId, $start = 0, $limit = false, $select = ['cl.lead_id'])
+    public function getCampaignLeads($campaignId, $start = 0, bool $limit = false, $select = ['cl.lead_id'])
     {
         $q = $this->getSlaveConnection()->createQueryBuilder();
 

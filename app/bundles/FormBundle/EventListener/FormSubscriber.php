@@ -25,30 +25,15 @@ class FormSubscriber implements EventSubscriberInterface
 {
     private MailHelper $mailer;
 
-    private AuditLogModel $auditLogModel;
-
-    private IpLookupHelper $ipLookupHelper;
-
-    private CoreParametersHelper $coreParametersHelper;
-
-    private TranslatorInterface $translator;
-
-    private RouterInterface $router;
-
     public function __construct(
-        IpLookupHelper $ipLookupHelper,
-        AuditLogModel $auditLogModel,
+        private IpLookupHelper $ipLookupHelper,
+        private AuditLogModel $auditLogModel,
         MailHelper $mailer,
-        CoreParametersHelper $coreParametersHelper,
-        TranslatorInterface $translator,
-        RouterInterface $router
+        private CoreParametersHelper $coreParametersHelper,
+        private TranslatorInterface $translator,
+        private RouterInterface $router
     ) {
-        $this->ipLookupHelper       = $ipLookupHelper;
-        $this->auditLogModel        = $auditLogModel;
         $this->mailer               = $mailer->getMailer();
-        $this->coreParametersHelper = $coreParametersHelper;
-        $this->translator           = $translator;
-        $this->router               = $router;
     }
 
     /**
@@ -233,7 +218,7 @@ class FormSubscriber implements EventSubscriberInterface
             $key = (!empty($config[$field['alias']])) ? $config[$field['alias']] : $field['alias'];
 
             // Use the cleaned value by default - but if set to not save result, get from post
-            $value               = (isset($results[$field['alias']])) ? $results[$field['alias']] : $post[$field['alias']];
+            $value               = $results[$field['alias']] ?? $post[$field['alias']];
             $matchedFields[$key] = $field['alias'];
 
             // decode html chars and quotes before posting to next form
@@ -247,8 +232,8 @@ class FormSubscriber implements EventSubscriberInterface
         ];
 
         if (!empty($config['authorization_header'])) {
-            if (false !== strpos($config['authorization_header'], ':')) {
-                list($key, $value) = explode(':', $config['authorization_header']);
+            if (str_contains($config['authorization_header'], ':')) {
+                [$key, $value] = explode(':', $config['authorization_header']);
             } else {
                 $key   = 'Authorization';
                 $value = $config['authorization_header'];
@@ -331,7 +316,7 @@ class FormSubscriber implements EventSubscriberInterface
         $redirect   = false;
         $violations = [];
 
-        if ($json = json_decode($body, true)) {
+        if ($json = json_decode($body, true, 512, JSON_THROW_ON_ERROR)) {
             $body = $json;
         } else {
             parse_str($body, $output);

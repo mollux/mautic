@@ -6,15 +6,9 @@ use Mautic\CampaignBundle\Entity\Event;
 
 class ConnectionBuilder
 {
-    /**
-     * @var array
-     */
-    private static $eventTypes = [];
+    private static array $eventTypes = [];
 
-    /**
-     * @var array
-     */
-    private static $connectionRestrictions = ['anchor' => []];
+    private static array $connectionRestrictions = ['anchor' => []];
 
     /**
      * Used by JS/JsPlumb to restrict how events can be associated to each other in the UI.
@@ -78,7 +72,7 @@ class ConnectionBuilder
                 break;
             case 'anchor':
                 foreach ($restrictions as $anchor) {
-                    list($group, $anchor)                                           = explode('.', $anchor);
+                    [$group, $anchor]                                           = explode('.', $anchor);
                     self::$connectionRestrictions[$restrictionType][$group][$key][] = $anchor;
                 }
 
@@ -109,7 +103,7 @@ class ConnectionBuilder
 
         if (isset($event['anchorRestrictions'])) {
             foreach ($event['anchorRestrictions'] as $restriction) {
-                list($group, $anchor)                                   = explode('.', $restriction);
+                [$group, $anchor]                                   = explode('.', $restriction);
                 self::$connectionRestrictions['anchor'][$key][$group][] = $anchor;
             }
         }

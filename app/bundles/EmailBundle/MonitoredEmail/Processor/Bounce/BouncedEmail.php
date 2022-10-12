@@ -4,30 +4,15 @@ namespace Mautic\EmailBundle\MonitoredEmail\Processor\Bounce;
 
 class BouncedEmail
 {
-    /**
-     * @var string|null
-     */
-    private $email;
+    private ?string $email = null;
 
-    /**
-     * @var string|null
-     */
-    private $ruleCategory;
+    private ?string $ruleCategory = null;
 
-    /**
-     * @var string|null
-     */
-    private $ruleNumber;
+    private ?string $ruleNumber = null;
 
-    /**
-     * @var string|null
-     */
-    private $bounceType;
+    private ?string $bounceType = null;
 
-    /**
-     * @var int
-     */
-    private $final = 0;
+    private int $final = 0;
 
     /**
      * @var string|null
@@ -103,11 +88,9 @@ class BouncedEmail
     }
 
     /**
-     * @param mixed $bounceType
-     *
      * @return BouncedEmail
      */
-    public function setType($bounceType)
+    public function setType(mixed $bounceType)
     {
         $this->bounceType = $bounceType;
 

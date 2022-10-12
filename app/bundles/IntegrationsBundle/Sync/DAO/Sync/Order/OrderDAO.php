@@ -11,90 +11,51 @@ use Mautic\IntegrationsBundle\Sync\DAO\Mapping\UpdatedObjectMappingDAO;
 
 class OrderDAO
 {
-    /**
-     * @var \DateTimeInterface
-     */
-    private $syncDateTime;
+    private array $identifiedObjects = [];
 
-    /**
-     * @var bool
-     */
-    private $isFirstTimeSync;
-
-    /**
-     * @var string
-     */
-    private $integration;
-
-    /**
-     * @var array
-     */
-    private $identifiedObjects = [];
-
-    /**
-     * @var array
-     */
-    private $unidentifiedObjects = [];
+    private array $unidentifiedObjects = [];
 
     /**
      * Array of all changed objects.
      *
      * @var ObjectChangeDAO[]
      */
-    private $changedObjects = [];
+    private array $changedObjects = [];
 
-    /**
-     * @var array|ObjectMapping
-     */
-    private $objectMappings = [];
+    private array|\Mautic\IntegrationsBundle\Entity\ObjectMapping $objectMappings = [];
 
     /**
      * @var UpdatedObjectMappingDAO[]
      */
-    private $updatedObjectMappings = [];
+    private array $updatedObjectMappings = [];
 
     /**
      * @var RemappedObjectDAO[]
      */
-    private $remappedObjects = [];
+    private array $remappedObjects = [];
 
     /**
      * @var ObjectChangeDAO[]
      */
-    private $deleteTheseObjects = [];
+    private array $deleteTheseObjects = [];
 
-    /**
-     * @var array
-     */
-    private $retryTheseLater = [];
+    private array $retryTheseLater = [];
 
-    /**
-     * @var int
-     */
-    private $objectCounter = 0;
+    private int $objectCounter = 0;
 
     /**
      * @var NotificationDAO[]
      */
-    private $notifications = [];
-
-    private array $options;
+    private array $notifications = [];
 
     /**
      * @param bool   $isFirstTimeSync
      * @param string $integration
      */
-    public function __construct(\DateTimeInterface $syncDateTime, $isFirstTimeSync, $integration, array $options = [])
+    public function __construct(private \DateTimeInterface $syncDateTime, private $isFirstTimeSync, private $integration, private array $options = [])
     {
-        $this->syncDateTime    = $syncDateTime;
-        $this->isFirstTimeSync = $isFirstTimeSync;
-        $this->integration     = $integration;
-        $this->options         = $options;
     }
 
-    /**
-     * @return OrderDAO
-     */
     public function addObjectChange(ObjectChangeDAO $objectChangeDAO): self
     {
         if (!isset($this->identifiedObjects[$objectChangeDAO->getObject()])) {
@@ -144,12 +105,11 @@ class OrderDAO
      * Create a new mapping between the Mautic and Integration objects.
      *
      * @param string     $integrationObjectName
-     * @param string|int $integrationObjectId
      */
     public function addObjectMapping(
         ObjectChangeDAO $objectChangeDAO,
         $integrationObjectName,
-        $integrationObjectId,
+        string|int $integrationObjectId,
         ?\DateTimeInterface $objectModifiedDate = null
     ): void {
         if (null === $objectModifiedDate) {
@@ -170,12 +130,10 @@ class OrderDAO
     /**
      * Update an existing mapping in the case of conversions (i.e. Lead converted to Contact).
      *
-     * @param mixed  $oldObjectId
      * @param string $oldObjectName
      * @param string $newObjectName
-     * @param mixed  $newObjectId
      */
-    public function remapObject($oldObjectName, $oldObjectId, $newObjectName, $newObjectId = null): void
+    public function remapObject($oldObjectName, mixed $oldObjectId, $newObjectName, mixed $newObjectId = null): void
     {
         if (null === $newObjectId) {
             $newObjectId = $oldObjectId;

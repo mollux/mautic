@@ -211,6 +211,7 @@ class ConnectwiseIntegration extends CrmAbstractIntegration
      */
     public function getAvailableLeadFields($settings = [])
     {
+        $cwObjects = [];
         $cwFields = [];
         if (isset($settings['feature_settings']['objects'])) {
             $cwObjects = $settings['feature_settings']['objects'];
@@ -322,7 +323,7 @@ class ConnectwiseIntegration extends CrmAbstractIntegration
                             'attr'  => [
                                 'data-hide-on' => '{"campaignevent_properties_config_push_activities_0":"checked"}',
                             ],
-                            'data' => (isset($data['campaign_task'])) ? $data['campaign_task'] : [],
+                            'data' => $data['campaign_task'] ?? [],
                         ]);
             }
         }
@@ -498,12 +499,12 @@ class ConnectwiseIntegration extends CrmAbstractIntegration
 
                 if ($integrationEntities) {
                     $this->em->getRepository('MauticPluginBundle:IntegrationEntity')->saveEntities($integrationEntities);
-                    $this->em->clear('Mautic\PluginBundle\Entity\IntegrationEntity');
+                    $this->em->clear(\Mautic\PluginBundle\Entity\IntegrationEntity::class);
                 }
 
                 // No use checking the next page if there are less records than the requested page size
 
-                if (count($records) < self::PAGESIZE) {
+                if ((is_countable($records) ? count($records) : 0) < self::PAGESIZE) {
                     break;
                 }
 
@@ -607,12 +608,12 @@ class ConnectwiseIntegration extends CrmAbstractIntegration
      * @param array|Lead $lead
      * @param array      $config
      *
-     * @return array|bool
      *
      * @throws ApiErrorException
      */
-    public function pushLead($lead, $config = [])
+    public function pushLead($lead, $config = []): array|bool
     {
+        $integrationEntities = [];
         $config      = $this->mergeConfigToFeatureSettings($config);
         $personFound = false;
         $leadPushed  = false;
@@ -660,7 +661,7 @@ class ConnectwiseIntegration extends CrmAbstractIntegration
 
                 if (!empty($integrationEntities)) {
                     $this->em->getRepository('MauticPluginBundle:IntegrationEntity')->saveEntities($integrationEntities);
-                    $this->em->clear('Mautic\PluginBundle\Entity\IntegrationEntity');
+                    $this->em->clear(\Mautic\PluginBundle\Entity\IntegrationEntity::class);
                 }
 
                 $leadPushed = true;
@@ -692,7 +693,7 @@ class ConnectwiseIntegration extends CrmAbstractIntegration
 
         $cwContactExists = $this->amendLeadDataBeforeMauticPopulate($cwContactData, $object);
 
-        $communicationItems = isset($cwContactData['communicationItems']) ? $cwContactData['communicationItems'] : [];
+        $communicationItems = $cwContactData['communicationItems'] ?? [];
 
         $leadFields = array_diff_key($leadFields, array_flip($fieldsToUpdateInCW));
         $leadFields = $this->getBlankFieldsToUpdate($leadFields, $cwContactExists, $objectFields, $config);
@@ -787,7 +788,7 @@ class ConnectwiseIntegration extends CrmAbstractIntegration
                     ]);
 
                     $matched['company'] = ['identifier' => $foundCompanies[0]['identifier']];
-                } catch (ApiErrorException $e) {
+                } catch (ApiErrorException) {
                     // No matching companies were found
                 }
 
@@ -909,6 +910,7 @@ class ConnectwiseIntegration extends CrmAbstractIntegration
      */
     public function getCampaignMembers($campaignId)
     {
+        $params = [];
         if (!$this->isAuthorized()) {
             return false;
         }
@@ -922,9 +924,7 @@ class ConnectwiseIntegration extends CrmAbstractIntegration
 
                 $existingContactsIds = array_column(array_filter(
                     $contacts,
-                    function ($contact) {
-                        return 'lead' === $contact['internal_entity'];
-                    }
+                    fn($contact) => 'lead' === $contact['internal_entity']
                 ), 'integration_entity_id');
 
                 $contactsToFetch = array_diff_key($recordList, array_flip($existingContactsIds));
@@ -936,11 +936,11 @@ class ConnectwiseIntegration extends CrmAbstractIntegration
                     $this->getLeads($params);
                 }
 
-                $saveCampaignMembers = array_merge($existingContactsIds, array_keys($contactsToFetch));
+                $saveCampaignMembers = [...$existingContactsIds, ...array_keys($contactsToFetch)];
 
                 $this->saveCampaignMembers($saveCampaignMembers, $campaignMemberObject, $campaignId);
 
-                if (count($campaignsMembersResults) < self::PAGESIZE) {
+                if ((is_countable($campaignsMembersResults) ? count($campaignsMembersResults) : 0) < self::PAGESIZE) {
                     // No use continuing as we have less results than page size
                     break;
                 }

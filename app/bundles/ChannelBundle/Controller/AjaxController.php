@@ -14,11 +14,10 @@ class AjaxController extends CommonAjaxController
      * @param $eventId
      * @param $contactId
      *
-     * @return LeadEventLog|\Symfony\Component\HttpFoundation\JsonResponse
      *
      * @throws \Exception
      */
-    public function cancelQueuedMessageEventAction(Request $request)
+    public function cancelQueuedMessageEventAction(Request $request): \LeadEventLog|\Symfony\Component\HttpFoundation\JsonResponse
     {
         $dataArray      = ['success' => 0];
         $messageQueueId = (int) $request->request->get('channelId');

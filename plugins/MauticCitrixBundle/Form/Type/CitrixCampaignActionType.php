@@ -16,16 +16,10 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class CitrixCampaignActionType extends AbstractType
 {
     /**
-     * @var TranslatorInterface
-     */
-    protected $translator;
-
-    /**
      * CitrixCampaignActionType constructor.
      */
-    public function __construct(TranslatorInterface $translator)
+    public function __construct(protected TranslatorInterface $translator)
     {
-        $this->translator = $translator;
     }
 
     /**

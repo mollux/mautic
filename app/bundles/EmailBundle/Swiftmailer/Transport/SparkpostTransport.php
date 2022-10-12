@@ -13,35 +13,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class SparkpostTransport extends AbstractTokenArrayTransport implements \Swift_Transport, TokenTransportInterface, CallbackTransportInterface
 {
-    /**
-     * @var string|null
-     */
-    private $apiKey;
+    private ?string $apiKey;
 
-    /**
-     * @var string|null
-     */
-    private $host;
-
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    /**
-     * @var TransportCallback
-     */
-    private $transportCallback;
-
-    /**
-     * @var SparkpostFactoryInterface
-     */
-    private $sparkpostFactory;
-
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
+    private ?string $host;
 
     public const SPARK_POST_HOSTS = [
         'us' => 'api.sparkpost.com',
@@ -53,18 +27,13 @@ class SparkpostTransport extends AbstractTokenArrayTransport implements \Swift_T
      */
     public function __construct(
         $apiKey,
-        TranslatorInterface $translator,
-        TransportCallback $transportCallback,
-        SparkpostFactoryInterface $sparkpostFactory,
-        LoggerInterface $logger,
+        private TranslatorInterface $translator,
+        private TransportCallback $transportCallback,
+        private SparkpostFactoryInterface $sparkpostFactory,
+        private LoggerInterface $logger,
         CoreParametersHelper $coreParametersHelper
     ) {
         $this->setApiKey($apiKey);
-
-        $this->translator           = $translator;
-        $this->transportCallback    = $transportCallback;
-        $this->sparkpostFactory     = $sparkpostFactory;
-        $this->logger               = $logger;
 
         $this->setHost($coreParametersHelper->get('mailer_sparkpost_region'));
     }

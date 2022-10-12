@@ -24,82 +24,21 @@ use Psr\Log\LoggerInterface;
 
 class EventExecutioner
 {
-    /**
-     * @var ActionExecutioner
-     */
-    private $actionExecutioner;
+    private ?\Mautic\CampaignBundle\Executioner\Result\Responses $responses = null;
 
-    /**
-     * @var ConditionExecutioner
-     */
-    private $conditionExecutioner;
-
-    /**
-     * @var DecisionExecutioner
-     */
-    private $decisionExecutioner;
-
-    /**
-     * @var EventCollector
-     */
-    private $collector;
-
-    /**
-     * @var EventLogger
-     */
-    private $eventLogger;
-
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
-     * @var EventScheduler
-     */
-    private $scheduler;
-
-    /**
-     * @var Responses
-     */
-    private $responses;
-
-    /**
-     * @var RemovedContactTracker
-     */
-    private $removedContactTracker;
-
-    /**
-     * @var \DateTime
-     */
-    private $executionDate;
-
-    /**
-     * @var LeadRepository
-     */
-    private $leadRepository;
+    private \DateTime $executionDate;
 
     public function __construct(
-        EventCollector $eventCollector,
-        EventLogger $eventLogger,
-        ActionExecutioner $actionExecutioner,
-        ConditionExecutioner $conditionExecutioner,
-        DecisionExecutioner $decisionExecutioner,
-        LoggerInterface $logger,
-        EventScheduler $scheduler,
-        RemovedContactTracker $removedContactTracker,
-        LeadRepository $leadRepository
+        private EventCollector $collector,
+        private EventLogger $eventLogger,
+        private ActionExecutioner $actionExecutioner,
+        private ConditionExecutioner $conditionExecutioner,
+        private DecisionExecutioner $decisionExecutioner,
+        private LoggerInterface $logger,
+        private EventScheduler $scheduler,
+        private RemovedContactTracker $removedContactTracker,
+        private LeadRepository $leadRepository
     ) {
-        $this->actionExecutioner     = $actionExecutioner;
-        $this->conditionExecutioner  = $conditionExecutioner;
-        $this->decisionExecutioner   = $decisionExecutioner;
-        $this->collector             = $eventCollector;
-        $this->eventLogger           = $eventLogger;
-        $this->logger                = $logger;
-        $this->scheduler             = $scheduler;
-        $this->removedContactTracker = $removedContactTracker;
-        $this->leadRepository        = $leadRepository;
-
         // Be sure that all events are compared using the exact same \DateTime
         $this->executionDate = new \DateTime();
     }
@@ -227,9 +166,7 @@ class EventExecutioner
         $executeThese = $this->scheduleEvents($events, $contacts, $childrenCounter, $isInactive);
 
         // Execute non jump-to events normally
-        $otherEvents = $executeThese->filter(function (Event $event) {
-            return CampaignActionJumpToEventSubscriber::EVENT_NAME !== $event->getType();
-        });
+        $otherEvents = $executeThese->filter(fn(Event $event) => CampaignActionJumpToEventSubscriber::EVENT_NAME !== $event->getType());
 
         if ($otherEvents->count()) {
             foreach ($otherEvents as $event) {
@@ -238,9 +175,7 @@ class EventExecutioner
         }
 
         // Now execute jump to events
-        $jumpEvents = $executeThese->filter(function (Event $event) {
-            return CampaignActionJumpToEventSubscriber::EVENT_NAME === $event->getType();
-        });
+        $jumpEvents = $executeThese->filter(fn(Event $event) => CampaignActionJumpToEventSubscriber::EVENT_NAME === $event->getType());
         if ($jumpEvents->count()) {
             $jumpLogs = [];
 
@@ -300,7 +235,7 @@ class EventExecutioner
      * @param ArrayCollection|LeadEventLog[] $logs
      * @param string                         $error
      */
-    public function recordLogsWithError(ArrayCollection $logs, $error)
+    public function recordLogsWithError(\Doctrine\Common\Collections\ArrayCollection|array $logs, $error)
     {
         foreach ($logs as $log) {
             $log->appendToMetadata(

@@ -18,7 +18,7 @@ class ThemeController extends FormController
     /**
      * @return JsonResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function indexAction()
+    public function indexAction(): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         //set some permissions
         $permissions = $this->get('mautic.security')->isGranted([
@@ -115,8 +115,9 @@ class ThemeController extends FormController
      *
      * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function downloadAction($themeName)
+    public function downloadAction($themeName): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
+        $zipPath = null;
         /** @var ThemeHelperInterface $themeHelper */
         $themeHelper = $this->container->get('mautic.helper.theme');
         $flashes     = [];
@@ -180,10 +181,8 @@ class ThemeController extends FormController
      * Deletes the theme.
      *
      * @param string $themeName
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function deleteAction($themeName)
+    public function deleteAction($themeName): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         $flashes = [];
 
@@ -200,15 +199,13 @@ class ThemeController extends FormController
 
     /**
      * Deletes a group of themes.
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function batchDeleteAction()
+    public function batchDeleteAction(): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         $flashes = [];
 
         if ('POST' == $this->request->getMethod()) {
-            $themeNames = json_decode($this->request->query->get('ids', '{}'));
+            $themeNames = json_decode($this->request->query->get('ids', '{}'), null, 512, JSON_THROW_ON_ERROR);
 
             foreach ($themeNames as $themeName) {
                 $flashes = $this->deleteTheme($themeName);
@@ -229,6 +226,7 @@ class ThemeController extends FormController
      */
     public function deleteTheme($themeName)
     {
+        $theme = null;
         $flashes     = [];
         $themeHelper = $this->container->get('mautic.helper.theme');
 

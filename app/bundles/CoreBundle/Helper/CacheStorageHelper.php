@@ -30,27 +30,7 @@ class CacheStorageHelper
     /**
      * @var string
      */
-    protected $adaptor;
-
-    /**
-     * @var Connection
-     */
-    protected $connection;
-
-    /**
-     * @var string
-     */
     protected $cacheDir;
-
-    /**
-     * @var string
-     */
-    protected $namespace;
-
-    /**
-     * @var int
-     */
-    protected $defaultExpiration;
 
     /**
      * Semi BC support for pre 2.6.0.
@@ -66,14 +46,11 @@ class CacheStorageHelper
      * @param null $namespace
      * @param null $cacheDir
      * @param int  $defaultExpiration
+     * @param string $adaptor
      */
-    public function __construct($adaptor, $namespace = null, Connection $connection = null, $cacheDir = null, $defaultExpiration = 0)
+    public function __construct(protected $adaptor, protected $namespace = null, protected Connection $connection = null, $cacheDir = null, protected $defaultExpiration = 0)
     {
         $this->cacheDir          = $cacheDir.'/data';
-        $this->adaptor           = $adaptor;
-        $this->namespace         = $namespace;
-        $this->connection        = $connection;
-        $this->defaultExpiration = $defaultExpiration;
 
         // @deprecated BC support for pre 2.6.0 to be removed in 3.0
         if (!in_array($adaptor, [self::ADAPTOR_DATABASE, self::ADAPTOR_FILESYSTEM])) {
@@ -89,12 +66,9 @@ class CacheStorageHelper
         $this->setCacheAdaptor();
     }
 
-    /**
-     * @return string|false
-     */
-    public function getAdaptorClassName()
+    public function getAdaptorClassName(): string|false
     {
-        return get_class($this->cacheAdaptor);
+        return $this->cacheAdaptor::class;
     }
 
     /**

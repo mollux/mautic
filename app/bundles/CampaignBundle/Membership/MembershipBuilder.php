@@ -14,61 +14,18 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class MembershipBuilder
 {
-    /**
-     * @var MembershipManager
-     */
-    private $manager;
+    private ?\Mautic\CampaignBundle\Entity\Campaign $campaign = null;
 
-    /**
-     * @var CampaignMemberRepository
-     */
-    private $campaignMemberRepository;
+    private ?\Mautic\CampaignBundle\Executioner\ContactFinder\Limiter\ContactLimiter $contactLimiter = null;
 
-    /**
-     * @var LeadRepository
-     */
-    private $leadRepository;
+    private ?int $runLimit = null;
 
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
+    private ?\Symfony\Component\Console\Output\OutputInterface $output = null;
 
-    /**
-     * @var Campaign
-     */
-    private $campaign;
+    private ?\Symfony\Component\Console\Helper\ProgressBar $progressBar = null;
 
-    /**
-     * @var ContactLimiter
-     */
-    private $contactLimiter;
-
-    /**
-     * @var int
-     */
-    private $runLimit;
-
-    /**
-     * @var OutputInterface|null
-     */
-    private $output;
-
-    /**
-     * @var ProgressBar|null
-     */
-    private $progressBar;
-
-    public function __construct(
-        MembershipManager $manager,
-        CampaignMemberRepository $campaignMemberRepository,
-        LeadRepository $leadRepository,
-        TranslatorInterface $translator
-    ) {
-        $this->manager                  = $manager;
-        $this->campaignMemberRepository = $campaignMemberRepository;
-        $this->leadRepository           = $leadRepository;
-        $this->translator               = $translator;
+    public function __construct(private MembershipManager $manager, private CampaignMemberRepository $campaignMemberRepository, private LeadRepository $leadRepository, private TranslatorInterface $translator)
+    {
     }
 
     /**

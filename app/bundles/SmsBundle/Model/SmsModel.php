@@ -27,38 +27,8 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class SmsModel extends FormModel implements AjaxLookupModelInterface
 {
-    /**
-     * @var TrackableModel
-     */
-    protected $pageTrackableModel;
-
-    /**
-     * @var LeadModel
-     */
-    protected $leadModel;
-
-    /**
-     * @var MessageQueueModel
-     */
-    protected $messageQueueModel;
-
-    /**
-     * @var TransportChain
-     */
-    protected $transport;
-
-    /**
-     * @var CacheStorageHelper
-     */
-    private $cacheStorageHelper;
-
-    public function __construct(TrackableModel $pageTrackableModel, LeadModel $leadModel, MessageQueueModel $messageQueueModel, TransportChain $transport, CacheStorageHelper $cacheStorageHelper)
+    public function __construct(protected TrackableModel $pageTrackableModel, protected LeadModel $leadModel, protected MessageQueueModel $messageQueueModel, protected TransportChain $transport, private CacheStorageHelper $cacheStorageHelper)
     {
-        $this->pageTrackableModel = $pageTrackableModel;
-        $this->leadModel          = $leadModel;
-        $this->messageQueueModel  = $messageQueueModel;
-        $this->transport          = $transport;
-        $this->cacheStorageHelper = $cacheStorageHelper;
     }
 
     /**
@@ -170,10 +140,8 @@ class SmsModel extends FormModel implements AjaxLookupModelInterface
      * Return a list of entities.
      *
      * @param array $args [start, limit, filter, orderBy, orderByDir]
-     *
-     * @return \Doctrine\ORM\Tools\Pagination\Paginator|array
      */
-    public function getEntities(array $args = [])
+    public function getEntities(array $args = []): \Doctrine\ORM\Tools\Pagination\Paginator|array
     {
         $entities = parent::getEntities($args);
 
@@ -196,8 +164,9 @@ class SmsModel extends FormModel implements AjaxLookupModelInterface
      */
     public function sendSms(Sms $sms, $sendTo, $options = [])
     {
-        $channel = (isset($options['channel'])) ? $options['channel'] : null;
-        $listId  = (isset($options['listId'])) ? $options['listId'] : null;
+        $stats = [];
+        $channel = $options['channel'] ?? null;
+        $listId  = $options['listId'] ?? null;
 
         if ($sendTo instanceof Lead) {
             $sendTo = [$sendTo];
@@ -259,7 +228,7 @@ class SmsModel extends FormModel implements AjaxLookupModelInterface
         }
 
         if (!empty($contacts)) {
-            $messageQueue    = (isset($options['resend_message_queue'])) ? $options['resend_message_queue'] : null;
+            $messageQueue    = $options['resend_message_queue'] ?? null;
             $campaignEventId = (is_array($channel) && 'campaign.event' === $channel[0] && !empty($channel[1])) ? $channel[1] : null;
 
             $queued = $this->messageQueueModel->processFrequencyRules(
@@ -287,7 +256,7 @@ class SmsModel extends FormModel implements AjaxLookupModelInterface
             $stats = [];
             // @todo we should allow batch sending based on transport, MessageBird does support 20 SMS at once
             // the transport chain is already prepared for it
-            if (count($contacts)) {
+            if (is_countable($contacts) ? count($contacts) : 0) {
                 /** @var Lead $lead */
                 foreach ($contacts as $lead) {
                     $leadId          = $lead->getId();
@@ -569,7 +538,7 @@ class SmsModel extends FormModel implements AjaxLookupModelInterface
                     $limit,
                     $start,
                     $this->security->isGranted($this->getPermissionBase().':viewother'),
-                    isset($options['sms_type']) ? $options['sms_type'] : null
+                    $options['sms_type'] ?? null
                 );
 
                 foreach ($entities as $entity) {

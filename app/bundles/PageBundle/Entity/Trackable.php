@@ -11,40 +11,25 @@ use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
  */
 class Trackable
 {
-    /**
-     * @var Redirect
-     */
-    private $redirect;
+    private ?\Mautic\PageBundle\Entity\Redirect $redirect = null;
 
-    /**
-     * @var string
-     */
-    private $channel;
+    private ?string $channel = null;
 
-    /**
-     * @var int
-     */
-    private $channelId;
+    private ?int $channelId = null;
 
-    /**
-     * @var int
-     */
-    private $hits = 0;
+    private int $hits = 0;
 
-    /**
-     * @var int
-     */
-    private $uniqueHits = 0;
+    private int $uniqueHits = 0;
 
     public static function loadMetadata(ORM\ClassMetadata $metadata)
     {
         $builder = new ClassMetadataBuilder($metadata);
 
         $builder->setTable('channel_url_trackables')
-            ->setCustomRepositoryClass('Mautic\PageBundle\Entity\TrackableRepository')
+            ->setCustomRepositoryClass(\Mautic\PageBundle\Entity\TrackableRepository::class)
             ->addIndex(['channel', 'channel_id'], 'channel_url_trackable_search');
 
-        $builder->createManyToOne('redirect', 'Mautic\PageBundle\Entity\Redirect')
+        $builder->createManyToOne('redirect', \Mautic\PageBundle\Entity\Redirect::class)
             ->addJoinColumn('redirect_id', 'id', true, false, 'CASCADE')
             ->cascadePersist()
             ->inversedBy('trackables')

@@ -22,9 +22,7 @@ class LogRepository extends CommonRepository
             ->setParameter('logMaxLimit', $logMaxLimit);
 
         return array_map(
-            function ($row) {
-                return (int) $row['webhook_id'];
-            },
+            fn($row) => (int) $row['webhook_id'],
             $qb->execute()->fetchAll()
         );
     }

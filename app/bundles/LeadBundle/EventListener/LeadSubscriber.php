@@ -29,65 +29,22 @@ class LeadSubscriber implements EventSubscriberInterface
     use ChannelTrait;
 
     /**
-     * @var AuditLogModel
+     * @param bool $isTest
      */
-    private $auditLogModel;
-
-    /**
-     * @var IpLookupHelper
-     */
-    private $ipLookupHelper;
-
-    /**
-     * @var LeadChangeEventDispatcher
-     */
-    private $leadEventDispatcher;
-
-    /**
-     * @var DncReasonHelper
-     */
-    private $dncReasonHelper;
-
-    /**
-     * @var EntityManager
-     */
-    private $entityManager;
-
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    /**
-     * @var RouterInterface
-     */
-    private $router;
-
-    /**
-     * Whether or not we're running in a test environment.
-     *
-     * @var bool
-     */
-    private $isTest;
-
     public function __construct(
-        IpLookupHelper $ipLookupHelper,
-        AuditLogModel $auditLogModel,
-        LeadChangeEventDispatcher $eventDispatcher,
-        DncReasonHelper $dncReasonHelper,
-        EntityManager $entityManager,
-        TranslatorInterface $translator,
-        RouterInterface $router,
-        $isTest = false
-    ) {
-        $this->ipLookupHelper      = $ipLookupHelper;
-        $this->auditLogModel       = $auditLogModel;
-        $this->leadEventDispatcher = $eventDispatcher;
-        $this->dncReasonHelper     = $dncReasonHelper;
-        $this->entityManager       = $entityManager;
-        $this->translator          = $translator;
-        $this->router              = $router;
-        $this->isTest              = $isTest;
+        private IpLookupHelper $ipLookupHelper,
+        private AuditLogModel $auditLogModel,
+        private LeadChangeEventDispatcher $leadEventDispatcher,
+        private DncReasonHelper $dncReasonHelper,
+        private EntityManager $entityManager,
+        private TranslatorInterface $translator,
+        private RouterInterface $router,
+        /**
+         * Whether or not we're running in a test environment.
+         */
+        private $isTest = false
+    )
+    {
     }
 
     /**
@@ -126,7 +83,7 @@ class LeadSubscriber implements EventSubscriberInterface
                 return;
             }
 
-            $check = base64_encode($lead->getId().md5(json_encode($details)));
+            $check = base64_encode($lead->getId().md5(json_encode($details, JSON_THROW_ON_ERROR)));
             if (!in_array($check, $preventLoop)) {
                 $preventLoop[] = $check;
 
@@ -637,7 +594,7 @@ class LeadSubscriber implements EventSubscriberInterface
             // Add the logs to the event array
             foreach ($imports['results'] as $import) {
                 if (is_string($import['properties'])) {
-                    $import['properties'] = json_decode($import['properties'], true);
+                    $import['properties'] = json_decode($import['properties'], true, 512, JSON_THROW_ON_ERROR);
                 }
                 $eventLabel = 'N/A';
                 if (!empty($import['properties']['file'])) {

@@ -25,40 +25,13 @@ class EntityLookupChoiceLoader implements ChoiceLoaderInterface
     protected $choices = [];
 
     /**
-     * @var Options
-     */
-    protected $options;
-
-    /**
-     * @var ModelFactory
-     */
-    protected $modelFactory;
-
-    /**
-     * @var TranslatorInterface
-     */
-    protected $translator;
-
-    /**
-     * @var Connection
-     */
-    protected $connection;
-
-    /**
      * @param array $options
      */
-    public function __construct(ModelFactory $modelFactory, TranslatorInterface $translator, Connection $connection, $options = [])
+    public function __construct(protected ModelFactory $modelFactory, protected TranslatorInterface $translator, protected Connection $connection, protected $options = [])
     {
-        $this->modelFactory = $modelFactory;
-        $this->translator   = $translator;
-        $this->connection   = $connection;
-        $this->options      = $options;
     }
 
-    /**
-     * @param Options|array $options
-     */
-    public function setOptions($options)
+    public function setOptions(\Symfony\Component\OptionsResolver\Options|array $options)
     {
         $this->options = $options;
     }
@@ -128,9 +101,7 @@ class EntityLookupChoiceLoader implements ChoiceLoaderInterface
 
             if ($data) {
                 $data = array_map(
-                    function ($v) {
-                        return (int) $v;
-                    },
+                    fn($v) => (int) $v,
                     (array) $data
                 );
             }
@@ -203,9 +174,7 @@ class EntityLookupChoiceLoader implements ChoiceLoaderInterface
             $counts     = array_count_values($prepped);
             $duplicates = array_filter(
                 $prepped,
-                function ($value) use ($counts) {
-                    return $counts[$value] > 1;
-                }
+                fn($value) => $counts[$value] > 1
             );
 
             if (count($duplicates)) {
@@ -236,10 +205,10 @@ class EntityLookupChoiceLoader implements ChoiceLoaderInterface
         }
         $model = $this->modelFactory->getModel($modelName);
         if (!$model instanceof AjaxLookupModelInterface) {
-            throw new \InvalidArgumentException(get_class($model).' must implement '.AjaxLookupModelInterface::class);
+            throw new \InvalidArgumentException($model::class.' must implement '.AjaxLookupModelInterface::class);
         }
 
-        $args = (isset($this->options['lookup_arguments'])) ? $this->options['lookup_arguments'] : [];
+        $args = $this->options['lookup_arguments'] ?? [];
         if ($dataPlaceholder = array_search('$data', $args)) {
             $args[$dataPlaceholder] = $data;
         }
@@ -263,7 +232,7 @@ class EntityLookupChoiceLoader implements ChoiceLoaderInterface
                 $composite->add(
                     $expr->in($alias.'.id', $data)
                 );
-                if (count($data) > $limit) {
+                if ((is_countable($data) ? count($data) : 0) > $limit) {
                     $limit = $data;
                 }
             }
@@ -276,9 +245,7 @@ class EntityLookupChoiceLoader implements ChoiceLoaderInterface
 
     protected function formatChoices(array &$choices)
     {
-        // Get the first key
-        reset($choices);
-        $firstKey = key($choices);
+        $firstKey = array_key_first($choices);
 
         if (is_array($choices[$firstKey])) {
             $validChoices = [];

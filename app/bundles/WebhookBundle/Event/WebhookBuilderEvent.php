@@ -11,19 +11,10 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class WebhookBuilderEvent extends Event
 {
-    /**
-     * @var array
-     */
-    private $events = [];
+    private array $events = [];
 
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    public function __construct(TranslatorInterface $translator)
+    public function __construct(private TranslatorInterface $translator)
     {
-        $this->translator = $translator;
     }
 
     /**
@@ -56,10 +47,8 @@ class WebhookBuilderEvent extends Event
         static $sorted = false;
 
         if (empty($sorted)) {
-            uasort($this->events, function ($a, $b) {
-                return strnatcasecmp(
-                    $a['label'], $b['label']);
-            });
+            uasort($this->events, fn($a, $b) => strnatcasecmp(
+                $a['label'], $b['label']));
             $sorted = true;
         }
 

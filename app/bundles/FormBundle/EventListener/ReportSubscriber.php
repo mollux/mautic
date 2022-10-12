@@ -16,20 +16,8 @@ class ReportSubscriber implements EventSubscriberInterface
     public const CONTEXT_FORMS           = 'forms';
     public const CONTEXT_FORM_SUBMISSION = 'form.submissions';
 
-    /**
-     * @var CompanyReportData
-     */
-    private $companyReportData;
-
-    /**
-     * @var SubmissionRepository
-     */
-    private $submissionRepository;
-
-    public function __construct(CompanyReportData $companyReportData, SubmissionRepository $submissionRepository)
+    public function __construct(private CompanyReportData $companyReportData, private SubmissionRepository $submissionRepository)
     {
-        $this->companyReportData    = $companyReportData;
-        $this->submissionRepository = $submissionRepository;
     }
 
     /**

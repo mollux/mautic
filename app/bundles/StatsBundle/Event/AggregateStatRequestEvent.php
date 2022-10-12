@@ -8,42 +8,15 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class AggregateStatRequestEvent extends Event
 {
-    /**
-     * @var string
-     */
-    private $statName;
-
-    /**
-     * @var \DateTimeInterface
-     */
-    private $fromDateTime;
-
-    /**
-     * @var \DateTimeInterface
-     */
-    private $toDateTime;
-
-    /**
-     * @var StatCollection
-     */
-    private $statCollection;
-
-    /**
-     * @var FetchOptions
-     */
-    private $options;
+    private \Mautic\StatsBundle\Aggregate\Collection\StatCollection $statCollection;
 
     /**
      * AggregateStatRequestEvent constructor.
      *
      * @param string $statName
      */
-    public function __construct($statName, \DateTimeInterface $fromDateTime, \DateTimeInterface $toDateTime, FetchOptions $eventOptions)
+    public function __construct(private $statName, private \DateTimeInterface $fromDateTime, private \DateTimeInterface $toDateTime, private FetchOptions $options)
     {
-        $this->statName       = $statName;
-        $this->fromDateTime   = $fromDateTime;
-        $this->toDateTime     = $toDateTime;
-        $this->options        = $eventOptions;
         $this->statCollection = new StatCollection();
     }
 
@@ -120,7 +93,7 @@ class AggregateStatRequestEvent extends Event
      */
     public function checkContextPrefix($prefix)
     {
-        return 0 === strpos($this->statName, $prefix);
+        return str_starts_with($this->statName, $prefix);
     }
 
     /**
@@ -129,7 +102,7 @@ class AggregateStatRequestEvent extends Event
     public function checkContextPrefixes(array $prefixes)
     {
         foreach ($prefixes as $string) {
-            if (0 === strpos($this->statName, $string)) {
+            if (str_starts_with($this->statName, $string)) {
                 return true;
             }
         }

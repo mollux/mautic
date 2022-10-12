@@ -10,29 +10,11 @@ use Symfony\Component\Form\Exception\TransformationFailedException;
 class TagEntityModelTransformer implements DataTransformerInterface
 {
     /**
-     * @var EntityManager
-     */
-    private $em;
-
-    /**
-     * @var string
-     */
-    private $repository;
-
-    /**
-     * @var bool
-     */
-    private $isArray;
-
-    /**
-     * @param string $repo
+     * @param string $repository
      * @param bool   $isArray
      */
-    public function __construct(EntityManager $em, $repo = '', $isArray = false)
+    public function __construct(private EntityManager $em, private $repository = '', private $isArray = false)
     {
-        $this->em         = $em;
-        $this->repository = $repo;
-        $this->isArray    = $isArray;
     }
 
     /**
@@ -107,7 +89,7 @@ class TagEntityModelTransformer implements DataTransformerInterface
             'ignore_paginator' => true,
         ]);
 
-        if (!count($entities)) {
+        if (!(is_countable($entities) ? count($entities) : 0)) {
             throw new TransformationFailedException(sprintf('Tags for "%s" does not exist!', implode(', ', $id)));
         }
 

@@ -12,36 +12,8 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class SearchSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var PointModel
-     */
-    private $pointModel;
-
-    /**
-     * @var TriggerModel
-     */
-    private $pointTriggerModel;
-
-    /**
-     * @var CorePermissions
-     */
-    private $security;
-
-    /**
-     * @var TemplatingHelper
-     */
-    private $templating;
-
-    public function __construct(
-        PointModel $pointModel,
-        TriggerModel $pointTriggerModel,
-        CorePermissions $security,
-        TemplatingHelper $templating
-    ) {
-        $this->pointModel        = $pointModel;
-        $this->pointTriggerModel = $pointTriggerModel;
-        $this->security          = $security;
-        $this->templating        = $templating;
+    public function __construct(private PointModel $pointModel, private TriggerModel $pointTriggerModel, private CorePermissions $security, private TemplatingHelper $templating)
+    {
     }
 
     /**

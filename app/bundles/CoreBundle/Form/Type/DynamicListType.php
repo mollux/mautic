@@ -52,41 +52,31 @@ class DynamicListType extends AbstractType
                     'required' => false,
                     'attr'     => [
                         'class'         => 'form-control',
-                        'preaddon'      => function (Options $options) {
-                            return $options['remove_icon'];
-                        },
-                        'preaddon_attr' => function (Options $options) {
-                            return [
-                                'onclick' => $options['remove_onclick'],
-                            ];
-                        },
-                        'postaddon'     => function (Options $options) {
-                            return $options['sortable'];
-                        },
+                        'preaddon'      => fn(Options $options) => $options['remove_icon'],
+                        'preaddon_attr' => fn(Options $options) => [
+                            'onclick' => $options['remove_onclick'],
+                        ],
+                        'postaddon'     => fn(Options $options) => $options['sortable'],
                     ],
 
-                    'constraints'    => function (Options $options) {
-                        return ($options['option_notblank']) ? [
-                            new NotBlank(
-                                ['message' => 'mautic.form.lists.notblank']
-                            ),
-                        ] : [];
-                    },
+                    'constraints'    => fn(Options $options) => ($options['option_notblank']) ? [
+                        new NotBlank(
+                            ['message' => 'mautic.form.lists.notblank']
+                        ),
+                    ] : [],
                     'error_bubbling' => true,
                 ],
                 'allow_add'       => true,
                 'allow_delete'    => true,
                 'prototype'       => true,
-                'constraints'     => function (Options $options) {
-                    return ($options['option_required']) ? [
-                        new Count(
-                            [
-                                'minMessage' => 'mautic.form.lists.count',
-                                'min'        => 1,
-                            ]
-                        ),
-                    ] : [];
-                },
+                'constraints'     => fn(Options $options) => ($options['option_required']) ? [
+                    new Count(
+                        [
+                            'minMessage' => 'mautic.form.lists.count',
+                            'min'        => 1,
+                        ]
+                    ),
+                ] : [],
                 'error_bubbling'  => false,
             ]
         );

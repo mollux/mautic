@@ -24,26 +24,6 @@ abstract class MonitorTwitterBaseCommand extends Command
     protected $twitter;
 
     /**
-     * @var Translator
-     */
-    protected $translator;
-
-    /**
-     * @var EventDispatcherInterface
-     */
-    protected $dispatcher;
-
-    /**
-     * @var IntegrationHelper
-     */
-    protected $integrationHelper;
-
-    /**
-     * @var TwitterCommandHelper
-     */
-    private $twitterCommandHelper;
-
-    /**
      * @var InputInterface
      */
     protected $input;
@@ -69,17 +49,12 @@ abstract class MonitorTwitterBaseCommand extends Command
     protected $queryCount = 100;
 
     public function __construct(
-        EventDispatcherInterface $dispatcher,
-        Translator $translator,
-        IntegrationHelper $integrationHelper,
-        TwitterCommandHelper $twitterCommandHelper,
+        protected EventDispatcherInterface $dispatcher,
+        protected Translator $translator,
+        protected IntegrationHelper $integrationHelper,
+        private TwitterCommandHelper $twitterCommandHelper,
         CoreParametersHelper $coreParametersHelper
     ) {
-        $this->dispatcher           = $dispatcher;
-        $this->translator           = $translator;
-        $this->integrationHelper    = $integrationHelper;
-        $this->twitterCommandHelper = $twitterCommandHelper;
-
         $this->translator->setLocale($coreParametersHelper->get('locale', 'en_US'));
 
         parent::__construct();
@@ -220,7 +195,7 @@ abstract class MonitorTwitterBaseCommand extends Command
             return 0;
         }
 
-        if (count($results['statuses'])) {
+        if (is_countable($results['statuses']) ? count($results['statuses']) : 0) {
             $this->twitterCommandHelper->createLeadsFromStatuses($results['statuses'], $monitor);
         } else {
             $this->output->writeln($this->translator->trans('mautic.social.monitoring.twitter.no.new.tweets'));
@@ -238,7 +213,7 @@ abstract class MonitorTwitterBaseCommand extends Command
         // @todo add a check for max iterations
         if (is_array($stats) && array_key_exists('max_id_str', $stats)
             && ($this->runCount < $this->maxRuns)
-            && count($results['statuses'])
+            && (is_countable($results['statuses']) ? count($results['statuses']) : 0)
         ) {
             // recursive
             $this->processMonitor($monitor);

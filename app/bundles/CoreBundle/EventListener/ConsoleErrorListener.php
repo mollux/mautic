@@ -12,14 +12,8 @@ use Symfony\Component\Console\Event\ConsoleErrorEvent;
  */
 class ConsoleErrorListener
 {
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    public function __construct(LoggerInterface $logger)
+    public function __construct(private LoggerInterface $logger)
     {
-        $this->logger = $logger;
     }
 
     public function onConsoleError(ConsoleErrorEvent $event)
@@ -32,7 +26,7 @@ class ConsoleErrorListener
 
         $message = sprintf(
             '%s: %s (uncaught exception) at %s line %s while running console command `%s`%s',
-            get_class($exception),
+            $exception::class,
             $exception->getMessage(),
             $exception->getFile(),
             $exception->getLine(),

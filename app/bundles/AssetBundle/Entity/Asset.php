@@ -18,45 +18,21 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 class Asset extends FormEntity
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var string
-     */
-    private $title;
+    private ?string $title = null;
 
-    /**
-     * @var string
-     */
-    private $description;
+    private ?string $description = null;
 
-    /**
-     * @var string
-     */
-    private $storageLocation = 'local';
+    private string $storageLocation = 'local';
 
-    /**
-     * @var string
-     */
-    private $path;
+    private ?string $path = null;
 
-    /**
-     * @var string
-     */
-    private $remotePath;
+    private ?string $remotePath = null;
 
-    /**
-     * @var string
-     */
-    private $originalFileName;
+    private ?string $originalFileName = null;
 
-    /**
-     * @var File
-     */
-    private $file;
+    private ?\Symfony\Component\HttpFoundation\File\File $file = null;
 
     /**
      * Holds upload directory.
@@ -87,77 +63,38 @@ class Asset extends FormEntity
      */
     private $tempName;
 
-    /**
-     * @var string
-     */
-    private $alias;
+    private ?string $alias = null;
 
-    /**
-     * @var string
-     */
-    private $language = 'en';
+    private string $language = 'en';
 
-    /**
-     * @var \DateTime|null
-     */
-    private $publishUp;
+    private ?\DateTime $publishUp = null;
 
-    /**
-     * @var \DateTime|null
-     */
-    private $publishDown;
+    private ?\DateTime $publishDown = null;
 
-    /**
-     * @var int
-     */
-    private $downloadCount = 0;
+    private int $downloadCount = 0;
 
-    /**
-     * @var int
-     */
-    private $uniqueDownloadCount = 0;
+    private int $uniqueDownloadCount = 0;
 
-    /**
-     * @var int
-     */
-    private $revision = 1;
+    private int $revision = 1;
 
-    /**
-     * @var \Mautic\CategoryBundle\Entity\Category
-     **/
-    private $category;
+    private ?\Mautic\CategoryBundle\Entity\Category $category = null;
 
-    /**
-     * @var string
-     */
-    private $extension;
+    private ?string $extension = null;
 
-    /**
-     * @var string
-     */
-    private $mime;
+    private ?string $mime = null;
 
-    /**
-     * @var int
-     */
-    private $size;
+    private ?int $size = null;
 
-    /**
-     * @var string|null
-     */
-    private $downloadUrl;
+    private ?string $downloadUrl = null;
 
-    /**
-     * @var bool
-     */
-    private $disallow = false;
+    private bool $disallow = false;
 
     public static function loadMetadata(ORM\ClassMetadata $metadata)
     {
         $builder = new ClassMetadataBuilder($metadata);
 
         $builder->setTable('assets')
-            ->setCustomRepositoryClass('Mautic\AssetBundle\Entity\AssetRepository')
+            ->setCustomRepositoryClass(\Mautic\AssetBundle\Entity\AssetRepository::class)
             ->addIndex(['alias'], 'asset_alias_search');
 
         $builder->addIdColumns('title');
@@ -276,8 +213,6 @@ class Asset extends FormEntity
 
     /**
      * Sets file.
-     *
-     * @param File $file
      */
     public function setFile(File $file = null)
     {
@@ -343,10 +278,7 @@ class Asset extends FormEntity
         return $this->extension;
     }
 
-    /**
-     * @param mixed $extension
-     */
-    public function setExtension($extension)
+    public function setExtension(mixed $extension)
     {
         $this->extension = $extension;
     }
@@ -359,10 +291,7 @@ class Asset extends FormEntity
         return $this->mime;
     }
 
-    /**
-     * @param mixed $mime
-     */
-    public function setMime($mime)
+    public function setMime(mixed $mime)
     {
         $this->mime = $mime;
     }
@@ -622,7 +551,6 @@ class Asset extends FormEntity
     /**
      * Set category.
      *
-     * @param \Mautic\CategoryBundle\Entity\Category $category
      *
      * @return Asset
      */
@@ -688,7 +616,7 @@ class Asset extends FormEntity
                 $this->setTitle($this->file->getClientOriginalName());
             }
 
-            $filename  = sha1(uniqid(mt_rand(), true));
+            $filename  = sha1(uniqid(random_int(0, mt_getrandmax()), true));
             $extension = $this->getFile()->guessExtension();
 
             if (empty($extension)) {
@@ -848,7 +776,7 @@ class Asset extends FormEntity
             return $this->maxSize;
         }
 
-        return 6000000;
+        return 6_000_000;
     }
 
     /**
@@ -1099,7 +1027,7 @@ class Asset extends FormEntity
 
         try {
             $file = new File($path);
-        } catch (FileNotFoundException $e) {
+        } catch (FileNotFoundException) {
             $file = null;
         }
 
@@ -1136,10 +1064,7 @@ class Asset extends FormEntity
         return $this->description;
     }
 
-    /**
-     * @param mixed $description
-     */
-    public function setDescription($description)
+    public function setDescription(mixed $description)
     {
         $this->description = $description;
     }
@@ -1147,7 +1072,7 @@ class Asset extends FormEntity
     public static function loadValidatorMetadata(ClassMetadata $metadata)
     {
         // Add a constraint to manage the file upload data
-        $metadata->addConstraint(new Assert\Callback([__CLASS__, 'validateFile']));
+        $metadata->addConstraint(new Assert\Callback([self::class, 'validateFile']));
     }
 
     /**
@@ -1245,10 +1170,8 @@ class Asset extends FormEntity
      * @param bool   $humanReadable
      * @param bool   $forceUpdate
      * @param string $inUnit
-     *
-     * @return float|string
      */
-    public function getSize($humanReadable = true, $forceUpdate = false, $inUnit = '')
+    public function getSize($humanReadable = true, $forceUpdate = false, $inUnit = ''): float|string
     {
         if (empty($this->size) || $forceUpdate) {
             // Try to fetch it
@@ -1276,11 +1199,9 @@ class Asset extends FormEntity
     }
 
     /**
-     * @param mixed $size
-     *
      * @return Asset
      */
-    public function setSize($size)
+    public function setSize(mixed $size)
     {
         $this->size = $size;
 
@@ -1318,13 +1239,13 @@ class Asset extends FormEntity
      */
     public static function convertBytesToHumanReadable($size, $unit = '')
     {
-        list($number, $unit) = self::convertBytesToUnit($size, $unit);
+        [$number, $unit] = self::convertBytesToUnit($size, $unit);
 
         // Format number
         $number = number_format($number, 2);
 
         // Remove trailing .00
-        $number = false !== strpos($number, '.') ? rtrim(rtrim($number, '0'), '.') : $number;
+        $number = str_contains($number, '.') ? rtrim(rtrim($number, '0'), '.') : $number;
 
         return $number.' '.$unit;
     }
@@ -1397,10 +1318,7 @@ class Asset extends FormEntity
         return $this->disallow;
     }
 
-    /**
-     * @param mixed $disallow
-     */
-    public function setDisallow($disallow)
+    public function setDisallow(mixed $disallow)
     {
         $this->disallow = $disallow;
     }

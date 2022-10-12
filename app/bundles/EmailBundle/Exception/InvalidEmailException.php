@@ -8,19 +8,12 @@ use Throwable;
 class InvalidEmailException extends InvalidValueException
 {
     /**
-     * @var string
-     */
-    protected $emailAddress;
-
-    /**
      * @param string $emailAddress
      * @param string $message
      * @param int    $code
      */
-    public function __construct($emailAddress, $message = '', $code = 0, Throwable $previous = null)
+    public function __construct(protected $emailAddress, $message = '', $code = 0, Throwable $previous = null)
     {
-        $this->emailAddress = $emailAddress;
-
         parent::__construct($message, $code, $previous);
     }
 

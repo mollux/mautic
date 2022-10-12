@@ -12,14 +12,7 @@ use Symfony\Contracts\EventDispatcher\Event;
  */
 class CampaignDecisionEvent extends Event
 {
-    protected $lead;
-    protected $events;
-    protected $decisionType;
-    protected $decisionEventDetails;
-    protected $eventSettings;
-    protected $isRootLevel;
     protected $decisionTriggered = false;
-    protected $logs;
 
     /**
      * @param $lead
@@ -30,15 +23,8 @@ class CampaignDecisionEvent extends Event
      * @param $isRootLevel
      * @param LeadEventLog[] $logs
      */
-    public function __construct($lead, $decisionType, $decisionEventDetails, $events, $eventSettings, $isRootLevel = false, $logs = [])
+    public function __construct(protected $lead, protected $decisionType, protected $decisionEventDetails, protected $events, protected $eventSettings, protected $isRootLevel = false, protected $logs = [])
     {
-        $this->lead                 = $lead;
-        $this->decisionType         = $decisionType;
-        $this->decisionEventDetails = $decisionEventDetails;
-        $this->events               = $events;
-        $this->eventSettings        = $eventSettings;
-        $this->isRootLevel          = $isRootLevel;
-        $this->logs                 = $logs;
     }
 
     /**

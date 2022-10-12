@@ -10,34 +10,16 @@ use Symfony\Component\Templating\Helper\Helper;
 
 class GravatarHelper extends Helper
 {
-    /**
-     * @var bool
-     */
-    private $devMode;
+    private bool $devMode;
 
-    /**
-     * @var array
-     */
-    private $devHosts = [];
-
-    /**
-     * @var DefaultAvatarHelper
-     */
-    private $defaultAvatarHelper;
-
-    /**
-     * @var RequestStack
-     */
-    private $requestStack;
+    private array $devHosts = [];
 
     public function __construct(
-        DefaultAvatarHelper $defaultAvatarHelper,
+        private DefaultAvatarHelper $defaultAvatarHelper,
         CoreParametersHelper $coreParametersHelper,
-        RequestStack $requestStack
+        private RequestStack $requestStack
     ) {
         $this->devMode             = MAUTIC_ENV === 'dev';
-        $this->defaultAvatarHelper = $defaultAvatarHelper;
-        $this->requestStack        = $requestStack;
         $this->devHosts            = (array) $coreParametersHelper->get('dev_hosts');
     }
 
@@ -68,7 +50,7 @@ class GravatarHelper extends Helper
             $default = $localDefault;
         }
 
-        $default = (false !== strpos($default, '.') && 0 !== strpos($default, 'http')) ? UrlHelper::rel2abs($default) : $default;
+        $default = (str_contains($default, '.') && !str_starts_with($default, 'http')) ? UrlHelper::rel2abs($default) : $default;
 
         return $url.('&d='.urlencode($default));
     }

@@ -12,24 +12,8 @@ use Mautic\LeadBundle\Entity\Lead;
 
 class EventLogModel extends AbstractCommonModel
 {
-    protected EventModel $eventModel;
-
-    protected CampaignModel $campaignModel;
-
-    protected IpLookupHelper $ipLookupHelper;
-
-    protected EventScheduler $eventScheduler;
-
-    public function __construct(
-        EventModel $eventModel,
-        CampaignModel $campaignModel,
-        IpLookupHelper $ipLookupHelper,
-        EventScheduler $eventScheduler
-    ) {
-        $this->eventModel     = $eventModel;
-        $this->campaignModel  = $campaignModel;
-        $this->ipLookupHelper = $ipLookupHelper;
-        $this->eventScheduler = $eventScheduler;
+    public function __construct(protected EventModel $eventModel, protected CampaignModel $campaignModel, protected IpLookupHelper $ipLookupHelper, protected EventScheduler $eventScheduler)
+    {
     }
 
     /**
@@ -79,10 +63,7 @@ class EventLogModel extends AbstractCommonModel
         return $logs;
     }
 
-    /**
-     * @return string|LeadEventLog
-     */
-    public function updateContactEvent(Event $event, Lead $contact, array $parameters)
+    public function updateContactEvent(Event $event, Lead $contact, array $parameters): string|\Mautic\CampaignBundle\Entity\LeadEventLog
     {
         $campaign = $event->getCampaign();
 
@@ -110,7 +91,7 @@ class EventLogModel extends AbstractCommonModel
         // Check that contact has not executed the event already
         $logs    = $event->getContactLog($contact);
         $created = false;
-        if (count($logs)) {
+        if (is_countable($logs) ? count($logs) : 0) {
             $log = $logs[0];
             if ($log->getDateTriggered()) {
                 return $this->translator->trans(
@@ -177,7 +158,7 @@ class EventLogModel extends AbstractCommonModel
                     $metadata = $log->getMetadata();
                     if (is_array($value)) {
                         $newMetadata = $value;
-                    } elseif ($jsonDecoded = json_decode($value, true)) {
+                    } elseif ($jsonDecoded = json_decode($value, true, 512, JSON_THROW_ON_ERROR)) {
                         $newMetadata = $jsonDecoded;
                     } else {
                         $newMetadata = (array) $value;

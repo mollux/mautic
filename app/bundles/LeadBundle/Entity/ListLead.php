@@ -12,30 +12,15 @@ class ListLead
      */
     public const TABLE_NAME = 'lead_lists_leads';
 
-    /**
-     * @var LeadList
-     **/
-    private $list;
+    private ?\Mautic\LeadBundle\Entity\LeadList $list = null;
 
-    /**
-     * @var Lead
-     */
-    private $lead;
+    private ?\Mautic\LeadBundle\Entity\Lead $lead = null;
 
-    /**
-     * @var \DateTime
-     */
-    private $dateAdded;
+    private ?\DateTime $dateAdded = null;
 
-    /**
-     * @var bool
-     */
-    private $manuallyRemoved = false;
+    private bool $manuallyRemoved = false;
 
-    /**
-     * @var bool
-     */
-    private $manuallyAdded = false;
+    private bool $manuallyAdded = false;
 
     public static function loadMetadata(ORM\ClassMetadata $metadata)
     {
@@ -89,10 +74,7 @@ class ListLead
         return $this->lead;
     }
 
-    /**
-     * @param mixed $lead
-     */
-    public function setLead($lead)
+    public function setLead(mixed $lead)
     {
         $this->lead = $lead;
     }

@@ -41,12 +41,12 @@ class FileApiController extends CommonApiController
         $response = [$this->entityNameOne => []];
         if ($this->request->files) {
             foreach ($this->request->files as $file) {
-                $extension = $file->guessExtension() ? $file->guessExtension() : $file->getClientOriginalExtension();
+                $extension = $file->guessExtension() ?: $file->getClientOriginalExtension();
                 if (in_array($extension, $this->allowedExtensions)) {
                     $fileName = md5(uniqid()).'.'.$extension;
                     $moved    = $file->move($path, $fileName);
 
-                    if ('images' === substr($dir, 0, 6)) {
+                    if (str_starts_with($dir, 'images')) {
                         $response[$this->entityNameOne]['link'] = $this->getMediaUrl().'/'.$fileName;
                     }
 
@@ -82,7 +82,7 @@ class FileApiController extends CommonApiController
         if (is_array($fnames)) {
             foreach ($fnames as $key => $name) {
                 // remove hidden files
-                if ('.' === substr($name, 0, 1)) {
+                if (str_starts_with($name, '.')) {
                     unset($fnames[$key]);
                 }
             }
@@ -134,13 +134,14 @@ class FileApiController extends CommonApiController
      */
     protected function getAbsolutePath($dir, $createDir = false)
     {
+        $absoluteDir = null;
         try {
             $possibleDirs = ['assets', 'images'];
             $dir          = InputHelper::alphanum($dir, true, false, ['_', '.']);
             $subdir       = trim(InputHelper::alphanum($this->request->get('subdir', ''), true, false, ['/']));
 
             // Dots in the dir name are slashes
-            if (false !== strpos($dir, '.') && !$subdir) {
+            if (str_contains($dir, '.') && !$subdir) {
                 $dirs = explode('.', $dir);
                 $dir  = $dirs[0];
                 unset($dirs[0]);

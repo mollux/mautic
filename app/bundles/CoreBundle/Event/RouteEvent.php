@@ -9,25 +9,16 @@ use Symfony\Contracts\EventDispatcher\Event;
 class RouteEvent extends Event
 {
     /**
-     * @var Loader
-     */
-    protected $loader;
-
-    /**
      * @var RouteCollection
      */
     protected $collection;
 
     /**
-     * @var string
+     * @param string $type
      */
-    protected $type;
-
-    public function __construct(Loader $loader, $type = 'main')
+    public function __construct(protected Loader $loader, protected $type = 'main')
     {
-        $this->loader     = $loader;
         $this->collection = new RouteCollection();
-        $this->type       = $type;
     }
 
     /**

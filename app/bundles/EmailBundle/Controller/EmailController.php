@@ -43,7 +43,7 @@ class EmailController extends FormController
      *
      * @return JsonResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function indexAction($page = 1)
+    public function indexAction($page = 1): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         $model = $this->getModel('email');
 
@@ -124,7 +124,7 @@ class EmailController extends FormController
 
             // Parse the selected values
             $newFilters     = [];
-            $updatedFilters = json_decode($updatedFilters, true);
+            $updatedFilters = json_decode($updatedFilters, true, 512, JSON_THROW_ON_ERROR);
 
             if ($updatedFilters) {
                 foreach ($updatedFilters as $updatedFilter) {
@@ -253,10 +253,8 @@ class EmailController extends FormController
      * Loads a specific form into the detailed panel.
      *
      * @param $objectId
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function viewAction($objectId)
+    public function viewAction($objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         /** @var \Mautic\EmailBundle\Model\EmailModel $model */
         $model    = $this->getModel('email');
@@ -308,7 +306,7 @@ class EmailController extends FormController
         $properties              = [];
         $variantError            = false;
         $weight                  = 0;
-        if (count($children)) {
+        if (is_countable($children) ? count($children) : 0) {
             foreach ($children as $c) {
                 $variantSettings = $c->getVariantSettings();
 
@@ -382,7 +380,7 @@ class EmailController extends FormController
                     'email'        => $email,
                     'trackables'   => $trackableLinks,
                     'logs'         => $logs,
-                    'isEmbedded'   => $this->request->get('isEmbedded') ? $this->request->get('isEmbedded') : false,
+                    'isEmbedded'   => $this->request->get('isEmbedded') ?: false,
                     'variants'     => [
                         'parent'     => $parent,
                         'children'   => $children,
@@ -437,10 +435,8 @@ class EmailController extends FormController
      * Generates new form and processes post data.
      *
      * @param \Mautic\EmailBundle\Entity\Email $entity
-     *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function newAction($entity = null)
+    public function newAction($entity = null): \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         $model = $this->getModel('email');
 
@@ -605,7 +601,7 @@ class EmailController extends FormController
      *
      * @return array|\Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function editAction($objectId, $ignorePost = false, $forceTypeSelection = false)
+    public function editAction($objectId, $ignorePost = false, $forceTypeSelection = false): array|\Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         /** @var \Mautic\EmailBundle\Model\EmailModel $model */
         $model  = $this->getModel('email');
@@ -823,7 +819,7 @@ class EmailController extends FormController
      *
      * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function cloneAction($objectId)
+    public function cloneAction($objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         $model = $this->getModel('email');
         /** @var Email $entity */
@@ -854,10 +850,8 @@ class EmailController extends FormController
      * Deletes the entity.
      *
      * @param $objectId
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function deleteAction($objectId)
+    public function deleteAction($objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         $page      = $this->get('session')->get('mautic.email.page', 1);
         $returnUrl = $this->generateUrl('mautic_email_index', ['page' => $page]);
@@ -926,13 +920,13 @@ class EmailController extends FormController
      * @throws \Exception
      * @throws \Mautic\CoreBundle\Exception\FileNotFoundException
      */
-    public function builderAction($objectId)
+    public function builderAction($objectId): array|\Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         /** @var \Mautic\EmailBundle\Model\EmailModel $model */
         $model = $this->getModel('email');
 
         //permission check
-        if (false !== strpos($objectId, 'new')) {
+        if (str_contains($objectId, 'new')) {
             $isNew = true;
             if (!$this->get('mautic.security')->isGranted('email:emails:create')) {
                 return $this->accessDenied();
@@ -993,8 +987,9 @@ class EmailController extends FormController
      *
      * @return array|\Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function abtestAction($objectId)
+    public function abtestAction($objectId): array|\Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
+        $clone = null;
         $model  = $this->getModel('email');
         $entity = $model->getEntity($objectId);
 
@@ -1028,10 +1023,8 @@ class EmailController extends FormController
      * Make the variant the main.
      *
      * @param $objectId
-     *
-     * @return array|\Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function winnerAction($objectId)
+    public function winnerAction($objectId): array|\Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         //todo - add confirmation to button click
         $page      = $this->get('session')->get('mautic.email', 1);
@@ -1102,11 +1095,12 @@ class EmailController extends FormController
      * Manually sends emails.
      *
      * @param $objectId
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function sendAction($objectId)
+    public function sendAction($objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
+        $complete = null;
+        $pending = null;
+        $form = null;
         /** @var \Mautic\EmailBundle\Model\EmailModel $model */
         $model   = $this->getModel('email');
         $entity  = $model->getEntity($objectId);
@@ -1244,10 +1238,8 @@ class EmailController extends FormController
 
     /**
      * Deletes a group of entities.
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function batchDeleteAction()
+    public function batchDeleteAction(): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         $page      = $this->get('session')->get('mautic.email.page', 1);
         $returnUrl = $this->generateUrl('mautic_email_index', ['page' => $page]);
@@ -1265,7 +1257,7 @@ class EmailController extends FormController
 
         if ('POST' == $this->request->getMethod()) {
             $model = $this->getModel('email');
-            $ids   = json_decode($this->request->query->get('ids', '{}'));
+            $ids   = json_decode($this->request->query->get('ids', '{}'), null, 512, JSON_THROW_ON_ERROR);
 
             $deleteIds = [];
 
@@ -1301,7 +1293,7 @@ class EmailController extends FormController
                     'type'    => 'notice',
                     'msg'     => 'mautic.email.notice.batch_deleted',
                     'msgVars' => [
-                        '%count%' => count($entities),
+                        '%count%' => is_countable($entities) ? count($entities) : 0,
                     ],
                 ];
             }
@@ -1389,7 +1381,7 @@ class EmailController extends FormController
 
                         // Send to current user
                         $error = $model->sendSampleEmailToUser($entity, $users, $fields, [], [], false);
-                        if (count($error)) {
+                        if (is_countable($error) ? count($error) : 0) {
                             array_push($errors, $error[0]);
                         }
                     }
@@ -1444,7 +1436,7 @@ class EmailController extends FormController
                 $slotConfig = [];
             }
 
-            $value = isset($content[$slot]) ? $content[$slot] : '';
+            $value = $content[$slot] ?? '';
             $slotsHelper->set($slot, "<div data-slot=\"text\" id=\"slot-{$slot}\">{$value}</div>");
         }
 
@@ -1467,7 +1459,7 @@ class EmailController extends FormController
         }
 
         // search for webinar filters in the email segments
-        if (!array_key_exists('lists', $data) || 0 === count($data['lists'])) {
+        if (!array_key_exists('lists', $data) || 0 === (is_countable($data['lists']) ? count($data['lists']) : 0)) {
             return true;
         }
 
@@ -1494,7 +1486,7 @@ class EmailController extends FormController
             }
         }
         // make sure that each list has a webinar-registration filter
-        if (count($lists) !== $webinarFiltersCount) {
+        if ((is_countable($lists) ? count($lists) : 0) !== $webinarFiltersCount) {
             $isWebinarFilterPresent = false;
         }
         if (!$isWebinarFilterPresent) {
@@ -1514,7 +1506,7 @@ class EmailController extends FormController
      *
      * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function contactsAction($objectId, $page = 1)
+    public function contactsAction($objectId, $page = 1): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         return $this->generateContactsGrid(
             $objectId,

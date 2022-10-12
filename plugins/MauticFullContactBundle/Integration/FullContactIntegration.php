@@ -102,10 +102,8 @@ class FullContactIntegration extends AbstractIntegration
      * {@inheritdoc}
      *
      * @param $section
-     *
-     * @return string|array
      */
-    public function getFormNotes($section)
+    public function getFormNotes($section): string|array
     {
         if ('custom' === $section) {
             return [

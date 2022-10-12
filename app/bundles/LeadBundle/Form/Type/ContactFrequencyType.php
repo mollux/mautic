@@ -10,14 +10,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ContactFrequencyType extends AbstractType
 {
-    /**
-     * @var CoreParametersHelper
-     */
-    protected $coreParametersHelper;
-
-    public function __construct(CoreParametersHelper $coreParametersHelper)
+    public function __construct(protected CoreParametersHelper $coreParametersHelper)
     {
-        $this->coreParametersHelper = $coreParametersHelper;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)

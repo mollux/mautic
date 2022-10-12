@@ -14,41 +14,13 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class PageSubscriber implements EventSubscriberInterface
 {
-    private $formRegex = '{form=(.*?)}';
-
-    /**
-     * @var FormModel
-     */
-    private $formModel;
-
-    /**
-     * @var BuilderTokenHelperFactory
-     */
-    private $builderTokenHelperFactory;
-
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    /**
-     * @var CorePermissions
-     */
-    private $security;
+    private string $formRegex = '{form=(.*?)}';
 
     /**
      * PageSubscriber constructor.
      */
-    public function __construct(
-        FormModel $formModel,
-        BuilderTokenHelperFactory $builderTokenHelperFactory,
-        TranslatorInterface $translator,
-        CorePermissions $security
-    ) {
-        $this->formModel                 = $formModel;
-        $this->builderTokenHelperFactory = $builderTokenHelperFactory;
-        $this->translator                = $translator;
-        $this->security                  = $security;
+    public function __construct(private FormModel $formModel, private BuilderTokenHelperFactory $builderTokenHelperFactory, private TranslatorInterface $translator, private CorePermissions $security)
+    {
     }
 
     /**
@@ -91,7 +63,7 @@ class PageSubscriber implements EventSubscriberInterface
 
         preg_match_all($regex, $content, $matches);
 
-        if (count($matches[0])) {
+        if (is_countable($matches[0]) ? count($matches[0]) : 0) {
             foreach ($matches[1] as $id) {
                 $form = $this->formModel->getEntity($id);
                 if (null !== $form &&

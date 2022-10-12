@@ -15,7 +15,7 @@ class UserApiController extends CommonApiController
     public function initialize(ControllerEvent $event)
     {
         $this->model            = $this->getModel('user.user');
-        $this->entityClass      = 'Mautic\UserBundle\Entity\User';
+        $this->entityClass      = \Mautic\UserBundle\Entity\User::class;
         $this->entityNameOne    = 'user';
         $this->entityNameMulti  = 'users';
         $this->serializerGroups = ['userDetails', 'roleList', 'publishDetails'];

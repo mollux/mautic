@@ -137,14 +137,14 @@ return [
                 ],
             ],
             'mautic.form.type.report_filters' => [
-                'class'     => 'Mautic\ReportBundle\Form\Type\ReportFiltersType',
+                'class'     => \Mautic\ReportBundle\Form\Type\ReportFiltersType::class,
                 'arguments' => 'mautic.factory',
             ],
             'mautic.form.type.report_dynamic_filters' => [
-                'class' => 'Mautic\ReportBundle\Form\Type\DynamicFiltersType',
+                'class' => \Mautic\ReportBundle\Form\Type\DynamicFiltersType::class,
             ],
             'mautic.form.type.report_widget' => [
-                'class'     => 'Mautic\ReportBundle\Form\Type\ReportWidgetType',
+                'class'     => \Mautic\ReportBundle\Form\Type\ReportWidgetType::class,
                 'arguments' => 'mautic.report.model.report',
             ],
             'mautic.form.type.aggregator' => [
@@ -309,7 +309,7 @@ return [
     'parameters' => [
         'report_temp_dir'                     => '%kernel.project_dir%/media/files/temp',
         'report_export_batch_size'            => 1000,
-        'report_export_max_filesize_in_bytes' => 5000000,
+        'report_export_max_filesize_in_bytes' => 5_000_000,
         'csv_always_enclose'                  => false,
     ],
 ];

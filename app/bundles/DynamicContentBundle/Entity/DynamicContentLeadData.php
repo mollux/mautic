@@ -9,42 +9,24 @@ use Mautic\LeadBundle\Entity\Lead;
 
 class DynamicContentLeadData extends CommonEntity
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var \DateTime
-     */
-    private $dateAdded;
+    private ?\DateTime $dateAdded = null;
 
-    /**
-     * @var DynamicContent
-     */
-    private $dynamicContent;
+    private ?\Mautic\DynamicContentBundle\Entity\DynamicContent $dynamicContent = null;
 
-    /**
-     * @var Lead
-     */
-    private $lead;
+    private ?\Mautic\LeadBundle\Entity\Lead $lead = null;
 
-    /**
-     * @var \DateTime
-     */
-    private $dataAdded;
+    private ?\DateTime $dataAdded = null;
 
-    /**
-     * @var string
-     */
-    private $slot;
+    private ?string $slot = null;
 
     public static function loadMetadata(ORM\ClassMetadata $metadata)
     {
         $builder = new ClassMetadataBuilder($metadata);
 
         $builder->setTable('dynamic_content_lead_data')
-            ->setCustomRepositoryClass('Mautic\DynamicContentBundle\Entity\DynamicContentLeadDataRepository');
+            ->setCustomRepositoryClass(\Mautic\DynamicContentBundle\Entity\DynamicContentLeadDataRepository::class);
 
         $builder->addIdColumns(false, false);
 

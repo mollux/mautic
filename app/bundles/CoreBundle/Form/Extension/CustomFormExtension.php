@@ -17,14 +17,8 @@ trigger_deprecation('mautic/core', '4.3', 'The "%s" class is deprecated, will be
  */
 class CustomFormExtension extends AbstractTypeExtension
 {
-    /**
-     * @var EventDispatcherInterface
-     */
-    protected $dispatcher;
-
-    public function __construct(EventDispatcherInterface $dispatcher)
+    public function __construct(protected EventDispatcherInterface $dispatcher)
     {
-        $this->dispatcher = $dispatcher;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)

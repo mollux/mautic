@@ -193,10 +193,8 @@ trait TranslationEntityTrait
      * Get translation parent/children.
      *
      * @param bool $onlyChildren
-     *
-     * @return array|\Doctrine\Common\Collections\ArrayCollection
      */
-    public function getTranslations($onlyChildren = false)
+    public function getTranslations($onlyChildren = false): array|\Doctrine\Common\Collections\ArrayCollection
     {
         $parent = $this->getTranslationParent();
 
@@ -230,7 +228,7 @@ trait TranslationEntityTrait
     {
         $count = 0;
 
-        list($parent, $children) = $this->getTranslations();
+        [$parent, $children] = $this->getTranslations();
         if ($variantParent != $parent) {
             $count = $parent->$getter();
         }

@@ -12,62 +12,32 @@ use Mautic\LeadBundle\Entity\Lead;
  */
 class Stat
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var DynamicContent
-     */
-    private $dynamicContent;
+    private ?\Mautic\DynamicContentBundle\Entity\DynamicContent $dynamicContent = null;
 
-    /**
-     * @var \Mautic\LeadBundle\Entity\Lead
-     */
-    private $lead;
+    private ?\Mautic\LeadBundle\Entity\Lead $lead = null;
 
-    /**
-     * @var \DateTime
-     */
-    private $dateSent;
+    private ?\DateTime $dateSent = null;
 
-    /**
-     * @var int
-     */
-    private $sentCount;
+    private ?int $sentCount = null;
 
-    /**
-     * @var int
-     */
-    private $lastSent;
+    private ?int $lastSent = null;
 
-    /**
-     * @var array
-     */
-    private $sentDetails = [];
+    private array $sentDetails = [];
 
-    /**
-     * @var string
-     */
-    private $source;
+    private ?string $source = null;
 
-    /**
-     * @var int
-     */
-    private $sourceId;
+    private ?int $sourceId = null;
 
-    /**
-     * @var array
-     */
-    private $tokens = [];
+    private array $tokens = [];
 
     public static function loadMetadata(ORM\ClassMetadata $metadata)
     {
         $builder = new ClassMetadataBuilder($metadata);
 
         $builder->setTable('dynamic_content_stats')
-            ->setCustomRepositoryClass('Mautic\DynamicContentBundle\Entity\StatRepository')
+            ->setCustomRepositoryClass(\Mautic\DynamicContentBundle\Entity\StatRepository::class)
             ->addIndex(['dynamic_content_id', 'lead_id'], 'stat_dynamic_content_search')
             ->addIndex(['source', 'source_id'], 'stat_dynamic_content_source_search');
 

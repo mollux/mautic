@@ -21,26 +21,8 @@ use Symfony\Contracts\EventDispatcher\Event;
  */
 class StageModel extends CommonFormModel
 {
-    /**
-     * @var Session
-     */
-    protected $session;
-
-    /**
-     * @var LeadModel
-     */
-    protected $leadModel;
-
-    /**
-     * @var UserHelper
-     */
-    protected $userHelper;
-
-    public function __construct(LeadModel $leadModel, Session $session, UserHelper $userHelper)
+    public function __construct(protected LeadModel $leadModel, protected Session $session, protected UserHelper $userHelper)
     {
-        $this->session    = $session;
-        $this->leadModel  = $leadModel;
-        $this->userHelper = $userHelper;
     }
 
     /**
@@ -160,8 +142,6 @@ class StageModel extends CommonFormModel
      * Get line chart data of stages.
      *
      * @param char     $unit          {@link php.net/manual/en/function.date.php#refsect1-function.date-parameters}
-     * @param DateTime $dateFrom
-     * @param DateTime $dateTo
      * @param string   $dateFormat
      * @param array    $filter
      * @param bool     $canViewOthers

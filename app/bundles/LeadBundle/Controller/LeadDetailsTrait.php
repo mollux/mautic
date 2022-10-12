@@ -69,7 +69,7 @@ trait LeadDetailsTrait
             foreach ($events as &$event) {
                 $event['leadId']    = $lead->getId();
                 $event['leadEmail'] = $lead->getEmail();
-                $event['leadName']  = $lead->getName() ? $lead->getName() : $lead->getEmail();
+                $event['leadName']  = $lead->getName() ?: $lead->getEmail();
             }
 
             $result['events'] = array_merge($result['events'], $events);
@@ -92,13 +92,11 @@ trait LeadDetailsTrait
     /**
      * Makes sure that the event filter array is in the right format.
      *
-     * @param mixed $filters
      *
      * @return array
-     *
      * @throws InvalidArgumentException if not an array
      */
-    public function sanitizeEventFilter($filters)
+    public function sanitizeEventFilter(mixed $filters)
     {
         if (!is_array($filters)) {
             throw new \InvalidArgumentException('filters parameter must be an array');
@@ -127,11 +125,7 @@ trait LeadDetailsTrait
      */
     private function cmp($a, $b)
     {
-        if ($a['timestamp'] === $b['timestamp']) {
-            return 0;
-        }
-
-        return ($a['timestamp'] < $b['timestamp']) ? +1 : -1;
+        return $b['timestamp'] <=> $a['timestamp'];
     }
 
     /**
@@ -236,15 +230,13 @@ trait LeadDetailsTrait
         $logCount = $repo->getAuditLogsCount($lead, $filters);
         $logs     = $repo->getAuditLogs($lead, $filters, $orderBy, $page, $limit);
 
-        $logEvents = array_map(function ($l) {
-            return [
-                'eventType'       => $l['action'],
-                'eventLabel'      => $l['userName'],
-                'timestamp'       => $l['dateAdded'],
-                'details'         => $l['details'],
-                'contentTemplate' => 'MauticLeadBundle:Auditlog:details.html.php',
-            ];
-        }, $logs);
+        $logEvents = array_map(fn($l) => [
+            'eventType'       => $l['action'],
+            'eventLabel'      => $l['userName'],
+            'timestamp'       => $l['dateAdded'],
+            'details'         => $l['details'],
+            'contentTemplate' => 'MauticLeadBundle:Auditlog:details.html.php',
+        ], $logs);
 
         $types = [
             'delete'     => $this->translator->trans('mautic.lead.event.delete'),
@@ -360,12 +352,8 @@ trait LeadDetailsTrait
             }
             $engagementsData = $this->getStatsCount($lead);
 
-            $engagements = array_map(function ($a, $b) {
-                return $a + $b;
-            }, $engagementsData['engagements']['byUnit'], $engagements);
-            $points = array_map(function ($points_first_user, $points_second_user) {
-                return $points_first_user + $points_second_user;
-            }, $engagementsData['points'], $points);
+            $engagements = array_map(fn($a, $b) => $a + $b, $engagementsData['engagements']['byUnit'], $engagements);
+            $points = array_map(fn($points_first_user, $points_second_user) => $points_first_user + $points_second_user, $engagementsData['points'], $points);
         }
 
         return [

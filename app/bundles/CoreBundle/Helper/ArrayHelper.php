@@ -10,12 +10,10 @@ class ArrayHelper
     /**
      * If the $key exists in the $origin array then it will return its value.
      *
-     * @param mixed $key
-     * @param mixed $defaultValue
      *
      * @return mixed
      */
-    public static function getValue($key, array $origin, $defaultValue = null)
+    public static function getValue(mixed $key, array $origin, mixed $defaultValue = null)
     {
         return array_key_exists($key, $origin) ? $origin[$key] : $defaultValue;
     }
@@ -24,12 +22,10 @@ class ArrayHelper
      * If the $key exists in the $origin array then it will return its value
      * and unsets the $key from the $array.
      *
-     * @param mixed $key
-     * @param mixed $defaultValue
      *
      * @return mixed
      */
-    public static function pickValue($key, array &$origin, $defaultValue = null)
+    public static function pickValue(mixed $key, array &$origin, mixed $defaultValue = null)
     {
         $value = self::getValue($key, $origin, $defaultValue);
 
@@ -45,9 +41,7 @@ class ArrayHelper
      */
     public static function select(array $keys, array $origin)
     {
-        return array_filter($origin, function ($value, $key) use ($keys) {
-            return in_array($key, $keys, true);
-        }, ARRAY_FILTER_USE_BOTH);
+        return array_filter($origin, fn($value, $key) => in_array($key, $keys, true), ARRAY_FILTER_USE_BOTH);
     }
 
     /**
@@ -79,9 +73,7 @@ class ArrayHelper
     {
         return array_filter(
             $array,
-            function ($value) {
-                return !is_null($value) && '' !== $value;
-            }
+            fn($value) => !is_null($value) && '' !== $value
         );
     }
 

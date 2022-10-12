@@ -9,28 +9,13 @@ use Symfony\Component\Finder\Finder;
  */
 class AssetGenerationHelper
 {
-    /**
-     * @var BundleHelper
-     */
-    private $bundleHelper;
-
-    /**
-     * @var PathsHelper
-     */
-    private $pathsHelper;
-
-    /**
-     * @var string
-     */
-    private $version;
+    private string $version;
 
     /**
      * AssetGenerationHelper constructor.
      */
-    public function __construct(CoreParametersHelper $coreParametersHelper, BundleHelper $bundleHelper, PathsHelper $pathsHelper, AppVersion $version)
+    public function __construct(CoreParametersHelper $coreParametersHelper, private BundleHelper $bundleHelper, private PathsHelper $pathsHelper, AppVersion $version)
     {
-        $this->bundleHelper = $bundleHelper;
-        $this->pathsHelper  = $pathsHelper;
         $this->version      = substr(hash('sha1', $coreParametersHelper->get('secret_key').$version->getVersion()), 0, 8);
     }
 
@@ -117,7 +102,7 @@ class AssetGenerationHelper
                         }
                     });
 
-                    $useMinify = class_exists('\Minify');
+                    $useMinify = class_exists('\\' . \Minify::class);
 
                     foreach ($assets as $type => $groups) {
                         foreach ($groups as $group => $files) {
@@ -225,15 +210,13 @@ class AssetGenerationHelper
                 $thisDirectory = str_replace('\\', '/', $directory->getRealPath());
                 $files->files()->depth('0')->name('*.'.$ext)->in($thisDirectory);
 
-                $sort = function (\SplFileInfo $a, \SplFileInfo $b) {
-                    return strnatcmp($a->getRealpath(), $b->getRealpath());
-                };
+                $sort = fn(\SplFileInfo $a, \SplFileInfo $b) => strnatcmp($a->getRealpath(), $b->getRealpath());
                 $files->sort($sort);
 
                 foreach ($files as $file) {
                     $fullPath = $file->getPathname();
                     $relPath  = str_replace($rootPath, '', $file->getPathname());
-                    if (0 === strpos($relPath, '/')) {
+                    if (str_starts_with($relPath, '/')) {
                         $relPath = substr($relPath, 1);
                     }
 
@@ -260,9 +243,7 @@ class AssetGenerationHelper
         $files = new Finder();
         $files->files()->depth('0')->ignoreDotFiles(true)->name('*.'.$ext)->in($dir);
 
-        $sort = function (\SplFileInfo $a, \SplFileInfo $b) {
-            return strnatcmp($a->getRealpath(), $b->getRealpath());
-        };
+        $sort = fn(\SplFileInfo $a, \SplFileInfo $b) => strnatcmp($a->getRealpath(), $b->getRealpath());
         $files->sort($sort);
 
         foreach ($files as $file) {

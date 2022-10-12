@@ -37,9 +37,9 @@ class CompanyApiController extends CommonApiController
         $parameters = $this->request->request->all();
 
         if (empty($parameters['force'])) {
-            list($company, $companyEntities) = IdentifyCompanyHelper::findCompany($parameters, $this->getModel('lead.company'));
+            [$company, $companyEntities] = IdentifyCompanyHelper::findCompany($parameters, $this->getModel('lead.company'));
 
-            if (count($companyEntities)) {
+            if (is_countable($companyEntities) ? count($companyEntities) : 0) {
                 return $this->editEntityAction($company['id']);
             }
         }

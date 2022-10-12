@@ -15,7 +15,7 @@ class EventApiController extends CommonApiController
     public function initialize(ControllerEvent $event)
     {
         $this->model                    = $this->getModel('campaign.event');
-        $this->entityClass              = 'Mautic\CampaignBundle\Entity\Event';
+        $this->entityClass              = \Mautic\CampaignBundle\Entity\Event::class;
         $this->entityNameOne            = 'event';
         $this->entityNameMulti          = 'events';
         $this->serializerGroups         = ['campaignEventStandaloneDetails', 'campaignList'];

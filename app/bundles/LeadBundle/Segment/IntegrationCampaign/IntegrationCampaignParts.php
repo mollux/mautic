@@ -4,23 +4,17 @@ namespace Mautic\LeadBundle\Segment\IntegrationCampaign;
 
 class IntegrationCampaignParts
 {
-    /**
-     * @var string
-     */
-    private $integrationName;
+    private string $integrationName;
 
-    /**
-     * @var string
-     */
-    private $campaignId;
+    private string $campaignId;
 
     /**
      * @param string $field
      */
     public function __construct($field)
     {
-        if (false !== strpos($field, '::')) {
-            list($integrationName, $campaignId) = explode('::', $field);
+        if (str_contains($field, '::')) {
+            [$integrationName, $campaignId] = explode('::', $field);
         } else {
             // Assuming this is a Salesforce integration for BC with pre 2.11.0
             $integrationName = 'Salesforce';

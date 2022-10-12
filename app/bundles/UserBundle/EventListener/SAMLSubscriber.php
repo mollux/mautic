@@ -11,20 +11,8 @@ use Symfony\Component\Routing\Router;
 
 class SAMLSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var CoreParametersHelper
-     */
-    private $coreParametersHelper;
-
-    /**
-     * @var Router
-     */
-    private $router;
-
-    public function __construct(CoreParametersHelper $coreParametersHelper, Router $router)
+    public function __construct(private CoreParametersHelper $coreParametersHelper, private Router $router)
     {
-        $this->coreParametersHelper = $coreParametersHelper;
-        $this->router               = $router;
     }
 
     public static function getSubscribedEvents()
@@ -46,7 +34,7 @@ class SAMLSubscriber implements EventSubscriberInterface
         $request = $event->getRequest();
         $route   = $request->attributes->get('_route');
         $url     = $request->getRequestUri();
-        if (false === strpos($route, 'lightsaml') && false === strpos($url, '/saml/')) {
+        if (!str_contains($route, 'lightsaml') && !str_contains($url, '/saml/')) {
             return;
         }
 

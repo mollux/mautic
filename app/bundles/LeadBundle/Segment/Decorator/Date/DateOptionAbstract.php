@@ -9,20 +9,8 @@ use Mautic\LeadBundle\Segment\Decorator\FilterDecoratorInterface;
 
 abstract class DateOptionAbstract implements FilterDecoratorInterface
 {
-    /**
-     * @var DateDecorator
-     */
-    protected $dateDecorator;
-
-    /**
-     * @var DateOptionParameters
-     */
-    protected $dateOptionParameters;
-
-    public function __construct(DateDecorator $dateDecorator, DateOptionParameters $dateOptionParameters)
+    public function __construct(protected DateDecorator $dateDecorator, protected DateOptionParameters $dateOptionParameters)
     {
-        $this->dateDecorator        = $dateDecorator;
-        $this->dateOptionParameters = $dateOptionParameters;
     }
 
     /**
@@ -42,10 +30,8 @@ abstract class DateOptionAbstract implements FilterDecoratorInterface
     /**
      * This function returns a value if between range is needed. Could return string for like operator or array for between operator
      * Eg. //LIKE 2018-01-23% for today, //LIKE 2017-12-% for last month, //LIKE 2017-% for last year, array for this week.
-     *
-     * @return string|array
      */
-    abstract protected function getValueForBetweenRange(DateTimeHelper $dateTimeHelper);
+    abstract protected function getValueForBetweenRange(DateTimeHelper $dateTimeHelper): string|array;
 
     /**
      * This function returns an operator if between range is needed. Could return like or between.
@@ -84,10 +70,8 @@ abstract class DateOptionAbstract implements FilterDecoratorInterface
 
     /**
      * @param array|string $argument
-     *
-     * @return array|string
      */
-    public function getParameterHolder(ContactSegmentFilterCrate $contactSegmentFilterCrate, $argument)
+    public function getParameterHolder(ContactSegmentFilterCrate $contactSegmentFilterCrate, $argument): array|string
     {
         return $this->dateDecorator->getParameterHolder($contactSegmentFilterCrate, $argument);
     }
@@ -124,10 +108,7 @@ abstract class DateOptionAbstract implements FilterDecoratorInterface
         return $this->dateDecorator->getQueryType($contactSegmentFilterCrate);
     }
 
-    /**
-     * @return bool|string
-     */
-    public function getAggregateFunc(ContactSegmentFilterCrate $contactSegmentFilterCrate)
+    public function getAggregateFunc(ContactSegmentFilterCrate $contactSegmentFilterCrate): bool|string
     {
         return $this->dateDecorator->getAggregateFunc($contactSegmentFilterCrate);
     }

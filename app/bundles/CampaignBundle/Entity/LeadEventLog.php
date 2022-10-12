@@ -10,99 +10,49 @@ use Mautic\LeadBundle\Entity\Lead as LeadEntity;
 
 class LeadEventLog implements ChannelInterface
 {
-    /**
-     * @var int|null
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var Event|null
-     */
-    private $event;
+    private ?\Mautic\CampaignBundle\Entity\Event $event = null;
 
-    /**
-     * @var LeadEntity|null
-     */
-    private $lead;
+    private ?LeadEntity $lead = null;
 
-    /**
-     * @var Campaign|null
-     */
-    private $campaign;
+    private ?\Mautic\CampaignBundle\Entity\Campaign $campaign = null;
 
-    /**
-     * @var IpAddress|null
-     */
-    private $ipAddress;
+    private ?\Mautic\CoreBundle\Entity\IpAddress $ipAddress = null;
 
-    /**
-     * @var \DateTime|null
-     **/
-    private $dateTriggered;
+    private ?\DateTime $dateTriggered = null;
 
-    /**
-     * @var bool
-     */
-    private $isScheduled = false;
+    private bool $isScheduled = false;
 
-    /**
-     * @var \DateTime|null
-     */
-    private $triggerDate;
+    private ?\DateTime $triggerDate = null;
 
-    /**
-     * @var bool
-     */
-    private $systemTriggered = false;
+    private bool $systemTriggered = false;
 
-    /**
-     * @var array
-     */
-    private $metadata = [];
+    private array $metadata = [];
 
-    /**
-     * @var bool
-     */
-    private $nonActionPathTaken = false;
+    private bool $nonActionPathTaken = false;
 
-    /**
-     * @var string|null
-     */
-    private $channel;
+    private ?string $channel = null;
 
-    /**
-     * @var int|null
-     */
-    private $channelId;
+    private ?int $channelId = null;
 
-    /**
-     * @var bool|null
-     */
-    private $previousScheduledState;
+    private ?bool $previousScheduledState = null;
 
-    /**
-     * @var int
-     */
-    private $rotation = 1;
+    private int $rotation = 1;
 
-    /**
-     * @var FailedLeadEventLog|null
-     */
-    private $failedLog;
+    private ?\Mautic\CampaignBundle\Entity\FailedLeadEventLog $failedLog = null;
 
     /**
      * Subscribers can fail log with custom reschedule interval.
-     *
-     * @var \DateInterval|null
      */
-    private $rescheduleInterval;
+    private ?\DateInterval $rescheduleInterval = null;
 
     public static function loadMetadata(ORM\ClassMetadata $metadata)
     {
         $builder = new ClassMetadataBuilder($metadata);
 
         $builder->setTable('campaign_lead_event_log')
-            ->setCustomRepositoryClass('Mautic\CampaignBundle\Entity\LeadEventLogRepository')
+            ->setCustomRepositoryClass(\Mautic\CampaignBundle\Entity\LeadEventLogRepository::class)
             ->addIndex(['is_scheduled', 'lead_id'], 'campaign_event_upcoming_search')
             ->addIndex(['campaign_id', 'is_scheduled', 'trigger_date'], 'campaign_event_schedule_counts')
             ->addIndex(['date_triggered'], 'campaign_date_triggered')
@@ -115,7 +65,7 @@ class LeadEventLog implements ChannelInterface
 
         $builder->addBigIntIdField();
 
-        $builder->createManyToOne('event', 'Event')
+        $builder->createManyToOne('event', \Event::class)
             ->inversedBy('log')
             ->addJoinColumn('event_id', 'id', false, false, 'CASCADE')
             ->build();

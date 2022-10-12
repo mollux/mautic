@@ -12,7 +12,7 @@ class AppCallbackController extends CommonController
 {
     public function indexAction(Request $request)
     {
-        $requestBody = json_decode($request->getContent(), true);
+        $requestBody = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
         $em          = $this->get('doctrine.orm.entity_manager');
         $contactRepo = $em->getRepository(Lead::class);
         $matchData   = [

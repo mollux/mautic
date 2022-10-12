@@ -11,11 +11,6 @@ use Symfony\Contracts\EventDispatcher\Event;
 class AuthenticationContentEvent extends Event
 {
     /**
-     * @var Request
-     */
-    protected $request;
-
-    /**
      * @var array
      */
     protected $content = [];
@@ -28,9 +23,8 @@ class AuthenticationContentEvent extends Event
     /**
      * AuthenticationContentEvent constructor.
      */
-    public function __construct(Request $request)
+    public function __construct(protected Request $request)
     {
-        $this->request    = $request;
         $this->postLogout = $request->getSession()->get('post_logout', false);
     }
 

@@ -15,110 +15,50 @@ class Stat
     /** @var int Limit number of stored 'openDetails' */
     public const MAX_OPEN_DETAILS = 1000;
 
-    /**
-     * @var int|null
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var Email|null
-     */
-    private $email;
+    private ?\Mautic\EmailBundle\Entity\Email $email = null;
 
-    /**
-     * @var Lead|null
-     */
-    private $lead;
+    private ?\Mautic\LeadBundle\Entity\Lead $lead = null;
 
-    /**
-     * @var string|null
-     */
-    private $emailAddress;
+    private ?string $emailAddress = null;
 
-    /**
-     * @var LeadList|null
-     */
-    private $list;
+    private ?\Mautic\LeadBundle\Entity\LeadList $list = null;
 
-    /**
-     * @var IpAddress|null
-     */
-    private $ipAddress;
+    private ?\Mautic\CoreBundle\Entity\IpAddress $ipAddress = null;
 
-    /**
-     * @var \DateTime|null
-     */
-    private $dateSent;
+    private ?\DateTime $dateSent = null;
 
-    /**
-     * @var bool
-     */
-    private $isRead = false;
+    private bool $isRead = false;
 
-    /**
-     * @var bool
-     */
-    private $isFailed = false;
+    private bool $isFailed = false;
 
-    /**
-     * @var bool
-     */
-    private $viewedInBrowser = false;
+    private bool $viewedInBrowser = false;
 
-    /**
-     * @var \DateTime|null
-     */
-    private $dateRead;
+    private ?\DateTime $dateRead = null;
 
-    /**
-     * @var string|null
-     */
-    private $trackingHash;
+    private ?string $trackingHash = null;
 
-    /**
-     * @var int
-     */
-    private $retryCount = 0;
+    private int $retryCount = 0;
 
-    /**
-     * @var string|null
-     */
-    private $source;
+    private ?string $source = null;
 
-    /**
-     * @var int|null
-     */
-    private $sourceId;
+    private ?int $sourceId = null;
 
-    /**
-     * @var array
-     */
-    private $tokens = [];
+    private array $tokens = [];
 
-    /**
-     * @var Copy|null
-     */
-    private $storedCopy;
+    private ?\Mautic\EmailBundle\Entity\Copy $storedCopy = null;
 
-    /**
-     * @var int
-     */
-    private $openCount = 0;
+    private int $openCount = 0;
 
-    /**
-     * @var \DateTime|null
-     */
-    private $lastOpened;
+    private ?\DateTime $lastOpened = null;
 
-    /**
-     * @var array
-     */
-    private $openDetails = [];
+    private array $openDetails = [];
 
     /**
      * @var ArrayCollection|EmailReply[]
      */
-    private $replies;
+    private \Doctrine\Common\Collections\ArrayCollection|array $replies;
 
     public function __construct()
     {
@@ -130,7 +70,7 @@ class Stat
         $builder = new ClassMetadataBuilder($metadata);
 
         $builder->setTable('email_stats')
-            ->setCustomRepositoryClass('Mautic\EmailBundle\Entity\StatRepository')
+            ->setCustomRepositoryClass(\Mautic\EmailBundle\Entity\StatRepository::class)
             ->addIndex(['email_id', 'lead_id'], 'stat_email_search')
             ->addIndex(['lead_id', 'email_id'], 'stat_email_search2')
             ->addIndex(['is_failed'], 'stat_email_failed_search')
@@ -153,7 +93,7 @@ class Stat
             ->columnName('email_address')
             ->build();
 
-        $builder->createManyToOne('list', 'Mautic\LeadBundle\Entity\LeadList')
+        $builder->createManyToOne('list', \Mautic\LeadBundle\Entity\LeadList::class)
             ->addJoinColumn('list_id', 'id', true, false, 'SET NULL')
             ->build();
 
@@ -203,7 +143,7 @@ class Stat
             ->nullable()
             ->build();
 
-        $builder->createManyToOne('storedCopy', 'Mautic\EmailBundle\Entity\Copy')
+        $builder->createManyToOne('storedCopy', \Mautic\EmailBundle\Entity\Copy::class)
             ->addJoinColumn('copy_id', 'id', true, false, 'SET NULL')
             ->build();
 
@@ -616,7 +556,7 @@ class Stat
     /**
      * @return ArrayCollection|EmailReply[]
      */
-    public function getReplies()
+    public function getReplies(): \Doctrine\Common\Collections\ArrayCollection|array
     {
         return $this->replies;
     }

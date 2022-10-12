@@ -11,19 +11,10 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class StageBuilderEvent extends Event
 {
-    /**
-     * @var array
-     */
-    private $actions = [];
+    private array $actions = [];
 
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    public function __construct(TranslatorInterface $translator)
+    public function __construct(private TranslatorInterface $translator)
     {
-        $this->translator = $translator;
     }
 
     /**
@@ -78,10 +69,8 @@ class StageBuilderEvent extends Event
      */
     public function getActions()
     {
-        uasort($this->actions, function ($a, $b) {
-            return strnatcasecmp(
-                $a['label'], $b['label']);
-        });
+        uasort($this->actions, fn($a, $b) => strnatcasecmp(
+            $a['label'], $b['label']));
 
         return $this->actions;
     }

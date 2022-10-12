@@ -13,16 +13,10 @@ use Mautic\CoreBundle\Helper\CsvHelper;
 class LoadCategoryData extends AbstractFixture implements OrderedFixtureInterface
 {
     /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
-
-    /**
      * {@inheritdoc}
      */
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(private EntityManagerInterface $entityManager)
     {
-        $this->entityManager = $entityManager;
     }
 
     public function load(ObjectManager $manager)

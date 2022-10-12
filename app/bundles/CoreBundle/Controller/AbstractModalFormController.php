@@ -54,10 +54,8 @@ abstract class AbstractModalFormController extends AbstractStandardFormControlle
 
     /**
      * @param int $objectId
-     *
-     * @return array|JsonResponse|\Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function deleteStandard($objectId)
+    public function deleteStandard($objectId): array|\Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         //ajax only for form fields
         if (!$this->request->isXmlHttpRequest() || !$this->checkActionPermission('delete', $objectId, $objectId)) {
@@ -69,7 +67,7 @@ abstract class AbstractModalFormController extends AbstractStandardFormControlle
             $session         = $this->get('session');
             $formData        = $session->get($this->getSessionBase().'.data', []);
             $deletedFormData = $session->get($this->getSessionBase().'.data.deleted', []);
-            if (is_array($formData) && $data = isset($formData[$objectId]) ? $formData[$objectId] : false) {
+            if (is_array($formData) && $data = $formData[$objectId] ?? false) {
                 $deletedFormData[$objectId] = $formData[$objectId];
                 unset($formData[$objectId]);
                 $session->set($this->getSessionBase($objectId).'.data', $formData);
@@ -106,7 +104,7 @@ abstract class AbstractModalFormController extends AbstractStandardFormControlle
             $session         = $this->get('session');
             $formData        = $session->get($this->getSessionBase().'.data', []);
             $deletedFormData = $session->get($this->getSessionBase().'.data.deleted', []);
-            if (is_array($formData) && $data = isset($deletedFormData[$objectId]) ? $deletedFormData[$objectId] : false) {
+            if (is_array($formData) && $data = $deletedFormData[$objectId] ?? false) {
                 $formData[$objectId] = $deletedFormData[$objectId];
                 unset($deletedFormData[$objectId]);
                 $session->set($this->getSessionBase($objectId).'.data', $formData);

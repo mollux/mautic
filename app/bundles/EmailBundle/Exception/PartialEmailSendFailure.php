@@ -6,10 +6,7 @@ use Throwable;
 
 class PartialEmailSendFailure extends \Exception
 {
-    /**
-     * @var int
-     */
-    private $sentCount = 0;
+    private int $sentCount = 0;
 
     /**
      * PartialEmailSendFailure constructor.

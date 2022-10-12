@@ -68,7 +68,7 @@ class CitrixEvent
     {
         $builder = new ClassMetadataBuilder($metadata);
         $builder->setTable('plugin_citrix_events')
-            ->setCustomRepositoryClass('MauticPlugin\MauticCitrixBundle\Entity\CitrixEventRepository')
+            ->setCustomRepositoryClass(\MauticPlugin\MauticCitrixBundle\Entity\CitrixEventRepository::class)
             ->addIndex(['product', 'email'], 'citrix_event_email')
             ->addIndex(['product', 'event_name', 'event_type'], 'citrix_event_name')
             ->addIndex(['product', 'event_type', 'event_date'], 'citrix_event_type')

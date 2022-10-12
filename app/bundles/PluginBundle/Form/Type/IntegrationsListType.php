@@ -14,14 +14,8 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
 class IntegrationsListType extends AbstractType
 {
-    /**
-     * @var IntegrationHelper
-     */
-    private $integrationHelper;
-
-    public function __construct(IntegrationHelper $integrationHelper)
+    public function __construct(private IntegrationHelper $integrationHelper)
     {
-        $this->integrationHelper = $integrationHelper;
     }
 
     /**
@@ -99,9 +93,9 @@ class IntegrationsListType extends AbstractType
                     'attr'  => [
                         'class' => 'integration-config-container',
                     ],
-                    'integration' => (isset($integrationObjects[$data['integration']])) ? $integrationObjects[$data['integration']] : null,
+                    'integration' => $integrationObjects[$data['integration']] ?? null,
                     'campaigns'   => $campaignChoices,
-                    'data'        => (isset($data['config'])) ? $data['config'] : [],
+                    'data'        => $data['config'] ?? [],
                 ]
             );
 
@@ -115,7 +109,7 @@ class IntegrationsListType extends AbstractType
                         'class' => 'integration-campaigns-status'.$hideClass,
                     ],
                     'campaignContactStatus' => $statusChoices,
-                    'data'                  => (isset($data['campaign_member_status'])) ? $data['campaign_member_status'] : [],
+                    'data'                  => $data['campaign_member_status'] ?? [],
                 ]
             );
         };

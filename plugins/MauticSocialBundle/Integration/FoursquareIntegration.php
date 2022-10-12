@@ -160,7 +160,7 @@ class FoursquareIntegration extends SocialIntegration
             $url  = $this->getApiUrl("users/{$id}/tips").'&limit=5&sort=recent';
             $data = $this->makeRequest($url);
 
-            if (isset($data->response->tips) && count($data->response->tips->items)) {
+            if (isset($data->response->tips) && (is_countable($data->response->tips->items) ? count($data->response->tips->items) : 0)) {
                 foreach ($data->response->tips->items as $t) {
                     //find main category of venue
                     $category = '';
@@ -322,7 +322,7 @@ class FoursquareIntegration extends SocialIntegration
             $url  = $this->getApiUrl('users/search')."&{$type}={$c}";
             $data = $this->makeRequest($url);
 
-            if (!empty($data) && isset($data->response->results) && count($data->response->results)) {
+            if (!empty($data) && isset($data->response->results) && (is_countable($data->response->results) ? count($data->response->results) : 0)) {
                 $socialCache['id'] = $data->response->results[0]->id;
 
                 return $socialCache['id'];

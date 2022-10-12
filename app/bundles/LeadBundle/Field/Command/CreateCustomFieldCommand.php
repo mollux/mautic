@@ -21,19 +21,12 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class CreateCustomFieldCommand extends Command
 {
-    private BackgroundService $backgroundService;
-    private TranslatorInterface $translator;
-    private LeadFieldRepository $leadFieldRepository;
-
     public function __construct(
-        BackgroundService $backgroundService,
-        TranslatorInterface $translator,
-        LeadFieldRepository $leadFieldRepository
+        private BackgroundService $backgroundService,
+        private TranslatorInterface $translator,
+        private LeadFieldRepository $leadFieldRepository
     ) {
         parent::__construct();
-        $this->backgroundService   = $backgroundService;
-        $this->translator          = $translator;
-        $this->leadFieldRepository = $leadFieldRepository;
     }
 
     public function configure(): void
@@ -85,23 +78,7 @@ EOT
             $output->writeln('<error>'.$this->translator->trans('mautic.lead.field.column_creation_aborted').'</error>');
 
             return 0;
-        } catch (CustomFieldLimitException $e) {
-            $output->writeln('<error>'.$this->translator->trans($e->getMessage()).'</error>');
-
-            return 1;
-        } catch (DriverException $e) {
-            $output->writeln('<error>'.$this->translator->trans($e->getMessage()).'</error>');
-
-            return 1;
-        } catch (SchemaException $e) {
-            $output->writeln('<error>'.$this->translator->trans($e->getMessage()).'</error>');
-
-            return 1;
-        } catch (DBALException $e) {
-            $output->writeln('<error>'.$this->translator->trans($e->getMessage()).'</error>');
-
-            return 1;
-        } catch (\Mautic\CoreBundle\Exception\SchemaException $e) {
+        } catch (CustomFieldLimitException|DriverException|SchemaException|DBALException|\Mautic\CoreBundle\Exception\SchemaException $e) {
             $output->writeln('<error>'.$this->translator->trans($e->getMessage()).'</error>');
 
             return 1;

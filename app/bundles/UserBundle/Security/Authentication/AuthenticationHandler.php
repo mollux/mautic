@@ -14,11 +14,8 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationSuccessHandlerI
 
 class AuthenticationHandler implements AuthenticationSuccessHandlerInterface, AuthenticationFailureHandlerInterface
 {
-    private $router;
-
-    public function __construct(RouterInterface $router)
+    public function __construct(private RouterInterface $router)
     {
-        $this->router  = $router;
     }
 
     /**
@@ -56,7 +53,7 @@ class AuthenticationHandler implements AuthenticationSuccessHandlerInterface, Au
 
         if ('json' == $format) {
             $array    = ['success' => false, 'message' => $exception->getMessage()];
-            $response = new Response(json_encode($array));
+            $response = new Response(json_encode($array, JSON_THROW_ON_ERROR));
             $response->headers->set('Content-Type', 'application/json');
 
             return $response;

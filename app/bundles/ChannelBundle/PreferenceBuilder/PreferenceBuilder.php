@@ -13,26 +13,13 @@ class PreferenceBuilder
     /**
      * @var ChannelPreferences[]
      */
-    private $channels = [];
-
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
-     * @var Event
-     */
-    private $event;
+    private array $channels = [];
 
     /**
      * PreferenceBuilder constructor.
      */
-    public function __construct(ArrayCollection $logs, Event $event, array $channels, LoggerInterface $logger)
+    public function __construct(ArrayCollection $logs, private Event $event, array $channels, private LoggerInterface $logger)
     {
-        $this->logger = $logger;
-        $this->event  = $event;
-
         $this->buildRules($logs, $channels);
     }
 

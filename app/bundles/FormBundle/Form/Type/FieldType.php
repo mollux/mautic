@@ -24,16 +24,10 @@ class FieldType extends AbstractType
     use FormFieldTrait;
 
     /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    /**
      * FieldType constructor.
      */
-    public function __construct(TranslatorInterface $translator)
+    public function __construct(private TranslatorInterface $translator)
     {
-        $this->translator = $translator;
     }
 
     /**
@@ -94,7 +88,7 @@ class FieldType extends AbstractType
             ];
             foreach ($addFields as $f) {
                 if (isset($customParams['builderOptions'][$f])) {
-                    $$f = (bool) $customParams['builderOptions'][$f];
+                    ${$f} = (bool) $customParams['builderOptions'][$f];
                 }
             }
         } else {
@@ -152,9 +146,9 @@ class FieldType extends AbstractType
                 FormFieldConditionType::class,
                 [
                     'label'      => false,
-                    'data'       => isset($options['data']['conditions']) ? $options['data']['conditions'] : [],
+                    'data'       => $options['data']['conditions'] ?? [],
                     'formId'     => $options['data']['formId'],
-                    'parent'     => isset($options['data']['parent']) ? $options['data']['parent'] : null,
+                    'parent'     => $options['data']['parent'] ?? null,
                 ]
             );
         }
@@ -194,7 +188,7 @@ class FieldType extends AbstractType
                         'class'   => 'form-control',
                         'tooltip' => 'mautic.form.field.form.alias.tooltip',
                     ],
-                    'disabled' => (!empty($options['data']['id']) && false === strpos($options['data']['id'], 'new')) ? true : false,
+                    'disabled' => (!empty($options['data']['id']) && !str_contains($options['data']['id'], 'new')) ? true : false,
                     'required' => false,
                 ]
             );
@@ -336,7 +330,7 @@ class FieldType extends AbstractType
         }
 
         if ($addBehaviorFields) {
-            $alwaysDisplay = isset($options['data']['alwaysDisplay']) ? $options['data']['alwaysDisplay'] : false;
+            $alwaysDisplay = $options['data']['alwaysDisplay'] ?? false;
             $builder->add(
                 'alwaysDisplay',
                 YesNoButtonGroupType::class,
@@ -396,20 +390,12 @@ class FieldType extends AbstractType
 
         if ($addLeadFieldList) {
             if (!isset($options['data']['leadField'])) {
-                switch ($type) {
-                    case 'email':
-                        $data = 'email';
-                        break;
-                    case 'country':
-                        $data = 'country';
-                        break;
-                    case 'tel':
-                        $data = 'phone';
-                        break;
-                    default:
-                        $data = '';
-                        break;
-                }
+                $data = match ($type) {
+                    'email' => 'email',
+                    'country' => 'country',
+                    'tel' => 'phone',
+                    default => '',
+                };
             } elseif (isset($options['data']['leadField'])) {
                 $data = $options['data']['leadField'];
             } else {
@@ -474,7 +460,7 @@ class FieldType extends AbstractType
         );
 
         // Put properties last so that the other values are available to form events
-        $propertiesData = (isset($options['data']['properties'])) ? $options['data']['properties'] : [];
+        $propertiesData = $options['data']['properties'] ?? [];
         if (!empty($options['customParameters'])) {
             $formTypeOptions = array_merge($formTypeOptions, ['data' => $propertiesData]);
             $builder->add('properties', $customParams['formType'], $formTypeOptions);

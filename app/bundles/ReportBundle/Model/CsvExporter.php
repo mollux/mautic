@@ -11,20 +11,8 @@ use Mautic\ReportBundle\Crate\ReportDataResult;
  */
 class CsvExporter
 {
-    /**
-     * @var FormatterHelper
-     */
-    protected $formatterHelper;
-
-    /**
-     * @var CoreParametersHelper
-     */
-    private $coreParametersHelper;
-
-    public function __construct(FormatterHelper $formatterHelper, CoreParametersHelper $coreParametersHelper)
+    public function __construct(protected FormatterHelper $formatterHelper, private CoreParametersHelper $coreParametersHelper)
     {
-        $this->formatterHelper      = $formatterHelper;
-        $this->coreParametersHelper = $coreParametersHelper;
     }
 
     /**

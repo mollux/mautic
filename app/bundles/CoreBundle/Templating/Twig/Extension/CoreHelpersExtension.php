@@ -16,13 +16,8 @@ use Twig\TwigFunction;
  */
 class CoreHelpersExtension extends AbstractExtension
 {
-    private TranslatorInterface $translate;
-    private DateHelper $dateHelper;
-
-    public function __construct(TranslatorInterface $translate, DateHelper $dateHelper)
+    public function __construct(private TranslatorInterface $translate, private DateHelper $dateHelper)
     {
-        $this->translate  = $translate;
-        $this->dateHelper = $dateHelper;
     }
 
     public function getFunctions()
@@ -54,6 +49,8 @@ class CoreHelpersExtension extends AbstractExtension
         ?string $aditionalLabel = null,
         bool $disableToggle = false
     ): array {
+        $text = null;
+        $icon = null;
         /** @var string|bool */
         $status = $item->getPublishStatus();
 
@@ -115,7 +112,7 @@ class CoreHelpersExtension extends AbstractExtension
         $clickAction = true === $disableToggle ? ' disabled' : ' has-click-event';
         $idClass     = str_replace('.', '-', $model).'-publish-icon'.$item->getId().md5($query);
 
-        $onclick = $onclick ?? "Mautic.togglePublishStatus(event, '.{$idClass}', '{$model}', '{$item->getId()}', '{$query}', {$backdropFlag})";
+        $onclick ??= "Mautic.togglePublishStatus(event, '.{$idClass}', '{$model}', '{$item->getId()}', '{$query}', {$backdropFlag})";
 
         $defaultAttributes = [
             'data-container' => 'body',
@@ -141,7 +138,7 @@ class CoreHelpersExtension extends AbstractExtension
         $allDataAttrs = array_merge($attributes + $defaultAttributes);
 
         $dataAttributes = implode(' ', array_map(
-            function ($v, $k) { return sprintf("%s='%s'", $k, $v); },
+            fn($v, $k) => sprintf("%s='%s'", $k, $v),
             $allDataAttrs,
             array_keys($allDataAttrs)
         ));
@@ -213,7 +210,7 @@ class CoreHelpersExtension extends AbstractExtension
             if ($jsArguments) {
                 foreach ($jsArguments as $key => $argument) {
                     if (is_array($argument)) {
-                        $jsArguments[$key] = json_encode($argument);
+                        $jsArguments[$key] = json_encode($argument, JSON_THROW_ON_ERROR);
                     } else {
                         $jsArguments[$key] = "\"{$jsArguments[$key]}\"";
                     }

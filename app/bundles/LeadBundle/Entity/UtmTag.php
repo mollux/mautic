@@ -9,67 +9,31 @@ use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
 
 class UtmTag
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var \DateTime
-     */
-    private $dateAdded;
+    private ?\DateTime $dateAdded = null;
 
-    /**
-     * @var \Mautic\LeadBundle\Entity\Lead
-     */
-    private $lead;
+    private ?\Mautic\LeadBundle\Entity\Lead $lead = null;
 
-    /**
-     * @var array
-     */
-    private $query = [];
+    private array $query = [];
 
-    /**
-     * @var string
-     */
-    private $referer;
+    private ?string $referer = null;
 
-    /**
-     * @var string
-     */
-    private $remoteHost;
+    private ?string $remoteHost = null;
 
     private $url;
 
-    /**
-     * @var string
-     */
-    private $userAgent;
+    private ?string $userAgent = null;
 
-    /**
-     * @var string
-     */
-    private $utmCampaign;
+    private ?string $utmCampaign = null;
 
-    /**
-     * @var string
-     */
-    private $utmContent;
+    private ?string $utmContent = null;
 
-    /**
-     * @var string
-     */
-    private $utmMedium;
+    private ?string $utmMedium = null;
 
-    /**
-     * @var string
-     */
-    private $utmSource;
+    private ?string $utmSource = null;
 
-    /**
-     * @var string
-     */
-    private $utmTerm;
+    private ?string $utmTerm = null;
 
     public static function loadMetadata(ORM\ClassMetadata $metadata)
     {

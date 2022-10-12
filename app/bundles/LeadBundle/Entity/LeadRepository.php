@@ -29,27 +29,16 @@ class LeadRepository extends CommonRepository implements CustomFieldRepositoryIn
      */
     protected $dispatcher;
 
-    /**
-     * @var array
-     */
-    private $availableSocialFields = [];
+    private array $availableSocialFields = [];
 
-    /**
-     * @var array
-     */
-    private $availableSearchFields = [];
+    private array $availableSearchFields = [];
 
     /**
      * Required to get the color based on a lead's points.
-     *
-     * @var TriggerModel
      */
-    private $triggerModel;
+    private ?\Mautic\PointBundle\Model\TriggerModel $triggerModel = null;
 
-    /**
-     * @var ListLeadRepository
-     */
-    private $listLeadRepository;
+    private ?\Mautic\LeadBundle\Entity\ListLeadRepository $listLeadRepository = null;
 
     /**
      * Used by search functions to search social profiles.
@@ -106,9 +95,7 @@ class LeadRepository extends CommonRepository implements CustomFieldRepositoryIn
             return $results;
         }
 
-        return array_combine(array_map(function (Lead $lead) use ($field) {
-            return $lead->getFieldValue($field);
-        }, $results), $results);
+        return array_combine(array_map(fn(Lead $lead) => $lead->getFieldValue($field), $results), $results);
     }
 
     /**
@@ -197,9 +184,7 @@ class LeadRepository extends CommonRepository implements CustomFieldRepositoryIn
             ->getArrayResult();
 
         return array_map(
-            function ($row) {
-                return (int) $row['id'];
-            },
+            fn($row) => (int) $row['id'],
             $result
         );
     }
@@ -364,7 +349,7 @@ class LeadRepository extends CommonRepository implements CustomFieldRepositoryIn
             ->where('l.id = '.$id);
         $results = $fq->execute()->fetchAll();
 
-        return (isset($results[0])) ? $results[0] : [];
+        return $results[0] ?? [];
     }
 
     /**
@@ -390,7 +375,7 @@ class LeadRepository extends CommonRepository implements CustomFieldRepositoryIn
             $q->andWhere($this->getTableAlias().'.id = :id')
                 ->setParameter('id', (int) $contactId);
             $entity = $q->getQuery()->getSingleResult();
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $entity = null;
         }
 
@@ -425,7 +410,7 @@ class LeadRepository extends CommonRepository implements CustomFieldRepositoryIn
      *
      * @return mixed|null
      */
-    public function getEntityWithPrimaryCompany($entity)
+    public function getEntityWithPrimaryCompany(mixed $entity)
     {
         if (is_int($entity)) {
             $entity = $this->getEntity($entity);
@@ -521,8 +506,8 @@ class LeadRepository extends CommonRepository implements CustomFieldRepositoryIn
                 }
 
                 if ($withPreferences) {
-                    $contactFrequencyRules = (isset($frequencyRules[$id])) ? $frequencyRules[$id] : [];
-                    $contactDncRules       = (isset($dncRules[$id])) ? $dncRules[$id] : [];
+                    $contactFrequencyRules = $frequencyRules[$id] ?? [];
+                    $contactDncRules       = $dncRules[$id] ?? [];
 
                     $channelRules = Lead::generateChannelRules($contactFrequencyRules, $contactDncRules);
                     if (is_array($tmpContacts[$id])) {
@@ -644,7 +629,7 @@ class LeadRepository extends CommonRepository implements CustomFieldRepositoryIn
                 if (is_array($value)) {
                     $this->buildWhereClauseFromArray($qb, [$value]);
                 } else {
-                    if (false === strpos($column, '.')) {
+                    if (!str_contains($column, '.')) {
                         $column = "entity.$column";
                     }
 
@@ -1061,10 +1046,8 @@ class LeadRepository extends CommonRepository implements CustomFieldRepositoryIn
      * Gets names, signature and email of the user(lead owner).
      *
      * @param int $ownerId
-     *
-     * @return array|false
      */
-    public function getLeadOwner($ownerId)
+    public function getLeadOwner($ownerId): array|false
     {
         if (!$ownerId) {
             return false;
@@ -1119,10 +1102,8 @@ class LeadRepository extends CommonRepository implements CustomFieldRepositoryIn
      * Check lead owner.
      *
      * @param array $ownerIds
-     *
-     * @return array|false
      */
-    public function checkLeadOwner(Lead $lead, $ownerIds = [])
+    public function checkLeadOwner(Lead $lead, $ownerIds = []): array|false
     {
         if (empty($ownerIds)) {
             return false;
@@ -1255,10 +1236,8 @@ class LeadRepository extends CommonRepository implements CustomFieldRepositoryIn
     /**
      * @param array $tables          $tables[0] should be primary table
      * @param bool  $innerJoinTables
-     * @param mixed $whereExpression
-     * @param mixed $having
      */
-    public function applySearchQueryRelationship(QueryBuilder $q, array $tables, $innerJoinTables, $whereExpression = null, $having = null)
+    public function applySearchQueryRelationship(QueryBuilder $q, array $tables, $innerJoinTables, mixed $whereExpression = null, mixed $having = null)
     {
         $primaryTable = $tables[0];
         unset($tables[0]);
@@ -1266,7 +1245,7 @@ class LeadRepository extends CommonRepository implements CustomFieldRepositoryIn
         $joinType = ($innerJoinTables) ? 'join' : 'leftJoin';
 
         $this->useDistinctCount = true;
-        if (!preg_match('/"'.preg_quote($primaryTable['alias'], '/').'"/i', json_encode($q->getQueryPart('join')))) {
+        if (!preg_match('/"'.preg_quote($primaryTable['alias'], '/').'"/i', json_encode($q->getQueryPart('join'), JSON_THROW_ON_ERROR))) {
             $q->$joinType(
                 $primaryTable['from_alias'],
                 MAUTIC_TABLE_PREFIX.$primaryTable['table'],
@@ -1332,7 +1311,7 @@ class LeadRepository extends CommonRepository implements CustomFieldRepositoryIn
         } catch (DriverException $exception) {
             $message = $exception->getMessage();
 
-            if (false !== strpos($message, 'Deadlock') && $tries <= 3) {
+            if (str_contains($message, 'Deadlock') && $tries <= 3) {
                 ++$tries;
 
                 $this->updateContactPoints($changes, $id, $tries);

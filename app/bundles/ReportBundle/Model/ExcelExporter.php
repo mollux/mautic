@@ -13,14 +13,8 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
  */
 class ExcelExporter
 {
-    /**
-     * @var FormatterHelper
-     */
-    protected $formatterHelper;
-
-    public function __construct(FormatterHelper $formatterHelper)
+    public function __construct(protected FormatterHelper $formatterHelper)
     {
-        $this->formatterHelper = $formatterHelper;
     }
 
     /**

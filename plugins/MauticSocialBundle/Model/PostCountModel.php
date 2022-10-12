@@ -48,6 +48,7 @@ class PostCountModel extends AbstractCommonModel
      */
     public function updatePostCount($monitor, \DateTime $postDate)
     {
+        $args = [];
         // query the db for posts on this date
         $q    = $this->getRepository()->createQueryBuilder($this->getRepository()->getTableAlias());
         $expr = $q->expr()->eq($this->getRepository()->getTableAlias().'.postDate', ':date');

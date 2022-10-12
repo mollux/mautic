@@ -16,12 +16,8 @@ class UnusedIpDeleteCommand extends Command
 {
     private const DEFAULT_LIMIT = 10000;
 
-    private IpAddressModel $ipAddressModel;
-
-    public function __construct(IpAddressModel $ipAddressModel)
+    public function __construct(private IpAddressModel $ipAddressModel)
     {
-        $this->ipAddressModel = $ipAddressModel;
-
         parent::__construct();
     }
 

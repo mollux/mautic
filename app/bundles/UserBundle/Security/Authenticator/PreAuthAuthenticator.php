@@ -19,48 +19,13 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 class PreAuthAuthenticator implements AuthenticationProviderInterface
 {
     /**
-     * @var EventDispatcherInterface
-     */
-    protected $dispatcher;
-
-    protected $providerKey;
-
-    /**
-     * @var UserProviderInterface
-     */
-    protected $userProvider;
-
-    /**
-     * @var IntegrationHelper
-     */
-    protected $integrationHelper;
-
-    /**
-     * @var requestStack|null
-     */
-    protected $requestStack;
-
-    /**
      * @param $providerKey
      */
-    public function __construct(
-        IntegrationHelper $integrationHelper,
-        EventDispatcherInterface $dispatcher,
-        RequestStack $requestStack,
-        UserProviderInterface $userProvider,
-        $providerKey
-    ) {
-        $this->dispatcher        = $dispatcher;
-        $this->providerKey       = $providerKey;
-        $this->userProvider      = $userProvider;
-        $this->integrationHelper = $integrationHelper;
-        $this->requestStack      = $requestStack;
+    public function __construct(protected IntegrationHelper $integrationHelper, protected EventDispatcherInterface $dispatcher, protected ?\Symfony\Component\HttpFoundation\RequestStack $requestStack, protected UserProviderInterface $userProvider, protected $providerKey)
+    {
     }
 
-    /**
-     * @return Response|PluginToken
-     */
-    public function authenticate(TokenInterface $token)
+    public function authenticate(TokenInterface $token): \Symfony\Component\HttpFoundation\Response|\Mautic\UserBundle\Security\Authentication\Token\PluginToken
     {
         if (!$this->supports($token)) {
             return null;

@@ -29,7 +29,7 @@ return [
                 'standard_entity' => true,
                 'name'            => 'messages',
                 'path'            => '/messages',
-                'controller'      => 'Mautic\ChannelBundle\Controller\Api\MessageApiController',
+                'controller'      => \Mautic\ChannelBundle\Controller\Api\MessageApiController::class,
             ],
         ],
         'public' => [
@@ -135,7 +135,7 @@ return [
                 ],
             ],
             'mautic.channel.model.queue' => [
-                'class'     => 'Mautic\ChannelBundle\Model\MessageQueueModel',
+                'class'     => \Mautic\ChannelBundle\Model\MessageQueueModel::class,
                 'arguments' => [
                     'mautic.lead.model.lead',
                     'mautic.lead.model.company',

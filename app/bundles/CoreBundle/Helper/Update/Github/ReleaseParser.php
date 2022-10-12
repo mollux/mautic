@@ -11,14 +11,8 @@ use Mautic\CoreBundle\Release\Metadata;
 
 class ReleaseParser
 {
-    /**
-     * @var Client
-     */
-    private $client;
-
-    public function __construct(Client $client)
+    public function __construct(private Client $client)
     {
-        $this->client = $client;
     }
 
     /**
@@ -30,7 +24,7 @@ class ReleaseParser
         foreach ($releases as $release) {
             try {
                 $metadata = $this->getMetadata($release['html_url']);
-            } catch (MetadataNotFoundException $exception) {
+            } catch (MetadataNotFoundException) {
                 continue;
             }
 
@@ -80,14 +74,14 @@ class ReleaseParser
             }
 
             $contents = $response->getBody()->getContents();
-            $metadata = json_decode($contents, true);
+            $metadata = json_decode($contents, true, 512, JSON_THROW_ON_ERROR);
             if (!$metadata || !isset($metadata['version'])) {
                 // The contents do not match what is expected
                 throw new MetadataNotFoundException();
             }
 
             return new Metadata($metadata);
-        } catch (GuzzleException $exception) {
+        } catch (GuzzleException) {
             throw new MetadataNotFoundException();
         }
     }

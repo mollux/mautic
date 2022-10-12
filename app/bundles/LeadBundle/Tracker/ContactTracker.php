@@ -21,91 +21,16 @@ use Symfony\Component\HttpFoundation\RequestStack;
 class ContactTracker
 {
     use DefaultValueTrait;
-    /**
-     * @var LeadRepository
-     */
-    private $leadRepository;
 
-    /**
-     * @var ContactTrackingServiceInterface
-     */
-    private $contactTrackingService;
+    private ?\Mautic\LeadBundle\Entity\Lead $systemContact = null;
 
-    /**
-     * @var DeviceTracker
-     */
-    private $deviceTracker;
-
-    /**
-     * @var CorePermissions
-     */
-    private $security;
-
-    /**
-     * @var Lead|null
-     */
-    private $systemContact;
-
-    /**
-     * @var Lead|null
-     */
-    private $trackedContact;
-
-    /**
-     * @var Logger
-     */
-    private $logger;
-
-    /**
-     * @var IpLookupHelper
-     */
-    private $ipLookupHelper;
-
-    /**
-     * @var RequestStack
-     */
-    private $requestStack;
-
-    /**
-     * @var CoreParametersHelper
-     */
-    private $coreParametersHelper;
-
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $dispatcher;
-
-    /**
-     * @var FieldModel
-     */
-    private $leadFieldModel;
+    private ?\Mautic\LeadBundle\Entity\Lead $trackedContact = null;
 
     /**
      * ContactTracker constructor.
      */
-    public function __construct(
-        LeadRepository $leadRepository,
-        ContactTrackingServiceInterface $contactTrackingService,
-        DeviceTracker $deviceTracker,
-        CorePermissions $security,
-        Logger $logger,
-        IpLookupHelper $ipLookupHelper,
-        RequestStack $requestStack,
-        CoreParametersHelper $coreParametersHelper,
-        EventDispatcherInterface $dispatcher,
-        FieldModel $leadFieldModel
-    ) {
-        $this->leadRepository         = $leadRepository;
-        $this->contactTrackingService = $contactTrackingService;
-        $this->deviceTracker          = $deviceTracker;
-        $this->security               = $security;
-        $this->logger                 = $logger;
-        $this->ipLookupHelper         = $ipLookupHelper;
-        $this->requestStack           = $requestStack;
-        $this->coreParametersHelper   = $coreParametersHelper;
-        $this->dispatcher             = $dispatcher;
-        $this->leadFieldModel         = $leadFieldModel;
+    public function __construct(private LeadRepository $leadRepository, private ContactTrackingServiceInterface $contactTrackingService, private DeviceTracker $deviceTracker, private CorePermissions $security, private Logger $logger, private IpLookupHelper $ipLookupHelper, private RequestStack $requestStack, private CoreParametersHelper $coreParametersHelper, private EventDispatcherInterface $dispatcher, private FieldModel $leadFieldModel)
+    {
     }
 
     /**
@@ -336,9 +261,6 @@ class ContactTracker
         return $lead;
     }
 
-    /**
-     * @param Lead $lead
-     */
     private function hydrateCustomFieldData(Lead $lead = null)
     {
         if (null === $lead) {

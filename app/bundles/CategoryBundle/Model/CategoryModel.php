@@ -18,16 +18,10 @@ use Symfony\Contracts\EventDispatcher\Event;
 class CategoryModel extends FormModel
 {
     /**
-     * @var RequestStack
-     */
-    protected $requestStack;
-
-    /**
      * CategoryModel constructor.
      */
-    public function __construct(RequestStack $requestStack)
+    public function __construct(protected RequestStack $requestStack)
     {
-        $this->requestStack = $requestStack;
     }
 
     public function getRepository()

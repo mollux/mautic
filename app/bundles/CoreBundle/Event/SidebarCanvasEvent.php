@@ -10,34 +10,16 @@ use Symfony\Contracts\EventDispatcher\Event;
  */
 class SidebarCanvasEvent extends Event
 {
-    /**
-     * @var array
-     */
-    private $sections = ['header', 'footer', 'content'];
+    private array $sections = ['header', 'footer', 'content'];
 
-    /**
-     * @var array
-     */
-    private $left = [];
+    private array $left = [];
 
-    /**
-     * @var array
-     */
-    private $right = [];
+    private array $right = [];
 
-    /**
-     * @var PhpEngine
-     */
-    private $templating;
+    private array $main = [];
 
-    /**
-     * @var array
-     */
-    private $main = [];
-
-    public function __construct(PhpEngine $templating)
+    public function __construct(private PhpEngine $templating)
     {
-        $this->templating = $templating;
     }
 
     /**
@@ -74,7 +56,7 @@ class SidebarCanvasEvent extends Event
     {
         $canvasSections = [];
         foreach ($this->sections as $section) {
-            $canvasSections[$section] = (isset($sections[$section])) ? $sections[$section] : '';
+            $canvasSections[$section] = $sections[$section] ?? '';
         }
 
         $this->{$canvas} = $canvasSections;

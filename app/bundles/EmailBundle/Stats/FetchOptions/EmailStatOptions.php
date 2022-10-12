@@ -6,40 +6,19 @@ use Mautic\StatsBundle\Event\Options\FetchOptions;
 
 class EmailStatOptions extends FetchOptions
 {
-    /**
-     * @var array
-     */
-    private $ids = [];
+    private array $ids = [];
 
-    /**
-     * @var int|null
-     */
-    private $companyId;
+    private ?int $companyId = null;
 
-    /**
-     * @var int|null
-     */
-    private $campaignId;
+    private ?int $campaignId = null;
 
-    /**
-     * @var int|null
-     */
-    private $segmentId;
+    private ?int $segmentId = null;
 
-    /**
-     * @var array
-     */
-    private $filters = [];
+    private array $filters = [];
 
-    /**
-     * @var bool
-     */
-    private $canViewOthers = false;
+    private bool $canViewOthers = false;
 
-    /**
-     * @var string
-     */
-    private $unit;
+    private ?string $unit = null;
 
     /**
      * @return $this

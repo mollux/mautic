@@ -9,25 +9,9 @@ use Ramsey\Uuid\Uuid;
 
 class EmailReply
 {
-    /**
-     * @var string
-     */
-    private $id;
+    private string $id;
 
-    /**
-     * @var Stat
-     */
-    private $stat;
-
-    /**
-     * @var \DateTime
-     */
-    private $dateReplied;
-
-    /**
-     * @var string
-     */
-    private $messageId;
+    private \DateTime $dateReplied;
 
     public static function loadMetadata(ORM\ClassMetadata $metadata)
     {
@@ -75,12 +59,10 @@ class EmailReply
     /**
      * @param string $messageId
      */
-    public function __construct(Stat $stat, $messageId, \DateTime $dateReplied = null)
+    public function __construct(private Stat $stat, private $messageId, \DateTime $dateReplied = null)
     {
         $this->id          = Uuid::uuid4()->toString();
-        $this->stat        = $stat;
-        $this->messageId   = $messageId;
-        $this->dateReplied = (null === $dateReplied) ? new \DateTime() : $dateReplied;
+        $this->dateReplied = $dateReplied ?? new \DateTime();
     }
 
     /**

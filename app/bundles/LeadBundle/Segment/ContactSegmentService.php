@@ -9,29 +9,8 @@ use Mautic\LeadBundle\Segment\Query\QueryBuilder;
 
 class ContactSegmentService
 {
-    /**
-     * @var ContactSegmentFilterFactory
-     */
-    private $contactSegmentFilterFactory;
-
-    /**
-     * @var ContactSegmentQueryBuilder
-     */
-    private $contactSegmentQueryBuilder;
-
-    /**
-     * @var \Psr\Log\LoggerInterface
-     */
-    private $logger;
-
-    public function __construct(
-        ContactSegmentFilterFactory $contactSegmentFilterFactory,
-        ContactSegmentQueryBuilder $queryBuilder,
-        \Psr\Log\LoggerInterface $logger
-    ) {
-        $this->contactSegmentFilterFactory = $contactSegmentFilterFactory;
-        $this->contactSegmentQueryBuilder  = $queryBuilder;
-        $this->logger                      = $logger;
+    public function __construct(private ContactSegmentFilterFactory $contactSegmentFilterFactory, private ContactSegmentQueryBuilder $contactSegmentQueryBuilder, private \Psr\Log\LoggerInterface $logger)
+    {
     }
 
     /**
@@ -335,7 +314,7 @@ class ContactSegmentService
 
             $end = microtime(true) - $start;
 
-            $this->logger->debug('Segment QB: Query took: '.$this->formatPeriod($end).', Result count: '.count($result), ['segmentId' => $segmentId]);
+            $this->logger->debug('Segment QB: Query took: '.$this->formatPeriod($end).', Result count: '.(is_countable($result) ? count($result) : 0), ['segmentId' => $segmentId]);
         } catch (\Exception $e) {
             $this->logger->error(
                 'Segment QB: Query Exception: '.$e->getMessage(),

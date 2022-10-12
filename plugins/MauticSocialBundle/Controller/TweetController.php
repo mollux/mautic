@@ -83,13 +83,11 @@ class TweetController extends FormController
 
     /**
      * Get updateSelect value from request.
-     *
-     * @return string|bool
      */
-    public function getUpdateSelect()
+    public function getUpdateSelect(): string|bool
     {
         return ('POST' == $this->request->getMethod())
-            ? $this->request->request->get('twitter_tweet[updateSelect]', false, true)
+            ? $this->request->request->get('twitter_tweet[updateSelect]', false)
             : $this->request->get('updateSelect', false);
     }
 
@@ -107,20 +105,16 @@ class TweetController extends FormController
 
     /**
      * @param int $page
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function indexAction($page = 1)
+    public function indexAction($page = 1): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Response
     {
         return parent::indexStandard($page);
     }
 
     /**
      * Generates new form and processes post data.
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|Response
      */
-    public function newAction()
+    public function newAction(): \Symfony\Component\HttpFoundation\JsonResponse|\Response
     {
         return parent::newStandard();
     }
@@ -146,10 +140,8 @@ class TweetController extends FormController
      *
      * @param int  $objectId
      * @param bool $ignorePost
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|Response
      */
-    public function editAction($objectId, $ignorePost = false)
+    public function editAction($objectId, $ignorePost = false): \Symfony\Component\HttpFoundation\JsonResponse|\Response
     {
         return parent::editStandard($objectId, $ignorePost);
     }
@@ -158,10 +150,8 @@ class TweetController extends FormController
      * Displays details.
      *
      * @param $objectId
-     *
-     * @return array|\Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function viewAction($objectId)
+    public function viewAction($objectId): array|\Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Response
     {
         return parent::indexStandard(1);
     }
@@ -170,10 +160,8 @@ class TweetController extends FormController
      * Clone an entity.
      *
      * @param int $objectId
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function cloneAction($objectId)
+    public function cloneAction($objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Response
     {
         return parent::cloneStandard($objectId);
     }
@@ -182,20 +170,16 @@ class TweetController extends FormController
      * Deletes the entity.
      *
      * @param int $objectId
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function deleteAction($objectId)
+    public function deleteAction($objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         return parent::deleteStandard($objectId);
     }
 
     /**
      * Deletes a group of entities.
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function batchDeleteAction()
+    public function batchDeleteAction(): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         return parent::batchDeleteStandard();
     }

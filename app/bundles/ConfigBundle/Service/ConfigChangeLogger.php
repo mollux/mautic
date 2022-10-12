@@ -13,34 +13,17 @@ class ConfigChangeLogger
 {
     /**
      * Keys to remove from log.
-     *
-     * @var array
      */
-    private $filterKeys = [
+    private array $filterKeys = [
         'transifex_password',
         'mailer_api_key',
         'mailer_is_owner',
     ];
 
-    /**
-     * @var AuditLogModel
-     */
-    private $auditLogModel;
+    private ?array $originalNormData = null;
 
-    /**
-     * @var IpLookupHelper
-     */
-    private $ipLookupHelper;
-
-    /**
-     * @var array
-     */
-    private $originalNormData;
-
-    public function __construct(IpLookupHelper $ipLookupHelper, AuditLogModel $auditLogModel)
+    public function __construct(private IpLookupHelper $ipLookupHelper, private AuditLogModel $auditLogModel)
     {
-        $this->ipLookupHelper = $ipLookupHelper;
-        $this->auditLogModel  = $auditLogModel;
     }
 
     /**
@@ -126,9 +109,7 @@ class ConfigChangeLogger
     {
         $keys = $this->filterKeys;
 
-        return array_filter($data, function ($key) use ($keys) {
-            return !in_array($key, $keys);
-        },
+        return array_filter($data, fn($key) => !in_array($key, $keys),
             ARRAY_FILTER_USE_KEY);
     }
 }

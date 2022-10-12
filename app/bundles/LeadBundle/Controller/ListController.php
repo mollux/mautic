@@ -40,7 +40,7 @@ class ListController extends FormController
      *
      * @throws Exception
      */
-    public function indexAction($page = 1)
+    public function indexAction($page = 1): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         /** @var ListModel $model */
         $model   = $this->getModel('lead.list');
@@ -154,7 +154,7 @@ class ListController extends FormController
      *
      * @return JsonResponse|RedirectResponse|Response
      */
-    public function newAction()
+    public function newAction(): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         if (!$this->get('mautic.security')->isGranted('lead:leads:viewown')) {
             return $this->accessDenied();
@@ -242,9 +242,9 @@ class ListController extends FormController
                 $this->generateUrl('mautic_segment_action', ['objectAction' => 'clone', 'objectId' => $objectId]),
                 $ignorePost
             );
-        } catch (AccessDeniedException $exception) {
+        } catch (AccessDeniedException) {
             return $this->accessDenied();
-        } catch (EntityNotFoundException $exception) {
+        } catch (EntityNotFoundException) {
             return $this->postActionRedirect(
                 array_merge($postActionVars, [
                     'flashes' => [
@@ -284,9 +284,9 @@ class ListController extends FormController
                 $this->generateUrl('mautic_segment_action', ['objectAction' => 'edit', 'objectId' => $objectId]),
                 $ignorePost
             );
-        } catch (AccessDeniedException $exception) {
+        } catch (AccessDeniedException) {
             return $this->accessDenied();
-        } catch (EntityNotFoundException $exception) {
+        } catch (EntityNotFoundException) {
             return $this->postActionRedirect(
                 array_merge($postActionVars, [
                     'flashes' => [
@@ -450,10 +450,8 @@ class ListController extends FormController
      * Delete a list.
      *
      * @param $objectId
-     *
-     * @return JsonResponse|RedirectResponse
      */
-    public function deleteAction($objectId)
+    public function deleteAction($objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         /** @var ListModel $model */
         $model     = $this->getModel('lead.list');
@@ -528,10 +526,8 @@ class ListController extends FormController
 
     /**
      * Deletes a group of entities.
-     *
-     * @return JsonResponse|RedirectResponse
      */
-    public function batchDeleteAction()
+    public function batchDeleteAction(): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         $page      = $this->get('session')->get('mautic.segment.page', 1);
         $returnUrl = $this->generateUrl('mautic_segment_index', ['page' => $page]);
@@ -550,7 +546,7 @@ class ListController extends FormController
         if ('POST' == $this->request->getMethod()) {
             /** @var ListModel $model */
             $model           = $this->getModel('lead.list');
-            $ids             = json_decode($this->request->query->get('ids', '{}'));
+            $ids             = json_decode($this->request->query->get('ids', '{}'), null, 512, JSON_THROW_ON_ERROR);
             $canNotBeDeleted = $model->canNotBeDeleted($ids);
 
             if (!empty($canNotBeDeleted)) {
@@ -608,20 +604,16 @@ class ListController extends FormController
 
     /**
      * @param $objectId
-     *
-     * @return JsonResponse|RedirectResponse
      */
-    public function removeLeadAction($objectId)
+    public function removeLeadAction($objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         return $this->changeList($objectId, 'remove');
     }
 
     /**
      * @param $objectId
-     *
-     * @return JsonResponse|RedirectResponse
      */
-    public function addLeadAction($objectId)
+    public function addLeadAction($objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         return $this->changeList($objectId, 'add');
     }
@@ -629,10 +621,8 @@ class ListController extends FormController
     /**
      * @param $listId
      * @param $action
-     *
-     * @return array|JsonResponse|RedirectResponse
      */
-    protected function changeList($listId, $action)
+    protected function changeList($listId, $action): array|\Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         $page      = $this->get('session')->get('mautic.lead.page', 1);
         $returnUrl = $this->generateUrl('mautic_contact_index', ['page' => $page]);
@@ -713,10 +703,8 @@ class ListController extends FormController
      * Loads a specific form into the detailed panel.
      *
      * @param $objectId
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function viewAction($objectId)
+    public function viewAction($objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         /** @var \Mautic\LeadBundle\Model\ListModel $model */
         $model    = $this->getModel('lead.list');
@@ -877,7 +865,7 @@ class ListController extends FormController
 
             // Parse the selected values
             $newFilters     = [];
-            $updatedFilters = json_decode($updatedFilters, true);
+            $updatedFilters = json_decode($updatedFilters, true, 512, JSON_THROW_ON_ERROR);
 
             if ($updatedFilters) {
                 foreach ($updatedFilters as $updatedFilter) {
@@ -947,7 +935,7 @@ class ListController extends FormController
      *
      * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function contactsAction($objectId, $page = 1)
+    public function contactsAction($objectId, $page = 1): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         $session = $this->get('session');
         \assert($session instanceof SessionInterface);

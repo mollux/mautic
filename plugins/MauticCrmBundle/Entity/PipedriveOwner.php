@@ -7,20 +7,11 @@ use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
 
 class PipedriveOwner
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var string
-     */
-    private $email;
+    private ?string $email = null;
 
-    /**
-     * @var int
-     */
-    private $ownerId;
+    private ?int $ownerId = null;
 
     public static function loadMetadata(ORM\ClassMetadata $metadata)
     {

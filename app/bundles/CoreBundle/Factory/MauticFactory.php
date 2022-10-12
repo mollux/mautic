@@ -19,18 +19,12 @@ use Symfony\Component\HttpFoundation\RequestStack;
  */
 class MauticFactory
 {
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
-
     private $database;
 
     private $entityManager;
 
-    public function __construct(ContainerInterface $container)
+    public function __construct(private ContainerInterface $container)
     {
-        $this->container = $container;
     }
 
     /**
@@ -96,7 +90,7 @@ class MauticFactory
      */
     public function getEntityManager()
     {
-        return ($this->entityManager) ? $this->entityManager : $this->container->get('doctrine')->getManager();
+        return $this->entityManager ?: $this->container->get('doctrine')->getManager();
     }
 
     public function setEntityManager(EntityManager $em)
@@ -111,7 +105,7 @@ class MauticFactory
      */
     public function getDatabase()
     {
-        return ($this->database) ? $this->database : $this->container->get('database_connection');
+        return $this->database ?: $this->container->get('database_connection');
     }
 
     /**
@@ -215,11 +209,10 @@ class MauticFactory
      * Retrieves a Mautic parameter.
      *
      * @param       $id
-     * @param mixed $default
      *
      * @return bool|mixed
      */
-    public function getParameter($id, $default = false)
+    public function getParameter($id, mixed $default = false)
     {
         return $this->container->get('mautic.helper.core_parameters')->get($id, $default);
     }
@@ -276,7 +269,7 @@ class MauticFactory
         /** @var \AppKernel $kernel */
         $kernel = $this->container->get('kernel');
 
-        return $kernel->getLocalConfigFile($checkExists);
+        return $kernel->getLocalConfigFile();
     }
 
     /**
@@ -375,11 +368,10 @@ class MauticFactory
     /**
      * Get Symfony's logger.
      *
-     * @param bool|false $system
      *
      * @return \Monolog\Logger
      */
-    public function getLogger($system = false)
+    public function getLogger(bool $system = false)
     {
         if ($system) {
             return $this->container->get('logger');
@@ -397,20 +389,14 @@ class MauticFactory
      */
     public function getHelper($helper)
     {
-        switch ($helper) {
-            case 'template.assets':
-                return $this->container->get('templating.helper.assets');
-            case 'template.slots':
-                return $this->container->get('templating.helper.slots');
-            case 'template.form':
-                return $this->container->get('templating.helper.form');
-            case 'template.translator':
-                return $this->container->get('templating.helper.translator');
-            case 'template.router':
-                return $this->container->get('templating.helper.router');
-            default:
-                return $this->container->get('mautic.helper.'.$helper);
-        }
+        return match ($helper) {
+            'template.assets' => $this->container->get('templating.helper.assets'),
+            'template.slots' => $this->container->get('templating.helper.slots'),
+            'template.form' => $this->container->get('templating.helper.form'),
+            'template.translator' => $this->container->get('templating.helper.translator'),
+            'template.router' => $this->container->get('templating.helper.router'),
+            default => $this->container->get('mautic.helper.'.$helper),
+        };
     }
 
     /**
@@ -426,11 +412,10 @@ class MauticFactory
     /**
      * Get's an array of details for Mautic core bundles.
      *
-     * @param bool|false $includePlugins
      *
      * @return array|mixed
      */
-    public function getMauticBundles($includePlugins = false)
+    public function getMauticBundles(bool $includePlugins = false)
     {
         return $this->container->get('mautic.helper.bundle')->getMauticBundles($includePlugins);
     }

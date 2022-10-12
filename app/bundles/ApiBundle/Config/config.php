@@ -118,7 +118,7 @@ return [
                 ],
             ],
             'mautic.form.type.apiconfig' => [
-                'class' => 'Mautic\ApiBundle\Form\Type\ConfigType',
+                'class' => \Mautic\ApiBundle\Form\Type\ConfigType::class,
             ],
         ],
         'helpers' => [
@@ -128,7 +128,7 @@ return [
         ],
         'other' => [
             'mautic.api.oauth.event_listener' => [
-                'class'     => 'Mautic\ApiBundle\EventListener\OAuthEventListener',
+                'class'     => \Mautic\ApiBundle\EventListener\OAuthEventListener::class,
                 'arguments' => [
                     'doctrine.orm.entity_manager',
                     'mautic.security',
@@ -149,19 +149,19 @@ return [
                     ],
                 ],
             ],
-            'fos_oauth_server.security.authentication.listener.class' => 'Mautic\ApiBundle\Security\OAuth2\Firewall\OAuthListener',
-            'jms_serializer.metadata.annotation_driver'               => 'Mautic\ApiBundle\Serializer\Driver\AnnotationDriver',
+            'fos_oauth_server.security.authentication.listener.class' => \Mautic\ApiBundle\Security\OAuth2\Firewall\OAuthListener::class,
+            'jms_serializer.metadata.annotation_driver'               => \Mautic\ApiBundle\Serializer\Driver\AnnotationDriver::class,
             'jms_serializer.metadata.api_metadata_driver'             => [
-                'class' => 'Mautic\ApiBundle\Serializer\Driver\ApiMetadataDriver',
+                'class' => \Mautic\ApiBundle\Serializer\Driver\ApiMetadataDriver::class,
             ],
             'mautic.validator.oauthcallback' => [
-                'class' => 'Mautic\ApiBundle\Form\Validator\Constraints\OAuthCallbackValidator',
+                'class' => \Mautic\ApiBundle\Form\Validator\Constraints\OAuthCallbackValidator::class,
                 'tag'   => 'validator.constraint_validator',
             ],
         ],
         'models' => [
             'mautic.api.model.client' => [
-                'class'     => 'Mautic\ApiBundle\Model\ClientModel',
+                'class'     => \Mautic\ApiBundle\Model\ClientModel::class,
                 'arguments' => [
                     'request_stack',
                 ],

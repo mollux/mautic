@@ -46,11 +46,11 @@ class BatchContactController extends AbstractFormController
     public function setAction()
     {
         $params = $this->request->get('contact_channels', []);
-        $ids    = empty($params['ids']) ? [] : json_decode($params['ids']);
+        $ids    = empty($params['ids']) ? [] : json_decode($params['ids'], null, 512, JSON_THROW_ON_ERROR);
 
         if ($ids && is_array($ids)) {
-            $subscribedChannels = isset($params['subscribed_channels']) ? $params['subscribed_channels'] : [];
-            $preferredChannel   = isset($params['preferred_channel']) ? $params['preferred_channel'] : null;
+            $subscribedChannels = $params['subscribed_channels'] ?? [];
+            $preferredChannel   = $params['preferred_channel'] ?? null;
 
             $this->channelActionModel->update($ids, $subscribedChannels);
             $this->frequencyActionModel->update($ids, $params, $preferredChannel);
@@ -73,7 +73,7 @@ class BatchContactController extends AbstractFormController
      *
      * @return JsonResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function indexAction()
+    public function indexAction(): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         $route = $this->generateUrl('mautic_channel_batch_contact_set');
 

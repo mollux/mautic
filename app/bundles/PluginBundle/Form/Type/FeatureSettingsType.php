@@ -15,29 +15,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class FeatureSettingsType extends AbstractType
 {
-    /**
-     * @var Session
-     */
-    protected $session;
-
-    /**
-     * @var CoreParametersHelper
-     */
-    protected $coreParametersHelper;
-
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
-
-    public function __construct(
-        Session $session,
-        CoreParametersHelper $coreParametersHelper,
-        LoggerInterface $logger
-    ) {
-        $this->session              = $session;
-        $this->coreParametersHelper = $coreParametersHelper;
-        $this->logger               = $logger;
+    public function __construct(protected Session $session, protected CoreParametersHelper $coreParametersHelper, protected LoggerInterface $logger)
+    {
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -68,7 +47,7 @@ class FeatureSettingsType extends AbstractType
             try {
                 if (empty($fields)) {
                     $fields = $integrationObject->getFormLeadFields($settings);
-                    $fields = (isset($fields[0])) ? $fields[0] : $fields;
+                    $fields = $fields[0] ?? $fields;
                 }
 
                 if (isset($settings['feature_settings']['objects']) and in_array('company', $settings['feature_settings']['objects'])) {

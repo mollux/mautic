@@ -13,22 +13,13 @@ class CheckStep implements StepInterface
 {
     /**
      * Flag if the configuration file is writable.
-     *
-     * @var bool
      */
-    private $configIsWritable;
+    private bool $configIsWritable;
 
     /**
      * Path to the kernel root.
-     *
-     * @var string
      */
-    private $kernelRoot;
-
-    /**
-     * @var OpenSSLCipher
-     */
-    private $openSSLCipher;
+    private string $kernelRoot;
 
     /**
      * Absolute path to cache directory.
@@ -69,7 +60,7 @@ class CheckStep implements StepInterface
         Configurator $configurator,
         string $projectDir,
         RequestStack $requestStack,
-        OpenSSLCipher $openSSLCipher
+        private OpenSSLCipher $openSSLCipher
     ) {
         $request = $requestStack->getCurrentRequest();
 
@@ -78,7 +69,6 @@ class CheckStep implements StepInterface
         if (!empty($request)) {
             $this->site_url     = $request->getSchemeAndHttpHost().$request->getBasePath();
         }
-        $this->openSSLCipher    = $openSSLCipher;
     }
 
     /**
@@ -219,7 +209,7 @@ class CheckStep implements StepInterface
             $messages[] = 'mautic.install.extension.imap';
         }
 
-        if ('https' !== substr($this->site_url, 0, 5)) {
+        if (!str_starts_with($this->site_url, 'https')) {
             $messages[] = 'mautic.install.ssl.certificate';
         }
 
@@ -235,16 +225,16 @@ class CheckStep implements StepInterface
             $messages[] = 'mautic.install.memory.limit';
         }
 
-        if (!class_exists('\\Locale')) {
+        if (!class_exists('\\' . \Locale::class)) {
             $messages[] = 'mautic.install.module.intl';
         }
 
-        if (class_exists('\\Collator')) {
+        if (class_exists('\\' . \Collator::class)) {
             try {
                 if (is_null(new \Collator('fr_FR'))) {
                     $messages[] = 'mautic.install.intl.config';
                 }
-            } catch (\Exception $exception) {
+            } catch (\Exception) {
                 $messages[] = 'mautic.install.intl.config';
             }
         }

@@ -54,10 +54,8 @@ class WebhookModel extends FormModel
 
     /**
      * How long the webhook processing can run in seconds.
-     *
-     * @var int
      */
-    private $webhookTimeLimit;
+    private int $webhookTimeLimit;
 
     /**
      * How many responses in 1 row can fail until the webhook disables itself.
@@ -88,11 +86,6 @@ class WebhookModel extends FormModel
     protected $logMax;
 
     /**
-     * @var SerializerInterface
-     */
-    protected $serializer;
-
-    /**
      * Queued events default order by dir
      * Possible values: ['ASC', 'DESC'].
      *
@@ -101,32 +94,17 @@ class WebhookModel extends FormModel
     protected $eventsOrderByDir;
 
     /**
-     * @var Client
-     */
-    private $httpClient;
-
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $eventDispatcher;
-
-    /**
      * Timestamp when the webhook processing starts.
-     *
-     * @var float
      */
-    private $startTime;
+    private ?float $startTime = null;
 
     public function __construct(
         CoreParametersHelper $coreParametersHelper,
-        SerializerInterface $serializer,
-        Client $httpClient,
-        EventDispatcherInterface $eventDispatcher
+        protected SerializerInterface $serializer,
+        private Client $httpClient,
+        private EventDispatcherInterface $eventDispatcher
     ) {
         $this->setConfigProps($coreParametersHelper);
-        $this->serializer        = $serializer;
-        $this->httpClient        = $httpClient;
-        $this->eventDispatcher   = $eventDispatcher;
     }
 
     /**
@@ -237,7 +215,7 @@ class WebhookModel extends FormModel
      */
     public function queueWebhooks($webhookEvents, $payload, array $serializationGroups = [])
     {
-        if (!count($webhookEvents) || !is_array($webhookEvents)) {
+        if (!(is_countable($webhookEvents) ? count($webhookEvents) : 0) || !is_array($webhookEvents)) {
             return;
         }
 
@@ -285,10 +263,8 @@ class WebhookModel extends FormModel
 
     /**
      * Execute a list of webhooks to their specified endpoints.
-     *
-     * @param array|\Doctrine\ORM\Tools\Pagination\Paginator $webhooks
      */
-    public function processWebhooks($webhooks)
+    public function processWebhooks(array|\Doctrine\ORM\Tools\Pagination\Paginator $webhooks)
     {
         $this->startTime = microtime(true);
 
@@ -298,8 +274,6 @@ class WebhookModel extends FormModel
     }
 
     /**
-     * @param WebhookQueue $queue
-     *
      * @return bool
      */
     public function processWebhook(Webhook $webhook, WebhookQueue $queue = null)
@@ -474,7 +448,6 @@ class WebhookModel extends FormModel
     /**
      * Get the payload from the webhook.
      *
-     * @param WebhookQueue $queue
      *
      * @return array
      */
@@ -504,7 +477,7 @@ class WebhookModel extends FormModel
                     $payload[$type] = [];
                 }
 
-                $queuePayload              = json_decode($queue->getPayload(), true);
+                $queuePayload              = json_decode($queue->getPayload(), true, 512, JSON_THROW_ON_ERROR);
                 $queuePayload['timestamp'] = $queue->getDateAdded()->format('c');
 
                 // its important to decode the payload form the DB as we re-encode it with the

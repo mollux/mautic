@@ -14,22 +14,10 @@ use Twilio\Exceptions\ConfigurationException;
 class TwilioCallback implements CallbackInterface
 {
     /**
-     * @var ContactHelper
-     */
-    private $contactHelper;
-
-    /**
-     * @var Configuration
-     */
-    private $configuration;
-
-    /**
      * TwilioCallback constructor.
      */
-    public function __construct(ContactHelper $contactHelper, Configuration $configuration)
+    public function __construct(private ContactHelper $contactHelper, private Configuration $configuration)
     {
-        $this->contactHelper = $contactHelper;
-        $this->configuration = $configuration;
     }
 
     /**
@@ -68,7 +56,7 @@ class TwilioCallback implements CallbackInterface
     {
         try {
             $accountSid = $this->configuration->getAccountSid();
-        } catch (ConfigurationException $exception) {
+        } catch (ConfigurationException) {
             // Not published or not configured
             throw new NotFoundHttpException();
         }

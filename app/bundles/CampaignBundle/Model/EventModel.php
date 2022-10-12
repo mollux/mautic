@@ -74,7 +74,7 @@ class EventModel extends FormModel
                 $deleteMe = $deleteMe->getId();
             }
 
-            if (0 === strpos($deleteMe, 'new')) {
+            if (str_starts_with($deleteMe, 'new')) {
                 unset($deletedEvents[$k]);
             }
 
@@ -87,7 +87,7 @@ class EventModel extends FormModel
             }
         }
 
-        if (count($deletedEvents)) {
+        if (is_countable($deletedEvents) ? count($deletedEvents) : 0) {
             // wipe out any references to these events to prevent restraint violations
             $this->getRepository()->nullEventRelationships($deletedKeys);
 

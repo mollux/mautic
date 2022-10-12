@@ -42,7 +42,7 @@ return [
     'services' => [
         'forms' => [
             'mautic.dashboard.form.type.widget' => [
-                'class'     => 'Mautic\DashboardBundle\Form\Type\WidgetType',
+                'class'     => \Mautic\DashboardBundle\Form\Type\WidgetType::class,
                 'arguments' => [
                     'event_dispatcher',
                     'mautic.security',
@@ -51,7 +51,7 @@ return [
         ],
         'models' => [
             'mautic.dashboard.model.dashboard' => [
-                'class'     => 'Mautic\DashboardBundle\Model\DashboardModel',
+                'class'     => \Mautic\DashboardBundle\Model\DashboardModel::class,
                 'arguments' => [
                     'mautic.helper.core_parameters',
                     'mautic.helper.paths',

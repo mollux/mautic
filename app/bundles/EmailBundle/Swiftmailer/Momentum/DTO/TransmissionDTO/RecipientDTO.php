@@ -9,30 +9,9 @@ use Mautic\EmailBundle\Swiftmailer\Momentum\DTO\TransmissionDTO\RecipientDTO\Add
  */
 final class RecipientDTO implements \JsonSerializable
 {
-    /**
-     * @var string|null
-     */
-    private $returnPath;
+    private ?string $returnPath = null;
 
-    /**
-     * @var AddressDTO
-     */
-    private $address;
-
-    /**
-     * @var array
-     */
-    private $tags = [];
-
-    /**
-     * @var array
-     */
-    private $metadata = [];
-
-    /**
-     * @var array
-     */
-    private $substitutionData = [];
+    private array $tags = [];
 
     /**
      * RecipientDTO constructor.
@@ -40,11 +19,8 @@ final class RecipientDTO implements \JsonSerializable
      * @param array $metadata
      * @param array $substitutionData
      */
-    public function __construct(AddressDTO $addressDTO, $metadata = [], $substitutionData = [])
+    public function __construct(private AddressDTO $address, private $metadata = [], private $substitutionData = [])
     {
-        $this->address          = $addressDTO;
-        $this->metadata         = $metadata;
-        $this->substitutionData = $substitutionData;
     }
 
     /**
@@ -74,11 +50,10 @@ final class RecipientDTO implements \JsonSerializable
 
     /**
      * @param string $key
-     * @param mixed  $value
      *
      * @return RecipientDTO
      */
-    public function addMetadata($key, $value)
+    public function addMetadata($key, mixed $value)
     {
         $this->metadata[$key] = $value;
 
@@ -87,11 +62,10 @@ final class RecipientDTO implements \JsonSerializable
 
     /**
      * @param string $key
-     * @param mixed  $value
      *
      * @return $this
      */
-    public function addSubstitutionData($key, $value)
+    public function addSubstitutionData($key, mixed $value)
     {
         $this->substitutionData[$key] = $value;
 

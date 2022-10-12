@@ -12,55 +12,25 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 class Trigger extends FormEntity
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var string
-     */
-    private $name;
+    private ?string $name = null;
 
-    /**
-     * @var string
-     */
-    private $description;
+    private ?string $description = null;
 
-    /**
-     * @var \DateTime
-     */
-    private $publishUp;
+    private ?\DateTime $publishUp = null;
 
-    /**
-     * @var \DateTime
-     */
-    private $publishDown;
+    private ?\DateTime $publishDown = null;
 
-    /**
-     * @var int
-     */
-    private $points = 0;
+    private int $points = 0;
 
-    /**
-     * @var string
-     */
-    private $color = 'a0acb8';
+    private string $color = 'a0acb8';
 
-    /**
-     * @var bool
-     */
-    private $triggerExistingLeads = false;
+    private bool $triggerExistingLeads = false;
 
-    /**
-     * @var \Mautic\CategoryBundle\Entity\Category
-     **/
-    private $category;
+    private ?\Mautic\CategoryBundle\Entity\Category $category = null;
 
-    /**
-     * @var ArrayCollection
-     */
-    private $events;
+    private \Doctrine\Common\Collections\ArrayCollection $events;
 
     public function __clone()
     {
@@ -82,7 +52,7 @@ class Trigger extends FormEntity
         $builder = new ClassMetadataBuilder($metadata);
 
         $builder->setTable('point_triggers')
-            ->setCustomRepositoryClass('Mautic\PointBundle\Entity\TriggerRepository');
+            ->setCustomRepositoryClass(\Mautic\PointBundle\Entity\TriggerRepository::class);
 
         $builder->addIdColumns();
 
@@ -312,10 +282,7 @@ class Trigger extends FormEntity
         return $this->points;
     }
 
-    /**
-     * @param mixed $points
-     */
-    public function setPoints($points)
+    public function setPoints(mixed $points)
     {
         $this->isChanged('points', $points);
         $this->points = $points;
@@ -329,10 +296,7 @@ class Trigger extends FormEntity
         return $this->color;
     }
 
-    /**
-     * @param mixed $color
-     */
-    public function setColor($color)
+    public function setColor(mixed $color)
     {
         $this->color = $color;
     }
@@ -345,10 +309,7 @@ class Trigger extends FormEntity
         return $this->triggerExistingLeads;
     }
 
-    /**
-     * @param mixed $triggerExistingLeads
-     */
-    public function setTriggerExistingLeads($triggerExistingLeads)
+    public function setTriggerExistingLeads(mixed $triggerExistingLeads)
     {
         $this->triggerExistingLeads = $triggerExistingLeads;
     }
@@ -361,10 +322,7 @@ class Trigger extends FormEntity
         return $this->category;
     }
 
-    /**
-     * @param mixed $category
-     */
-    public function setCategory($category)
+    public function setCategory(mixed $category)
     {
         $this->category = $category;
     }

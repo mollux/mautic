@@ -13,30 +13,15 @@ class Stat
     public const TYPE_CLICK        = 'click';
     public const TYPE_NOTIFICATION = 'view';
 
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var Focus
-     */
-    private $focus;
+    private ?\MauticPlugin\MauticFocusBundle\Entity\Focus $focus = null;
 
-    /**
-     * @var string
-     */
-    private $type;
+    private ?string $type = null;
 
-    /**
-     * @var int
-     */
-    private $typeId;
+    private ?int $typeId = null;
 
-    /**
-     * @var \DateTime
-     */
-    private $dateAdded;
+    private ?\DateTime $dateAdded = null;
 
     private $lead;
 
@@ -45,7 +30,7 @@ class Stat
         $builder = new ClassMetadataBuilder($metadata);
 
         $builder->setTable('focus_stats')
-            ->setCustomRepositoryClass('MauticPlugin\MauticFocusBundle\Entity\StatRepository')
+            ->setCustomRepositoryClass(\MauticPlugin\MauticFocusBundle\Entity\StatRepository::class)
             ->addIndex(['type'], 'focus_type')
             ->addIndex(['type', 'type_id'], 'focus_type_id')
             ->addIndex(['date_added'], 'focus_date_added');
@@ -82,11 +67,9 @@ class Stat
     }
 
     /**
-     * @param mixed $focus
-     *
      * @return Stat
      */
-    public function setFocus($focus)
+    public function setFocus(mixed $focus)
     {
         $this->focus = $focus;
 
@@ -102,11 +85,9 @@ class Stat
     }
 
     /**
-     * @param mixed $type
-     *
      * @return Stat
      */
-    public function setType($type)
+    public function setType(mixed $type)
     {
         $this->type = $type;
 
@@ -122,11 +103,9 @@ class Stat
     }
 
     /**
-     * @param mixed $typeId
-     *
      * @return Stat
      */
-    public function setTypeId($typeId)
+    public function setTypeId(mixed $typeId)
     {
         $this->typeId = $typeId;
 
@@ -142,11 +121,9 @@ class Stat
     }
 
     /**
-     * @param mixed $dateAdded
-     *
      * @return Stat
      */
-    public function setDateAdded($dateAdded)
+    public function setDateAdded(mixed $dateAdded)
     {
         $this->dateAdded = $dateAdded;
 

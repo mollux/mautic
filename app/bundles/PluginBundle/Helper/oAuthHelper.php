@@ -24,21 +24,18 @@ class oAuthHelper
 
     private $settings;
 
-    private $request;
-
-    public function __construct(UnifiedIntegrationInterface $integration, Request $request = null, $settings = [])
+    public function __construct(UnifiedIntegrationInterface $integration, private ?\Symfony\Component\HttpFoundation\Request $request = null, $settings = [])
     {
         $clientId                = $integration->getClientIdKey();
         $clientSecret            = $integration->getClientSecretKey();
         $keys                    = $integration->getDecryptedApiKeys();
-        $this->clientId          = isset($keys[$clientId]) ? $keys[$clientId] : null;
-        $this->clientSecret      = isset($keys[$clientSecret]) ? $keys[$clientSecret] : null;
+        $this->clientId          = $keys[$clientId] ?? null;
+        $this->clientSecret      = $keys[$clientSecret] ?? null;
         $authToken               = $integration->getAuthTokenKey();
-        $this->accessToken       = (isset($keys[$authToken])) ? $keys[$authToken] : '';
-        $this->accessTokenSecret = (isset($settings['token_secret'])) ? $settings['token_secret'] : '';
+        $this->accessToken       = $keys[$authToken] ?? '';
+        $this->accessTokenSecret = $settings['token_secret'] ?? '';
         $this->callback          = $integration->getAuthCallbackUrl();
         $this->settings          = $settings;
-        $this->request           = $request;
     }
 
     /**
@@ -163,7 +160,7 @@ class oAuthHelper
      *
      * @return string|array<string,string>
      */
-    private function normalizeParameters($parameters, $encode = false, $returnarray = false, $normalized = [], $key = '')
+    private function normalizeParameters($parameters, $encode = false, $returnarray = false, $normalized = [], $key = ''): string|array
     {
         //Sort by key
         ksort($parameters);
@@ -225,7 +222,7 @@ class oAuthHelper
             }
 
             // isolate leftmost $bits_to_add from mt_rand() result
-            $moreBits = mt_rand() & ((1 << $bitsToAdd) - 1);
+            $moreBits = random_int(0, mt_getrandmax()) & ((1 << $bitsToAdd) - 1);
 
             // format as hex (this will be safe)
             $format_string = '%0'.($bitsToAdd / 4).'x';

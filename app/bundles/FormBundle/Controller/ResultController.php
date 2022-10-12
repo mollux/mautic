@@ -31,10 +31,8 @@ class ResultController extends CommonFormController
     /**
      * @param int $objectId
      * @param int $page
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function indexAction($objectId, $page = 1)
+    public function indexAction($objectId, $page = 1): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         /** @var FormModel $formModel */
         $formModel      = $this->getModel('form.form');
@@ -292,10 +290,8 @@ class ResultController extends CommonFormController
 
     /**
      * Delete a form result.
-     *
-     * @return array|\Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function deleteAction()
+    public function deleteAction(): array|\Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         $formId   = $this->request->get('formId', 0);
         $objectId = $this->request->get('objectId', 0);
@@ -349,10 +345,7 @@ class ResultController extends CommonFormController
         );
     }
 
-    /**
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
-     */
-    public function batchDeleteAction()
+    public function batchDeleteAction(): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         return $this->batchDeleteStandard();
     }
@@ -426,8 +419,8 @@ class ResultController extends CommonFormController
         } elseif ($this->request->request->has('formId')) {
             $formId = $this->request->request->get('formId');
         } else {
-            $objectId = isset($parameters['objectId']) ? $parameters['objectId'] : 0;
-            $formId   = (isset($parameters['formId'])) ? $parameters['formId'] : $this->request->query->get('formId', $objectId);
+            $objectId = $parameters['objectId'] ?? 0;
+            $formId   = $parameters['formId'] ?? $this->request->query->get('formId', $objectId);
         }
 
         return $formId;

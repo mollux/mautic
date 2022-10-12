@@ -59,9 +59,8 @@ class MauticMessage extends \Swift_Message
      * @param            $filePath
      * @param null       $fileName
      * @param null       $contentType
-     * @param bool|false $inline
      */
-    public function addAttachment($filePath, $fileName = null, $contentType = null, $inline = false)
+    public function addAttachment($filePath, $fileName = null, $contentType = null, bool $inline = false)
     {
         $attachment = [
             'filePath'    => $filePath,

@@ -14,24 +14,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class InstallController extends CommonController
 {
-    private PackageModel $packageModel;
-
-    private RouteProvider $routeProvider;
-
-    private CorePermissions $corePermissions;
-
-    private Config $config;
-
-    public function __construct(
-        PackageModel $packageModel,
-        RouteProvider $routeProvider,
-        CorePermissions $corePermissions,
-        Config $config
-    ) {
-        $this->packageModel    = $packageModel;
-        $this->routeProvider   = $routeProvider;
-        $this->corePermissions = $corePermissions;
-        $this->config          = $config;
+    public function __construct(private PackageModel $packageModel, private RouteProvider $routeProvider, private CorePermissions $corePermissions, private Config $config)
+    {
     }
 
     public function viewAction(string $vendor, string $package): Response

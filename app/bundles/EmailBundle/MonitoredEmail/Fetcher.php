@@ -11,44 +11,17 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class Fetcher
 {
-    /**
-     * @var Mailbox
-     */
-    private $imapHelper;
+    private ?array $mailboxes = null;
 
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $dispatcher;
+    private array $log = [];
 
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    /**
-     * @var array
-     */
-    private $mailboxes;
-
-    /**
-     * @var array
-     */
-    private $log = [];
-
-    /**
-     * @var int
-     */
-    private $processedMessageCounter = 0;
+    private int $processedMessageCounter = 0;
 
     /**
      * Fetcher constructor.
      */
-    public function __construct(Mailbox $imapHelper, EventDispatcherInterface $dispatcher, TranslatorInterface $translator)
+    public function __construct(private Mailbox $imapHelper, private EventDispatcherInterface $dispatcher, private TranslatorInterface $translator)
     {
-        $this->imapHelper = $imapHelper;
-        $this->dispatcher = $dispatcher;
-        $this->translator = $translator;
     }
 
     /**

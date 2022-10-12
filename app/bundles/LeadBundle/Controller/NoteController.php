@@ -16,10 +16,8 @@ class NoteController extends FormController
      * Generate's default list view.
      *
      * @param $leadId
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function indexAction($leadId = 0, $page = 1)
+    public function indexAction($leadId = 0, $page = 1): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         if (empty($leadId)) {
             return $this->accessDenied();
@@ -61,7 +59,7 @@ class NoteController extends FormController
         ];
 
         $tmpl     = $this->request->isXmlHttpRequest() ? $this->request->get('tmpl', 'index') : 'index';
-        $noteType = InputHelper::clean($this->request->request->get('noteTypes', [], true));
+        $noteType = InputHelper::clean($this->request->request->get('noteTypes', []));
         if (empty($noteType) && 'index' == $tmpl) {
             $noteType = $session->get('mautic.lead.'.$lead->getId().'.notetype.filter', []);
         }
@@ -128,11 +126,10 @@ class NoteController extends FormController
      * Generate's new note and processes post data.
      *
      * @param $leadId
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function newAction($leadId)
+    public function newAction($leadId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
+        $cancelled = null;
         $lead = $this->checkLeadAccess($leadId, 'view');
         if ($lead instanceof Response) {
             return $lead;
@@ -217,8 +214,10 @@ class NoteController extends FormController
      *
      * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function editAction($leadId, $objectId)
+    public function editAction($leadId, $objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
+        $passthroughVars = [];
+        $cancelled = null;
         $lead = $this->checkLeadAccess($leadId, 'view');
         if ($lead instanceof Response) {
             return $lead;
@@ -299,10 +298,8 @@ class NoteController extends FormController
      * Deletes the entity.
      *
      * @param $objectId
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function deleteAction($leadId, $objectId)
+    public function deleteAction($leadId, $objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         $lead = $this->checkLeadAccess($leadId, 'view');
         if ($lead instanceof Response) {

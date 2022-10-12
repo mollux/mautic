@@ -14,41 +14,21 @@ use Twilio\Rest\Client;
 
 class TwilioTransport implements TransportInterface
 {
-    /**
-     * @var Configuration
-     */
-    private $configuration;
+    private ?\Twilio\Rest\Client $client = null;
 
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
-     * @var Client
-     */
-    private $client;
-
-    /**
-     * @var string
-     */
-    private $sendingPhoneNumber;
+    private ?string $sendingPhoneNumber = null;
 
     /**
      * TwilioTransport constructor.
      */
-    public function __construct(Configuration $configuration, LoggerInterface $logger)
+    public function __construct(private Configuration $configuration, private LoggerInterface $logger)
     {
-        $this->logger        = $logger;
-        $this->configuration = $configuration;
     }
 
     /**
      * @param string $content
-     *
-     * @return bool|string
      */
-    public function sendSms(Lead $lead, $content)
+    public function sendSms(Lead $lead, $content): bool|string
     {
         $number = $lead->getLeadPhoneNumber();
 
@@ -68,7 +48,7 @@ class TwilioTransport implements TransportInterface
             );
 
             return true;
-        } catch (NumberParseException $exception) {
+        } catch (NumberParseException|TwilioException $exception) {
             $this->logger->addWarning(
                 $exception->getMessage(),
                 ['exception' => $exception]
@@ -76,20 +56,13 @@ class TwilioTransport implements TransportInterface
 
             return $exception->getMessage();
         } catch (ConfigurationException $exception) {
-            $message = ($exception->getMessage()) ? $exception->getMessage() : 'mautic.sms.transport.twilio.not_configured';
+            $message = $exception->getMessage() ?: 'mautic.sms.transport.twilio.not_configured';
             $this->logger->addWarning(
                 $message,
                 ['exception' => $exception]
             );
 
             return $message;
-        } catch (TwilioException $exception) {
-            $this->logger->addWarning(
-                $exception->getMessage(),
-                ['exception' => $exception]
-            );
-
-            return $exception->getMessage();
         }
     }
 

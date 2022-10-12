@@ -14,28 +14,13 @@ use Psr\Log\LoggerInterface;
 
 class Interval implements ScheduleModeInterface
 {
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
-     * @var CoreParametersHelper
-     */
-    private $coreParametersHelper;
-
-    /**
-     * @var \DateTimeZone
-     */
-    private $defaultTimezone;
+    private ?\DateTimeZone $defaultTimezone = null;
 
     /**
      * Interval constructor.
      */
-    public function __construct(LoggerInterface $logger, CoreParametersHelper $coreParametersHelper)
+    public function __construct(private LoggerInterface $logger, private CoreParametersHelper $coreParametersHelper)
     {
-        $this->logger               = $logger;
-        $this->coreParametersHelper = $coreParametersHelper;
     }
 
     /**
@@ -262,7 +247,7 @@ class Interval implements ScheduleModeInterface
                 $groupExecutionDate->setTime($groupHour->format('H'), $groupHour->format('i'));
 
                 return $groupExecutionDate;
-            } catch (\Exception $exception) {
+            } catch (\Exception) {
                 // Timezone is not recognized so use the default
                 $this->logger->debug(
                     'CAMPAIGN: ('.$eventId.') '.$timezone.' for contact '.$contact->getId().' is not recognized'
@@ -318,7 +303,7 @@ class Interval implements ScheduleModeInterface
                 $groupExecutionDate->setTimezone($contactTimezone);
 
                 $groupExecutionDate->add($diff);
-            } catch (\Exception $exception) {
+            } catch (\Exception) {
                 // Timezone is not recognized so use the default
                 $this->logger->debug(
                     'CAMPAIGN: ('.$eventId.') '.$timezone.' for contact '.$contact->getId().' is not recognized'

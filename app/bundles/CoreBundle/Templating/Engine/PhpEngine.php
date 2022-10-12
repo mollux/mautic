@@ -29,30 +29,15 @@ class PhpEngine extends BasePhpEngine
      */
     private $evalTemplate;
 
-    /**
-     * @var \Exception|null
-     */
-    private $exception;
+    private ?\Exception $exception = null;
 
-    /**
-     * @var GlobalVariables|Stopwatch
-     */
-    private $stopwatch;
+    private \Symfony\Bundle\FrameworkBundle\Templating\GlobalVariables|\Symfony\Component\Stopwatch\Stopwatch|null $stopwatch = null;
 
-    /**
-     * @var bool
-     */
-    private $parsingException = false;
+    private bool $parsingException = false;
 
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $dispatcher;
+    private ?\Symfony\Component\EventDispatcher\EventDispatcherInterface $dispatcher = null;
 
-    /**
-     * @var Request
-     */
-    private $request;
+    private ?\Symfony\Component\HttpFoundation\Request $request = null;
 
     private $jsLoadMethodPrefix;
 
@@ -87,11 +72,10 @@ class PhpEngine extends BasePhpEngine
 
     /**
      * @param string|\Symfony\Component\Templating\TemplateReferenceInterface $name
-     *
-     * @return false|string
      */
-    public function render($name, array $parameters = [])
+    public function render($name, array $parameters = []): false|string
     {
+        $e = null;
         // Set the javascript loader for subsequent templates
         if (isset($parameters['mauticContent'])) {
             $this->jsLoadMethodPrefix = $parameters['mauticContent'];
@@ -126,11 +110,9 @@ class PhpEngine extends BasePhpEngine
     }
 
     /**
-     * @return false|string
-     *
      * @throws \Exception
      */
-    protected function evaluate(Storage $template, array $mauticTemplateVars = [])
+    protected function evaluate(Storage $template, array $mauticTemplateVars = []): false|string
     {
         if (!$template instanceof FileStorage) {
             return parent::evaluate($template, $mauticTemplateVars);
@@ -165,10 +147,7 @@ class PhpEngine extends BasePhpEngine
         return $return;
     }
 
-    /**
-     * @return false|string
-     */
-    protected function generateErrorContent(\Exception $exception)
+    protected function generateErrorContent(\Exception $exception): false|string
     {
         defined('MAUTIC_TEMPLATE_EXCEPTION') || define('MAUTIC_TEMPLATE_EXCEPTION', 1);
 
@@ -186,7 +165,7 @@ class PhpEngine extends BasePhpEngine
                 $dataArray['trace'] = $exception->getTrace();
             }
 
-            return json_encode($dataArray);
+            return json_encode($dataArray, JSON_THROW_ON_ERROR);
         }
 
         return ErrorHandler::getHandler()->handleException($exception, true, true);

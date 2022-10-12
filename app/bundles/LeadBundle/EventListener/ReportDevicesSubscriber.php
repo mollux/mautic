@@ -14,18 +14,10 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class ReportDevicesSubscriber implements EventSubscriberInterface
 {
-    const DEVICES = 'contact.devices';
+    public const DEVICES = 'contact.devices';
 
-    private FieldsBuilder $fieldsBuilder;
-
-    private CompanyReportData $companyReportData;
-
-    public function __construct(
-        FieldsBuilder $fieldsBuilder,
-        CompanyReportData $companyReportData
-    ) {
-        $this->fieldsBuilder     = $fieldsBuilder;
-        $this->companyReportData = $companyReportData;
+    public function __construct(private FieldsBuilder $fieldsBuilder, private CompanyReportData $companyReportData)
+    {
     }
 
     /**

@@ -33,21 +33,11 @@ class PipedriveIntegration extends CrmAbstractIntegration
     public const COMPANY_ENTITY_TYPE      = 'company';
 
     /**
-     * @var Transport
-     */
-    private $transport;
-
-    /**
-     * @var LeadExport
-     */
-    private $leadExport;
-
-    /**
      * @var CrmApi
      */
     private $apiHelper;
 
-    private $requiredFields = [
+    private array $requiredFields = [
         'person'        => ['firstname', 'lastname', 'email'],
         'organization'  => ['name'],
     ];
@@ -69,8 +59,8 @@ class PipedriveIntegration extends CrmAbstractIntegration
         FieldModel $fieldModel,
         IntegrationEntityModel $integrationEntityModel,
         DoNotContact $doNotContact,
-        Transport $transport,
-        LeadExport $leadExport
+        private Transport $transport,
+        private LeadExport $leadExport
     ) {
         parent::__construct(
             $eventDispatcher,
@@ -90,9 +80,6 @@ class PipedriveIntegration extends CrmAbstractIntegration
             $integrationEntityModel,
             $doNotContact
         );
-
-        $this->transport  = $transport;
-        $this->leadExport = $leadExport;
     }
 
     /**
@@ -384,10 +371,7 @@ class PipedriveIntegration extends CrmAbstractIntegration
         return true;
     }
 
-    /**
-     * @return \Doctrine\DBAL\Driver\Statement|int
-     */
-    public function removeIntegrationEntities()
+    public function removeIntegrationEntities(): \Doctrine\DBAL\Driver\Statement|int
     {
         $qb = $this->em->getConnection()->createQueryBuilder();
 

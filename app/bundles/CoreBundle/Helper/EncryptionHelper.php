@@ -8,7 +8,7 @@ use Mautic\CoreBundle\Security\Exception\Cryptography\Symmetric\InvalidDecryptio
 class EncryptionHelper
 {
     /** @var SymmetricCipherInterface[] */
-    private $availableCiphers;
+    private ?array $availableCiphers = null;
 
     /** @var string */
     private $key;
@@ -20,7 +20,7 @@ class EncryptionHelper
         for ($i = $nonCipherArgs; $i < func_num_args(); ++$i) {
             $possibleCipher = func_get_arg($i);
             if (!($possibleCipher instanceof SymmetricCipherInterface)) {
-                throw new \InvalidArgumentException(get_class($possibleCipher).' has to implement '.SymmetricCipherInterface::class);
+                throw new \InvalidArgumentException($possibleCipher::class.' has to implement '.SymmetricCipherInterface::class);
             }
             if (!$possibleCipher->isSupported()) {
                 continue;
@@ -28,7 +28,7 @@ class EncryptionHelper
             $this->availableCiphers[] = $possibleCipher;
         }
 
-        if (!$this->availableCiphers || 0 === count($this->availableCiphers)) {
+        if (!$this->availableCiphers || 0 === count((array) $this->availableCiphers)) {
             throw new \RuntimeException('None of possible cryptography libraries is supported');
         }
 
@@ -42,17 +42,16 @@ class EncryptionHelper
      */
     public static function generateKey()
     {
-        return hash('sha256', uniqid(mt_rand(), true));
+        return hash('sha256', uniqid(random_int(0, mt_getrandmax()), true));
     }
 
     /**
      * Encrypt string.
      *
-     * @param mixed $data
      *
      * @return string
      */
-    public function encrypt($data)
+    public function encrypt(mixed $data)
     {
         $encryptionCipher = reset($this->availableCiphers);
         $initVector       = $encryptionCipher->getRandomInitVector();
@@ -82,7 +81,7 @@ class EncryptionHelper
             }
             try {
                 return Serializer::decode($availableCipher->decrypt($encryptedMessage, $this->key, $initVector));
-            } catch (InvalidDecryptionException $ex) {
+            } catch (InvalidDecryptionException) {
             }
             $mainTried = true;
         }

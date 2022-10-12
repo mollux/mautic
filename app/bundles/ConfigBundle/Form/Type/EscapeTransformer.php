@@ -8,10 +8,7 @@ use Symfony\Component\Form\DataTransformerInterface;
 
 class EscapeTransformer implements DataTransformerInterface
 {
-    /**
-     * @var array
-     */
-    private $allowedParameters;
+    private array $allowedParameters;
 
     public function __construct(array $allowedParameters)
     {
@@ -21,9 +18,7 @@ class EscapeTransformer implements DataTransformerInterface
     public function transform($value)
     {
         if (is_array($value)) {
-            return array_map(function ($value) {
-                return $this->unescape($value);
-            }, $value);
+            return array_map(fn($value) => $this->unescape($value), $value);
         }
 
         return $this->unescape($value);
@@ -32,20 +27,16 @@ class EscapeTransformer implements DataTransformerInterface
     public function reverseTransform($value)
     {
         if (is_array($value)) {
-            return array_map(function ($value) {
-                return $this->escape($value);
-            }, $value);
+            return array_map(fn($value) => $this->escape($value), $value);
         }
 
         return $this->escape($value);
     }
 
     /**
-     * @param mixed $value
-     *
      * @return mixed
      */
-    private function unescape($value)
+    private function unescape(mixed $value)
     {
         if (!is_string($value)) {
             return $value;
@@ -55,11 +46,9 @@ class EscapeTransformer implements DataTransformerInterface
     }
 
     /**
-     * @param mixed $value
-     *
      * @return mixed
      */
-    private function escape($value)
+    private function escape(mixed $value)
     {
         if (!is_string($value)) {
             return $value;
@@ -76,12 +65,8 @@ class EscapeTransformer implements DataTransformerInterface
             return $escaped;
         }
 
-        $search  = array_map(function (string $value) {
-            return "%%{$value}%%";
-        }, $this->allowedParameters);
-        $replace = array_map(function (string $value) {
-            return "%{$value}%";
-        }, $this->allowedParameters);
+        $search  = array_map(fn(string $value) => "%%{$value}%%", $this->allowedParameters);
+        $replace = array_map(fn(string $value) => "%{$value}%", $this->allowedParameters);
 
         return str_ireplace($search, $replace, $escaped);
     }

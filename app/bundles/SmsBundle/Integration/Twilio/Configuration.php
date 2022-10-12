@@ -8,11 +8,6 @@ use Twilio\Exceptions\ConfigurationException;
 class Configuration
 {
     /**
-     * @var IntegrationHelper
-     */
-    private $integrationHelper;
-
-    /**
      * @var string
      */
     private $sendingPhoneNumber;
@@ -30,9 +25,8 @@ class Configuration
     /**
      * Configuration constructor.
      */
-    public function __construct(IntegrationHelper $integrationHelper)
+    public function __construct(private IntegrationHelper $integrationHelper)
     {
-        $this->integrationHelper = $integrationHelper;
     }
 
     /**

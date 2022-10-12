@@ -7,35 +7,17 @@ use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
 
 class UserToken
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private int $id;
 
-    /**
-     * @var User
-     */
-    private $user;
+    private ?\Mautic\UserBundle\Entity\User $user = null;
 
-    /**
-     * @var string
-     */
-    private $authorizator;
+    private ?string $authorizator = null;
 
-    /**
-     * @var string
-     */
-    private $secret;
+    private ?string $secret = null;
 
-    /**
-     * @var \DateTime|null
-     */
-    private $expiration = null;
+    private ?\DateTime $expiration = null;
 
-    /**
-     * @var bool
-     */
-    private $oneTimeOnly = true;
+    private bool $oneTimeOnly = true;
 
     public static function loadMetadata(ORM\ClassMetadata $metadata)
     {

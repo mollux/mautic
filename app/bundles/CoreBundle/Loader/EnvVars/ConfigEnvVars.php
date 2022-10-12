@@ -16,8 +16,8 @@ class ConfigEnvVars implements EnvVarsInterface
             // JSON encode arrays
             $defaultValue = $defaultConfig->get($key);
             if (is_array($value) || is_array($defaultValue)) {
-                $jsonValue = $value ? $value : $defaultValue;
-                $value     = json_encode($jsonValue);
+                $jsonValue = $value ?: $defaultValue;
+                $value     = json_encode($jsonValue, JSON_THROW_ON_ERROR);
             }
 
             // Set the environment variable

@@ -20,64 +20,21 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class AuthorizeController extends \FOS\OAuthServerBundle\Controller\AuthorizeController
 {
     /**
-     * @var SessionInterface
-     */
-    private $session;
-
-    /**
-     * @var Form
-     */
-    private $authorizeForm;
-
-    /**
-     * @var AuthorizeFormHandler
-     */
-    private $authorizeFormHandler;
-
-    /**
-     * @var OAuth2
-     */
-    private $oAuth2Server;
-
-    /**
-     * @var EngineInterface
-     */
-    private $templating;
-
-    /**
-     * @var TokenStorageInterface
-     */
-    private $tokenStorage;
-
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $eventDispatcher;
-
-    /**
      * This constructor must be duplicated from the extended class so our custom code could access the properties.
      */
     public function __construct(
         RequestStack $requestStack,
-        Form $authorizeForm,
-        AuthorizeFormHandler $authorizeFormHandler,
-        OAuth2 $oAuth2Server,
-        EngineInterface $templating,
-        TokenStorageInterface $tokenStorage,
+        private Form $authorizeForm,
+        private AuthorizeFormHandler $authorizeFormHandler,
+        private OAuth2 $oAuth2Server,
+        private EngineInterface $templating,
+        private TokenStorageInterface $tokenStorage,
         UrlGeneratorInterface $router,
         ClientManagerInterface $clientManager,
-        EventDispatcherInterface $eventDispatcher,
-        SessionInterface $session = null,
+        private EventDispatcherInterface $eventDispatcher,
+        private SessionInterface $session,
         $templateEngineType = 'php'
     ) {
-        $this->session              = $session;
-        $this->authorizeForm        = $authorizeForm;
-        $this->authorizeFormHandler = $authorizeFormHandler;
-        $this->oAuth2Server         = $oAuth2Server;
-        $this->templating           = $templating;
-        $this->tokenStorage         = $tokenStorage;
-        $this->eventDispatcher      = $eventDispatcher;
-
         parent::__construct(
             $requestStack,
             $authorizeForm,
@@ -94,12 +51,11 @@ class AuthorizeController extends \FOS\OAuthServerBundle\Controller\AuthorizeCon
     }
 
     /**
-     * @return \FOS\OAuthServerBundle\Controller\Response|\Symfony\Component\HttpFoundation\Response
      *
      * @throws \OAuth2\OAuth2RedirectException
      * @throws AccessDeniedException
      */
-    public function authorizeAction(Request $request)
+    public function authorizeAction(Request $request): \FOS\OAuthServerBundle\Controller\Response|\Symfony\Component\HttpFoundation\Response
     {
         $user = $this->tokenStorage->getToken()->getUser();
 

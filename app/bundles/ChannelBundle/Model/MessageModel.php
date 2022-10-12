@@ -21,25 +21,13 @@ class MessageModel extends FormModel implements AjaxLookupModelInterface
 {
     public const CHANNEL_FEATURE = 'marketing_messages';
 
-    /**
-     * @var ChannelListHelper
-     */
-    protected $channelListHelper;
-
-    /**
-     * @var CampaignModel
-     */
-    protected $campaignModel;
-
     protected static $channels;
 
     /**
      * MessageModel constructor.
      */
-    public function __construct(ChannelListHelper $channelListHelper, CampaignModel $campaignModel)
+    public function __construct(protected ChannelListHelper $channelListHelper, protected CampaignModel $campaignModel)
     {
-        $this->channelListHelper = $channelListHelper;
-        $this->campaignModel     = $campaignModel;
     }
 
     /**
@@ -70,10 +58,7 @@ class MessageModel extends FormModel implements AjaxLookupModelInterface
         return 'channel:messages';
     }
 
-    /**
-     * @return \Doctrine\ORM\EntityRepository|\Mautic\ChannelBundle\Entity\MessageRepository
-     */
-    public function getRepository()
+    public function getRepository(): \Doctrine\ORM\EntityRepository|\Mautic\ChannelBundle\Entity\MessageRepository
     {
         return $this->em->getRepository('MauticChannelBundle:Message');
     }
@@ -123,19 +108,12 @@ class MessageModel extends FormModel implements AjaxLookupModelInterface
                     throw new \InvalidArgumentException('lookupFormType and/or propertiesFormType are required for channel '.$channel);
                 }
 
-                switch (true) {
-                    case $this->translator->hasId('mautic.channel.'.$channel):
-                        $label = $this->translator->trans('mautic.channel.'.$channel);
-                        break;
-                    case $this->translator->hasId('mautic.'.$channel):
-                        $label = $this->translator->trans('mautic.'.$channel);
-                        break;
-                    case $this->translator->hasId('mautic.'.$channel.'.'.$channel):
-                        $label = $this->translator->trans('mautic.'.$channel.'.'.$channel);
-                        break;
-                    default:
-                        $label = ucfirst($channel);
-                }
+                $label = match (true) {
+                    $this->translator->hasId('mautic.channel.'.$channel) => $this->translator->trans('mautic.channel.'.$channel),
+                    $this->translator->hasId('mautic.'.$channel) => $this->translator->trans('mautic.'.$channel),
+                    $this->translator->hasId('mautic.'.$channel.'.'.$channel) => $this->translator->trans('mautic.'.$channel.'.'.$channel),
+                    default => ucfirst($channel),
+                };
                 $config['label'] = $label;
 
                 $channels[$channel] = $config;

@@ -10,39 +10,15 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class BroadcastExecutioner
 {
-    /**
-     * @var SmsModel
-     */
-    private $smsModel;
+    private ?\Mautic\CampaignBundle\Executioner\ContactFinder\Limiter\ContactLimiter $contactLimiter = null;
 
-    /**
-     * @var ContactLimiter
-     */
-    private $contactLimiter;
-
-    /**
-     * @var BroadcastQuery
-     */
-    private $broadcastQuery;
-
-    /**
-     * @var BroadcastResult
-     */
-    private $result;
-
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
+    private ?\Mautic\SmsBundle\Broadcast\BroadcastResult $result = null;
 
     /**
      * BroadcastExecutioner constructor.
      */
-    public function __construct(SmsModel $smsModel, BroadcastQuery $broadcastQuery, TranslatorInterface $translator)
+    public function __construct(private SmsModel $smsModel, private BroadcastQuery $broadcastQuery, private TranslatorInterface $translator)
     {
-        $this->smsModel       = $smsModel;
-        $this->broadcastQuery = $broadcastQuery;
-        $this->translator     = $translator;
     }
 
     public function execute(ChannelBroadcastEvent $event)
@@ -55,7 +31,7 @@ class BroadcastExecutioner
             $this->result         = new BroadcastResult();
             try {
                 $this->send($sms);
-            } catch (\Exception $exception) {
+            } catch (\Exception) {
             }
 
             $event->setResults(

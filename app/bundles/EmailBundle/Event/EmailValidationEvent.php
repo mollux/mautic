@@ -10,11 +10,6 @@ use Symfony\Contracts\EventDispatcher\Event;
 class EmailValidationEvent extends Event
 {
     /**
-     * @var string
-     */
-    protected $address;
-
-    /**
      * @var bool
      */
     protected $isValid = true;
@@ -28,10 +23,10 @@ class EmailValidationEvent extends Event
      * EmailValidationEvent constructor.
      *
      * @param $address
+     * @param string $address
      */
-    public function __construct($address)
+    public function __construct(protected $address)
     {
-        $this->address = $address;
     }
 
     /**

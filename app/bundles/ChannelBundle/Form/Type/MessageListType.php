@@ -31,17 +31,15 @@ class MessageListType extends AbstractType
                     return 'channel:getLookupChoiceList&'.http_build_query($query);
                 },
                 'model_lookup_method' => 'getLookupResults',
-                'lookup_arguments'    => function (Options $options) {
-                    return [
-                        'type'    => 'channel.message',
-                        'filter'  => '$data',
-                        'limit'   => 0,
-                        'start'   => 0,
-                        'options' => [
-                            'is_published' => $options['is_published'],
-                        ],
-                    ];
-                },
+                'lookup_arguments'    => fn(Options $options) => [
+                    'type'    => 'channel.message',
+                    'filter'  => '$data',
+                    'limit'   => 0,
+                    'start'   => 0,
+                    'options' => [
+                        'is_published' => $options['is_published'],
+                    ],
+                ],
                 'is_published' => true,
             ]
         );

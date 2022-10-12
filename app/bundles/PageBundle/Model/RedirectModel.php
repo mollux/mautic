@@ -14,16 +14,10 @@ use Mautic\PageBundle\PageEvents;
 class RedirectModel extends FormModel
 {
     /**
-     * @var UrlHelper
-     */
-    protected $urlHelper;
-
-    /**
      * RedirectModel constructor.
      */
-    public function __construct(UrlHelper $urlHelper)
+    public function __construct(protected UrlHelper $urlHelper)
     {
-        $this->urlHelper = $urlHelper;
     }
 
     /**
@@ -112,7 +106,7 @@ class RedirectModel extends FormModel
     public function getRedirectByUrl($url)
     {
         // Ensure the URL saved to the database does not have encoded ampersands
-        while (false !== strpos($url, '&amp;')) {
+        while (str_contains($url, '&amp;')) {
             $url = str_replace('&amp;', '&', $url);
         }
 

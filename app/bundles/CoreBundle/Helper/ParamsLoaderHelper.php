@@ -8,7 +8,7 @@ class ParamsLoaderHelper
 {
     use ConfigAwareTrait;
 
-    private $parameters = [];
+    private array $parameters = [];
 
     /**
      * Get parameters for static method.

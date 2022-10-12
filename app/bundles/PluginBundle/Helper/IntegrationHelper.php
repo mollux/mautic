@@ -18,81 +18,30 @@ use Symfony\Component\Finder\Finder;
 
 class IntegrationHelper
 {
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
+    private array $integrations = [];
 
-    /**
-     * @var EntityManager
-     */
-    protected $em;
+    private array $available = [];
 
-    /**
-     * @var PathsHelper
-     */
-    protected $pathsHelper;
+    private array $byFeatureList = [];
 
-    /**
-     * @var BundleHelper
-     */
-    protected $bundleHelper;
+    private array $byPlugin = [];
 
-    /**
-     * @var CoreParametersHelper
-     */
-    protected $coreParametersHelper;
-
-    /**
-     * @var TemplatingHelper
-     */
-    protected $templatingHelper;
-
-    /**
-     * @var PluginModel
-     */
-    protected $pluginModel;
-
-    private $integrations = [];
-
-    private $available = [];
-
-    private $byFeatureList = [];
-
-    private $byPlugin = [];
-
-    public function __construct(
-        ContainerInterface $container,
-        EntityManager $em,
-        PathsHelper $pathsHelper,
-        BundleHelper $bundleHelper,
-        CoreParametersHelper $coreParametersHelper,
-        TemplatingHelper $templatingHelper,
-        PluginModel $pluginModel
-    ) {
-        $this->container            = $container;
-        $this->em                   = $em;
-        $this->pathsHelper          = $pathsHelper;
-        $this->bundleHelper         = $bundleHelper;
-        $this->pluginModel          = $pluginModel;
-        $this->coreParametersHelper = $coreParametersHelper;
-        $this->templatingHelper     = $templatingHelper;
+    public function __construct(private ContainerInterface $container, protected EntityManager $em, protected PathsHelper $pathsHelper, protected BundleHelper $bundleHelper, protected CoreParametersHelper $coreParametersHelper, protected TemplatingHelper $templatingHelper, protected PluginModel $pluginModel)
+    {
     }
 
     /**
      * Get a list of integration helper classes.
      *
-     * @param array|string $specificIntegrations
      * @param array        $withFeatures
      * @param bool         $alphabetical
      * @param int|null     $pluginFilter
-     * @param bool|false   $publishedOnly
      *
      * @return mixed
      *
      * @throws \Doctrine\ORM\ORMException
      */
-    public function getIntegrationObjects($specificIntegrations = null, $withFeatures = null, $alphabetical = false, $pluginFilter = null, $publishedOnly = false)
+    public function getIntegrationObjects(array|string $specificIntegrations = null, $withFeatures = null, $alphabetical = false, $pluginFilter = null, bool $publishedOnly = false)
     {
         // Build the service classes
         if (empty($this->available)) {
@@ -186,7 +135,7 @@ class IntegrationHelper
             foreach ($this->bundleHelper->getMauticBundles() as $coreBundle) {
                 if (
                     // Skip plugin bundles
-                    false !== strpos($coreBundle['relative'], 'app/bundles')
+                    str_contains($coreBundle['relative'], 'app/bundles')
                     // Skip core bundles without an Integration directory
                     && is_dir($coreBundle['directory'].'/Integration')
                 ) {
@@ -221,7 +170,7 @@ class IntegrationHelper
                         }
 
                         /** @var \Mautic\PluginBundle\Entity\Integration $settings */
-                        $settings                          = isset($coreIntegrationSettings[$integrationName]) ? $coreIntegrationSettings[$integrationName] : $newIntegration;
+                        $settings                          = $coreIntegrationSettings[$integrationName] ?? $newIntegration;
                         $this->available[$integrationName] = [
                             'isPlugin'    => false,
                             'integration' => $integrationName,
@@ -306,12 +255,7 @@ class IntegrationHelper
             uasort($returnServices, function ($a, $b) {
                 $aP = (int) $a->getPriority();
                 $bP = (int) $b->getPriority();
-
-                if ($aP === $bP) {
-                    return 0;
-                }
-
-                return ($aP < $bP) ? -1 : 1;
+                return $aP <=> $bP;
             });
         } else {
             // Sort by display name
@@ -330,14 +274,12 @@ class IntegrationHelper
      * Get a single integration object.
      *
      * @param $name
-     *
-     * @return AbstractIntegration|bool
      */
-    public function getIntegrationObject($name)
+    public function getIntegrationObject($name): \Mautic\PluginBundle\Integration\AbstractIntegration|bool
     {
         $integrationObjects = $this->getIntegrationObjects($name);
 
-        return ((isset($integrationObjects[$name]))) ? $integrationObjects[$name] : false;
+        return $integrationObjects[$name] ?? false;
     }
 
     /**
@@ -556,7 +498,7 @@ class IntegrationHelper
                 $featureSettings = $settings->getFeatureSettings();
                 $apiKeys         = $details->decryptApiKeys($settings->getApiKeys());
                 $plugin          = $settings->getPlugin();
-                $shareSettings   = isset($featureSettings['shareButton']) ? $featureSettings['shareButton'] : [];
+                $shareSettings   = $featureSettings['shareButton'] ?? [];
 
                 //add the api keys for use within the share buttons
                 $shareSettings['keys']   = $apiKeys;
@@ -589,16 +531,16 @@ class IntegrationHelper
                 foreach ($identifierField as $idf) {
                     $value = (is_array($fields[$f]) && isset($fields[$f]['value'])) ? $fields[$f]['value'] : $fields[$f];
 
-                    if (!in_array($value, $identifier) && false !== strpos($f, $idf)) {
+                    if (!in_array($value, $identifier) && str_contains($f, $idf)) {
                         $identifier[$f] = $value;
-                        if (count($identifier) === count($identifierField)) {
+                        if (count($identifier) === (is_countable($identifierField) ? count($identifierField) : 0)) {
                             //found enough matches so break
                             $matchFound = true;
                             break;
                         }
                     }
                 }
-            } elseif ($identifierField === $f || false !== strpos($f, $identifierField)) {
+            } elseif ($identifierField === $f || str_contains($f, $identifierField)) {
                 $matchFound = true;
                 $identifier = (is_array($fields[$f])) ? $fields[$f]['value'] : $fields[$f];
             }
@@ -641,6 +583,7 @@ class IntegrationHelper
      */
     public function getIconPath($integration)
     {
+        $icon = null;
         $systemPath  = $this->pathsHelper->getSystemPath('root');
         $bundlePath  = $this->pathsHelper->getSystemPath('bundles');
         $pluginPath  = $this->pathsHelper->getSystemPath('plugins');

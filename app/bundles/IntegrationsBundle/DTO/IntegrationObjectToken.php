@@ -10,42 +10,21 @@ namespace Mautic\IntegrationsBundle\DTO;
  */
 class IntegrationObjectToken
 {
-    /**
-     * @var string
-     */
-    private $token;
+    private ?string $objectName = null;
 
-    /**
-     * @var string
-     */
-    private $objectName;
+    private ?string $integration = null;
 
-    /**
-     * @var string
-     */
-    private $integration;
+    private string $defaultValue = '';
 
-    /**
-     * @var string
-     */
-    private $defaultValue = '';
+    private ?string $linkText = null;
 
-    /**
-     * @var string
-     */
-    private $linkText;
-
-    /**
-     * @var string
-     */
-    private $baseURL;
+    private ?string $baseURL = null;
 
     /**
      * IntegrationObjectToken constructor.
      */
-    public function __construct(string $token)
+    public function __construct(private string $token)
     {
-        $this->token = $token;
     }
 
     /**

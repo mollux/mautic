@@ -23,14 +23,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ReportType extends AbstractType
 {
-    /**
-     * @var ReportModel
-     */
-    private $reportModel;
-
-    public function __construct(ReportModel $reportModel)
+    public function __construct(private ReportModel $reportModel)
     {
-        $this->reportModel = $reportModel;
     }
 
     /**
@@ -141,12 +135,12 @@ class ReportType extends AbstractType
                 $columns           = $this->reportModel->getColumnList($source);
                 $groupByColumns    = $this->reportModel->getColumnList($source, true);
                 $filters           = $this->reportModel->getFilterList($source);
-                $filterDefinitions = htmlspecialchars(json_encode($filters->definitions), ENT_QUOTES, 'UTF-8');
-                $operatorHtml      = htmlspecialchars(json_encode($filters->operatorHtml), ENT_QUOTES, 'UTF-8');
+                $filterDefinitions = htmlspecialchars(json_encode($filters->definitions, JSON_THROW_ON_ERROR), ENT_QUOTES, 'UTF-8');
+                $operatorHtml      = htmlspecialchars(json_encode($filters->operatorHtml, JSON_THROW_ON_ERROR), ENT_QUOTES, 'UTF-8');
 
                 if (is_array($currentColumns)) {
                     $orderColumns = array_values($currentColumns);
-                    $order        = htmlspecialchars(json_encode($orderColumns), ENT_QUOTES, 'UTF-8');
+                    $order        = htmlspecialchars(json_encode($orderColumns, JSON_THROW_ON_ERROR), ENT_QUOTES, 'UTF-8');
                 } else {
                     $order = '[]';
                 }
@@ -271,7 +265,7 @@ class ReportType extends AbstractType
                 $graphList = $this->reportModel->getGraphList($source);
                 if (is_array($currentGraphs)) {
                     $orderColumns = array_values($currentGraphs);
-                    $order        = htmlspecialchars(json_encode($orderColumns), ENT_QUOTES, 'UTF-8');
+                    $order        = htmlspecialchars(json_encode($orderColumns, JSON_THROW_ON_ERROR), ENT_QUOTES, 'UTF-8');
                 } else {
                     $order = '[]';
                 }
@@ -391,8 +385,8 @@ class ReportType extends AbstractType
                 FormEvents::PRE_SUBMIT,
                 function (FormEvent $event) use ($formModifier) {
                     $data = $event->getData();
-                    $graphs = (isset($data['graphs'])) ? $data['graphs'] : [];
-                    $columns = (isset($data['columns'])) ? $data['columns'] : [];
+                    $graphs = $data['graphs'] ?? [];
+                    $columns = $data['columns'] ?? [];
                     $formModifier($event->getForm(), $data['source'], $columns, $graphs, $data);
                 }
             );

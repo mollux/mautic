@@ -15,7 +15,7 @@ class StatsDAO
     /**
      * @var YearStat[]
      */
-    private $years = [];
+    private array $years = [];
 
     /**
      * @param $year

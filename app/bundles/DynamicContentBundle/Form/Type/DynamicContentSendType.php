@@ -15,16 +15,10 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 class DynamicContentSendType extends AbstractType
 {
     /**
-     * @var RouterInterface
-     */
-    protected $router;
-
-    /**
      * DynamicContentSendType constructor.
      */
-    public function __construct(RouterInterface $router)
+    public function __construct(protected RouterInterface $router)
     {
-        $this->router = $router;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)

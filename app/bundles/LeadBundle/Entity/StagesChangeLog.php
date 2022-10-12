@@ -11,42 +11,24 @@ use Mautic\StageBundle\Entity\Stage;
  */
 class StagesChangeLog
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var Lead
-     */
-    private $lead;
+    private ?\Mautic\LeadBundle\Entity\Lead $lead = null;
 
-    /**
-     * @var Stage
-     */
-    private $stage;
+    private ?\Mautic\StageBundle\Entity\Stage $stage = null;
 
-    /**
-     * @var string
-     */
-    private $eventName;
+    private ?string $eventName = null;
 
-    /**
-     * @var string
-     */
-    private $actionName;
+    private ?string $actionName = null;
 
-    /**
-     * @var \DateTime
-     */
-    private $dateAdded;
+    private ?\DateTime $dateAdded = null;
 
     public static function loadMetadata(ORM\ClassMetadata $metadata)
     {
         $builder = new ClassMetadataBuilder($metadata);
 
         $builder->setTable('lead_stages_change_log')
-            ->setCustomRepositoryClass('Mautic\LeadBundle\Entity\StagesChangeLogRepository');
+            ->setCustomRepositoryClass(\Mautic\LeadBundle\Entity\StagesChangeLogRepository::class);
 
         $builder->addId();
 
@@ -60,7 +42,7 @@ class StagesChangeLog
             ->columnName('action_name')
             ->build();
 
-        $builder->createManyToOne('stage', 'Mautic\StageBundle\Entity\Stage')
+        $builder->createManyToOne('stage', \Mautic\StageBundle\Entity\Stage::class)
             ->inversedBy('log')
             ->addJoinColumn('stage_id', 'id', true, false, 'CASCADE')
             ->build();

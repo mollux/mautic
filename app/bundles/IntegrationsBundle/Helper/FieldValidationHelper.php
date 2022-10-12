@@ -15,25 +15,10 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class FieldValidationHelper
 {
-    /**
-     * @var FieldHelper
-     */
-    private $fieldHelper;
+    private \Mautic\IntegrationsBundle\Integration\Interfaces\ConfigFormSyncInterface|\Mautic\IntegrationsBundle\Integration\Interfaces\BasicInterface|null $integrationObject = null;
 
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    /**
-     * @var ConfigFormSyncInterface|BasicInterface
-     */
-    private $integrationObject;
-
-    public function __construct(FieldHelper $fieldHelper, TranslatorInterface $translator)
+    public function __construct(private FieldHelper $fieldHelper, private TranslatorInterface $translator)
     {
-        $this->fieldHelper = $fieldHelper;
-        $this->translator  = $translator;
     }
 
     public function validateRequiredFields(Form $form, ConfigFormSyncInterface $integrationObject, array $fieldMappings): void

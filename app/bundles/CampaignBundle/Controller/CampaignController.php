@@ -95,10 +95,8 @@ class CampaignController extends AbstractStandardFormController
 
     /**
      * Deletes a group of entities.
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|RedirectResponse
      */
-    public function batchDeleteAction()
+    public function batchDeleteAction(): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         return $this->batchDeleteStandard();
     }
@@ -110,19 +108,17 @@ class CampaignController extends AbstractStandardFormController
      *
      * @return JsonResponse|RedirectResponse|Response
      */
-    public function cloneAction($objectId)
+    public function cloneAction($objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         return $this->cloneStandard($objectId);
     }
 
     /**
-     * @param string|int $objectId
      * @param int        $page
      * @param int|null   $count
-     *
      * @return JsonResponse|RedirectResponse|Response
      */
-    public function contactsAction($objectId, $page = 1, $count = null, \DateTimeInterface $dateFrom = null, \DateTimeInterface $dateTo = null)
+    public function contactsAction(string|int $objectId, $page = 1, $count = null, \DateTimeInterface $dateFrom = null, \DateTimeInterface $dateTo = null): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         $session = $this->get('session');
         $session->set('mautic.campaign.contact.page', $page);
@@ -152,10 +148,8 @@ class CampaignController extends AbstractStandardFormController
      * Deletes the entity.
      *
      * @param $objectId
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|RedirectResponse
      */
-    public function deleteAction($objectId)
+    public function deleteAction($objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         return $this->deleteStandard($objectId);
     }
@@ -166,7 +160,7 @@ class CampaignController extends AbstractStandardFormController
      *
      * @return JsonResponse|RedirectResponse|Response
      */
-    public function editAction($objectId, $ignorePost = false)
+    public function editAction($objectId, $ignorePost = false): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         return $this->editStandard($objectId, $ignorePost);
     }
@@ -176,7 +170,7 @@ class CampaignController extends AbstractStandardFormController
      *
      * @return JsonResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function indexAction($page = null)
+    public function indexAction($page = null): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         //set some permissions
         $permissions = $this->get('mautic.security')->isGranted(
@@ -297,7 +291,7 @@ class CampaignController extends AbstractStandardFormController
      *
      * @return RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function newAction()
+    public function newAction(): \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         /** @var CampaignModel $model */
         $model    = $this->getModel('campaign');
@@ -418,10 +412,8 @@ class CampaignController extends AbstractStandardFormController
      * View a specific campaign.
      *
      * @param $objectId
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function viewAction($objectId)
+    public function viewAction($objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         return $this->viewStandard($objectId, $this->getModelName(), null, null, 'campaign');
     }
@@ -432,7 +424,7 @@ class CampaignController extends AbstractStandardFormController
      */
     protected function afterEntityClone($campaign, $oldCampaign)
     {
-        $tempId   = 'mautic_'.sha1(uniqid(mt_rand(), true));
+        $tempId   = 'mautic_'.sha1(uniqid(random_int(0, mt_getrandmax()), true));
         $objectId = $oldCampaign->getId();
 
         // Get the events that need to be duplicated as well
@@ -674,7 +666,7 @@ class CampaignController extends AbstractStandardFormController
         if ($objectId) {
             $sessionId = $objectId;
         } elseif ('new' === $action && empty($sessionId)) {
-            $sessionId = 'mautic_'.sha1(uniqid(mt_rand(), true));
+            $sessionId = 'mautic_'.sha1(uniqid(random_int(0, mt_getrandmax()), true));
             if ($this->request->request->has('campaign')) {
                 $campaign  = $this->request->request->get('campaign', []);
                 $sessionId = $campaign['sessionId'] ?? $sessionId;
@@ -729,7 +721,7 @@ class CampaignController extends AbstractStandardFormController
 
             // Parse the selected values
             $newFilters     = [];
-            $updatedFilters = json_decode($updatedFilters, true);
+            $updatedFilters = json_decode($updatedFilters, true, 512, JSON_THROW_ON_ERROR);
 
             if ($updatedFilters) {
                 foreach ($updatedFilters as $updatedFilter) {

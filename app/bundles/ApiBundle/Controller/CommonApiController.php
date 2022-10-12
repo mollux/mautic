@@ -169,10 +169,8 @@ class CommonApiController extends AbstractFOSRestController implements MauticCon
 
     /**
      * Delete a batch of entities.
-     *
-     * @return array|Response
      */
-    public function deleteEntitiesAction()
+    public function deleteEntitiesAction(): array|\Symfony\Component\HttpFoundation\Response
     {
         $parameters = $this->request->query->all();
 
@@ -207,9 +205,9 @@ class CommonApiController extends AbstractFOSRestController implements MauticCon
         }
 
         if (!empty($errors)) {
-            $content           = json_decode($response->getContent(), true);
+            $content           = json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR);
             $content['errors'] = $errors;
-            $response->setContent(json_encode($content));
+            $response->setContent(json_encode($content, JSON_THROW_ON_ERROR));
         }
 
         return $response;
@@ -244,10 +242,8 @@ class CommonApiController extends AbstractFOSRestController implements MauticCon
 
     /**
      * Edit a batch of entities.
-     *
-     * @return array|Response
      */
-    public function editEntitiesAction()
+    public function editEntitiesAction(): array|\Symfony\Component\HttpFoundation\Response
     {
         $parameters = $this->request->request->all();
 
@@ -262,7 +258,7 @@ class CommonApiController extends AbstractFOSRestController implements MauticCon
 
         foreach ($parameters as $key => $params) {
             $method = $this->request->getMethod();
-            $entity = (isset($entities[$key])) ? $entities[$key] : null;
+            $entity = $entities[$key] ?? null;
 
             $statusCode = Response::HTTP_OK;
             if (null === $entity || !$entity->getId()) {
@@ -548,10 +544,8 @@ class CommonApiController extends AbstractFOSRestController implements MauticCon
 
     /**
      * Create a batch of new entities.
-     *
-     * @return array|Response
      */
-    public function newEntitiesAction()
+    public function newEntitiesAction(): array|\Symfony\Component\HttpFoundation\Response
     {
         $entity = $this->model->getEntity();
 
@@ -706,12 +700,10 @@ class CommonApiController extends AbstractFOSRestController implements MauticCon
     /**
      * Checks if user has permission to access retrieved entity.
      *
-     * @param mixed  $entity
      * @param string $action view|create|edit|publish|delete
      *
-     * @return bool|Response
      */
-    protected function checkEntityAccess($entity, $action = 'view')
+    protected function checkEntityAccess(mixed $entity, $action = 'view'): bool|\Symfony\Component\HttpFoundation\Response
     {
         if ('create' != $action && method_exists($entity, 'getCreatedBy')) {
             $ownPerm   = "{$this->permissionBase}:{$action}own";
@@ -770,7 +762,7 @@ class CommonApiController extends AbstractFOSRestController implements MauticCon
             return [];
         }
 
-        $model    = ($model) ? $model : $this->model;
+        $model    = $model ?: $this->model;
         $entities = $model->getEntities(
             [
                 'filter' => [
@@ -832,7 +824,7 @@ class CommonApiController extends AbstractFOSRestController implements MauticCon
      */
     protected function getEntityDefaultProperties($entity)
     {
-        $class         = get_class($entity);
+        $class         = $entity::class;
         $chain         = array_reverse(class_parents($entity), true) + [$class => $class];
         $defaultValues = [];
 
@@ -1007,7 +999,7 @@ class CommonApiController extends AbstractFOSRestController implements MauticCon
                     $entity
                 );
             }
-        } elseif (is_object($formResponse) && get_class($formResponse) === get_class($entity)) {
+        } elseif (is_object($formResponse) && $formResponse::class === $entity::class) {
             // Success
             $entities[$key] = $formResponse;
         } elseif (is_array($formResponse) && isset($formResponse['code'], $formResponse['message'])) {
@@ -1173,10 +1165,8 @@ class CommonApiController extends AbstractFOSRestController implements MauticCon
      * @param string $msg
      * @param int    $code
      * @param array  $details
-     *
-     * @return Response|array
      */
-    protected function returnError($msg, $code = Response::HTTP_INTERNAL_SERVER_ERROR, $details = [])
+    protected function returnError($msg, $code = Response::HTTP_INTERNAL_SERVER_ERROR, $details = []): \Symfony\Component\HttpFoundation\Response|array
     {
         if ($this->get('translator')->hasId($msg, 'flashes')) {
             $msg = $this->get('translator')->trans($msg, [], 'flashes');
@@ -1300,13 +1290,11 @@ class CommonApiController extends AbstractFOSRestController implements MauticCon
 
     /**
      * @param $parameters
-     *
-     * @return array|bool|Response
      */
-    protected function validateBatchPayload($parameters)
+    protected function validateBatchPayload($parameters): array|bool|\Symfony\Component\HttpFoundation\Response
     {
         $batchLimit = (int) $this->get('mautic.config')->getParameter('api_batch_max_limit', 200);
-        if (count($parameters) > $batchLimit) {
+        if ((is_countable($parameters) ? count($parameters) : 0) > $batchLimit) {
             return $this->returnError($this->get('translator')->trans('mautic.api.call.batch_exception', ['%limit%' => $batchLimit]));
         }
 

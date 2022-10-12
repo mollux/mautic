@@ -10,11 +10,8 @@ use Twig\TwigFunction;
 
 class MenuExtension extends AbstractExtension
 {
-    protected MenuHelper $menuHelper;
-
-    public function __construct(MenuHelper $menuHelper)
+    public function __construct(protected MenuHelper $menuHelper)
     {
-        $this->menuHelper = $menuHelper;
     }
 
     /**
@@ -33,7 +30,7 @@ class MenuExtension extends AbstractExtension
      * @param \Knp\Menu\ItemInterface|string|array<mixed> $menu
      * @param array<mixed>                                $options
      */
-    public function menuRender($menu, array $options = [], ?string $renderer = null): string
+    public function menuRender(\Knp\Menu\ItemInterface|string|array $menu, array $options = [], ?string $renderer = null): string
     {
         return $this->menuHelper->render($menu, $options, $renderer);
     }

@@ -9,25 +9,13 @@ use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
 
 class Event
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var Webhook
-     */
-    private $webhook;
+    private ?\Mautic\WebhookBundle\Entity\Webhook $webhook = null;
 
-    /**
-     * @var ArrayCollection
-     */
-    private $queues;
+    private \Doctrine\Common\Collections\ArrayCollection $queues;
 
-    /**
-     * @var string
-     */
-    private $eventType;
+    private ?string $eventType = null;
 
     public function __construct()
     {
@@ -112,10 +100,7 @@ class Event
         return $this->eventType;
     }
 
-    /**
-     * @param mixed $eventType
-     */
-    public function setEventType($eventType)
+    public function setEventType(mixed $eventType)
     {
         $this->eventType = $eventType;
 

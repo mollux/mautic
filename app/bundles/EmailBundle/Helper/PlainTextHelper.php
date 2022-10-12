@@ -322,7 +322,7 @@ class PlainTextHelper
      */
     protected function buildlinkList($link, $display, $linkOverride = null)
     {
-        $linkMethod = ($linkOverride) ? $linkOverride : $this->options['do_links'];
+        $linkMethod = $linkOverride ?: $this->options['do_links'];
         if ('none' == $linkMethod) {
             return $display;
         }
@@ -534,11 +534,10 @@ class PlainTextHelper
      * @param            $text
      * @param            $width
      * @param string     $breakline
-     * @param bool|false $cut
      *
      * @return string
      */
-    private function linewrap($text, $width, $breakline = "\n", $cut = false)
+    private function linewrap($text, $width, $breakline = "\n", bool $cut = false)
     {
         $lines = explode("\n", $text);
         $text  = '';

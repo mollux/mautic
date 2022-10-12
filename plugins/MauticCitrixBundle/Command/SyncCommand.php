@@ -18,13 +18,9 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class SyncCommand extends ModeratedCommand
 {
-    private CitrixModel $citrixModel;
-
-    public function __construct(CitrixModel $citrixModel, PathsHelper $pathsHelper)
+    public function __construct(private CitrixModel $citrixModel, PathsHelper $pathsHelper)
     {
         parent::__construct($pathsHelper);
-
-        $this->citrixModel = $citrixModel;
     }
 
     protected function configure()

@@ -21,33 +21,18 @@ class CampaignSubscriber implements EventSubscriberInterface
     use CitrixRegistrationTrait;
     use CitrixStartTrait;
 
-    /**
-     * @var CitrixModel
-     */
-    private $citrixModel;
-
-    /**
-     * ヽ(ಠ_ಠ)ノ Used in the CitrixStartTrait.
-     *
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    /**
-     * ヽ(ಠ_ಠ)ノ Used in the CitrixStartTrait.
-     *
-     * @var TemplatingHelper
-     */
-    private $templating;
-
     public function __construct(
-        CitrixModel $citrixModel,
-        TranslatorInterface $translator,
-        TemplatingHelper $templating
-    ) {
-        $this->citrixModel = $citrixModel;
-        $this->translator  = $translator;
-        $this->templating  = $templating;
+        private CitrixModel $citrixModel,
+        /**
+         * ヽ(ಠ_ಠ)ノ Used in the CitrixStartTrait.
+         */
+        private TranslatorInterface $translator,
+        /**
+         * ヽ(ಠ_ಠ)ノ Used in the CitrixStartTrait.
+         */
+        private TemplatingHelper $templating
+    )
+    {
     }
 
     /**

@@ -18,25 +18,10 @@ abstract class AbstractLookup
     public $timezone     = '';
     public $extra        = '';
 
-    protected ?Client $client;
-
     /**
      * @var string IP Address
      */
     protected $ip;
-
-    /**
-     * Authorization for lookup service.
-     */
-    protected $auth;
-
-    protected ?string $cacheDir;
-    protected ?LoggerInterface $logger;
-
-    /**
-     * @var mixed
-     */
-    protected $config;
 
     /**
      * Return attribution HTML displayed in the configuration UI.
@@ -54,16 +39,20 @@ abstract class AbstractLookup
      * AbstractLookup constructor.
      *
      * @param null $auth
-     * @param null $ipLookupConfig
+     * @param null $config
      * @param null $cacheDir
      */
-    public function __construct($auth = null, $ipLookupConfig = null, $cacheDir = null, ?LoggerInterface $logger = null, ?Client $client = null)
+    public function __construct(
+        /**
+         * Authorization for lookup service.
+         */
+        protected $auth = null,
+        protected $config = null,
+        protected ?string $cacheDir = null,
+        protected ?\Psr\Log\LoggerInterface $logger = null,
+        protected ?\GuzzleHttp\Client $client = null
+    )
     {
-        $this->cacheDir  = $cacheDir;
-        $this->logger    = $logger;
-        $this->auth      = $auth;
-        $this->config    = $ipLookupConfig;
-        $this->client    = $client;
     }
 
     /**

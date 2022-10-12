@@ -15,44 +15,13 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class BuilderSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var string
-     */
-    private $assetToken = '{assetlink=(.*?)}';
-
-    /**
-     * @var CorePermissions
-     */
-    private $security;
-
-    /**
-     * @var TokenHelper
-     */
-    private $tokenHelper;
-
-    /**
-     * @var ContactTracker
-     */
-    private $contactTracker;
-
-    /**
-     * @var BuilderTokenHelperFactory
-     */
-    private $builderTokenHelperFactory;
+    private string $assetToken = '{assetlink=(.*?)}';
 
     /**
      * BuilderSubscriber constructor.
      */
-    public function __construct(
-        CorePermissions $security,
-        TokenHelper $tokenHelper,
-        ContactTracker $contactTracker,
-        BuilderTokenHelperFactory $builderTokenHelperFactory
-    ) {
-        $this->security                  = $security;
-        $this->tokenHelper               = $tokenHelper;
-        $this->contactTracker            = $contactTracker;
-        $this->builderTokenHelperFactory = $builderTokenHelperFactory;
+    public function __construct(private CorePermissions $security, private TokenHelper $tokenHelper, private ContactTracker $contactTracker, private BuilderTokenHelperFactory $builderTokenHelperFactory)
+    {
     }
 
     /**
@@ -101,14 +70,12 @@ class BuilderSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * @param PageDisplayEvent|EmailSendEvent $event
      * @param int                             $leadId
      * @param array                           $source
      * @param null                            $emailId
-     *
      * @return array
      */
-    private function generateTokensFromContent($event, $leadId, $source = [], $emailId = null)
+    private function generateTokensFromContent(\Mautic\PageBundle\Event\PageDisplayEvent|\Mautic\EmailBundle\Event\EmailSendEvent $event, $leadId, $source = [], $emailId = null)
     {
         if ($event instanceof PageDisplayEvent || ($event instanceof EmailSendEvent && $event->shouldAppendClickthrough())) {
             $clickthrough = [

@@ -32,87 +32,10 @@ use Symfony\Contracts\EventDispatcher\Event;
 class FormModel extends CommonFormModel
 {
     /**
-     * @var RequestStack
-     */
-    protected $requestStack;
-
-    /**
-     * @var TemplatingHelper
-     */
-    protected $templatingHelper;
-
-    /**
-     * @var ThemeHelperInterface
-     */
-    protected $themeHelper;
-
-    /**
-     * @var ActionModel
-     */
-    protected $formActionModel;
-
-    /**
-     * @var FieldModel
-     */
-    protected $formFieldModel;
-
-    /**
-     * @var FormFieldHelper
-     */
-    protected $fieldHelper;
-
-    /**
-     * @var LeadFieldModel
-     */
-    protected $leadFieldModel;
-
-    /**
-     * @var FormUploader
-     */
-    private $formUploader;
-
-    /**
-     * @var ContactTracker
-     */
-    private $contactTracker;
-
-    /**
-     * @var ColumnSchemaHelper
-     */
-    private $columnSchemaHelper;
-
-    /**
-     * @var TableSchemaHelper
-     */
-    private $tableSchemaHelper;
-
-    /**
      * FormModel constructor.
      */
-    public function __construct(
-        RequestStack $requestStack,
-        TemplatingHelper $templatingHelper,
-        ThemeHelperInterface $themeHelper,
-        ActionModel $formActionModel,
-        FieldModel $formFieldModel,
-        FormFieldHelper $fieldHelper,
-        LeadFieldModel $leadFieldModel,
-        FormUploader $formUploader,
-        ContactTracker $contactTracker,
-        ColumnSchemaHelper $columnSchemaHelper,
-        TableSchemaHelper $tableSchemaHelper
-    ) {
-        $this->requestStack           = $requestStack;
-        $this->templatingHelper       = $templatingHelper;
-        $this->themeHelper            = $themeHelper;
-        $this->formActionModel        = $formActionModel;
-        $this->formFieldModel         = $formFieldModel;
-        $this->fieldHelper            = $fieldHelper;
-        $this->leadFieldModel         = $leadFieldModel;
-        $this->formUploader           = $formUploader;
-        $this->contactTracker         = $contactTracker;
-        $this->columnSchemaHelper     = $columnSchemaHelper;
-        $this->tableSchemaHelper      = $tableSchemaHelper;
+    public function __construct(protected RequestStack $requestStack, protected TemplatingHelper $templatingHelper, protected ThemeHelperInterface $themeHelper, protected ActionModel $formActionModel, protected FieldModel $formFieldModel, protected FormFieldHelper $fieldHelper, protected LeadFieldModel $leadFieldModel, private FormUploader $formUploader, private ContactTracker $contactTracker, private ColumnSchemaHelper $columnSchemaHelper, private TableSchemaHelper $tableSchemaHelper)
+    {
     }
 
     /**
@@ -344,7 +267,7 @@ class FormModel extends CommonFormModel
                 if ('properties' == $f) {
                     if (isset($v['mappedFields'])) {
                         foreach ($v['mappedFields'] as $pk => $pv) {
-                            if (false !== strpos($pv, 'new')) {
+                            if (str_contains($pv, 'new')) {
                                 $v['mappedFields'][$pk] = $fieldIds[$pv];
                             }
                         }
@@ -512,13 +435,7 @@ class FormModel extends CommonFormModel
         $fields = $entity->getFields()->toArray();
 
         // Ensure the correct order in case this is generated right after a form save with new fields
-        uasort($fields, function ($a, $b) {
-            if ($a->getOrder() === $b->getOrder()) {
-                return 0;
-            }
-
-            return ($a->getOrder() < $b->getOrder()) ? -1 : 1;
-        });
+        uasort($fields, fn($a, $b) => $a->getOrder() <=> $b->getOrder());
 
         [$pages, $lastPage] = $this->getPages($fields);
         $html               = $this->templatingHelper->getTemplating()->render(
@@ -927,8 +844,6 @@ class FormModel extends CommonFormModel
      * Get a list of assets in a date range.
      *
      * @param int       $limit
-     * @param \DateTime $dateFrom
-     * @param \DateTime $dateTo
      * @param array     $filters
      * @param array     $options
      *

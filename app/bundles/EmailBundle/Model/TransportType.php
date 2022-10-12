@@ -12,10 +12,7 @@ class TransportType
     public const FIELD_PASSWORD = 'field_password';
     public const FIELD_API_KEY  = 'field_api_key';
 
-    /**
-     * @var array
-     */
-    private $transportTypes = [
+    private array $transportTypes = [
         'mautic.transport.amazon'       => 'mautic.email.config.mailer_transport.amazon',
         'mautic.transport.amazon_api'   => 'mautic.email.config.mailer_transport.amazon_api',
         'mautic.transport.elasticemail' => 'mautic.email.config.mailer_transport.elasticemail',
@@ -31,25 +28,16 @@ class TransportType
         'mautic.transport.sparkpost'    => 'mautic.email.config.mailer_transport.sparkpost',
     ];
 
-    /**
-     * @var array
-     */
-    private $showHost = [
+    private array $showHost = [
         'smtp',
     ];
 
-    /**
-     * @var array
-     */
-    private $showPort = [
+    private array $showPort = [
         'smtp',
         'mautic.transport.amazon',
     ];
 
-    /**
-     * @var array
-     */
-    private $showUser = [
+    private array $showUser = [
         'mautic.transport.mailjet',
         'mautic.transport.sendgrid',
         'mautic.transport.pepipost',
@@ -61,10 +49,7 @@ class TransportType
         // smtp is left out on purpose as the auth_mode will manage displaying this field
     ];
 
-    /**
-     * @var array
-     */
-    private $showPassword = [
+    private array $showPassword = [
         'mautic.transport.mailjet',
         'mautic.transport.sendgrid',
         'mautic.transport.pepipost',
@@ -76,19 +61,13 @@ class TransportType
         // smtp is left out on purpose as the auth_mode will manage displaying this field
     ];
 
-    /**
-     * @var array
-     */
-    private $showApiKey = [
+    private array $showApiKey = [
         'mautic.transport.sparkpost',
         'mautic.transport.mandrill',
         'mautic.transport.sendgrid_api',
     ];
 
-    /**
-     * @var array
-     */
-    private $showAmazonRegion = [
+    private array $showAmazonRegion = [
         'mautic.transport.amazon',
         'mautic.transport.amazon_api',
     ];

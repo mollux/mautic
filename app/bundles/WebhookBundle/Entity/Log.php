@@ -11,35 +11,17 @@ use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
  */
 class Log
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var Webhook
-     */
-    private $webhook;
+    private ?\Mautic\WebhookBundle\Entity\Webhook $webhook = null;
 
-    /**
-     * @var string
-     */
-    private $statusCode;
+    private ?string $statusCode = null;
 
-    /**
-     * @var \DateTime
-     */
-    private $dateAdded;
+    private ?\DateTime $dateAdded = null;
 
-    /**
-     * @var float
-     */
-    private $runtime;
+    private ?float $runtime = null;
 
-    /**
-     * @var string
-     */
-    private $note;
+    private ?string $note = null;
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
@@ -98,11 +80,9 @@ class Log
     }
 
     /**
-     * @param mixed $statusCode
-     *
      * @return Log
      */
-    public function setStatusCode($statusCode)
+    public function setStatusCode(mixed $statusCode)
     {
         $this->statusCode = $statusCode;
 

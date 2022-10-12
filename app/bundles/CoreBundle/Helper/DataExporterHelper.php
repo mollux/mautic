@@ -22,7 +22,7 @@ class DataExporterHelper
 
         $results = $model->getEntities($args);
         $items   = $results['results'];
-        if (0 === count($items)) {
+        if (0 === (is_countable($items) ? count($items) : 0)) {
             return null;
         }
         unset($results);
@@ -33,9 +33,7 @@ class DataExporterHelper
 
         if (is_callable($resultsCallback)) {
             foreach ($items as $item) {
-                $row = array_map(function ($itemEncode) {
-                    return html_entity_decode($itemEncode, ENT_QUOTES);
-                }, $resultsCallback($item));
+                $row = array_map(fn($itemEncode) => html_entity_decode($itemEncode, ENT_QUOTES), $resultsCallback($item));
 
                 $toExport[] = $this->secureAgainstCsvInjection($row);
             }

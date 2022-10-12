@@ -16,20 +16,15 @@ class MessageController extends AbstractStandardFormController
 {
     use EntityContactsTrait;
 
-    /**
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
-     */
-    public function batchDeleteAction()
+    public function batchDeleteAction(): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         return $this->batchDeleteStandard();
     }
 
     /**
      * @param $objectId
-     *
-     * @return \Mautic\CoreBundle\Controller\Response|\Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function cloneAction($objectId)
+    public function cloneAction($objectId): \Mautic\CoreBundle\Controller\Response|\Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         return $this->cloneStandard($objectId);
     }
@@ -37,38 +32,29 @@ class MessageController extends AbstractStandardFormController
     /**
      * @param      $objectId
      * @param bool $ignorePost
-     *
-     * @return \Mautic\CoreBundle\Controller\Response|\Symfony\Component\HttpFoundation\JsonResponse
      */
-    public function editAction($objectId, $ignorePost = false)
+    public function editAction($objectId, $ignorePost = false): \Mautic\CoreBundle\Controller\Response|\Symfony\Component\HttpFoundation\JsonResponse
     {
         return $this->editStandard($objectId, $ignorePost);
     }
 
     /**
      * @param int $page
-     *
-     * @return \Mautic\CoreBundle\Controller\Response|\Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function indexAction($page = 1)
+    public function indexAction($page = 1): \Mautic\CoreBundle\Controller\Response|\Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         return $this->indexStandard($page);
     }
 
-    /**
-     * @return \Mautic\CoreBundle\Controller\Response|\Symfony\Component\HttpFoundation\JsonResponse
-     */
-    public function newAction()
+    public function newAction(): \Mautic\CoreBundle\Controller\Response|\Symfony\Component\HttpFoundation\JsonResponse
     {
         return $this->newStandard();
     }
 
     /**
      * @param $objectId
-     *
-     * @return array|\Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function viewAction($objectId)
+    public function viewAction($objectId): array|\Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         return $this->viewStandard($objectId, 'message', 'channel');
     }
@@ -111,7 +97,7 @@ class MessageController extends AbstractStandardFormController
                     ]
                 );
 
-                list($dateFrom, $dateTo) = $this->getViewDateRange($message->getId(), $returnUrl, 'local', $dateRangeForm);
+                [$dateFrom, $dateTo] = $this->getViewDateRange($message->getId(), $returnUrl, 'local', $dateRangeForm);
                 $chart                   = new LineChart(null, $dateFrom, $dateTo);
 
                 /** @var Channel[] $channels */
@@ -180,10 +166,8 @@ class MessageController extends AbstractStandardFormController
 
     /**
      * @param $objectId
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    protected function deleteAction($objectId)
+    protected function deleteAction($objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         return $this->deleteStandard($objectId);
     }
@@ -258,10 +242,8 @@ class MessageController extends AbstractStandardFormController
     /**
      * @param     $objectId
      * @param int $page
-     *
-     * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function contactsAction($objectId, $channel, $page = 1)
+    public function contactsAction($objectId, $channel, $page = 1): \JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Response
     {
         $filter = [];
         if ('all' !== $channel) {
@@ -272,7 +254,7 @@ class MessageController extends AbstractStandardFormController
                     'objectId'     => $objectId,
                 ]
             );
-            list($dateFrom, $dateTo) = $this->getViewDateRange($objectId, $returnUrl, 'UTC');
+            [$dateFrom, $dateTo] = $this->getViewDateRange($objectId, $returnUrl, 'UTC');
 
             $filter = [
                 'channel' => $channel,
@@ -307,7 +289,7 @@ class MessageController extends AbstractStandardFormController
             ],
             null,
             [
-                'channel' => ($channel) ? $channel : 'all',
+                'channel' => $channel ?: 'all',
             ],
             '.message-'.$channel
         );

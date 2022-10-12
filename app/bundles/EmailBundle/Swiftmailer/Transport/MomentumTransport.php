@@ -10,35 +10,15 @@ use Symfony\Component\HttpFoundation\Request;
 
 class MomentumTransport implements \Swift_Transport, TokenTransportInterface, CallbackTransportInterface
 {
-    /**
-     * @var MomentumFacadeInterface
-     */
-    private $momentumFacade;
+    private ?\Swift_Events_SimpleEventDispatcher $swiftEventDispatcher = null;
 
-    /**
-     * @var \Swift_Events_SimpleEventDispatcher
-     */
-    private $swiftEventDispatcher;
-
-    /**
-     * @var bool
-     */
-    private $started = false;
-
-    /**
-     * @var MomentumCallback
-     */
-    private $momentumCallback;
+    private bool $started = false;
 
     /**
      * MomentumTransport constructor.
      */
-    public function __construct(
-        MomentumCallback $momentumCallback,
-        MomentumFacadeInterface $momentumFacade
-    ) {
-        $this->momentumCallback = $momentumCallback;
-        $this->momentumFacade   = $momentumFacade;
+    public function __construct(private MomentumCallback $momentumCallback, private MomentumFacadeInterface $momentumFacade)
+    {
     }
 
     /**

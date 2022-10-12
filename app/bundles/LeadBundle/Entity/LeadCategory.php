@@ -11,46 +11,28 @@ use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
  */
 class LeadCategory
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var Category
-     **/
-    private $category;
+    private ?\Mautic\CategoryBundle\Entity\Category $category = null;
 
-    /**
-     * @var Lead
-     */
-    private $lead;
+    private ?\Mautic\LeadBundle\Entity\Lead $lead = null;
 
-    /**
-     * @var \DateTime
-     */
-    private $dateAdded;
+    private ?\DateTime $dateAdded = null;
 
-    /**
-     * @var bool
-     */
-    private $manuallyRemoved = false;
+    private bool $manuallyRemoved = false;
 
-    /**
-     * @var bool
-     */
-    private $manuallyAdded = false;
+    private bool $manuallyAdded = false;
 
     public static function loadMetadata(ORM\ClassMetadata $metadata)
     {
         $builder = new ClassMetadataBuilder($metadata);
 
         $builder->setTable('lead_categories')
-            ->setCustomRepositoryClass('Mautic\LeadBundle\Entity\LeadCategoryRepository');
+            ->setCustomRepositoryClass(\Mautic\LeadBundle\Entity\LeadCategoryRepository::class);
 
         $builder->addId();
 
-        $builder->createManyToOne('category', 'Mautic\CategoryBundle\Entity\Category')
+        $builder->createManyToOne('category', \Mautic\CategoryBundle\Entity\Category::class)
             ->addJoinColumn('category_id', 'id', false, false, 'CASCADE')
             ->build();
 
@@ -99,10 +81,7 @@ class LeadCategory
         return $this->lead;
     }
 
-    /**
-     * @param mixed $lead
-     */
-    public function setLead($lead)
+    public function setLead(mixed $lead)
     {
         $this->lead = $lead;
     }

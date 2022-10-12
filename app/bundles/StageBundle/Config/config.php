@@ -17,7 +17,7 @@ return [
                 'standard_entity' => true,
                 'name'            => 'stages',
                 'path'            => '/stages',
-                'controller'      => 'Mautic\StageBundle\Controller\Api\StageApiController',
+                'controller'      => \Mautic\StageBundle\Controller\Api\StageApiController::class,
             ],
             'mautic_api_stageddcontact' => [
                 'path'       => '/stages/{id}/contact/{contactId}/add',
@@ -103,19 +103,19 @@ return [
                 ],
             ],
             'mautic.stage.type.action' => [
-                'class' => 'Mautic\StageBundle\Form\Type\StageActionType',
+                'class' => \Mautic\StageBundle\Form\Type\StageActionType::class,
             ],
             'mautic.stage.type.action_list' => [
-                'class'     => 'Mautic\StageBundle\Form\Type\StageActionListType',
+                'class'     => \Mautic\StageBundle\Form\Type\StageActionListType::class,
                 'arguments' => [
                     'mautic.stage.model.stage',
                 ],
             ],
             'mautic.stage.type.action_change' => [
-                'class' => 'Mautic\StageBundle\Form\Type\StageActionChangeType',
+                'class' => \Mautic\StageBundle\Form\Type\StageActionChangeType::class,
             ],
             'mautic.stage.type.stage_list' => [
-                'class'     => 'Mautic\StageBundle\Form\Type\StageListType',
+                'class'     => \Mautic\StageBundle\Form\Type\StageListType::class,
                 'arguments' => [
                     'mautic.stage.model.stage',
                 ],
@@ -126,7 +126,7 @@ return [
         ],
         'models' => [
             'mautic.stage.model.stage' => [
-                'class'     => 'Mautic\StageBundle\Model\StageModel',
+                'class'     => \Mautic\StageBundle\Model\StageModel::class,
                 'arguments' => [
                     'mautic.lead.model.lead',
                     'session',

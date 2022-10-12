@@ -10,22 +10,11 @@ use Symfony\Contracts\EventDispatcher\Event;
 class BuildJsEvent extends Event
 {
     /**
-     * @var string
-     */
-    protected $js = '';
-
-    /**
-     * @var bool
-     */
-    protected $debugMode;
-
-    /**
      * @param bool $debugMode
+     * @param string $js
      */
-    public function __construct($js, $debugMode = false)
+    public function __construct(protected $js, protected $debugMode = false)
     {
-        $this->js        = $js;
-        $this->debugMode = $debugMode;
     }
 
     /**
@@ -46,6 +35,7 @@ class BuildJsEvent extends Event
      */
     public function appendJs($js, $section = '')
     {
+        $slashes = null;
         if ($section && $this->debugMode) {
             $slashes = str_repeat('/', strlen($section) + 10);
             $this->js .= <<<JS

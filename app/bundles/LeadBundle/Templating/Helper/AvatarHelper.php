@@ -12,37 +12,10 @@ use Symfony\Component\Templating\Helper\Helper;
 
 class AvatarHelper extends Helper
 {
-    private $imageTypes = ['jpg', 'jpeg', 'png', 'gif'];
-    /**
-     * @var AssetsHelper
-     */
-    private $assetsHelper;
+    private array $imageTypes = ['jpg', 'jpeg', 'png', 'gif'];
 
-    /**
-     * @var PathsHelper
-     */
-    private $pathsHelper;
-
-    /**
-     * @var GravatarHelper
-     */
-    private $gravatarHelper;
-
-    /**
-     * @var DefaultAvatarHelper
-     */
-    private $defaultAvatarHelper;
-
-    public function __construct(
-        AssetsHelper $assetsHelper,
-        PathsHelper $pathsHelper,
-        GravatarHelper $gravatarHelper,
-        DefaultAvatarHelper $defaultAvatarHelper
-    ) {
-        $this->assetsHelper        = $assetsHelper;
-        $this->pathsHelper         = $pathsHelper;
-        $this->gravatarHelper      = $gravatarHelper;
-        $this->defaultAvatarHelper = $defaultAvatarHelper;
+    public function __construct(private AssetsHelper $assetsHelper, private PathsHelper $pathsHelper, private GravatarHelper $gravatarHelper, private DefaultAvatarHelper $defaultAvatarHelper)
+    {
     }
 
     /**
@@ -124,8 +97,6 @@ class AvatarHelper extends Helper
 
     /**
      * @deprecated Use DefaultAvatarHelper::getDefaultAvatar instead of it
-     *
-     * @param bool|false $absolute
      */
     public function getDefaultAvatar(bool $absolute = false): string
     {

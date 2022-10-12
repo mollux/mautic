@@ -58,89 +58,57 @@ class Import extends FormEntity
     public const NORMAL = 64;
     public const HIGH   = 1;
 
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
     /**
      * Base directory of the import.
-     *
-     * @var string
      */
-    private $dir;
+    private ?string $dir = null;
 
     /**
      * File name of the CSV file which is in the $dir.
-     *
-     * @var string
      */
-    private $file = 'import.csv';
+    private string $file = 'import.csv';
 
     /**
      * Name of the original uploaded file.
-     *
-     * @var string
      */
-    private $originalFile;
+    private ?string $originalFile = null;
 
     /**
      * Tolal line count of the CSV file.
-     *
-     * @var int
      */
-    private $lineCount = 0;
+    private int $lineCount = 0;
 
     /**
      * Count of entities which were newly created.
-     *
-     * @var int
      */
-    private $insertedCount = 0;
+    private int $insertedCount = 0;
 
     /**
      * Count of entities which were updated.
-     *
-     * @var int
      */
-    private $updatedCount = 0;
+    private int $updatedCount = 0;
 
     /**
      * Count of ignored items.
-     *
-     * @var int
      */
-    private $ignoredCount = 0;
+    private int $ignoredCount = 0;
 
-    /**
-     * @var bool
-     */
-    private $priority;
+    private bool $priority;
 
-    /**
-     * @var int
-     */
-    private $status;
+    private int $status;
 
-    /**
-     * @var \DateTime
-     */
-    private $dateStarted;
+    private ?\DateTime $dateStarted = null;
 
-    /**
-     * @var \DateTime
-     */
-    private $dateEnded;
+    private ?\DateTime $dateEnded = null;
 
-    /**
-     * @var string
-     */
-    private $object = 'lead';
+    private string $object = 'lead';
 
     /**
      * @var array<mixed>
      */
-    private $properties = [];
+    private array $properties = [];
 
     public function __clone()
     {
@@ -376,7 +344,7 @@ class Import extends FormEntity
      */
     public function getName()
     {
-        return $this->getOriginalFile() ? $this->getOriginalFile() : $this->getId();
+        return $this->getOriginalFile() ?: $this->getId();
     }
 
     /**
@@ -562,22 +530,14 @@ class Import extends FormEntity
      */
     public function getSatusLabelClass()
     {
-        switch ($this->status) {
-            case self::QUEUED:
-                return 'info';
-            case self::IN_PROGRESS:
-            case self::MANUAL:
-                return 'primary';
-            case self::IMPORTED:
-                return 'success';
-            case self::FAILED:
-                return 'danger';
-            case self::STOPPED:
-            case self::DELAYED:
-                return 'warning';
-            default:
-                return 'default';
-        }
+        return match ($this->status) {
+            self::QUEUED => 'info',
+            self::IN_PROGRESS, self::MANUAL => 'primary',
+            self::IMPORTED => 'success',
+            self::FAILED => 'danger',
+            self::STOPPED, self::DELAYED => 'warning',
+            default => 'default',
+        };
     }
 
     /**
@@ -764,7 +724,7 @@ class Import extends FormEntity
      */
     public function getLastLineImported()
     {
-        return isset($this->properties['line']) ? $this->properties['line'] : 0;
+        return $this->properties['line'] ?? 0;
     }
 
     /**
@@ -816,11 +776,10 @@ class Import extends FormEntity
      * Set a default value to the defaults array.
      *
      * @param string $key
-     * @param mixed  $value
      *
      * @return Import
      */
-    public function setDefault($key, $value)
+    public function setDefault($key, mixed $value)
     {
         return $this->mergeToProperties([
             'defaults' => array_merge($this->getDefaults(), [$key => $value]),

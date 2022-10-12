@@ -58,10 +58,7 @@ class CommonController extends AbstractController implements MauticController
      */
     protected $translator;
 
-    /**
-     * @var FlashBag
-     */
-    private $flashBag;
+    private ?\Mautic\CoreBundle\Service\FlashBag $flashBag = null;
 
     public function setRequest(Request $request)
     {
@@ -197,10 +194,10 @@ class CommonController extends AbstractController implements MauticController
             return $this->ajaxAction($args);
         }
 
-        $parameters = (isset($args['viewParameters'])) ? $args['viewParameters'] : [];
+        $parameters = $args['viewParameters'] ?? [];
         $template   = $args['contentTemplate'];
 
-        $code     = (isset($args['responseCode'])) ? $args['responseCode'] : 200;
+        $code     = $args['responseCode'] ?? 200;
         $response = new Response('', $code);
 
         return $this->render($template, $parameters, $response);
@@ -276,7 +273,7 @@ class CommonController extends AbstractController implements MauticController
         }
 
         if (!$this->request->isXmlHttpRequest() || !empty($args['ignoreAjax'])) {
-            $code = (isset($args['responseCode'])) ? $args['responseCode'] : 302;
+            $code = $args['responseCode'] ?? 302;
 
             return $this->redirect($returnUrl, $code);
         }
@@ -294,6 +291,7 @@ class CommonController extends AbstractController implements MauticController
      */
     public function ajaxAction($args = [])
     {
+        $routeParams = [];
         defined('MAUTIC_AJAX_VIEW') || define('MAUTIC_AJAX_VIEW', 1);
 
         $parameters      = array_key_exists('viewParameters', $args) ? $args['viewParameters'] : [];
@@ -330,7 +328,7 @@ class CommonController extends AbstractController implements MauticController
                         '_route_params' => $routeParams,
                     ]
                 );
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 //do nothing
             }
 
@@ -385,7 +383,7 @@ class CommonController extends AbstractController implements MauticController
         $passthrough['browserNotifications'] = $this->get('session')->get('mautic.browser.notifications', []);
         $this->get('session')->set('mautic.browser.notifications', []);
 
-        $tmpl = (isset($parameters['tmpl'])) ? $parameters['tmpl'] : $this->request->get('tmpl', 'index');
+        $tmpl = $parameters['tmpl'] ?? $this->request->get('tmpl', 'index');
         if ('index' == $tmpl) {
             $updatedContent = [];
             if (!empty($newContent)) {
@@ -537,7 +535,7 @@ class CommonController extends AbstractController implements MauticController
         if ($this->request->query->has('orderby')) {
             $orderBy = InputHelper::clean($this->request->query->get('orderby'), true);
             $dir     = $session->get("$name.orderbydir", 'ASC');
-            $dir     = $orderBy === $session->get("$name.orderby") || false == $session->has("$name.orderby") ? (('ASC' == $dir) ? 'DESC' : 'ASC') : $dir;
+            $dir     = $orderBy === $session->get("$name.orderby") || false == $session->has("$name.orderby") ? ('ASC' == $dir ? 'DESC' : 'ASC') : $dir;
             $session->set("$name.orderby", $orderBy);
             $session->set("$name.orderbydir", $dir);
         }
@@ -582,7 +580,6 @@ class CommonController extends AbstractController implements MauticController
     /**
      * Renders notification info for ajax.
      *
-     * @param Request $request
      *
      * @return array
      */
@@ -653,6 +650,7 @@ class CommonController extends AbstractController implements MauticController
      */
     public function addBrowserNotification($message, $messageVars = [], $domain = 'flashes', $title = null, $icon = null, $addNotification = true, $type = 'notice')
     {
+        $iconClass = null;
         if (null == $domain) {
             $domain = 'flashes';
         }
@@ -680,7 +678,7 @@ class CommonController extends AbstractController implements MauticController
             $icon = 'media/images/favicon.ico';
         }
 
-        if (0 !== strpos($icon, 'http')) {
+        if (!str_starts_with($icon, 'http')) {
             $assetHelper = $this->factory->getHelper('template.assets');
             $icon        = $assetHelper->getUrl($icon, null, null, true);
         }

@@ -16,38 +16,10 @@ use Symfony\Component\Templating\Helper\Helper;
 class SecurityHelper extends Helper
 {
     /**
-     * @var CorePermissions
-     */
-    private $security;
-
-    /**
-     * @var RequestStack
-     */
-    private $requestStack;
-
-    /**
-     * @var Dispatcher
-     */
-    private $dispatcher;
-
-    /**
-     * @var CsrfTokenManagerInterface
-     */
-    private $tokenManager;
-
-    /**
      * SecurityHelper constructor.
      */
-    public function __construct(
-        CorePermissions $security,
-        RequestStack $requestStack,
-        EventDispatcherInterface $dispatcher,
-        CsrfTokenManagerInterface $tokenManager
-    ) {
-        $this->security     = $security;
-        $this->requestStack = $requestStack;
-        $this->dispatcher   = $dispatcher;
-        $this->tokenManager = $tokenManager;
+    public function __construct(private CorePermissions $security, private RequestStack $requestStack, private EventDispatcherInterface $dispatcher, private CsrfTokenManagerInterface $tokenManager)
+    {
     }
 
     /**

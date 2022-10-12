@@ -8,15 +8,8 @@ use Mautic\FormBundle\Entity\SubmissionRepository;
 
 class SubmissionResultLoader
 {
-    /**
-     * @var EntityManager
-     */
-    private $entityManager;
-
-    public function __construct(
-        EntityManager $entityManager
-    ) {
-        $this->entityManager = $entityManager;
+    public function __construct(private EntityManager $entityManager)
+    {
     }
 
     /**

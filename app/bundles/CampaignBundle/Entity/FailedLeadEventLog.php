@@ -11,20 +11,11 @@ use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
  */
 class FailedLeadEventLog
 {
-    /**
-     * @var LeadEventLog
-     */
-    private $log;
+    private ?\Mautic\CampaignBundle\Entity\LeadEventLog $log = null;
 
-    /**
-     * @var \DateTime
-     */
-    private $dateAdded;
+    private ?\DateTime $dateAdded = null;
 
-    /**
-     * @var string
-     */
-    private $reason;
+    private ?string $reason = null;
 
     public static function loadMetadata(ORM\ClassMetadata $metadata)
     {
@@ -71,8 +62,6 @@ class FailedLeadEventLog
     }
 
     /**
-     * @param LeadEventLog $log
-     *
      * @return FailedLeadEventLog
      */
     public function setLog(LeadEventLog $log = null)
@@ -95,8 +84,6 @@ class FailedLeadEventLog
     }
 
     /**
-     * @param \DateTime $dateAdded
-     *
      * @return FailedLeadEventLog
      */
     public function setDateAdded(\DateTime $dateAdded = null)

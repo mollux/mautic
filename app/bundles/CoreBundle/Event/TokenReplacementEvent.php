@@ -18,42 +18,21 @@ class TokenReplacementEvent extends CommonEvent
     protected $content;
 
     /**
-     * @var Lead|mixed[]|null
-     */
-    protected $lead;
-
-    /**
-     * @var array
-     */
-    protected $clickthrough = [];
-
-    /**
      * @var array
      */
     protected $tokens = [];
 
     /**
-     * Whatever the calling code wants to make available to the consumers.
-     *
-     * @var mixed
-     */
-    protected $passthrough;
-
-    /**
      * @param CommonEntity|string|null $content
      * @param Lead|mixed[]|null        $lead
-     * @param mixed                    $passthrough
      */
-    public function __construct($content, $lead = null, array $clickthrough = [], $passthrough = null)
+    public function __construct($content, protected $lead = null, protected array $clickthrough = [], protected mixed $passthrough = null)
     {
         if ($content instanceof CommonEntity) {
             $this->entity = $content;
         }
 
         $this->content      = $content;
-        $this->lead         = $lead;
-        $this->clickthrough = $clickthrough;
-        $this->passthrough  = $passthrough;
     }
 
     /**
@@ -104,10 +83,7 @@ class TokenReplacementEvent extends CommonEvent
         $this->clickthrough = $clickthrough;
     }
 
-    /**
-     * @return CommonEntity|string
-     */
-    public function getEntity()
+    public function getEntity(): \Mautic\CoreBundle\Entity\CommonEntity|string
     {
         return $this->entity;
     }

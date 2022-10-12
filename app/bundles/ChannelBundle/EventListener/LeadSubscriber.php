@@ -11,29 +11,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class LeadSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    /**
-     * @var RouterInterface
-     */
-    private $router;
-
-    /**
-     * @var MessageQueueRepository
-     */
-    private $messageQueueRepository;
-
-    public function __construct(
-        TranslatorInterface $translator,
-        RouterInterface $router,
-        MessageQueueRepository $messageQueueRepository
-    ) {
-        $this->translator             = $translator;
-        $this->router                 = $router;
-        $this->messageQueueRepository = $messageQueueRepository;
+    public function __construct(private TranslatorInterface $translator, private RouterInterface $router, private MessageQueueRepository $messageQueueRepository)
+    {
     }
 
     /**

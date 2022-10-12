@@ -14,10 +14,8 @@ class UserController extends FormController
      * Generate's default user list.
      *
      * @param int $page
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function indexAction($page = 1)
+    public function indexAction($page = 1): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         if (!$this->get('mautic.security')->isGranted('user:users:view')) {
             return $this->accessDenied();
@@ -96,10 +94,8 @@ class UserController extends FormController
 
     /**
      * Generate's form and processes new post data.
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function newAction()
+    public function newAction(): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         if (!$this->get('mautic.security')->isGranted('user:users:create')) {
             return $this->accessDenied();
@@ -205,10 +201,8 @@ class UserController extends FormController
      *
      * @param int  $objectId
      * @param bool $ignorePost
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function editAction($objectId, $ignorePost = false)
+    public function editAction($objectId, $ignorePost = false): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         if (!$this->get('mautic.security')->isGranted('user:users:edit')) {
             return $this->accessDenied();
@@ -332,10 +326,8 @@ class UserController extends FormController
      * Deletes a user object.
      *
      * @param int $objectId
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function deleteAction($objectId)
+    public function deleteAction($objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         if (!$this->get('mautic.security')->isGranted('user:users:delete')) {
             return $this->accessDenied();
@@ -402,10 +394,8 @@ class UserController extends FormController
      * Contacts a user.
      *
      * @param int $objectId
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function contactAction($objectId)
+    public function contactAction($objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         $model = $this->getModel('user.user');
         $user  = $model->getEntity($objectId);
@@ -519,10 +509,8 @@ class UserController extends FormController
 
     /**
      * Deletes a group of entities.
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function batchDeleteAction()
+    public function batchDeleteAction(): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         $page      = $this->get('session')->get('mautic.user.page', 1);
         $returnUrl = $this->generateUrl('mautic_user_index', ['page' => $page]);
@@ -540,7 +528,7 @@ class UserController extends FormController
 
         if ('POST' == $this->request->getMethod()) {
             $model       = $this->getModel('user');
-            $ids         = json_decode($this->request->query->get('ids', ''));
+            $ids         = json_decode($this->request->query->get('ids', ''), null, 512, JSON_THROW_ON_ERROR);
             $deleteIds   = [];
             $currentUser = $this->user;
 
@@ -576,7 +564,7 @@ class UserController extends FormController
                     'type'    => 'notice',
                     'msg'     => 'mautic.user.user.notice.batch_deleted',
                     'msgVars' => [
-                        '%count%' => count($entities),
+                        '%count%' => is_countable($entities) ? count($entities) : 0,
                     ],
                 ];
             }

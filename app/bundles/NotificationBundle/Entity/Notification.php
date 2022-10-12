@@ -19,50 +19,29 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
  */
 class Notification extends FormEntity
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var string
-     */
-    private $name;
+    private ?string $name = null;
 
-    /**
-     * @var string
-     */
-    private $description;
+    private ?string $description = null;
 
     /**
      * @var string
      */
     private $language = 'en';
 
-    /**
-     * @var string
-     */
-    private $url;
+    private ?string $url = null;
 
-    /**
-     * @var string
-     */
-    private $heading;
+    private ?string $heading = null;
 
-    /**
-     * @var string
-     */
-    private $message;
+    private ?string $message = null;
 
     /**
      * @var string
      */
     private $button;
 
-    /**
-     * @var array
-     */
-    private $utmTags = [];
+    private array $utmTags = [];
 
     /**
      * @var \DateTime
@@ -74,45 +53,24 @@ class Notification extends FormEntity
      */
     private $publishDown;
 
-    /**
-     * @var int
-     */
-    private $readCount = 0;
+    private int $readCount = 0;
 
-    /**
-     * @var int
-     */
-    private $sentCount = 0;
+    private int $sentCount = 0;
 
     /**
      * @var \Mautic\CategoryBundle\Entity\Category
      **/
     private $category;
 
-    /**
-     * @var ArrayCollection
-     */
-    private $lists;
+    private \Doctrine\Common\Collections\ArrayCollection $lists;
 
-    /**
-     * @var ArrayCollection
-     */
-    private $stats;
+    private \Doctrine\Common\Collections\ArrayCollection $stats;
 
-    /**
-     * @var string
-     */
-    private $notificationType = 'template';
+    private string $notificationType = 'template';
 
-    /**
-     * @var bool
-     */
-    private $mobile = false;
+    private bool $mobile = false;
 
-    /**
-     * @var array
-     */
-    private $mobileSettings;
+    private ?array $mobileSettings = null;
 
     public function __clone()
     {
@@ -146,7 +104,7 @@ class Notification extends FormEntity
         $builder = new ClassMetadataBuilder($metadata);
 
         $builder->setTable('push_notifications')
-            ->setCustomRepositoryClass('Mautic\NotificationBundle\Entity\NotificationRepository');
+            ->setCustomRepositoryClass(\Mautic\NotificationBundle\Entity\NotificationRepository::class);
 
         $builder->addIdColumns();
 
@@ -190,7 +148,7 @@ class Notification extends FormEntity
 
         $builder->addCategory();
 
-        $builder->createManyToMany('lists', 'Mautic\LeadBundle\Entity\LeadList')
+        $builder->createManyToMany('lists', \Mautic\LeadBundle\Entity\LeadList::class)
             ->setJoinTable('push_notification_list_xref')
             ->setIndexBy('id')
             ->addInverseJoinColumn('leadlist_id', 'id', false, false, 'CASCADE')

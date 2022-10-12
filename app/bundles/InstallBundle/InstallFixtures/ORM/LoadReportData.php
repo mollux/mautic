@@ -17,10 +17,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class LoadReportData extends AbstractFixture implements OrderedFixtureInterface, ContainerAwareInterface, FixtureGroupInterface
 {
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
+    private ?\Symfony\Component\DependencyInjection\ContainerInterface $container = null;
 
     /**
      * {@inheritdoc}

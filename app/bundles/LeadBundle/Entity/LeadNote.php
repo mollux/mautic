@@ -14,37 +14,22 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
  */
 class LeadNote extends FormEntity
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var \Mautic\LeadBundle\Entity\Lead
-     */
-    private $lead;
+    private ?\Mautic\LeadBundle\Entity\Lead $lead = null;
 
-    /**
-     * @var string
-     */
-    private $text;
+    private ?string $text = null;
 
-    /**
-     * @var string
-     */
-    private $type = 'general';
+    private string $type = 'general';
 
-    /**
-     * @var \DateTime
-     */
-    private $dateTime;
+    private ?\DateTime $dateTime = null;
 
     public static function loadMetadata(ORM\ClassMetadata $metadata)
     {
         $builder = new ClassMetadataBuilder($metadata);
 
         $builder->setTable('lead_notes')
-            ->setCustomRepositoryClass('Mautic\LeadBundle\Entity\LeadNoteRepository');
+            ->setCustomRepositoryClass(\Mautic\LeadBundle\Entity\LeadNoteRepository::class);
 
         $builder->addId();
 
@@ -182,10 +167,7 @@ class LeadNote extends FormEntity
         return $this->dateTime;
     }
 
-    /**
-     * @param mixed $dateTime
-     */
-    public function setDateTime($dateTime)
+    public function setDateTime(mixed $dateTime)
     {
         $this->dateTime = $dateTime;
     }

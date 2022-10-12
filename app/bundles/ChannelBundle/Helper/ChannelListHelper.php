@@ -11,11 +11,6 @@ use Symfony\Component\Templating\Helper\Helper;
 class ChannelListHelper extends Helper
 {
     /**
-     * @var Translator
-     */
-    protected $translator;
-
-    /**
      * @var array
      */
     protected $channels = [];
@@ -25,15 +20,8 @@ class ChannelListHelper extends Helper
      */
     protected $featureChannels = [];
 
-    /**
-     * @var EventDispatcherInterface
-     */
-    protected $dispatcher;
-
-    public function __construct(EventDispatcherInterface $dispatcher, Translator $translator)
+    public function __construct(protected EventDispatcherInterface $dispatcher, protected Translator $translator)
     {
-        $this->translator = $translator;
-        $this->dispatcher = $dispatcher;
     }
 
     /**
@@ -68,7 +56,7 @@ class ChannelListHelper extends Helper
 
         $channels = [];
         foreach ($features as $feature) {
-            $featureChannels = (isset($this->featureChannels[$feature])) ? $this->featureChannels[$feature] : [];
+            $featureChannels = $this->featureChannels[$feature] ?? [];
             $returnChannels  = [];
             foreach ($featureChannels as $channel => $details) {
                 if (!isset($details['label'])) {
@@ -109,14 +97,11 @@ class ChannelListHelper extends Helper
      */
     public function getChannelLabel($channel)
     {
-        switch (true) {
-            case $this->translator->hasId('mautic.channel.'.$channel):
-                return $this->translator->trans('mautic.channel.'.$channel);
-            case $this->translator->hasId('mautic.'.$channel.'.'.$channel):
-                return $this->translator->trans('mautic.'.$channel.'.'.$channel);
-            default:
-                return ucfirst($channel);
-        }
+        return match (true) {
+            $this->translator->hasId('mautic.channel.'.$channel) => $this->translator->trans('mautic.channel.'.$channel),
+            $this->translator->hasId('mautic.'.$channel.'.'.$channel) => $this->translator->trans('mautic.'.$channel.'.'.$channel),
+            default => ucfirst($channel),
+        };
     }
 
     /**

@@ -17,7 +17,7 @@ class FormApiController extends CommonApiController
     public function initialize(ControllerEvent $event)
     {
         $this->model            = $this->getModel('form');
-        $this->entityClass      = 'Mautic\FormBundle\Entity\Form';
+        $this->entityClass      = \Mautic\FormBundle\Entity\Form::class;
         $this->entityNameOne    = 'form';
         $this->entityNameMulti  = 'forms';
         $this->serializerGroups = ['formDetails', 'categoryList', 'publishDetails'];
@@ -139,7 +139,7 @@ class FormApiController extends CommonApiController
             foreach ($parameters['fields'] as &$fieldParams) {
                 if (empty($fieldParams['id'])) {
                     // Create an unique ID if not set - the following code requires one
-                    $fieldParams['id'] = 'new'.hash('sha1', uniqid(mt_rand()));
+                    $fieldParams['id'] = 'new'.hash('sha1', uniqid(random_int(0, mt_getrandmax())));
                     $fieldEntity       = $fieldModel->getEntity();
                 } else {
                     $fieldEntity       = $fieldModel->getEntity($fieldParams['id']);
@@ -208,7 +208,7 @@ class FormApiController extends CommonApiController
             $actions = [];
             foreach ($parameters['actions'] as &$actionParams) {
                 if (empty($actionParams['id'])) {
-                    $actionParams['id'] = 'new'.hash('sha1', uniqid(mt_rand()));
+                    $actionParams['id'] = 'new'.hash('sha1', uniqid(random_int(0, mt_getrandmax())));
                     $actionEntity       = $actionModel->getEntity();
                 } else {
                     $actionEntity       = $actionModel->getEntity($actionParams['id']);

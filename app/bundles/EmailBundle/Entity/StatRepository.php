@@ -43,6 +43,7 @@ class StatRepository extends CommonRepository
      */
     public function getUniqueClickedLinksPerContactAndEmail($contactId, $emailId)
     {
+        $data = [];
         $q = $this->_em->getConnection()->createQueryBuilder();
         $q->select('distinct ph.url, ph.date_hit')
             ->from(MAUTIC_TABLE_PREFIX.'page_hits', 'ph')
@@ -204,10 +205,8 @@ class StatRepository extends CommonRepository
      * @param array<int,int|string>|int|null      $emailIds
      * @param array<int,int|string>|int|true|null $listId
      * @param bool                                $combined
-     *
-     * @return array|int
      */
-    public function getSentCount($emailIds = null, $listId = null, ChartQuery $chartQuery = null, $combined = false)
+    public function getSentCount($emailIds = null, $listId = null, ChartQuery $chartQuery = null, $combined = false): array|int
     {
         return $this->getStatusCount('is_sent', $emailIds, $listId, $chartQuery, $combined);
     }
@@ -216,10 +215,8 @@ class StatRepository extends CommonRepository
      * @param array<int,int|string>|int|null $emailIds
      * @param array<int,int|string>|int|null $listId
      * @param bool                           $combined
-     *
-     * @return array|int
      */
-    public function getReadCount($emailIds = null, $listId = null, ChartQuery $chartQuery = null, $combined = false)
+    public function getReadCount($emailIds = null, $listId = null, ChartQuery $chartQuery = null, $combined = false): array|int
     {
         return $this->getStatusCount('is_read', $emailIds, $listId, $chartQuery, $combined);
     }
@@ -228,10 +225,8 @@ class StatRepository extends CommonRepository
      * @param array<int,int|string>|int|null      $emailIds
      * @param array<int,int|string>|int|true|null $listId
      * @param bool                                $combined
-     *
-     * @return array|int
      */
-    public function getFailedCount($emailIds = null, $listId = null, ChartQuery $chartQuery = null, $combined = false)
+    public function getFailedCount($emailIds = null, $listId = null, ChartQuery $chartQuery = null, $combined = false): array|int
     {
         return $this->getStatusCount('is_failed', $emailIds, $listId, $chartQuery, $combined);
     }
@@ -241,10 +236,8 @@ class StatRepository extends CommonRepository
      * @param array<int,int|string>|int|null      $emailIds
      * @param array<int,int|string>|int|true|null $listId
      * @param bool                                $combined
-     *
-     * @return array|int
      */
-    public function getStatusCount($column, $emailIds = null, $listId = null, ChartQuery $chartQuery = null, $combined = false)
+    public function getStatusCount($column, $emailIds = null, $listId = null, ChartQuery $chartQuery = null, $combined = false): array|int
     {
         $q = $this->_em->getConnection()->createQueryBuilder();
 
@@ -324,7 +317,7 @@ class StatRepository extends CommonRepository
      *
      * @return array
      */
-    public function getOpenedRates($emailIds, \DateTime $fromDate = null)
+    public function getOpenedRates(array|int $emailIds, \DateTime $fromDate = null)
     {
         $inIds = (!is_array($emailIds)) ? [$emailIds] : $emailIds;
 
@@ -385,7 +378,7 @@ class StatRepository extends CommonRepository
      *
      * @return int
      */
-    public function getOpenedStatIds($emailIds = null, $listId = null)
+    public function getOpenedStatIds(array|int $emailIds = null, $listId = null)
     {
         $q = $this->_em->getConnection()->createQueryBuilder();
 

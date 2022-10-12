@@ -14,7 +14,7 @@ class PublicController extends CommonController
     {
         $content = $request->getContent();
         if (!empty($content)) {
-            $data = json_decode($content, true); // 2nd param to get as array
+            $data = json_decode($content, true, 512, JSON_THROW_ON_ERROR); // 2nd param to get as array
         } else {
             return new Response('ERROR');
         }

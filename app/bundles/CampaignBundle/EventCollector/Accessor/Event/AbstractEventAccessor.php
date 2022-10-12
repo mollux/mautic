@@ -7,11 +7,6 @@ abstract class AbstractEventAccessor
     /**
      * @var array
      */
-    protected $config = [];
-
-    /**
-     * @var array
-     */
     protected $systemProperties = [
         'label',
         'description',
@@ -24,18 +19,13 @@ abstract class AbstractEventAccessor
         'channelIdField',
     ];
 
-    /**
-     * @var array
-     */
-    private $extraProperties = [];
+    private array $extraProperties = [];
 
     /**
      * AbstractEventAccessor constructor.
      */
-    public function __construct(array $config)
+    public function __construct(protected array $config)
     {
-        $this->config = $config;
-
         $this->filterExtraProperties();
     }
 
@@ -129,13 +119,12 @@ abstract class AbstractEventAccessor
 
     /**
      * @param string $property
-     * @param mixed  $default
      *
      * @return mixed
      */
-    protected function getProperty($property, $default = null)
+    protected function getProperty($property, mixed $default = null)
     {
-        return (isset($this->config[$property])) ? $this->config[$property] : $default;
+        return $this->config[$property] ?? $default;
     }
 
     /**

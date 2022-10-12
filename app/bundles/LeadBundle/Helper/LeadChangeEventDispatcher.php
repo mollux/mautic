@@ -10,27 +10,15 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class LeadChangeEventDispatcher
 {
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $dispatcher;
+    private ?\Mautic\LeadBundle\Entity\Lead $lead = null;
 
-    /**
-     * @var Lead
-     */
-    private $lead;
-
-    /**
-     * @var array
-     */
-    private $changes;
+    private ?array $changes = null;
 
     /**
      * LeadChangeEventDispatcher constructor.
      */
-    public function __construct(EventDispatcherInterface $dispatcher)
+    public function __construct(private EventDispatcherInterface $dispatcher)
     {
-        $this->dispatcher = $dispatcher;
     }
 
     public function dispatchEvents(Events\LeadEvent $event, array $changes)
@@ -92,7 +80,7 @@ class LeadChangeEventDispatcher
         }
 
         foreach ($this->changes['dnc_channel_status'] as $channel => $status) {
-            $oldStatus = isset($status['old_reason']) ? $status['old_reason'] : DoNotContact::IS_CONTACTABLE;
+            $oldStatus = $status['old_reason'] ?? DoNotContact::IS_CONTACTABLE;
             $newStatus = $status['reason'];
 
             $event = new Events\ChannelSubscriptionChange($this->lead, $channel, $oldStatus, $newStatus);

@@ -18,60 +18,27 @@ class LeadList extends FormEntity
 {
     public const TABLE_NAME = 'lead_lists';
 
-    /**
-     * @var int|null
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var string|null
-     */
-    private $name;
+    private ?string $name = null;
 
-    /**
-     * @var string|null
-     */
-    private $publicName;
+    private ?string $publicName = null;
 
-    /**
-     * @var Category
-     **/
-    private $category;
+    private ?\Mautic\CategoryBundle\Entity\Category $category = null;
 
-    /**
-     * @var string
-     */
-    private $description;
+    private ?string $description = null;
 
-    /**
-     * @var string|null
-     */
-    private $alias;
+    private ?string $alias = null;
 
-    /**
-     * @var array
-     */
-    private $filters = [];
+    private array $filters = [];
 
-    /**
-     * @var bool
-     */
-    private $isGlobal = true;
+    private bool $isGlobal = true;
 
-    /**
-     * @var bool
-     */
-    private $isPreferenceCenter = false;
+    private bool $isPreferenceCenter = false;
 
-    /**
-     * @var ArrayCollection
-     */
-    private $leads;
+    private \Doctrine\Common\Collections\ArrayCollection $leads;
 
-    /**
-     * @var \DateTime|null
-     */
-    private $lastBuiltDate;
+    private ?\DateTime $lastBuiltDate = null;
 
     public function __construct()
     {

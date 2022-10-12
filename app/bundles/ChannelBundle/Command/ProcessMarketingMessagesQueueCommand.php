@@ -12,14 +12,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ProcessMarketingMessagesQueueCommand extends ModeratedCommand
 {
-    private TranslatorInterface $translator;
-    private MessageQueueModel $messageQueueModel;
-
-    public function __construct(TranslatorInterface $translator, MessageQueueModel $messageQueueModel, PathsHelper $pathsHelper)
+    public function __construct(private TranslatorInterface $translator, private MessageQueueModel $messageQueueModel, PathsHelper $pathsHelper)
     {
-        $this->translator        = $translator;
-        $this->messageQueueModel = $messageQueueModel;
-
         parent::__construct($pathsHelper);
     }
 

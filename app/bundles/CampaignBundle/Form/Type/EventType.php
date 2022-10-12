@@ -64,9 +64,7 @@ class EventType extends AbstractType
                 $choices['interval'] = $choices['interval'].'_inaction';
                 $choices['date']     = $choices['date'].'_inaction';
             }
-
-            reset($choices);
-            $default = key($choices);
+            $default = array_key_first($choices);
 
             $triggerMode = (empty($options['data']['triggerMode'])) ? $default : $options['data']['triggerMode'];
             $builder->add(
@@ -228,7 +226,7 @@ class EventType extends AbstractType
             HiddenType::class,
             [
                 'mapped' => false,
-                'data'   => (isset($options['data']['anchorEventType'])) ? $options['data']['anchorEventType'] : '',
+                'data'   => $options['data']['anchorEventType'] ?? '',
             ]
         );
 

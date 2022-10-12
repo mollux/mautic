@@ -9,7 +9,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
  */
 class VtigerIntegration extends CrmAbstractIntegration
 {
-    private $authorzationError = '';
+    private string $authorzationError = '';
 
     /**
      * Returns the name of the social integration that must match the name of the file.
@@ -167,13 +167,13 @@ class VtigerIntegration extends CrmAbstractIntegration
     public function getAvailableLeadFields($settings = [])
     {
         $vTigerFields      = [];
-        $silenceExceptions = (isset($settings['silence_exceptions'])) ? $settings['silence_exceptions'] : true;
+        $silenceExceptions = $settings['silence_exceptions'] ?? true;
 
         if (isset($settings['feature_settings']['objects'])) {
             $vTigerObjects = $settings['feature_settings']['objects'];
         } else {
             $settings      = $this->settings->getFeatureSettings();
-            $vTigerObjects = isset($settings['objects']) ? $settings['objects'] : ['contacts'];
+            $vTigerObjects = $settings['objects'] ?? ['contacts'];
         }
 
         try {

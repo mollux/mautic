@@ -12,72 +12,34 @@ use Mautic\LeadBundle\Entity\Lead as TheLead;
  */
 class TweetStat
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
     /**
      * ID of the tweet from Twitter.
-     *
-     * @var string
      */
-    private $twitterTweetId;
+    private ?string $twitterTweetId = null;
 
-    /**
-     * @var Tweet
-     */
-    private $tweet;
+    private ?\MauticPlugin\MauticSocialBundle\Entity\Tweet $tweet = null;
 
-    /**
-     * @var TheLead
-     */
-    private $lead;
+    private ?TheLead $lead = null;
 
-    /**
-     * @var string
-     */
-    private $handle;
+    private ?string $handle = null;
 
-    /**
-     * @var DateTime
-     */
-    private $dateSent;
+    private ?\DateTime $dateSent = null;
 
-    /**
-     * @var bool
-     */
-    private $isFailed = false;
+    private bool $isFailed = false;
 
-    /**
-     * @var int
-     */
-    private $retryCount = 0;
+    private int $retryCount = 0;
 
-    /**
-     * @var string
-     */
-    private $source;
+    private ?string $source = null;
 
-    /**
-     * @var int
-     */
-    private $sourceId;
+    private ?int $sourceId = null;
 
-    /**
-     * @var int
-     */
-    private $favoriteCount = 0;
+    private int $favoriteCount = 0;
 
-    /**
-     * @var int
-     */
-    private $retweetCount = 0;
+    private int $retweetCount = 0;
 
-    /**
-     * @var array
-     */
-    private $responseDetails = [];
+    private array $responseDetails = [];
 
     public static function loadMetadata(ORM\ClassMetadata $metadata)
     {
@@ -204,10 +166,7 @@ class TweetStat
         return $this->dateSent;
     }
 
-    /**
-     * @param mixed $dateSent
-     */
-    public function setDateSent($dateSent)
+    public function setDateSent(mixed $dateSent)
     {
         $this->dateSent = $dateSent;
     }
@@ -252,10 +211,7 @@ class TweetStat
         return $this->retryCount;
     }
 
-    /**
-     * @param mixed $retryCount
-     */
-    public function setRetryCount($retryCount)
+    public function setRetryCount(mixed $retryCount)
     {
         $this->retryCount = $retryCount;
     }
@@ -313,10 +269,7 @@ class TweetStat
         return $this->isFailed;
     }
 
-    /**
-     * @param mixed $isFailed
-     */
-    public function setIsFailed($isFailed)
+    public function setIsFailed(mixed $isFailed)
     {
         $this->isFailed = $isFailed;
     }
@@ -337,10 +290,7 @@ class TweetStat
         return $this->handle;
     }
 
-    /**
-     * @param mixed $handle
-     */
-    public function setHandle($handle)
+    public function setHandle(mixed $handle)
     {
         $this->handle = $handle;
     }
@@ -353,10 +303,7 @@ class TweetStat
         return $this->source;
     }
 
-    /**
-     * @param mixed $source
-     */
-    public function setSource($source)
+    public function setSource(mixed $source)
     {
         $this->source = $source;
     }
@@ -369,10 +316,7 @@ class TweetStat
         return $this->sourceId;
     }
 
-    /**
-     * @param mixed $sourceId
-     */
-    public function setSourceId($sourceId)
+    public function setSourceId(mixed $sourceId)
     {
         $this->sourceId = (int) $sourceId;
     }
@@ -386,11 +330,9 @@ class TweetStat
     }
 
     /**
-     * @param mixed $responseDetails
-     *
      * @return Stat
      */
-    public function setResponseDetails($responseDetails)
+    public function setResponseDetails(mixed $responseDetails)
     {
         $this->responseDetails = $responseDetails;
 

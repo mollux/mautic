@@ -12,14 +12,8 @@ use Psr\Log\LoggerInterface;
 
 class Connection
 {
-    private ClientInterface $httpClient;
-
-    private LoggerInterface $logger;
-
-    public function __construct(ClientInterface $httpClient, LoggerInterface $logger)
+    public function __construct(private ClientInterface $httpClient, private LoggerInterface $logger)
     {
-        $this->httpClient = $httpClient;
-        $this->logger     = $logger;
     }
 
     /**
@@ -56,7 +50,7 @@ class Connection
             throw new ApiException($body, $response->getStatusCode());
         }
 
-        $payload = json_decode($body, true);
+        $payload = json_decode($body, true, 512, JSON_THROW_ON_ERROR);
 
         $this->logger->debug('Successful Packagist API response', ['payload' => $payload]);
 

@@ -7,25 +7,13 @@ use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
 
 class CompanyLead
 {
-    /**
-     * @var Company
-     **/
-    private $company;
+    private ?\Mautic\LeadBundle\Entity\Company $company = null;
 
-    /**
-     * @var Lead
-     */
-    private $lead;
+    private ?\Mautic\LeadBundle\Entity\Lead $lead = null;
 
-    /**
-     * @var \DateTime
-     */
-    private $dateAdded;
+    private ?\DateTime $dateAdded = null;
 
-    /**
-     * @var bool
-     */
-    private $primary = false;
+    private bool $primary = false;
 
     public static function loadMetadata(ORM\ClassMetadata $metadata)
     {
@@ -73,10 +61,7 @@ class CompanyLead
         return $this->lead;
     }
 
-    /**
-     * @param mixed $lead
-     */
-    public function setLead($lead)
+    public function setLead(mixed $lead)
     {
         $this->lead = $lead;
     }

@@ -22,7 +22,7 @@ final class UserTokenRepository extends CommonRepository implements UserTokenRep
             ->setMaxResults(1)
             ->getQuery()->execute();
 
-        return 0 === count($tokens);
+        return 0 === (is_countable($tokens) ? count($tokens) : 0);
     }
 
     /**

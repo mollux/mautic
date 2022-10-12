@@ -28,20 +28,12 @@ abstract class AbstractMaxmindLookup extends AbstractRemoteDataLookup
     protected function getUrl()
     {
         $url = 'https://geoip.maxmind.com/geoip/v2.1/';
-
-        switch ($this->getName()) {
-            case 'maxmind_country':
-                $url .= 'country';
-                break;
-            case 'maxmind_precision':
-                $url .= 'city';
-                break;
-            case 'maxmind_omni':
-                $url .= 'insights';
-                break;
-        }
-
-        return $url."/{$this->ip}";
+        match ($this->getName()) {
+            'maxmind_country' => $url .= 'country',
+            'maxmind_precision' => $url .= 'city',
+            'maxmind_omni' => $url .= 'insights',
+            default => $url."/{$this->ip}",
+        };
     }
 
     /**
@@ -49,7 +41,7 @@ abstract class AbstractMaxmindLookup extends AbstractRemoteDataLookup
      */
     protected function parseResponse($response)
     {
-        $data = json_decode($response);
+        $data = json_decode($response, null, 512, JSON_THROW_ON_ERROR);
 
         if ($data) {
             if (empty($data->error)) {
@@ -64,7 +56,7 @@ abstract class AbstractMaxmindLookup extends AbstractRemoteDataLookup
                 }
 
                 if (isset($data->subdivisions[0])) {
-                    if (count($data->subdivisions) > 1) {
+                    if ((is_countable($data->subdivisions) ? count($data->subdivisions) : 0) > 1) {
                         // Use the first listed as the country and second as state
                         // UK -> England -> Winchester
                         $this->country = $data->subdivisions[0]->names->en;

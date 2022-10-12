@@ -39,7 +39,7 @@ return [
                 'standard_entity' => true,
                 'name'            => 'dynamicContents',
                 'path'            => '/dynamiccontents',
-                'controller'      => 'Mautic\DynamicContentBundle\Controller\Api\DynamicContentApiController',
+                'controller'      => \Mautic\DynamicContentBundle\Controller\Api\DynamicContentApiController::class,
             ],
         ],
     ],
@@ -98,7 +98,7 @@ return [
         ],
         'forms' => [
             'mautic.form.type.dwc' => [
-                'class'     => 'Mautic\DynamicContentBundle\Form\Type\DynamicContentType',
+                'class'     => \Mautic\DynamicContentBundle\Form\Type\DynamicContentType::class,
                 'arguments' => [
                     'doctrine.orm.entity_manager',
                     'mautic.lead.model.list',
@@ -107,7 +107,7 @@ return [
                 ],
             ],
             'mautic.form.type.dwc_entry_filters' => [
-                'class'     => 'Mautic\DynamicContentBundle\Form\Type\DwcEntryFiltersType',
+                'class'     => \Mautic\DynamicContentBundle\Form\Type\DwcEntryFiltersType::class,
                 'arguments' => [
                     'translator',
                 ],
@@ -118,24 +118,24 @@ return [
                 ],
             ],
             'mautic.form.type.dwcsend_list' => [
-                'class'     => 'Mautic\DynamicContentBundle\Form\Type\DynamicContentSendType',
+                'class'     => \Mautic\DynamicContentBundle\Form\Type\DynamicContentSendType::class,
                 'arguments' => [
                     'router',
                 ],
             ],
             'mautic.form.type.dwcdecision_list' => [
-                'class'     => 'Mautic\DynamicContentBundle\Form\Type\DynamicContentDecisionType',
+                'class'     => \Mautic\DynamicContentBundle\Form\Type\DynamicContentDecisionType::class,
                 'arguments' => [
                     'router',
                 ],
             ],
             'mautic.form.type.dwc_list' => [
-                'class' => 'Mautic\DynamicContentBundle\Form\Type\DynamicContentListType',
+                'class' => \Mautic\DynamicContentBundle\Form\Type\DynamicContentListType::class,
             ],
         ],
         'models' => [
             'mautic.dynamicContent.model.dynamicContent' => [
-                'class'     => 'Mautic\DynamicContentBundle\Model\DynamicContentModel',
+                'class'     => \Mautic\DynamicContentBundle\Model\DynamicContentModel::class,
                 'arguments' => [
                 ],
             ],

@@ -19,32 +19,11 @@ class MessageQueueModel extends FormModel
     /** @var string A default message reschedule interval */
     public const DEFAULT_RESCHEDULE_INTERVAL = 'PT15M';
 
-    /**
-     * @var LeadModel
-     */
-    protected $leadModel;
-
-    /**
-     * @var CompanyModel
-     */
-    protected $companyModel;
-
-    /**
-     * @var CoreParametersHelper
-     */
-    protected $coreParametersHelper;
-
-    public function __construct(LeadModel $leadModel, CompanyModel $companyModel, CoreParametersHelper $coreParametersHelper)
+    public function __construct(protected LeadModel $leadModel, protected CompanyModel $companyModel, protected CoreParametersHelper $coreParametersHelper)
     {
-        $this->leadModel            = $leadModel;
-        $this->companyModel         = $companyModel;
-        $this->coreParametersHelper = $coreParametersHelper;
     }
 
-    /**
-     * @return \Doctrine\ORM\EntityRepository|\Mautic\ChannelBundle\Entity\MessageQueueRepository
-     */
-    public function getRepository()
+    public function getRepository(): \Doctrine\ORM\EntityRepository|\Mautic\ChannelBundle\Entity\MessageQueueRepository
     {
         return $this->em->getRepository('MauticChannelBundle:MessageQueue');
     }
@@ -298,7 +277,7 @@ class MessageQueueModel extends FormModel
             $contactData = $this->leadModel->getRepository()->getContacts($contacts);
             $companyData = $this->companyModel->getRepository()->getCompaniesForContacts($contacts);
             foreach ($contacts as $messageId => $contactId) {
-                $contactData[$contactId]['companies'] = isset($companyData[$contactId]) ? $companyData[$contactId] : null;
+                $contactData[$contactId]['companies'] = $companyData[$contactId] ?? null;
                 $queue[$messageId]->getLead()->setFields($contactData[$contactId]);
             }
         }

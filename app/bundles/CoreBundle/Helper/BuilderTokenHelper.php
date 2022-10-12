@@ -12,12 +12,7 @@ use Mautic\CoreBundle\Security\Permissions\CorePermissions;
  */
 class BuilderTokenHelper
 {
-    private $isConfigured = false;
-
-    private $security;
-    private $modelFactory;
-    private $connection;
-    private $userHelper;
+    private bool $isConfigured = false;
 
     protected $permissionSet;
     protected $modelName;
@@ -25,16 +20,8 @@ class BuilderTokenHelper
     protected $langVar;
     protected $bundleName;
 
-    public function __construct(
-        CorePermissions $security,
-        ModelFactory $modelFactory,
-        Connection $connection,
-        UserHelper $userHelper
-    ) {
-        $this->security      = $security;
-        $this->modelFactory  = $modelFactory;
-        $this->connection    = $connection;
-        $this->userHelper    = $userHelper;
+    public function __construct(private CorePermissions $security, private ModelFactory $modelFactory, private Connection $connection, private UserHelper $userHelper)
+    {
     }
 
     /**
@@ -79,7 +66,7 @@ class BuilderTokenHelper
         CompositeExpression $expr = null
     ) {
         if (!$this->isConfigured) {
-            throw new \BadMethodCallException('You must call the "'.get_class($this).'::configure()" method first.');
+            throw new \BadMethodCallException('You must call the "'.$this::class.'::configure()" method first.');
         }
 
         //set some permissions

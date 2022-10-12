@@ -12,16 +12,10 @@ use SparkPost\SparkPostPromise;
 final class Adapter implements AdapterInterface
 {
     /**
-     * @var SparkPost
-     */
-    private $momentumSparkpost;
-
-    /**
      * Adapter constructor.
      */
-    public function __construct(SparkPost $momentumSparkpost)
+    public function __construct(private SparkPost $momentumSparkpost)
     {
-        $this->momentumSparkpost   = $momentumSparkpost;
     }
 
     /**
@@ -29,7 +23,7 @@ final class Adapter implements AdapterInterface
      */
     public function createTransmission(TransmissionDTO $transmissionDTO)
     {
-        $payload = json_decode(json_encode($transmissionDTO), true);
+        $payload = json_decode(json_encode($transmissionDTO, JSON_THROW_ON_ERROR), true, 512, JSON_THROW_ON_ERROR);
 
         return $this->momentumSparkpost->transmissions->post($payload);
     }

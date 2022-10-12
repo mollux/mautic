@@ -23,7 +23,7 @@ use Mautic\LeadBundle\Segment\Query\Expression\ExpressionBuilder;
  * @author Benjamin Eberlei <kontakt@beberlei.de>
  * @author Jan Kozak <galvani78@gmail.com>
  */
-class QueryBuilder extends \Doctrine\DBAL\Query\QueryBuilder
+class QueryBuilder extends \Doctrine\DBAL\Query\QueryBuilder implements \Stringable
 {
     /*
      * The query types.
@@ -46,10 +46,7 @@ class QueryBuilder extends \Doctrine\DBAL\Query\QueryBuilder
      */
     private $connection;
 
-    /**
-     * @var ExpressionBuilder
-     */
-    private $_expr;
+    private ?\Mautic\LeadBundle\Segment\Query\Expression\ExpressionBuilder $_expr = null;
 
     /**
      * @var array the array of SQL parts collected
@@ -68,10 +65,8 @@ class QueryBuilder extends \Doctrine\DBAL\Query\QueryBuilder
 
     /**
      * Unprocessed logic for segment processing.
-     *
-     * @var array
      */
-    private $logicStack = [];
+    private array $logicStack = [];
 
     /**
      * The complete SQL string for this query.
@@ -203,11 +198,10 @@ class QueryBuilder extends \Doctrine\DBAL\Query\QueryBuilder
      * Uses {@see Connection::executeQuery} for select statements and {@see Connection::executeUpdate}
      * for insert, update and delete statements.
      *
-     * @return \Doctrine\DBAL\Driver\Statement|int
      *
      * @throws \Doctrine\DBAL\DBALException
      */
-    public function execute()
+    public function execute(): \Doctrine\DBAL\Driver\Statement|int
     {
         if (self::SELECT == $this->type) {
             return $this->connection->executeQuery($this->getSQL(), $this->params, $this->paramTypes);
@@ -236,23 +230,12 @@ class QueryBuilder extends \Doctrine\DBAL\Query\QueryBuilder
             return $this->sql;
         }
 
-        switch ($this->type) {
-            case self::INSERT:
-                $sql = $this->getSQLForInsert();
-                break;
-            case self::DELETE:
-                $sql = $this->getSQLForDelete();
-                break;
-
-            case self::UPDATE:
-                $sql = $this->getSQLForUpdate();
-                break;
-
-            case self::SELECT:
-            default:
-                $sql = $this->getSQLForSelect();
-                break;
-        }
+        $sql = match ($this->type) {
+            self::INSERT => $this->getSQLForInsert(),
+            self::DELETE => $this->getSQLForDelete(),
+            self::UPDATE => $this->getSQLForUpdate(),
+            default => $this->getSQLForSelect(),
+        };
 
         $this->state = self::STATE_CLEAN;
         $this->sql   = $sql;
@@ -279,7 +262,7 @@ class QueryBuilder extends \Doctrine\DBAL\Query\QueryBuilder
      */
     public function setParameter($key, $value, $type = null)
     {
-        if (':' === substr($key, 0, 1)) {
+        if (str_starts_with($key, ':')) {
             // For consistency sake, remove the :
             $key = substr($key, 1);
         }
@@ -343,7 +326,7 @@ class QueryBuilder extends \Doctrine\DBAL\Query\QueryBuilder
      */
     public function getParameter($key)
     {
-        return isset($this->params[$key]) ? $this->params[$key] : null;
+        return $this->params[$key] ?? null;
     }
 
     /**
@@ -365,7 +348,7 @@ class QueryBuilder extends \Doctrine\DBAL\Query\QueryBuilder
      */
     public function getParameterType($key)
     {
-        return isset($this->paramTypes[$key]) ? $this->paramTypes[$key] : null;
+        return $this->paramTypes[$key] ?? null;
     }
 
     /**
@@ -1250,7 +1233,7 @@ class QueryBuilder extends \Doctrine\DBAL\Query\QueryBuilder
      *
      * @throws \Doctrine\DBAL\DBALException
      */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->getSQL();
     }
@@ -1472,15 +1455,13 @@ class QueryBuilder extends \Doctrine\DBAL\Query\QueryBuilder
     /**
      * @param string $table
      * @param null   $joinType allowed values: inner, left, right
-     *
-     * @return array|bool|string
      */
-    public function getTableAlias($table, $joinType = null)
+    public function getTableAlias($table, $joinType = null): array|bool|string
     {
         if (is_null($joinType)) {
             $tables = $this->getTableAliases();
 
-            return isset($tables[$table]) ? $tables[$table] : false;
+            return $tables[$table] ?? false;
         }
 
         $tableJoins = $this->getTableJoins($table);

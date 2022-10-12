@@ -16,26 +16,8 @@ use Mautic\FormBundle\Model\FormModel;
 
 class LoadFormData extends AbstractFixture implements OrderedFixtureInterface
 {
-    /**
-     * @var FormModel
-     */
-    private $formModel;
-
-    /**
-     * @var FieldModel
-     */
-    private $formFieldModel;
-
-    /**
-     * @var ActionModel
-     */
-    private $actionModel;
-
-    public function __construct(FormModel $formModel, FieldModel $formFieldModel, ActionModel $actionModel)
+    public function __construct(private FormModel $formModel, private FieldModel $formFieldModel, private ActionModel $actionModel)
     {
-        $this->formModel      = $formModel;
-        $this->formFieldModel = $formFieldModel;
-        $this->actionModel    = $actionModel;
     }
 
     public function load(ObjectManager $manager)

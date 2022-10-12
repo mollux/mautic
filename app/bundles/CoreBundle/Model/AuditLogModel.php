@@ -27,12 +27,12 @@ class AuditLogModel extends AbstractCommonModel
      */
     public function writeToLog(array $args)
     {
-        $bundle    = (isset($args['bundle'])) ? $args['bundle'] : '';
-        $object    = (isset($args['object'])) ? $args['object'] : '';
-        $objectId  = (isset($args['objectId'])) ? $args['objectId'] : '';
-        $action    = (isset($args['action'])) ? $args['action'] : '';
-        $details   = (isset($args['details'])) ? $args['details'] : '';
-        $ipAddress = (isset($args['ipAddress'])) ? $args['ipAddress'] : '';
+        $bundle    = $args['bundle'] ?? '';
+        $object    = $args['object'] ?? '';
+        $objectId  = $args['objectId'] ?? '';
+        $action    = $args['action'] ?? '';
+        $details   = $args['details'] ?? '';
+        $ipAddress = $args['ipAddress'] ?? '';
 
         $log = new AuditLog();
         $log->setBundle($bundle);
@@ -62,14 +62,12 @@ class AuditLogModel extends AbstractCommonModel
      * Get the audit log for specific object.
      *
      * @param string                  $object
-     * @param string|int              $id
      * @param \DateTimeInterface|null $afterDate
      * @param int                     $limit
      * @param string|null             $bundle
-     *
      * @return mixed
      */
-    public function getLogForObject($object, $id, $afterDate = null, $limit = 10, $bundle = null)
+    public function getLogForObject($object, string|int $id, $afterDate = null, $limit = 10, $bundle = null)
     {
         return $this->getRepository()->getLogForObject($object, $id, $limit, $afterDate, $bundle);
     }

@@ -19,7 +19,7 @@ class ClientController extends FormController
      *
      * @return JsonResponse|Response
      */
-    public function indexAction($page = 1)
+    public function indexAction($page = 1): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         if (!$this->get('mautic.security')->isGranted('api:clients:view')) {
             return $this->accessDenied();
@@ -116,10 +116,8 @@ class ClientController extends FormController
 
     /**
      * @param int $clientId
-     *
-     * @return JsonResponse|RedirectResponse
      */
-    public function revokeAction($clientId)
+    public function revokeAction($clientId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         $success = 0;
         $flashes = [];
@@ -164,11 +162,9 @@ class ClientController extends FormController
     }
 
     /**
-     * @param mixed $objectId
-     *
      * @return array|JsonResponse|RedirectResponse|Response
      */
-    public function newAction($objectId = 0)
+    public function newAction(mixed $objectId = 0): array|\Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         if (!$this->get('mautic.security')->isGranted('api:clients:create')) {
             return $this->accessDenied();
@@ -268,7 +264,7 @@ class ClientController extends FormController
      *
      * @return JsonResponse|RedirectResponse|Response
      */
-    public function editAction($objectId, $ignorePost = false)
+    public function editAction($objectId, $ignorePost = false): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         if (!$this->get('mautic.security')->isGranted('api:clients:editother')) {
             return $this->accessDenied();
@@ -371,10 +367,8 @@ class ClientController extends FormController
      * Deletes the entity.
      *
      * @param int $objectId
-     *
-     * @return JsonResponse|RedirectResponse
      */
-    public function deleteAction($objectId)
+    public function deleteAction($objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         if (!$this->get('mautic.security')->isGranted('api:clients:delete')) {
             return $this->accessDenied();

@@ -16,35 +16,9 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class UserCreator implements UserCreatorInterface
 {
-    /**
-     * @var EntityManager
-     */
-    private $entityManager;
+    private int $defaultRole;
 
-    /**
-     * @var UserMapper
-     */
-    private $userMapper;
-
-    /**
-     * @var UserModel
-     */
-    private $userModel;
-
-    /**
-     * @var UserPasswordEncoder
-     */
-    private $encoder;
-
-    /**
-     * @var int
-     */
-    private $defaultRole;
-
-    /**
-     * @var array
-     */
-    private $requiredFields = [
+    private array $requiredFields = [
         'username',
         'firstname',
         'lastname',
@@ -52,16 +26,12 @@ class UserCreator implements UserCreatorInterface
     ];
 
     public function __construct(
-        EntityManagerInterface $entityManager,
-        UserMapper $userMapper,
-        UserModel $userModel,
-        UserPasswordEncoder $encoder,
+        private EntityManagerInterface $entityManager,
+        private UserMapper $userMapper,
+        private UserModel $userModel,
+        private UserPasswordEncoder $encoder,
         $defaultRole
     ) {
-        $this->entityManager = $entityManager;
-        $this->userMapper    = $userMapper;
-        $this->userModel     = $userModel;
-        $this->encoder       = $encoder;
         $this->defaultRole   = (int) $defaultRole;
     }
 

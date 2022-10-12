@@ -11,29 +11,15 @@ use Mautic\LeadBundle\Entity\Lead;
 class EmailSendEvent extends CommonEvent
 {
     /**
-     * @var MailHelper
-     */
-    private $helper;
-
-    /**
      * @var Email|null
      */
     private $email;
 
-    /**
-     * @var string
-     */
-    private $content = '';
+    private string $content = '';
 
-    /**
-     * @var string
-     */
-    private $plainText = '';
+    private string $plainText = '';
 
-    /**
-     * @var string
-     */
-    private $subject = '';
+    private string $subject = '';
 
     /**
      * @var string|null
@@ -45,38 +31,23 @@ class EmailSendEvent extends CommonEvent
      */
     private $lead;
 
-    /**
-     * @var array
-     */
-    private $source;
+    private array $source;
 
-    /**
-     * @var array
-     */
-    private $tokens = [];
+    private array $tokens = [];
 
     /**
      * @var internalSend
      */
     private $internalSend = false;
 
-    /**
-     * @var array
-     */
-    private $textHeaders = [];
-
-    /**
-     * @var bool
-     */
-    private $isDynamicContentParsing;
+    private array $textHeaders = [];
 
     /**
      * @param array $args
      * @param bool  $isDynamicContentParsing
      */
-    public function __construct(MailHelper $helper = null, $args = [], $isDynamicContentParsing = false)
+    public function __construct(private MailHelper $helper = null, $args = [], private $isDynamicContentParsing = false)
     {
-        $this->helper      = $helper;
         $this->content     = $args['content'] ?? '';
         $this->plainText   = $args['plainText'] ?? '';
         $this->subject     = $args['subject'] ?? '';
@@ -96,8 +67,6 @@ class EmailSendEvent extends CommonEvent
         } elseif (null !== $helper) {
             $this->internalSend = $helper->isInternalSend();
         }
-
-        $this->isDynamicContentParsing = $isDynamicContentParsing;
     }
 
     /**

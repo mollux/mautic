@@ -20,22 +20,12 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class PullTransifexCommand extends Command
 {
-    private TransifexFactory $transifexFactory;
-    private TranslatorInterface $translator;
-    private PathsHelper $pathsHelper;
-    private CoreParametersHelper $coreParametersHelper;
-
     public function __construct(
-        TransifexFactory $transifexFactory,
-        TranslatorInterface $translator,
-        PathsHelper $pathsHelper,
-        CoreParametersHelper $coreParametersHelper
+        private TransifexFactory $transifexFactory,
+        private TranslatorInterface $translator,
+        private PathsHelper $pathsHelper,
+        private CoreParametersHelper $coreParametersHelper
     ) {
-        $this->transifexFactory     = $transifexFactory;
-        $this->translator           = $translator;
-        $this->pathsHelper          = $pathsHelper;
-        $this->coreParametersHelper = $coreParametersHelper;
-
         parent::__construct();
     }
 
@@ -65,7 +55,7 @@ EOT
 
         try {
             $transifex = $this->transifexFactory->getTransifex();
-        } catch (BadConfigurationException $e) {
+        } catch (BadConfigurationException) {
             $output->writeln($this->translator->trans('mautic.core.command.transifex_no_credentials'));
 
             return 1;
@@ -74,14 +64,14 @@ EOT
         foreach ($files as $bundle => $stringFiles) {
             foreach ($stringFiles as $file) {
                 $name  = $bundle.' '.str_replace('.ini', '', basename($file));
-                $alias = $this->stringURLUnicodeSlug($name);
+                $alias = static::stringURLUnicodeSlug($name);
                 $output->writeln($this->translator->trans('mautic.core.command.transifex_processing_resource', ['%resource%' => $name]));
 
                 try {
                     /** @var Statistics $statisticsConnector */
                     $statisticsConnector = $transifex->get('statistics');
                     $response            = $statisticsConnector->getStatistics('mautic', $alias);
-                    $languageStats       = json_decode((string) $response->getBody(), true);
+                    $languageStats       = json_decode((string) $response->getBody(), true, 512, JSON_THROW_ON_ERROR);
 
                     foreach ($languageStats as $language => $stats) {
                         if ('en' == $language) {
@@ -102,7 +92,7 @@ EOT
                             /** @var Translations $translationsConnector */
                             $translationsConnector = $transifex->get('translations');
                             $response              = $translationsConnector->getTranslation('mautic', $alias, $language);
-                            $translation           = json_decode((string) $response->getBody(), true);
+                            $translation           = json_decode((string) $response->getBody(), true, 512, JSON_THROW_ON_ERROR);
                             $path                  = $translationDir.$language.'/'.$bundle.'/'.basename($file);
 
                             // Verify the directories exist

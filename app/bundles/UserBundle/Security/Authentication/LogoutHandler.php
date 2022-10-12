@@ -15,16 +15,6 @@ use Symfony\Component\Security\Http\Logout\LogoutHandlerInterface;
 class LogoutHandler implements LogoutHandlerInterface
 {
     /**
-     * @var UserModel
-     */
-    protected $userModel;
-
-    /**
-     * @var EventDispatcherInterface
-     */
-    protected $dispatcher;
-
-    /**
      * @var \Mautic\UserBundle\Entity\User|null
      */
     protected $user;
@@ -32,10 +22,8 @@ class LogoutHandler implements LogoutHandlerInterface
     /**
      * LogoutHandler constructor.
      */
-    public function __construct(UserModel $userModel, EventDispatcherInterface $dispatcher, UserHelper $userHelper)
+    public function __construct(protected UserModel $userModel, protected EventDispatcherInterface $dispatcher, UserHelper $userHelper)
     {
-        $this->userModel  = $userModel;
-        $this->dispatcher = $dispatcher;
         $this->user       = $userHelper->getUser();
     }
 

@@ -8,21 +8,8 @@ use Mautic\CoreBundle\Security\Permissions\CorePermissions;
 
 class BuilderTokenHelperFactory
 {
-    private $security;
-    private $modelFactory;
-    private $connection;
-    private $userHelper;
-
-    public function __construct(
-        CorePermissions $security,
-        ModelFactory $modelFactory,
-        Connection $connection,
-        UserHelper $userHelper
-    ) {
-        $this->security      = $security;
-        $this->modelFactory  = $modelFactory;
-        $this->connection    = $connection;
-        $this->userHelper    = $userHelper;
+    public function __construct(private CorePermissions $security, private ModelFactory $modelFactory, private Connection $connection, private UserHelper $userHelper)
+    {
     }
 
     public function getBuilderTokenHelper(

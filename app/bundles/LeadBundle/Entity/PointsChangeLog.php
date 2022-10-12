@@ -10,52 +10,28 @@ use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
  */
 class PointsChangeLog
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var Lead
-     */
-    private $lead;
+    private ?\Mautic\LeadBundle\Entity\Lead $lead = null;
 
-    /**
-     * @var \Mautic\CoreBundle\Entity\IpAddress
-     */
-    private $ipAddress;
+    private ?\Mautic\CoreBundle\Entity\IpAddress $ipAddress = null;
 
-    /**
-     * @var string
-     */
-    private $type;
+    private ?string $type = null;
 
-    /**
-     * @var string
-     */
-    private $eventName;
+    private ?string $eventName = null;
 
-    /**
-     * @var string
-     */
-    private $actionName;
+    private ?string $actionName = null;
 
-    /**
-     * @var int
-     */
-    private $delta;
+    private ?int $delta = null;
 
-    /**
-     * @var \DateTime
-     */
-    private $dateAdded;
+    private ?\DateTime $dateAdded = null;
 
     public static function loadMetadata(ORM\ClassMetadata $metadata)
     {
         $builder = new ClassMetadataBuilder($metadata);
 
         $builder->setTable('lead_points_change_log')
-            ->setCustomRepositoryClass('Mautic\LeadBundle\Entity\PointsChangeLogRepository')
+            ->setCustomRepositoryClass(\Mautic\LeadBundle\Entity\PointsChangeLogRepository::class)
             ->addIndex(['date_added'], 'point_date_added');
 
         $builder->addBigIntIdField();

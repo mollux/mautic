@@ -14,22 +14,10 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class EmailValidator
 {
     /**
-     * @var TranslatorInterface
-     */
-    protected $translator;
-
-    /**
-     * @var EventDispatcherInterface
-     */
-    protected $dispatcher;
-
-    /**
      * EmailValidator constructor.
      */
-    public function __construct(TranslatorInterface $translator, EventDispatcherInterface $dispatcher)
+    public function __construct(protected TranslatorInterface $translator, protected EventDispatcherInterface $dispatcher)
     {
-        $this->translator = $translator;
-        $this->dispatcher = $dispatcher;
     }
 
     /**
@@ -93,7 +81,7 @@ class EmailValidator
      */
     public function hasValidDomain($address)
     {
-        list($user, $domain) = explode('@', $address);
+        [$user, $domain] = explode('@', $address);
 
         return checkdnsrr($domain, 'MX');
     }

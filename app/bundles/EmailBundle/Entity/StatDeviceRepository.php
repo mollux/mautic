@@ -12,7 +12,6 @@ class StatDeviceRepository extends CommonRepository
 {
     /**
      * @param           $emailIds
-     * @param \DateTime $fromDate
      *
      * @return array
      */

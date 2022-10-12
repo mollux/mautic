@@ -22,63 +22,16 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class PartialObjectReportBuilder
 {
-    /**
-     * @var FieldChangeRepository
-     */
-    private $fieldChangeRepository;
+    private array $reportObjects = [];
 
-    /**
-     * @var FieldHelper
-     */
-    private $fieldHelper;
+    private array $lastProcessedTrackedId = [];
 
-    /**
-     * @var FieldBuilder
-     */
-    private $fieldBuilder;
+    private array $objectsWithMissingFields = [];
 
-    /**
-     * @var array
-     */
-    private $reportObjects = [];
+    private ?\Mautic\IntegrationsBundle\Sync\DAO\Sync\Report\ReportDAO $syncReport = null;
 
-    /**
-     * @var array
-     */
-    private $lastProcessedTrackedId = [];
-
-    /**
-     * @var array
-     */
-    private $objectsWithMissingFields = [];
-
-    /**
-     * @var ReportDAO
-     */
-    private $syncReport;
-
-    /**
-     * @var ObjectProvider
-     */
-    private $objectProvider;
-
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $dispatcher;
-
-    public function __construct(
-        FieldChangeRepository $fieldChangeRepository,
-        FieldHelper $fieldHelper,
-        FieldBuilder $fieldBuilder,
-        ObjectProvider $objectProvider,
-        EventDispatcherInterface $dispatcher
-    ) {
-        $this->fieldChangeRepository = $fieldChangeRepository;
-        $this->fieldHelper           = $fieldHelper;
-        $this->fieldBuilder          = $fieldBuilder;
-        $this->objectProvider        = $objectProvider;
-        $this->dispatcher            = $dispatcher;
+    public function __construct(private FieldChangeRepository $fieldChangeRepository, private FieldHelper $fieldHelper, private FieldBuilder $fieldBuilder, private ObjectProvider $objectProvider, private EventDispatcherInterface $dispatcher)
+    {
     }
 
     public function buildReport(RequestDAO $requestDAO): ReportDAO
@@ -112,14 +65,14 @@ class PartialObjectReportBuilder
                     DebugLogger::log(
                         MauticSyncDataExchange::NAME,
                         $exception->getMessage(),
-                        __CLASS__.':'.__FUNCTION__
+                        self::class.':'.__FUNCTION__
                     );
                 }
             } catch (ObjectNotFoundException $exception) {
                 DebugLogger::log(
                     MauticSyncDataExchange::NAME,
                     $exception->getMessage(),
-                    __CLASS__.':'.__FUNCTION__
+                    self::class.':'.__FUNCTION__
                 );
             }
         }
@@ -182,7 +135,7 @@ class PartialObjectReportBuilder
             foreach ($fields as $field) {
                 try {
                     $syncObject->getField($field);
-                } catch (FieldNotFoundException $exception) {
+                } catch (FieldNotFoundException) {
                     $missingFields[] = $field;
                 }
             }
@@ -224,7 +177,7 @@ class PartialObjectReportBuilder
                     DebugLogger::log(
                         MauticSyncDataExchange::NAME,
                         $exception->getMessage(),
-                        __CLASS__.':'.__FUNCTION__
+                        self::class.':'.__FUNCTION__
                     );
                 }
             }

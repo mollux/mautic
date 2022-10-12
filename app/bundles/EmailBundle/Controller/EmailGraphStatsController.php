@@ -17,11 +17,10 @@ class EmailGraphStatsController extends AbstractController
      * @param string $dateFrom
      * @param string $dateTo
      *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
      *
      * @throws \Exception
      */
-    public function viewAction(Request $request, $objectId, $isVariant, $dateFrom = null, $dateTo = null)
+    public function viewAction(Request $request, $objectId, $isVariant, $dateFrom = null, $dateTo = null): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         /** @var \Mautic\EmailBundle\Model\EmailModel $model */
         $model = $this->get('mautic.email.model.email');

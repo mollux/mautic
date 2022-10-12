@@ -10,16 +10,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class FocusListType extends AbstractType
 {
-    /**
-     * @var FocusModel
-     */
-    protected $focusModel;
-
     private $repo;
 
-    public function __construct(FocusModel $focusModel)
+    public function __construct(protected FocusModel $focusModel)
     {
-        $this->focusModel = $focusModel;
         $this->repo       = $this->focusModel->getRepository();
     }
 
@@ -43,12 +37,8 @@ class FocusListType extends AbstractType
                 'expanded'    => false,
                 'multiple'    => true,
                 'required'    => false,
-                'placeholder' => function (Options $options) {
-                    return (empty($options['choices'])) ? 'mautic.focus.no.focusitem.note' : 'mautic.core.form.chooseone';
-                },
-                'disabled' => function (Options $options) {
-                    return empty($options['choices']);
-                },
+                'placeholder' => fn(Options $options) => (empty($options['choices'])) ? 'mautic.focus.no.focusitem.note' : 'mautic.core.form.chooseone',
+                'disabled' => fn(Options $options) => empty($options['choices']),
                 'top_level'      => 'variant',
                 'variant_parent' => null,
                 'ignore_ids'     => [],

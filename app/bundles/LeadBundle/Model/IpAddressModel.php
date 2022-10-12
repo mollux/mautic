@@ -15,20 +15,8 @@ class IpAddressModel
 {
     private const DELETE_SIZE = 10000;
 
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
-
-    /**
-     * @var EntityManager
-     */
-    protected $entityManager;
-
-    public function __construct(EntityManager $entityManager, LoggerInterface $logger)
+    public function __construct(protected EntityManager $entityManager, protected LoggerInterface $logger)
     {
-        $this->entityManager = $entityManager;
-        $this->logger        = $logger;
     }
 
     /**
@@ -75,9 +63,9 @@ class IpAddressModel
 
         try {
             $qb->execute();
-        } catch (UniqueConstraintViolationException $e) {
+        } catch (UniqueConstraintViolationException) {
             $this->logger->warning("The reference for contact {$contact->getId()} and IP address {$ipAddress->getId()} is already there. (Unique constraint)");
-        } catch (ForeignKeyConstraintViolationException $e) {
+        } catch (ForeignKeyConstraintViolationException) {
             $this->logger->warning("The reference for contact {$contact->getId()} and IP address {$ipAddress->getId()} is already there. (Foreign key constraint)");
         }
 

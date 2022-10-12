@@ -113,6 +113,7 @@ class DynamicContentController extends FormController
      */
     public function newAction($entity = null)
     {
+        $passthrough = [];
         if (!$this->get('mautic.security')->isGranted('dynamiccontent:dynamiccontents:create')) {
             return $this->accessDenied();
         }
@@ -223,11 +224,9 @@ class DynamicContentController extends FormController
      * Generate's edit form and processes post data.
      *
      * @param            $objectId
-     * @param bool|false $ignorePost
      *
-     * @return array|JsonResponse|RedirectResponse|Response
      */
-    public function editAction($objectId, $ignorePost = false)
+    public function editAction($objectId, bool $ignorePost = false): array|\Symfony\Component\HttpFoundation\JsonResponse|\RedirectResponse|\Response
     {
         /** @var DynamicContentModel $model */
         $model  = $this->getModel('dynamicContent');
@@ -336,7 +335,7 @@ class DynamicContentController extends FormController
      *
      * @return JsonResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function viewAction($objectId)
+    public function viewAction($objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         /** @var \Mautic\DynamicContentBundle\Model\DynamicContentModel $model */
         $model    = $this->getModel('dynamicContent');
@@ -379,7 +378,7 @@ class DynamicContentController extends FormController
 
         /* @var DynamicContent $parent */
         /* @var DynamicContent[] $children */
-        list($translationParent, $translationChildren) = $entity->getTranslations();
+        [$translationParent, $translationChildren] = $entity->getTranslations();
 
         // Audit Log
         $logs = $this->getModel('core.auditlog')->getLogForObject('dynamicContent', $entity->getId(), $entity->getDateAdded());
@@ -410,7 +409,7 @@ class DynamicContentController extends FormController
                     'entity'       => $entity,
                     'permissions'  => $this->getPermissions(),
                     'logs'         => $logs,
-                    'isEmbedded'   => $this->request->get('isEmbedded') ? $this->request->get('isEmbedded') : false,
+                    'isEmbedded'   => $this->request->get('isEmbedded') ?: false,
                     'translations' => [
                         'parent'   => $translationParent,
                         'children' => $translationChildren,
@@ -427,10 +426,8 @@ class DynamicContentController extends FormController
      * Clone an entity.
      *
      * @param $objectId
-     *
-     * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function cloneAction($objectId)
+    public function cloneAction($objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Response
     {
         $model  = $this->getModel('dynamicContent');
         $entity = $model->getEntity($objectId);
@@ -456,10 +453,8 @@ class DynamicContentController extends FormController
      * Deletes the entity.
      *
      * @param $objectId
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function deleteAction($objectId)
+    public function deleteAction($objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         $page      = $this->get('session')->get('mautic.dynamicContent.page', 1);
         $returnUrl = $this->generateUrl('mautic_dynamicContent_index', ['page' => $page]);
@@ -515,10 +510,8 @@ class DynamicContentController extends FormController
 
     /**
      * Deletes a group of entities.
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function batchDeleteAction()
+    public function batchDeleteAction(): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         $page      = $this->get('session')->get('mautic.dynamicContent.page', 1);
         $returnUrl = $this->generateUrl('mautic_dynamicContent_index', ['page' => $page]);
@@ -536,7 +529,7 @@ class DynamicContentController extends FormController
 
         if ('POST' == $this->request->getMethod()) {
             $model = $this->getModel('dynamicContent');
-            $ids   = json_decode($this->request->query->get('ids', '{}'));
+            $ids   = json_decode($this->request->query->get('ids', '{}'), null, 512, JSON_THROW_ON_ERROR);
 
             $deleteIds = [];
 
@@ -572,7 +565,7 @@ class DynamicContentController extends FormController
                     'type'    => 'notice',
                     'msg'     => 'mautic.dynamicContent.notice.batch_deleted',
                     'msgVars' => [
-                        '%count%' => count($entities),
+                        '%count%' => is_countable($entities) ? count($entities) : 0,
                     ],
                 ];
             }

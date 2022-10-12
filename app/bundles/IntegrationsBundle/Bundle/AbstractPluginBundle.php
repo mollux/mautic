@@ -33,7 +33,7 @@ abstract class AbstractPluginBundle extends PluginBundleBase
             $plugin->getBundle()
         );
 
-        if (method_exists(__CLASS__, 'installAllTablesIfMissing')) {
+        if (method_exists(self::class, 'installAllTablesIfMissing')) {
             static::installAllTablesIfMissing(
                 $entityManager->getConnection()->getSchemaManager()->createSchema(),
                 $tablePrefix,

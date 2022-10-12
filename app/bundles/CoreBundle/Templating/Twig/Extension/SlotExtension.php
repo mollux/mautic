@@ -10,14 +10,8 @@ use Twig\TwigFunction;
 
 class SlotExtension extends AbstractExtension
 {
-    /**
-     * @var SlotsHelper
-     */
-    protected $helper;
-
-    public function __construct(SlotsHelper $slotsHelper)
+    public function __construct(protected SlotsHelper $helper)
     {
-        $this->helper = $slotsHelper;
     }
 
     /**

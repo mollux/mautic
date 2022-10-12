@@ -22,20 +22,8 @@ use Symfony\Component\Form\FormEvents;
  */
 class WidgetType extends AbstractType
 {
-    /**
-     * @var ContainerAwareEventDispatcher
-     */
-    protected $dispatcher;
-
-    /**
-     * @var CorePermissions
-     */
-    protected $security;
-
-    public function __construct(EventDispatcherInterface $dispatcher, CorePermissions $security)
+    public function __construct(protected EventDispatcherInterface $dispatcher, protected CorePermissions $security)
     {
-        $this->dispatcher = $dispatcher;
-        $this->security   = $security;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -55,9 +43,7 @@ class WidgetType extends AbstractType
         $event->setSecurity($this->security);
         $this->dispatcher->dispatch($event, DashboardEvents::DASHBOARD_ON_MODULE_LIST_GENERATE);
 
-        $types = array_map(function ($category) {
-            return array_flip($category);
-        }, $event->getTypes());
+        $types = array_map(fn($category) => array_flip($category), $event->getTypes());
 
         $builder->add(
             'type',

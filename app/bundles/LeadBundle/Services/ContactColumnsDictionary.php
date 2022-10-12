@@ -8,19 +8,10 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ContactColumnsDictionary
 {
-    protected $fieldModel;
+    private array $fieldList = [];
 
-    private $translator;
-
-    private $coreParametersHelper;
-
-    private $fieldList = [];
-
-    public function __construct(FieldModel $fieldModel, TranslatorInterface $translator, CoreParametersHelper $coreParametersHelper)
+    public function __construct(protected FieldModel $fieldModel, private TranslatorInterface $translator, private CoreParametersHelper $coreParametersHelper)
     {
-        $this->fieldModel           = $fieldModel;
-        $this->translator           = $translator;
-        $this->coreParametersHelper = $coreParametersHelper;
     }
 
     /**

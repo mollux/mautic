@@ -79,7 +79,7 @@ class FormHelper extends \Symfony\Bundle\FrameworkBundle\Templating\Helper\FormH
      */
     public function containsErrors(FormView $form, array $exluding = [])
     {
-        if (count($form->vars['errors'])) {
+        if (is_countable($form->vars['errors']) ? count($form->vars['errors']) : 0) {
             return true;
         }
         foreach ($form->children as $key => $child) {
@@ -87,7 +87,7 @@ class FormHelper extends \Symfony\Bundle\FrameworkBundle\Templating\Helper\FormH
                 continue;
             }
 
-            if (isset($child->vars['errors']) && count($child->vars['errors'])) {
+            if (isset($child->vars['errors']) && (is_countable($child->vars['errors']) ? count($child->vars['errors']) : 0)) {
                 return true;
             }
 

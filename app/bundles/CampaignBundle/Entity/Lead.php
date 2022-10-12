@@ -11,47 +11,26 @@ use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
  */
 class Lead
 {
-    /**
-     * @var Campaign
-     */
-    private $campaign;
+    private ?\Mautic\CampaignBundle\Entity\Campaign $campaign = null;
 
-    /**
-     * @var \Mautic\LeadBundle\Entity\Lead
-     */
-    private $lead;
+    private ?\Mautic\LeadBundle\Entity\Lead $lead = null;
 
-    /**
-     * @var \DateTime
-     **/
-    private $dateAdded;
+    private ?\DateTime $dateAdded = null;
 
-    /**
-     * @var \DateTime
-     */
-    private $dateLastExited;
+    private ?\DateTime $dateLastExited = null;
 
-    /**
-     * @var bool
-     */
-    private $manuallyRemoved = false;
+    private bool $manuallyRemoved = false;
 
-    /**
-     * @var bool
-     */
-    private $manuallyAdded = false;
+    private bool $manuallyAdded = false;
 
-    /**
-     * @var int
-     */
-    private $rotation = 1;
+    private int $rotation = 1;
 
     public static function loadMetadata(ORM\ClassMetadata $metadata)
     {
         $builder = new ClassMetadataBuilder($metadata);
 
         $builder->setTable('campaign_leads')
-            ->setCustomRepositoryClass('Mautic\CampaignBundle\Entity\LeadRepository')
+            ->setCustomRepositoryClass(\Mautic\CampaignBundle\Entity\LeadRepository::class)
             ->addIndex(['date_added'], 'campaign_leads_date_added')
             ->addIndex(['date_last_exited'], 'campaign_leads_date_exited')
             ->addIndex(['campaign_id', 'manually_removed', 'lead_id', 'rotation'], 'campaign_leads');

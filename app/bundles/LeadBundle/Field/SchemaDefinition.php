@@ -47,7 +47,7 @@ class SchemaDefinition
                 $schemaType = 'string';
                 break;
             case 'text':
-                $schemaType = (false !== strpos($alias, 'description')) ? 'text' : 'string';
+                $schemaType = (str_contains($alias, 'description')) ? 'text' : 'string';
                 break;
             default:
                 $schemaType = 'text';

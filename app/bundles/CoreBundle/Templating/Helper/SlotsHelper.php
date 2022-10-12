@@ -35,10 +35,8 @@ class SlotsHelper extends BaseSlotsHelper
 
     /**
      * Checks if the slot has some content when a page is viewed in public.
-     *
-     * @param string|array $names
      */
-    public function hasContent($names)
+    public function hasContent(string|array $names)
     {
         // If we're in the builder, return true so all slots show.
         if ($this->inBuilder) {

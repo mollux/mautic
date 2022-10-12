@@ -9,19 +9,10 @@ use Symfony\Contracts\EventDispatcher\Event;
  */
 class QueueEmailEvent extends Event
 {
-    /**
-     * @var \Swift_Message
-     */
-    private $message;
+    private bool $retry = false;
 
-    /**
-     * @var bool
-     */
-    private $retry = false;
-
-    public function __construct(\Swift_Message $message)
+    public function __construct(private \Swift_Message $message)
     {
-        $this->message = $message;
     }
 
     /**

@@ -65,7 +65,7 @@ class CopyRepository extends CommonRepository
 
         try {
             $result = $q->getQuery()->getSingleResult();
-        } catch (NoResultException $exception) {
+        } catch (NoResultException) {
             $result = null;
         }
 

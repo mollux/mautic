@@ -19,7 +19,7 @@ class NotificationController extends AbstractFormController
      *
      * @return JsonResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function indexAction($page = 1)
+    public function indexAction($page = 1): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         /** @var \Mautic\NotificationBundle\Model\NotificationModel $model */
         $model = $this->getModel('notification');
@@ -142,10 +142,8 @@ class NotificationController extends AbstractFormController
      * Loads a specific form into the detailed panel.
      *
      * @param $objectId
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function viewAction($objectId)
+    public function viewAction($objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         /** @var \Mautic\NotificationBundle\Model\NotificationModel $model */
         $model    = $this->getModel('notification');
@@ -246,10 +244,8 @@ class NotificationController extends AbstractFormController
      * Generates new form and processes post data.
      *
      * @param Notification $entity
-     *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function newAction($entity = null)
+    public function newAction($entity = null): \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         /** @var \Mautic\NotificationBundle\Model\NotificationModel $model */
         $model = $this->getModel('notification');
@@ -384,7 +380,7 @@ class NotificationController extends AbstractFormController
      *
      * @return array|\Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function editAction($objectId, $ignorePost = false, $forceTypeSelection = false)
+    public function editAction($objectId, $ignorePost = false, $forceTypeSelection = false): array|\Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         /** @var \Mautic\NotificationBundle\Model\NotificationModel $model */
         $model   = $this->getModel('notification');
@@ -549,7 +545,7 @@ class NotificationController extends AbstractFormController
      *
      * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function cloneAction($objectId)
+    public function cloneAction($objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         $model  = $this->getModel('notification');
         $entity = $model->getEntity($objectId);
@@ -579,10 +575,8 @@ class NotificationController extends AbstractFormController
      * Deletes the entity.
      *
      * @param $objectId
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function deleteAction($objectId)
+    public function deleteAction($objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         $page      = $this->get('session')->get('mautic.notification.page', 1);
         $returnUrl = $this->generateUrl('mautic_notification_index', ['page' => $page]);
@@ -643,10 +637,8 @@ class NotificationController extends AbstractFormController
 
     /**
      * Deletes a group of entities.
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function batchDeleteAction()
+    public function batchDeleteAction(): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
     {
         $page      = $this->get('session')->get('mautic.notification.page', 1);
         $returnUrl = $this->generateUrl('mautic_notification_index', ['page' => $page]);
@@ -664,7 +656,7 @@ class NotificationController extends AbstractFormController
 
         if ('POST' == $this->request->getMethod()) {
             $model = $this->getModel('notification');
-            $ids   = json_decode($this->request->query->get('ids', '{}'));
+            $ids   = json_decode($this->request->query->get('ids', '{}'), null, 512, JSON_THROW_ON_ERROR);
 
             $deleteIds = [];
 
@@ -700,7 +692,7 @@ class NotificationController extends AbstractFormController
                     'type'    => 'notice',
                     'msg'     => 'mautic.notification.notice.batch_deleted',
                     'msgVars' => [
-                        '%count%' => count($entities),
+                        '%count%' => is_countable($entities) ? count($entities) : 0,
                     ],
                 ];
             }
@@ -721,7 +713,7 @@ class NotificationController extends AbstractFormController
      *
      * @return JsonResponse|Response
      */
-    public function previewAction($objectId)
+    public function previewAction($objectId): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
         /** @var \Mautic\NotificationBundle\Model\NotificationModel $model */
         $model        = $this->getModel('notification');
@@ -751,7 +743,7 @@ class NotificationController extends AbstractFormController
      *
      * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function contactsAction($objectId, $page = 1)
+    public function contactsAction($objectId, $page = 1): \Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
     {
         return $this->generateContactsGrid(
             $objectId,

@@ -70,13 +70,13 @@ class MessageRepository extends CommonRepository
             ->select('id, channel, channel_id, properties')
             ->where($q->expr()->eq('message_id', ':messageId'))
             ->setParameter('messageId', $messageId)
-            ->andWhere($q->expr()->eq('is_enabled', true, 'boolean'));
+            ->andWhere($q->expr()->eq('is_enabled', true));
 
         $results = $q->execute()->fetchAll();
 
         $channels = [];
         foreach ($results as $result) {
-            $result['properties']         = json_decode($result['properties'], true);
+            $result['properties']         = json_decode($result['properties'], true, 512, JSON_THROW_ON_ERROR);
             $channels[$result['channel']] = $result;
         }
 
@@ -95,7 +95,7 @@ class MessageRepository extends CommonRepository
             ->select('id, channel, channel_id, properties, message_id')
             ->where($q->expr()->eq('id', ':channelId'))
             ->setParameter('channelId', $channelId)
-            ->andWhere($q->expr()->eq('is_enabled', true, 'boolean'));
+            ->andWhere($q->expr()->eq('is_enabled', true));
 
         return $q->execute()->fetch();
     }

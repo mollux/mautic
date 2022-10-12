@@ -153,7 +153,7 @@ class OneSignalApi extends AbstractNotificationApi
                     break;
                 case 'additional_data':
                     // Transforms values received from SortableListType into values acceptable by OneSignal.
-                    if (count($value['list']) > 0) {
+                    if ((is_countable($value['list']) ? count($value['list']) : 0) > 0) {
                         $result = [];
                         foreach ($value['list'] as $item) {
                             $result[$item['label']] = $item['value'];

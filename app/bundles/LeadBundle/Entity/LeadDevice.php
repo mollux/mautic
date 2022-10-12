@@ -11,25 +11,13 @@ use Mautic\CoreBundle\Doctrine\Mapping\ClassMetadataBuilder;
  */
 class LeadDevice
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var \Mautic\LeadBundle\Entity\Lead
-     */
-    private $lead;
+    private ?\Mautic\LeadBundle\Entity\Lead $lead = null;
 
-    /**
-     * @var array
-     */
-    private $clientInfo = [];
+    private array $clientInfo = [];
 
-    /**
-     * @var string
-     */
-    private $device;
+    private ?string $device = null;
 
     /**
      * @var string
@@ -56,27 +44,18 @@ class LeadDevice
      */
     private $deviceBrand;
 
-    /**
-     * @var string
-     */
-    private $deviceModel;
+    private ?string $deviceModel = null;
 
-    /**
-     * @var string
-     */
-    private $trackingId;
+    private ?string $trackingId = null;
 
-    /**
-     * @var \DateTime
-     */
-    private $dateAdded;
+    private ?\DateTime $dateAdded = null;
 
     public static function loadMetadata(ORM\ClassMetadata $metadata)
     {
         $builder = new ClassMetadataBuilder($metadata);
 
         $builder->setTable('lead_devices')
-            ->setCustomRepositoryClass('Mautic\LeadBundle\Entity\LeadDeviceRepository')
+            ->setCustomRepositoryClass(\Mautic\LeadBundle\Entity\LeadDeviceRepository::class)
             ->addIndex(['date_added'], 'date_added_search')
             ->addIndex(['device'], 'device_search')
             ->addIndex(['device_os_name'], 'device_os_name_search')
@@ -174,7 +153,7 @@ class LeadDevice
      */
     public function getSignature()
     {
-        return md5(json_encode($this->clientInfo).$this->device.$this->deviceOsName.$this->deviceOsPlatform.$this->deviceBrand.$this->deviceModel);
+        return md5(json_encode($this->clientInfo, JSON_THROW_ON_ERROR).$this->device.$this->deviceOsName.$this->deviceOsPlatform.$this->deviceBrand.$this->deviceModel);
     }
 
     /**
@@ -185,10 +164,7 @@ class LeadDevice
         return $this->clientInfo;
     }
 
-    /**
-     * @param mixed $clientInfo
-     */
-    public function setClientInfo($clientInfo)
+    public function setClientInfo(mixed $clientInfo)
     {
         $this->clientInfo = $clientInfo;
     }
@@ -201,10 +177,7 @@ class LeadDevice
         return $this->device;
     }
 
-    /**
-     * @param mixed $device
-     */
-    public function setDevice($device)
+    public function setDevice(mixed $device)
     {
         $this->device = $device;
     }
@@ -230,10 +203,7 @@ class LeadDevice
         return $this->deviceModel;
     }
 
-    /**
-     * @param mixed $deviceModel
-     */
-    public function setDeviceModel($deviceModel)
+    public function setDeviceModel(mixed $deviceModel)
     {
         $this->deviceModel = $deviceModel;
     }
@@ -391,10 +361,7 @@ class LeadDevice
         return $this->dateAdded;
     }
 
-    /**
-     * @param mixed $dateAdded
-     */
-    public function setDateAdded($dateAdded)
+    public function setDateAdded(mixed $dateAdded)
     {
         $this->dateAdded = $dateAdded;
     }

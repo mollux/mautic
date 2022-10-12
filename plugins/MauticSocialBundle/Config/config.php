@@ -34,7 +34,7 @@ return [
                 'standard_entity' => true,
                 'name'            => 'tweets',
                 'path'            => '/tweets',
-                'controller'      => 'MauticPlugin\MauticSocialBundle\Controller\Api\TweetApiController',
+                'controller'      => \MauticPlugin\MauticSocialBundle\Controller\Api\TweetApiController::class,
             ],
         ],
         'public' => [
@@ -77,7 +77,7 @@ return [
         ],
         'forms' => [
             'mautic.form.type.social.sociallogin' => [
-                'class'     => 'MauticPlugin\MauticSocialBundle\Form\Type\SocialLoginType',
+                'class'     => \MauticPlugin\MauticSocialBundle\Form\Type\SocialLoginType::class,
                 'arguments' => [
                     'mautic.helper.integration',
                     'mautic.form.model.form',
@@ -85,64 +85,64 @@ return [
                     ],
             ],
             'mautic.form.type.social.facebook' => [
-                'class' => 'MauticPlugin\MauticSocialBundle\Form\Type\FacebookType',
+                'class' => \MauticPlugin\MauticSocialBundle\Form\Type\FacebookType::class,
             ],
             'mautic.form.type.social.twitter' => [
-                'class' => 'MauticPlugin\MauticSocialBundle\Form\Type\TwitterType',
+                'class' => \MauticPlugin\MauticSocialBundle\Form\Type\TwitterType::class,
             ],
             'mautic.form.type.social.linkedin' => [
-                'class' => 'MauticPlugin\MauticSocialBundle\Form\Type\LinkedInType',
+                'class' => \MauticPlugin\MauticSocialBundle\Form\Type\LinkedInType::class,
             ],
             'mautic.social.form.type.twitter.tweet' => [
-                'class'     => 'MauticPlugin\MauticSocialBundle\Form\Type\TweetType',
+                'class'     => \MauticPlugin\MauticSocialBundle\Form\Type\TweetType::class,
                 'arguments' => [
                     'doctrine.orm.entity_manager',
                 ],
             ],
             'mautic.social.form.type.monitoring' => [
-                'class'     => 'MauticPlugin\MauticSocialBundle\Form\Type\MonitoringType',
+                'class'     => \MauticPlugin\MauticSocialBundle\Form\Type\MonitoringType::class,
                 'arguments' => [
                     'mautic.social.model.monitoring',
                 ],
             ],
             'mautic.social.form.type.network.twitter.abstract' => [
-                'class' => 'MauticPlugin\MauticSocialBundle\Form\Type\TwitterAbstractType',
+                'class' => \MauticPlugin\MauticSocialBundle\Form\Type\TwitterAbstractType::class,
             ],
             'mautic.social.form.type.network.twitter.hashtag' => [
-                'class' => 'MauticPlugin\MauticSocialBundle\Form\Type\TwitterHashtagType',
+                'class' => \MauticPlugin\MauticSocialBundle\Form\Type\TwitterHashtagType::class,
             ],
             'mautic.social.form.type.network.twitter.mention' => [
-                'class' => 'MauticPlugin\MauticSocialBundle\Form\Type\TwitterMentionType',
+                'class' => \MauticPlugin\MauticSocialBundle\Form\Type\TwitterMentionType::class,
             ],
             'mautic.social.form.type.network.twitter.custom' => [
-                'class' => 'MauticPlugin\MauticSocialBundle\Form\Type\TwitterCustomType',
+                'class' => \MauticPlugin\MauticSocialBundle\Form\Type\TwitterCustomType::class,
             ],
             'mautic.social.config' => [
-                'class'     => 'MauticPlugin\MauticSocialBundle\Form\Type\ConfigType',
+                'class'     => \MauticPlugin\MauticSocialBundle\Form\Type\ConfigType::class,
                 'arguments' => 'mautic.lead.model.field',
             ],
             'mautic.social.tweet.list' => [
-                'class' => 'MauticPlugin\MauticSocialBundle\Form\Type\TweetListType',
+                'class' => \MauticPlugin\MauticSocialBundle\Form\Type\TweetListType::class,
             ],
             'mautic.social.tweetsend_list' => [
-                'class'     => 'MauticPlugin\MauticSocialBundle\Form\Type\TweetSendType',
+                'class'     => \MauticPlugin\MauticSocialBundle\Form\Type\TweetSendType::class,
                 'arguments' => 'router',
             ],
         ],
         'models' => [
             'mautic.social.model.monitoring' => [
-                'class' => 'MauticPlugin\MauticSocialBundle\Model\MonitoringModel',
+                'class' => \MauticPlugin\MauticSocialBundle\Model\MonitoringModel::class,
             ],
             'mautic.social.model.postcount' => [
-                'class' => 'MauticPlugin\MauticSocialBundle\Model\PostCountModel',
+                'class' => \MauticPlugin\MauticSocialBundle\Model\PostCountModel::class,
             ],
             'mautic.social.model.tweet' => [
-                'class' => 'MauticPlugin\MauticSocialBundle\Model\TweetModel',
+                'class' => \MauticPlugin\MauticSocialBundle\Model\TweetModel::class,
             ],
         ],
         'others' => [
             'mautic.social.helper.campaign' => [
-                'class'     => 'MauticPlugin\MauticSocialBundle\Helper\CampaignEventHelper',
+                'class'     => \MauticPlugin\MauticSocialBundle\Helper\CampaignEventHelper::class,
                 'arguments' => [
                     'mautic.helper.integration',
                     'mautic.page.model.trackable',

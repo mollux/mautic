@@ -15,19 +15,13 @@ class BuilderEvent extends Event
     protected $sections             = [];
     protected $tokens               = [];
     protected $abTestWinnerCriteria = [];
-    protected $translator;
-    protected $entity;
-    protected $requested;
     protected $tokenFilter;
     protected $tokenFilterText;
     protected $tokenFilterTarget;
 
-    public function __construct($translator, $entity = null, $requested = 'all', $tokenFilter = '')
+    public function __construct(protected $translator, protected $entity = null, protected $requested = 'all', $tokenFilter = '')
     {
-        $this->translator        = $translator;
-        $this->entity            = $entity;
-        $this->requested         = $requested;
-        $this->tokenFilterTarget = (0 === strpos($tokenFilter, '{@')) ? 'label' : 'token';
+        $this->tokenFilterTarget = (str_starts_with($tokenFilter, '{@')) ? 'label' : 'token';
         $this->tokenFilterText   = str_replace(['{@', '{', '}'], '', $tokenFilter);
         $this->tokenFilter       = ('label' == $this->tokenFilterTarget) ? $this->tokenFilterText : str_replace('{@', '{', $tokenFilter);
     }
@@ -122,12 +116,10 @@ class BuilderEvent extends Event
     {
         uasort(
             $this->abTestWinnerCriteria,
-            function ($a, $b) {
-                return strnatcasecmp(
-                    $a['group'],
-                    $b['group']
-                );
-            }
+            fn($a, $b) => strnatcasecmp(
+                $a['group'],
+                $b['group']
+            )
         );
         $array = ['criteria' => $this->abTestWinnerCriteria];
 
@@ -216,7 +208,7 @@ class BuilderEvent extends Event
         if (false === $withBC) {
             $tokens = [];
             foreach ($this->tokens as $key => $value) {
-                if ('{leadfield' !== substr($key, 0, 10)) {
+                if (!str_starts_with($key, '{leadfield')) {
                     $tokens[$key] = $value;
                 }
             }
@@ -245,7 +237,7 @@ class BuilderEvent extends Event
 
                 $found = false;
                 foreach ($tokenKeys as $token) {
-                    if (0 === stripos($token, $this->tokenFilter)) {
+                    if (0 === stripos($token, (string) $this->tokenFilter)) {
                         $found = true;
                         break;
                     }
@@ -292,17 +284,13 @@ class BuilderEvent extends Event
             // Do a search against the label
             $tokens = array_filter(
                 $tokens,
-                function ($v) use ($filter) {
-                    return 0 === stripos($v, $filter);
-                }
+                fn($v) => 0 === stripos($v, (string) $filter)
             );
         } else {
             // Do a search against the token
             $found = array_filter(
                 array_keys($tokens),
-                function ($k) use ($filter) {
-                    return 0 === stripos($k, $filter);
-                }
+                fn($k) => 0 === stripos($k, (string) $filter)
             );
 
             $tokens = array_intersect_key($tokens, array_flip($found));

@@ -9,20 +9,8 @@ use Mautic\LeadBundle\Segment\Decorator\FilterDecoratorInterface;
 
 class DateAnniversary implements FilterDecoratorInterface
 {
-    /**
-     * @var DateDecorator
-     */
-    private $dateDecorator;
-
-    /**
-     * @var DateOptionParameters
-     */
-    private $dateOptionParameters;
-
-    public function __construct(DateDecorator $dateDecorator, DateOptionParameters $dateOptionParameters)
+    public function __construct(private DateDecorator $dateDecorator, private DateOptionParameters $dateOptionParameters)
     {
-        $this->dateDecorator        = $dateDecorator;
-        $this->dateOptionParameters = $dateOptionParameters;
     }
 
     /**
@@ -51,10 +39,8 @@ class DateAnniversary implements FilterDecoratorInterface
 
     /**
      * @param array|string $argument
-     *
-     * @return array|string
      */
-    public function getParameterHolder(ContactSegmentFilterCrate $contactSegmentFilterCrate, $argument)
+    public function getParameterHolder(ContactSegmentFilterCrate $contactSegmentFilterCrate, $argument): array|string
     {
         return $this->dateDecorator->getParameterHolder($contactSegmentFilterCrate, $argument);
     }
@@ -83,10 +69,7 @@ class DateAnniversary implements FilterDecoratorInterface
         return $this->dateDecorator->getQueryType($contactSegmentFilterCrate);
     }
 
-    /**
-     * @return bool|string
-     */
-    public function getAggregateFunc(ContactSegmentFilterCrate $contactSegmentFilterCrate)
+    public function getAggregateFunc(ContactSegmentFilterCrate $contactSegmentFilterCrate): bool|string
     {
         return $this->dateDecorator->getAggregateFunc($contactSegmentFilterCrate);
     }

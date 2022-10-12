@@ -27,31 +27,10 @@ class DashboardModel extends FormModel
     protected $session;
 
     /**
-     * @var CoreParametersHelper
-     */
-    protected $coreParametersHelper;
-
-    /**
-     * @var PathsHelper
-     */
-    protected $pathsHelper;
-
-    /**
-     * @var Filesystem
-     */
-    protected $filesystem;
-
-    /**
      * DashboardModel constructor.
      */
-    public function __construct(
-        CoreParametersHelper $coreParametersHelper,
-        PathsHelper $pathsHelper,
-        Filesystem $filesystem
-    ) {
-        $this->coreParametersHelper = $coreParametersHelper;
-        $this->pathsHelper          = $pathsHelper;
-        $this->filesystem           = $filesystem;
+    public function __construct(protected CoreParametersHelper $coreParametersHelper, protected PathsHelper $pathsHelper, protected Filesystem $filesystem)
+    {
     }
 
     public function setSession(Session $session)
@@ -133,9 +112,7 @@ class DashboardModel extends FormModel
             'name'        => $name,
             'description' => $this->generateDescription(),
             'widgets'     => array_map(
-                function ($widget) {
-                    return $widget->toArray();
-                },
+                fn($widget) => $widget->toArray(),
                 $this->getWidgets(true)
             ),
         ];
@@ -153,7 +130,7 @@ class DashboardModel extends FormModel
         $dir      = $this->pathsHelper->getSystemPath('dashboard.user');
         $filename = InputHelper::filename($name, 'json');
         $path     = $dir.'/'.$filename;
-        $this->filesystem->dumpFile($path, json_encode($this->toArray($name)));
+        $this->filesystem->dumpFile($path, json_encode($this->toArray($name), JSON_THROW_ON_ERROR));
     }
 
     /**

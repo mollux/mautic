@@ -231,7 +231,7 @@ class Configurator
     {
         $string = "array(\n";
 
-        $count = $counter = count($array);
+        $count = $counter = is_countable($array) ? count($array) : 0;
         foreach ($array as $key => $value) {
             if (is_string($key) or is_numeric($key)) {
                 if ($counter === $count) {
@@ -291,6 +291,6 @@ class Configurator
         include $this->filename;
 
         // Return the $parameters array defined in the file
-        return isset($parameters) ? $parameters : [];
+        return $parameters ?? [];
     }
 }

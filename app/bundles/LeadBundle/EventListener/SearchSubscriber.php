@@ -19,49 +19,16 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class SearchSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var LeadModel
-     */
-    private $leadModel;
-
-    /**
-     * @var LeadRepository
-     */
-    private $leadRepo;
-
-    /**
-     * @var EmailRepository
-     */
-    private $emailRepository;
-
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    /**
-     * @var CorePermissions
-     */
-    private $security;
-
-    /**
-     * @var TemplatingHelper
-     */
-    private $templating;
+    private \Mautic\LeadBundle\Entity\LeadRepository $leadRepo;
 
     public function __construct(
-        LeadModel $leadModel,
-        EmailRepository $emailRepository,
-        TranslatorInterface $translator,
-        CorePermissions $security,
-        TemplatingHelper $templating
+        private LeadModel $leadModel,
+        private EmailRepository $emailRepository,
+        private TranslatorInterface $translator,
+        private CorePermissions $security,
+        private TemplatingHelper $templating
     ) {
-        $this->leadModel       = $leadModel;
         $this->leadRepo        = $leadModel->getRepository();
-        $this->emailRepository = $emailRepository;
-        $this->translator      = $translator;
-        $this->security        = $security;
-        $this->templating      = $templating;
     }
 
     /**
@@ -88,7 +55,7 @@ class SearchSubscriber implements EventSubscriberInterface
         $filter    = ['string' => $str, 'force' => ''];
 
         //only show results that are not anonymous so as to not clutter up things
-        if (false === strpos($str, "$anonymous")) {
+        if (!str_contains($str, "$anonymous")) {
             $filter['force'] = " !$anonymous";
         }
 

@@ -38,7 +38,7 @@ if (!isset($templateButtons)) {
 //Set langVar to routeBase if not set
 if (!isset($translationBase)) {
     if (!isset($langVar)) {
-        $langVar = (isset($routeBase)) ? $routeBase : '';
+        $langVar = $routeBase ?? '';
     }
     $translationBase = 'mautic.'.$langVar;
 }

@@ -20,20 +20,12 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class ApplyUpdatesCommand extends Command
 {
-    private TranslatorInterface $translator;
-    private StepProvider $stepProvider;
-    private CoreParametersHelper $coreParametersHelper;
-
     public function __construct(
-        TranslatorInterface $translator,
-        StepProvider $stepProvider,
-        CoreParametersHelper $coreParametersHelper
+        private TranslatorInterface $translator,
+        private StepProvider $stepProvider,
+        private CoreParametersHelper $coreParametersHelper
     ) {
         parent::__construct();
-
-        $this->translator           = $translator;
-        $this->stepProvider         = $stepProvider;
-        $this->coreParametersHelper = $coreParametersHelper;
     }
 
     protected function configure()
@@ -82,7 +74,7 @@ EOT
         $progressBar->setFormat('Step %current% [%bar%] <info>%message%</info>');
 
         // Define this just in case
-        defined('MAUTIC_ENV') or define('MAUTIC_ENV', (isset($options['env'])) ? $options['env'] : 'prod');
+        defined('MAUTIC_ENV') or define('MAUTIC_ENV', $options['env'] ?? 'prod');
 
         if (true === $this->coreParametersHelper->get('composer_updates', false)) {
             $output->writeln('<error>'.$this->translator->trans('mautic.core.command.update.composer').'</error>');

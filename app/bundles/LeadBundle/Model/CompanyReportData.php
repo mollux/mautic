@@ -9,22 +9,10 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class CompanyReportData
 {
     /**
-     * @var FieldModel
-     */
-    private $fieldModel;
-
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    /**
      * CompanyReportData constructor.
      */
-    public function __construct(FieldModel $fieldModel, TranslatorInterface $translator)
+    public function __construct(private FieldModel $fieldModel, private TranslatorInterface $translator)
     {
-        $this->fieldModel = $fieldModel;
-        $this->translator = $translator;
     }
 
     /**

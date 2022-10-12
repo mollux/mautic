@@ -11,30 +11,12 @@ use Symfony\Contracts\EventDispatcher\Event;
 class InternalObjectUpdateEvent extends Event
 {
     /**
-     * @var ObjectInterface
-     */
-    private $object;
-
-    /**
-     * @var array
-     */
-    private $identifiedObjectIds;
-
-    /**
-     * @var array
-     */
-    private $updateObjects;
-
-    /**
      * @var UpdatedObjectMappingDAO[]
      */
-    private $updatedObjectMappings = [];
+    private array $updatedObjectMappings = [];
 
-    public function __construct(ObjectInterface $object, array $identifiedObjectIds, array $updateObjects)
+    public function __construct(private ObjectInterface $object, private array $identifiedObjectIds, private array $updateObjects)
     {
-        $this->object              = $object;
-        $this->identifiedObjectIds = $identifiedObjectIds;
-        $this->updateObjects       = $updateObjects;
     }
 
     public function getObject(): ObjectInterface

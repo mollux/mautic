@@ -9,19 +9,10 @@ use Mautic\CoreBundle\Helper\CoreParametersHelper;
 
 class ConfigMapper
 {
-    /**
-     * @var CoreParametersHelper
-     */
-    private $parametersHelper;
+    private array $restrictedParameters;
 
-    /**
-     * @var array
-     */
-    private $restrictedParameters;
-
-    public function __construct(CoreParametersHelper $parametersHelper, array $restrictedParameters = [])
+    public function __construct(private CoreParametersHelper $parametersHelper, array $restrictedParameters = [])
     {
-        $this->parametersHelper     = $parametersHelper;
         $this->restrictedParameters = RestrictionHelper::prepareRestrictions($restrictedParameters);
     }
 

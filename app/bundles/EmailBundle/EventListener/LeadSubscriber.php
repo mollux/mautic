@@ -13,36 +13,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class LeadSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var EmailReplyRepositoryInterface
-     */
-    private $emailReplyRepository;
-
-    /**
-     * @var StatRepository
-     */
-    private $statRepository;
-
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    /**
-     * @var RouterInterface
-     */
-    private $router;
-
-    public function __construct(
-        EmailReplyRepositoryInterface $emailReplyRepository,
-        StatRepository $statRepository,
-        TranslatorInterface $translator,
-        RouterInterface $router
-    ) {
-        $this->emailReplyRepository = $emailReplyRepository;
-        $this->statRepository       = $statRepository;
-        $this->translator           = $translator;
-        $this->router               = $router;
+    public function __construct(private EmailReplyRepositoryInterface $emailReplyRepository, private StatRepository $statRepository, private TranslatorInterface $translator, private RouterInterface $router)
+    {
     }
 
     /**

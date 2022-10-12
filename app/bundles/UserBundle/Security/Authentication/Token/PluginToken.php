@@ -12,23 +12,17 @@ class PluginToken extends AbstractToken implements GuardTokenInterface
 {
     private ?string $providerKey;
 
-    private string $credentials;
-
-    private ?string $authenticatingService;
-
-    private ?Response $response;
-
     /**
      * @param UserInterface|string|null $user
      * @param array<string>             $roles
      */
     public function __construct(
         ?string $providerKey,
-        ?string $authenticatingService = null,
+        private ?string $authenticatingService = null,
         $user = null,
-        string $credentials = '',
+        private string $credentials = '',
         array $roles = [],
-        Response $response = null
+        private ?\Symfony\Component\HttpFoundation\Response $response = null
     ) {
         parent::__construct($roles);
 
@@ -39,11 +33,7 @@ class PluginToken extends AbstractToken implements GuardTokenInterface
         if (null !== $user) {
             $this->setUser($user);
         }
-
-        $this->authenticatingService = $authenticatingService;
-        $this->credentials           = $credentials;
         $this->providerKey           = $providerKey;
-        $this->response              = $response;
 
         $this->setAuthenticated(count($roles) > 0);
     }

@@ -12,50 +12,23 @@ use Mautic\CoreBundle\Entity\CommonEntity;
  */
 class IntegrationEntity extends CommonEntity
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var string
-     */
-    private $integration;
+    private ?string $integration = null;
 
-    /**
-     * @var string
-     */
-    private $integrationEntity;
+    private ?string $integrationEntity = null;
 
-    /**
-     * @var string
-     */
-    private $integrationEntityId;
+    private ?string $integrationEntityId = null;
 
-    /**
-     * @var \DateTime
-     */
-    private $dateAdded;
+    private ?\DateTime $dateAdded = null;
 
-    /**
-     * @var \DateTime
-     */
-    private $lastSyncDate;
+    private ?\DateTime $lastSyncDate = null;
 
-    /**
-     * @var string
-     */
-    private $internalEntity;
+    private ?string $internalEntity = null;
 
-    /**
-     * @var int
-     */
-    private $internalEntityId;
+    private ?int $internalEntityId = null;
 
-    /**
-     * @var array
-     */
-    private $internal;
+    private array $internal;
 
     /**
      * IntegrationEntity constructor.

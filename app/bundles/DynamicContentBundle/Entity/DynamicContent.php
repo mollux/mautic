@@ -26,65 +26,29 @@ class DynamicContent extends FormEntity implements VariantEntityInterface, Trans
     use VariantEntityTrait;
     use FiltersEntityTrait;
 
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var string
-     */
-    private $name;
+    private ?string $name = null;
 
-    /**
-     * @var string
-     */
-    private $description;
+    private ?string $description = null;
 
-    /**
-     * @var \Mautic\CategoryBundle\Entity\Category
-     **/
-    private $category;
+    private ?\Mautic\CategoryBundle\Entity\Category $category = null;
 
-    /**
-     * @var \DateTime
-     */
-    private $publishUp;
+    private ?\DateTime $publishUp = null;
 
-    /**
-     * @var \DateTime
-     */
-    private $publishDown;
+    private ?\DateTime $publishDown = null;
 
-    /**
-     * @var string
-     */
-    private $content;
+    private ?string $content = null;
 
-    /**
-     * @var array
-     */
-    private $utmTags = [];
+    private array $utmTags = [];
 
-    /**
-     * @var int
-     */
-    private $sentCount = 0;
+    private int $sentCount = 0;
 
-    /**
-     * @var ArrayCollection
-     */
-    private $stats;
+    private \Doctrine\Common\Collections\ArrayCollection $stats;
 
-    /**
-     * @var bool
-     */
-    private $isCampaignBased = true;
+    private bool $isCampaignBased = true;
 
-    /**
-     * @var string
-     */
-    private $slotName;
+    private ?string $slotName = null;
 
     /**
      * DynamicContent constructor.
@@ -125,7 +89,7 @@ class DynamicContent extends FormEntity implements VariantEntityInterface, Trans
         $builder->setTable('dynamic_content')
             ->addIndex(['is_campaign_based'], 'is_campaign_based_index')
             ->addIndex(['slot_name'], 'slot_name_index')
-            ->setCustomRepositoryClass('Mautic\DynamicContentBundle\Entity\DynamicContentRepository')
+            ->setCustomRepositoryClass(\Mautic\DynamicContentBundle\Entity\DynamicContentRepository::class)
             ->addLifecycleEvent('cleanSlotName', Events::prePersist)
             ->addLifecycleEvent('cleanSlotName', Events::preUpdate);
 

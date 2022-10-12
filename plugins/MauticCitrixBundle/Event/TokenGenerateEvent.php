@@ -10,16 +10,10 @@ use Mautic\CoreBundle\Event\CommonEvent;
 class TokenGenerateEvent extends CommonEvent
 {
     /**
-     * @var array
-     */
-    private $params = [];
-
-    /**
      * TokenGenerateEvent constructor.
      */
-    public function __construct(array $params)
+    public function __construct(private array $params)
     {
-        $this->params = $params;
     }
 
     /**

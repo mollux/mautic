@@ -14,42 +14,24 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
  */
 class Category extends FormEntity
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var string
-     */
-    private $title;
+    private ?string $title = null;
 
-    /**
-     * @var string
-     */
-    private $description;
+    private ?string $description = null;
 
-    /**
-     * @var string
-     */
-    private $alias;
+    private ?string $alias = null;
 
-    /**
-     * @var string
-     */
-    private $color;
+    private ?string $color = null;
 
-    /**
-     * @var string
-     */
-    private $bundle;
+    private ?string $bundle = null;
 
     public static function loadMetadata(ORM\ClassMetadata $metadata)
     {
         $builder = new ClassMetadataBuilder($metadata);
 
         $builder->setTable('categories')
-            ->setCustomRepositoryClass('Mautic\CategoryBundle\Entity\CategoryRepository')
+            ->setCustomRepositoryClass(\Mautic\CategoryBundle\Entity\CategoryRepository::class)
             ->addIndex(['alias'], 'category_alias_search');
 
         $builder->addIdColumns('title');

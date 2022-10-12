@@ -17,13 +17,11 @@ class HitRepository extends CommonRepository
     /**
      * Determine if the page hit is a unique.
      *
-     * @param Page|Redirect $page
      * @param string        $trackingId
-     * @param Lead          $lead
      *
      * @return bool
      */
-    public function isUniquePageHit($page, $trackingId, Lead $lead = null)
+    public function isUniquePageHit(\Mautic\PageBundle\Entity\Page|\Mautic\PageBundle\Entity\Redirect $page, $trackingId, Lead $lead = null)
     {
         $q  = $this->getEntityManager()->getConnection()->createQueryBuilder();
         $q2 = $this->getEntityManager()->getConnection()->createQueryBuilder();
@@ -131,9 +129,7 @@ class HitRepository extends CommonRepository
      * Get an array of hits via an email clickthrough.
      *
      * @param           $emailIds
-     * @param \DateTime $fromDate
      * @param int       $code
-     *
      * @return array
      */
     public function getEmailClickthroughHitCount($emailIds, \DateTime $fromDate = null, $code = 200)
@@ -180,7 +176,7 @@ class HitRepository extends CommonRepository
             ->having($q->expr()->gt('COUNT(h.ipAddress)', 1));
         $results = $q->getQuery()->getResult();
 
-        return count($results);
+        return is_countable($results) ? count($results) : 0;
     }
 
     /**
@@ -270,13 +266,11 @@ class HitRepository extends CommonRepository
     /**
      * Get the number of bounces.
      *
-     * @param array|string $pageIds
-     * @param \DateTime    $fromDate
      * @param bool         $isVariantCheck
      *
      * @return array
      */
-    public function getBounces($pageIds, \DateTime $fromDate = null, $isVariantCheck = false)
+    public function getBounces(array|string $pageIds, \DateTime $fromDate = null, $isVariantCheck = false)
     {
         $inOrEq = (!is_array($pageIds)) ? 'eq' : 'in';
 

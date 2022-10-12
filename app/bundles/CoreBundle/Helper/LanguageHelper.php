@@ -13,21 +13,13 @@ use Symfony\Component\Finder\Finder;
 class LanguageHelper
 {
     private string $cacheFile;
-    private Client $client;
-    private PathsHelper $pathsHelper;
-    private Logger $logger;
     private Installer $installer;
-    private CoreParametersHelper $coreParametersHelper;
     private array $supportedLanguages = [];
     private string $installedTranslationsDirectory;
     private string $defaultTranslationsDirectory;
 
-    public function __construct(PathsHelper $pathsHelper, Logger $logger, CoreParametersHelper $coreParametersHelper, Client $client)
+    public function __construct(private PathsHelper $pathsHelper, private Logger $logger, private CoreParametersHelper $coreParametersHelper, private Client $client)
     {
-        $this->pathsHelper                    = $pathsHelper;
-        $this->logger                         = $logger;
-        $this->coreParametersHelper           = $coreParametersHelper;
-        $this->client                         = $client;
         $this->defaultTranslationsDirectory   = __DIR__.'/../Translations';
         $this->installedTranslationsDirectory = $this->pathsHelper->getSystemPath('translations_root').'/translations';
         $this->installer                      = new Installer($this->installedTranslationsDirectory);
@@ -75,29 +67,13 @@ class LanguageHelper
         $archive = $zipper->open($packagePath);
 
         if (true !== $archive) {
-            // Get the exact error
-            switch ($archive) {
-                case \ZipArchive::ER_EXISTS:
-                    $error = 'mautic.core.update.archive_file_exists';
-                    break;
-                case \ZipArchive::ER_INCONS:
-                case \ZipArchive::ER_INVAL:
-                case \ZipArchive::ER_MEMORY:
-                    $error = 'mautic.core.update.archive_zip_corrupt';
-                    break;
-                case \ZipArchive::ER_NOENT:
-                    $error = 'mautic.core.update.archive_no_such_file';
-                    break;
-                case \ZipArchive::ER_NOZIP:
-                    $error = 'mautic.core.update.archive_not_valid_zip';
-                    break;
-                case \ZipArchive::ER_READ:
-                case \ZipArchive::ER_SEEK:
-                case \ZipArchive::ER_OPEN:
-                default:
-                    $error = 'mautic.core.update.archive_could_not_open';
-                    break;
-            }
+            $error = match ($archive) {
+                \ZipArchive::ER_EXISTS => 'mautic.core.update.archive_file_exists',
+                \ZipArchive::ER_INCONS, \ZipArchive::ER_INVAL, \ZipArchive::ER_MEMORY => 'mautic.core.update.archive_zip_corrupt',
+                \ZipArchive::ER_NOENT => 'mautic.core.update.archive_no_such_file',
+                \ZipArchive::ER_NOZIP => 'mautic.core.update.archive_not_valid_zip',
+                default => 'mautic.core.update.archive_could_not_open',
+            };
 
             return [
                 'error'   => true,
@@ -140,7 +116,7 @@ class LanguageHelper
     {
         $overrideFile = $this->coreParametersHelper->get('language_list_file');
         if (!empty($overrideFile) && is_readable($overrideFile)) {
-            $overrideData = json_decode(file_get_contents($overrideFile), true);
+            $overrideData = json_decode(file_get_contents($overrideFile), true, 512, JSON_THROW_ON_ERROR);
             if (isset($overrideData['languages'])) {
                 return $overrideData['languages'];
             } elseif (isset($overrideData['name'])) {
@@ -152,7 +128,7 @@ class LanguageHelper
 
         // Check if we have a cache file and try to return cached data if so
         if (!$overrideCache && is_readable($this->cacheFile)) {
-            $cacheData = json_decode(file_get_contents($this->cacheFile), true);
+            $cacheData = json_decode(file_get_contents($this->cacheFile), true, 512, JSON_THROW_ON_ERROR);
 
             // If we're within the cache time, return the cached data
             if ($cacheData['checkedTime'] > strtotime('-12 hours')) {
@@ -166,7 +142,7 @@ class LanguageHelper
                 $this->coreParametersHelper->get('translations_list_url'),
                 [\GuzzleHttp\RequestOptions::TIMEOUT => 10]
             );
-            $manifest  = json_decode($data->getBody(), true);
+            $manifest  = json_decode($data->getBody(), true, 512, JSON_THROW_ON_ERROR);
             $languages = [];
 
             // translate the manifest (plain array) to a format
@@ -211,7 +187,7 @@ class LanguageHelper
             'languages'   => $languages,
         ];
 
-        file_put_contents($this->cacheFile, json_encode($cacheData));
+        file_put_contents($this->cacheFile, json_encode($cacheData, JSON_THROW_ON_ERROR));
 
         return $languages;
     }
@@ -230,7 +206,7 @@ class LanguageHelper
             $this->fetchLanguages();
         }
 
-        $cacheData = json_decode(file_get_contents($this->cacheFile), true);
+        $cacheData = json_decode(file_get_contents($this->cacheFile), true, 512, JSON_THROW_ON_ERROR);
 
         // Make sure the language actually exists
         if (!isset($cacheData['languages'][$languageCode])) {
@@ -310,7 +286,7 @@ class LanguageHelper
                 return;
             }
 
-            $config                            = json_decode(file_get_contents($configFile), true);
+            $config                            = json_decode(file_get_contents($configFile), true, 512, JSON_THROW_ON_ERROR);
             $this->supportedLanguages[$locale] = (!empty($config['name'])) ? $config['name'] : $locale;
         }
     }

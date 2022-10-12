@@ -18,12 +18,10 @@ use IteratorAggregate;
  */
 class SimplePaginator implements IteratorAggregate, Countable
 {
-    private Query $query;
     private ?int $count = null;
 
-    public function __construct(Query $query)
+    public function __construct(private Query $query)
     {
-        $this->query = $query;
     }
 
     /**

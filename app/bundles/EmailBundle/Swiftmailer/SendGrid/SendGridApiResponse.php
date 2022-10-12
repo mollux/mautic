@@ -9,14 +9,8 @@ use SendGrid\Response;
 
 class SendGridApiResponse
 {
-    /**
-     * @var Logger
-     */
-    private $logger;
-
-    public function __construct(Logger $logger)
+    public function __construct(private Logger $logger)
     {
-        $this->logger = $logger;
     }
 
     /**
@@ -37,7 +31,7 @@ class SendGridApiResponse
             ['response' => $response]
         );
 
-        $body    = @json_decode($response->body(), true);
+        $body    = @json_decode($response->body(), true, 512, JSON_THROW_ON_ERROR);
         $message = '';
         if (false !== $body && isset($body['errors'][0]['message'])) {
             $message = $body['errors'][0]['message'];

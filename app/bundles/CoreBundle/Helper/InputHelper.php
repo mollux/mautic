@@ -8,22 +8,15 @@ class InputHelper
 {
     /**
      * String filter.
-     *
-     * @var InputFilter
      */
-    private static $stringFilter;
+    private static ?\Joomla\Filter\InputFilter $stringFilter = null;
 
     /**
      * HTML filter.
-     *
-     * @var InputFilter
      */
-    private static $htmlFilter;
+    private static ?\Joomla\Filter\InputFilter $htmlFilter = null;
 
-    /**
-     * @var InputFilter
-     */
-    private static $strictHtmlFilter;
+    private static ?\Joomla\Filter\InputFilter $strictHtmlFilter = null;
 
     /**
      * Adjust the boolean values from text to boolean.
@@ -36,18 +29,11 @@ class InputHelper
      */
     public static function boolean($value)
     {
-        // Common strings used that filter_var does not parse yet.
-        switch (strtoupper((string) $value)) {
-            case 'T':
-            case 'Y':
-                return true;
-
-            case 'F':
-            case 'N':
-                return false;
-        }
-
-        return filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+        return match (strtoupper((string) $value)) {
+            'T', 'Y' => true,
+            'F', 'N' => false,
+            default => filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE),
+        };
     }
 
     /**
@@ -102,12 +88,10 @@ class InputHelper
             self::$stringFilter = new InputFilter();
         }
 
-        switch (true) {
-            case $html:
-                return ($strict) ? self::$strictHtmlFilter : self::$htmlFilter;
-            default:
-                return self::$stringFilter;
-        }
+        return match (true) {
+            $html => ($strict) ? self::$strictHtmlFilter : self::$htmlFilter,
+            default => self::$stringFilter,
+        };
     }
 
     /**
@@ -127,13 +111,11 @@ class InputHelper
      * Wrapper function to clean inputs.  $mask can be an array of keys as the field names and values as the cleaning
      * function to be used for the specific field.
      *
-     * @param mixed $value
-     * @param mixed $mask
      * @param bool  $urldecode
      *
      * @return mixed
      */
-    public static function _($value, $mask = 'clean', $urldecode = false)
+    public static function _(mixed $value, mixed $mask = 'clean', $urldecode = false)
     {
         if (is_array($value)) {
             foreach ($value as $k => &$v) {
@@ -142,14 +124,14 @@ class InputHelper
                     if (array_key_exists($k, $mask)) {
                         if (is_array($mask[$k])) {
                             $useMask = $mask[$k];
-                        } elseif (method_exists('Mautic\CoreBundle\Helper\InputHelper', $mask[$k])) {
+                        } elseif (method_exists(\Mautic\CoreBundle\Helper\InputHelper::class, $mask[$k])) {
                             $useMask = $mask[$k];
                         }
                     } elseif (is_array($v)) {
                         // Likely a collection so use the same mask
                         $useMask = $mask;
                     }
-                } elseif (method_exists('Mautic\CoreBundle\Helper\InputHelper', $mask)) {
+                } elseif (method_exists(\Mautic\CoreBundle\Helper\InputHelper::class, $mask)) {
                     $useMask = $mask;
                 }
 
@@ -163,7 +145,7 @@ class InputHelper
             }
 
             return $value;
-        } elseif (is_string($mask) && method_exists('Mautic\CoreBundle\Helper\InputHelper', $mask)) {
+        } elseif (is_string($mask) && method_exists(\Mautic\CoreBundle\Helper\InputHelper::class, $mask)) {
             return self::$mask($value, $urldecode);
         } else {
             return self::getFilter()->clean($value, $mask);
@@ -174,11 +156,10 @@ class InputHelper
      * Cleans value by HTML-escaping '"<>& and characters with ASCII value less than 32.
      *
      * @param            $value
-     * @param bool|false $urldecode
      *
      * @return mixed|string
      */
-    public static function clean($value, $urldecode = false)
+    public static function clean($value, bool $urldecode = false)
     {
         if (is_array($value)) {
             foreach ($value as &$v) {
@@ -197,11 +178,10 @@ class InputHelper
      * Strips tags.
      *
      * @param            $value
-     * @param bool|false $urldecode
      *
      * @return mixed
      */
-    public static function string($value, $urldecode = false)
+    public static function string($value, bool $urldecode = false)
     {
         if ($urldecode) {
             $value = urldecode($value);
@@ -214,13 +194,11 @@ class InputHelper
      * Strips non-alphanumeric characters.
      *
      * @param            $value
-     * @param bool|false $urldecode
-     * @param bool|false $convertSpacesTo
      * @param array      $allowedCharacters
      *
      * @return string
      */
-    public static function alphanum($value, $urldecode = false, $convertSpacesTo = false, $allowedCharacters = [])
+    public static function alphanum($value, bool $urldecode = false, bool $convertSpacesTo = false, $allowedCharacters = [])
     {
         if ($urldecode) {
             $value = urldecode($value);
@@ -272,11 +250,10 @@ class InputHelper
      * Returns raw value.
      *
      * @param            $value
-     * @param bool|false $urldecode
      *
      * @return string
      */
-    public static function raw($value, $urldecode = false)
+    public static function raw($value, bool $urldecode = false)
     {
         if ($urldecode) {
             $value = urldecode($value);
@@ -289,15 +266,13 @@ class InputHelper
      * Removes all characters except those allowed in URLs.
      *
      * @param            $value
-     * @param bool|false $urldecode
      * @param null       $allowedProtocols
      * @param null       $defaultProtocol
      * @param array      $removeQuery
-     * @param bool|false $ignoreFragment
      *
      * @return mixed|string
      */
-    public static function url($value, $urldecode = false, $allowedProtocols = null, $defaultProtocol = null, $removeQuery = [], $ignoreFragment = false)
+    public static function url($value, bool $urldecode = false, $allowedProtocols = null, $defaultProtocol = null, $removeQuery = [], bool $ignoreFragment = false)
     {
         if ($urldecode) {
             $value = urldecode($value);
@@ -318,7 +293,7 @@ class InputHelper
             return self::clean($value);
         }
 
-        $parts['scheme'] = $parts['scheme'] ?? $defaultProtocol;
+        $parts['scheme'] ??= $defaultProtocol;
         if (!in_array($parts['scheme'], $allowedProtocols)) {
             $parts['scheme'] = $defaultProtocol;
         }
@@ -359,11 +334,10 @@ class InputHelper
      * Removes all characters except those allowed in emails.
      *
      * @param            $value
-     * @param bool|false $urldecode
      *
      * @return mixed
      */
-    public static function email($value, $urldecode = false)
+    public static function email($value, bool $urldecode = false)
     {
         if ($urldecode) {
             $value = urldecode($value);
@@ -379,11 +353,10 @@ class InputHelper
      * Returns a clean array.
      *
      * @param            $value
-     * @param bool|false $urldecode
      *
      * @return array|mixed|string
      */
-    public static function cleanArray($value, $urldecode = false)
+    public static function cleanArray($value, bool $urldecode = false)
     {
         $value = self::clean($value, $urldecode);
 
@@ -427,7 +400,7 @@ class InputHelper
                     $from[]   = $match;
                     $startTag = '<mcondition>';
                     $endTag   = '</mcondition>';
-                    if (false !== strpos($match, '<!--<![endif]-->')) {
+                    if (str_contains($match, '<!--<![endif]-->')) {
                         $startTag = '<mconditionnonoutlook>';
                         $endTag   = '</mconditionnonoutlook>';
                     }
@@ -439,17 +412,13 @@ class InputHelper
             // Slecial handling for XML tags used in Outlook optimized emails <o:*/> and <w:/>
             $value = preg_replace_callback(
                 "/<\/*[o|w|v]:[^>]*>/is",
-                function ($matches) {
-                    return '<mencoded>'.htmlspecialchars($matches[0]).'</mencoded>';
-                },
+                fn($matches) => '<mencoded>'.htmlspecialchars($matches[0]).'</mencoded>',
                 $value, -1, $needsDecoding);
 
             // Slecial handling for script tags
             $value = preg_replace_callback(
                 "/<script>(.*?)<\/script>/is",
-                function ($matches) {
-                    return '<mscript>'.base64_encode($matches[0]).'</mscript>';
-                },
+                fn($matches) => '<mscript>'.base64_encode($matches[0]).'</mscript>',
                 $value, -1, $needsScriptDecoding);
 
             // Special handling for HTML comments
@@ -488,18 +457,14 @@ class InputHelper
             if ($needsDecoding) {
                 $value = preg_replace_callback(
                     "/<mencoded>(.*?)<\/mencoded>/is",
-                    function ($matches) {
-                        return htmlspecialchars_decode($matches[1]);
-                    },
+                    fn($matches) => htmlspecialchars_decode($matches[1]),
                     $value);
             }
 
             if ($needsScriptDecoding) {
                 $value = preg_replace_callback(
                     "/<mscript>(.*?)<\/mscript>/is",
-                    function ($matches) {
-                        return base64_decode($matches[1]);
-                    },
+                    fn($matches) => base64_decode($matches[1]),
                     $value);
             }
         }

@@ -8,37 +8,25 @@ use Mautic\LeadBundle\Entity\Lead;
 
 class PushID
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var \Mautic\LeadBundle\Entity\Lead
-     */
-    private $lead;
+    private ?\Mautic\LeadBundle\Entity\Lead $lead = null;
 
-    /**
-     * @var string
-     */
-    private $pushID;
+    private ?string $pushID = null;
 
     /**
      * @var bool
      */
     private $enabled;
 
-    /**
-     * @var bool
-     */
-    private $mobile;
+    private ?bool $mobile = null;
 
     public static function loadMetadata(ORM\ClassMetadata $metadata)
     {
         $builder = new ClassMetadataBuilder($metadata);
 
         $builder->setTable('push_ids')
-            ->setCustomRepositoryClass('Mautic\NotificationBundle\Entity\PushIDRepository');
+            ->setCustomRepositoryClass(\Mautic\NotificationBundle\Entity\PushIDRepository::class);
 
         $builder->createField('id', 'integer')
             ->isPrimaryKey()
@@ -50,7 +38,7 @@ class PushID
             ->nullable(false)
             ->build();
 
-        $builder->createManyToOne('lead', 'Mautic\LeadBundle\Entity\Lead')
+        $builder->createManyToOne('lead', \Mautic\LeadBundle\Entity\Lead::class)
             ->addJoinColumn('lead_id', 'id', true, false, 'SET NULL')
             ->inversedBy('pushIds')
             ->build();

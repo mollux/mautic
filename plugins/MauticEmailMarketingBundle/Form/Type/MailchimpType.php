@@ -22,30 +22,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class MailchimpType extends AbstractType
 {
-    /**
-     * @var IntegrationHelper
-     */
-    private $integrationHelper;
-
-    /** @var PluginModel */
-    private $pluginModel;
-
-    /**
-     * @var Session
-     */
-    protected $session;
-
-    /**
-     * @var CoreParametersHelper
-     */
-    protected $coreParametersHelper;
-
-    public function __construct(IntegrationHelper $integrationHelper, PluginModel $pluginModel, Session $session, CoreParametersHelper $coreParametersHelper)
+    public function __construct(private IntegrationHelper $integrationHelper, private PluginModel $pluginModel, protected Session $session, protected CoreParametersHelper $coreParametersHelper)
     {
-        $this->integrationHelper    = $integrationHelper;
-        $this->pluginModel          = $pluginModel;
-        $this->session              = $session;
-        $this->coreParametersHelper = $coreParametersHelper;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -132,7 +110,7 @@ class MailchimpType extends AbstractType
                     $page   = 1;
                 }
 
-                list($specialInstructions) = $mailchimp->getFormNotes('leadfield_match');
+                [$specialInstructions] = str_split($mailchimp->getFormNotes('leadfield_match'));
                 $form->add('leadFields', FieldsType::class, [
                     'label'                => 'mautic.integration.leadfield_matches',
                     'required'             => true,

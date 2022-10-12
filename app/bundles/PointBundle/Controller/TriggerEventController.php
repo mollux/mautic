@@ -65,7 +65,7 @@ class TriggerEventController extends CommonFormController
                     $success = 1;
 
                     //form is valid so process the data
-                    $keyId = 'new'.hash('sha1', uniqid(mt_rand()));
+                    $keyId = 'new'.hash('sha1', uniqid(random_int(0, mt_getrandmax())));
 
                     //save the properties to session
                     $actions            = $session->get('mautic.point.'.$triggerId.'.triggerevents.modified');

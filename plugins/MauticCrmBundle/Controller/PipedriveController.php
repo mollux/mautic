@@ -48,7 +48,7 @@ class PipedriveController extends CommonController
             throw new UnauthorizedHttpException('Basic');
         }
 
-        $params   = json_decode($request->getContent(), true);
+        $params   = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
         $data     = $params['current'];
         $response = [
             'status' => 'ok',
@@ -159,7 +159,7 @@ class PipedriveController extends CommonController
 
         $basicAuthBase64       = explode(' ', $headers['authorization'][0]);
         $decodedBasicAuth      = base64_decode($basicAuthBase64[1]);
-        list($user, $password) = explode(':', $decodedBasicAuth);
+        [$user, $password] = explode(':', $decodedBasicAuth);
 
         if ($keys['user'] == $user && $keys['password'] == $password) {
             return true;

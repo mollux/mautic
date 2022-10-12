@@ -25,29 +25,8 @@ class NotificationModel extends FormModel
      */
     protected $session;
 
-    /**
-     * @var PathsHelper
-     */
-    protected $pathsHelper;
-
-    /**
-     * @var UpdateHelper
-     */
-    protected $updateHelper;
-
-    /**
-     * @var CoreParametersHelper
-     */
-    protected $coreParametersHelper;
-
-    public function __construct(
-        PathsHelper $pathsHelper,
-        UpdateHelper $updateHelper,
-        CoreParametersHelper $coreParametersHelper
-    ) {
-        $this->pathsHelper          = $pathsHelper;
-        $this->updateHelper         = $updateHelper;
-        $this->coreParametersHelper = $coreParametersHelper;
+    public function __construct(protected PathsHelper $pathsHelper, protected UpdateHelper $updateHelper, protected CoreParametersHelper $coreParametersHelper)
+    {
     }
 
     public function setSession(Session $session)
@@ -177,7 +156,7 @@ class NotificationModel extends FormModel
 
                 $updateData = $this->updateHelper->fetchData();
             } elseif (file_exists($cacheFile)) {
-                $updateData = json_decode(file_get_contents($cacheFile), true);
+                $updateData = json_decode(file_get_contents($cacheFile), true, 512, JSON_THROW_ON_ERROR);
             }
 
             // If the version key is set, we have an update

@@ -16,40 +16,19 @@ use Symfony\Component\Validator\Mapping\ClassMetadata as ValidationClassMetadata
  */
 class Message extends FormEntity
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var string
-     */
-    private $name;
+    private ?string $name = null;
 
-    /**
-     * @var string
-     */
-    private $description;
+    private ?string $description = null;
 
-    /**
-     * @var \DateTime
-     */
-    private $publishUp;
+    private ?\DateTime $publishUp = null;
 
-    /**
-     * @var \DateTime
-     */
-    private $publishDown;
+    private ?\DateTime $publishDown = null;
 
-    /**
-     * @var Category
-     */
-    private $category;
+    private ?\Mautic\CategoryBundle\Entity\Category $category = null;
 
-    /**
-     * @var ArrayCollection
-     */
-    private $channels;
+    private \Doctrine\Common\Collections\ArrayCollection $channels;
 
     public static function loadMetadata(ClassMetadata $metadata)
     {

@@ -12,20 +12,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class TimelineSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var LeadEventLogRepository
-     */
-    private $eventLogRepository;
-
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    public function __construct(LeadEventLogRepository $eventLogRepository, TranslatorInterface $translator)
+    public function __construct(private LeadEventLogRepository $eventLogRepository, private TranslatorInterface $translator)
     {
-        $this->eventLogRepository = $eventLogRepository;
-        $this->translator         = $translator;
     }
 
     /**
@@ -81,7 +69,7 @@ class TimelineSubscriber implements EventSubscriberInterface
      */
     private function getEventEntry(array $log, $eventType, $eventTypeName, $icon)
     {
-        $properties = json_decode($log['properties'], true);
+        $properties = json_decode($log['properties'], true, 512, JSON_THROW_ON_ERROR);
 
         return [
             'event'           => $eventType,

@@ -15,22 +15,13 @@ class Copy
      */
     private $id;
 
-    /**
-     * @var \DateTime
-     */
-    private $dateCreated;
+    private ?\DateTime $dateCreated = null;
 
-    /**
-     * @var string
-     */
-    private $body;
+    private ?string $body = null;
 
-    private ?string $bodyText;
+    private ?string $bodyText = null;
 
-    /**
-     * @var string|null
-     */
-    private $subject;
+    private ?string $subject = null;
 
     public static function loadMetadata(ORM\ClassMetadata $metadata)
     {
@@ -126,11 +117,9 @@ class Copy
     }
 
     /**
-     * @param mixed $subject
-     *
      * @return Copy
      */
-    public function setSubject($subject)
+    public function setSubject(mixed $subject)
     {
         // Ensure it's clean of emoji
         $subject = EmojiHelper::toShort($subject);

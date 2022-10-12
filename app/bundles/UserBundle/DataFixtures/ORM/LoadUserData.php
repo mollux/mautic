@@ -20,16 +20,10 @@ class LoadUserData extends AbstractFixture implements OrderedFixtureInterface, F
     }
 
     /**
-     * @var UserPasswordEncoder
-     */
-    private $encoder;
-
-    /**
      * {@inheritdoc}
      */
-    public function __construct(UserPasswordEncoder $encoder)
+    public function __construct(private UserPasswordEncoder $encoder)
     {
-        $this->encoder = $encoder;
     }
 
     public function load(ObjectManager $manager)

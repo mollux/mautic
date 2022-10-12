@@ -9,14 +9,11 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class ConfigType extends AbstractType
 {
-    protected $fieldModel;
-
     /**
      * ConfigType constructor.
      */
-    public function __construct(FieldModel $fieldModel)
+    public function __construct(protected FieldModel $fieldModel)
     {
-        $this->fieldModel = $fieldModel;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)

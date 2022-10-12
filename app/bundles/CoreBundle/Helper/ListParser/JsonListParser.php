@@ -12,7 +12,7 @@ class JsonListParser implements ListParserInterface
             throw new FormatNotSupportedException();
         }
 
-        $parsedList = json_decode($list, true);
+        $parsedList = json_decode($list, true, 512, JSON_THROW_ON_ERROR);
         if (!is_array($parsedList)) {
             throw new FormatNotSupportedException();
         }

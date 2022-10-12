@@ -16,15 +16,9 @@ class CompanyRepository extends CommonRepository implements CustomFieldRepositor
 {
     use CustomFieldRepositoryTrait;
 
-    /**
-     * @var array
-     */
-    private $availableSearchFields = [];
+    private array $availableSearchFields = [];
 
-    /**
-     * @var EventDispatcherInterface|null
-     */
-    private $dispatcher;
+    private ?\Symfony\Component\EventDispatcher\EventDispatcherInterface $dispatcher = null;
 
     /**
      * Used by search functions to search using aliases as commands.
@@ -58,7 +52,7 @@ class CompanyRepository extends CommonRepository implements CustomFieldRepositor
             }
             $q->andWhere($this->getTableAlias().'.id = '.(int) $companyId);
             $entity = $q->getQuery()->getSingleResult();
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $entity = null;
         }
 
@@ -173,7 +167,7 @@ class CompanyRepository extends CommonRepository implements CustomFieldRepositor
      */
     protected function addSearchCommandWhereClause($q, $filter)
     {
-        list($expr, $parameters) = $this->addStandardSearchCommandWhereClause($q, $filter);
+        [$expr, $parameters] = $this->addStandardSearchCommandWhereClause($q, $filter);
         $unique                  = $this->generateRandomParameterName();
         $returnParameter         = true;
         $command                 = $filter->command;

@@ -8,7 +8,9 @@ class ThisRelease
     {
         $metadata = json_decode(
             file_get_contents(__DIR__.'/../../../release_metadata.json'),
-            true
+            true,
+            512,
+            JSON_THROW_ON_ERROR
         );
 
         return new Metadata($metadata);

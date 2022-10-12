@@ -12,24 +12,11 @@ use Symfony\Component\HttpFoundation\Response;
 class LeadImport extends AbstractImport
 {
     /**
-     * @var LeadModel
-     */
-    private $leadModel;
-
-    /**
-     * @var CompanyModel
-     */
-    private $companyModel;
-
-    /**
      * LeadImport constructor.
      */
-    public function __construct(EntityManager $em, LeadModel $leadModel, CompanyModel $companyModel)
+    public function __construct(EntityManager $em, private LeadModel $leadModel, private CompanyModel $companyModel)
     {
         parent::__construct($em);
-
-        $this->leadModel    = $leadModel;
-        $this->companyModel = $companyModel;
     }
 
     /**

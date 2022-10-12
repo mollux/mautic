@@ -20,50 +20,8 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class Reply implements ProcessorInterface
 {
-    /**
-     * @var StatRepository
-     */
-    private $statRepo;
-
-    /**
-     * @var ContactFinder
-     */
-    private $contactFinder;
-
-    /**
-     * @var LeadModel
-     */
-    private $leadModel;
-
-    /**
-     * @var EventDispatcher
-     */
-    private $dispatcher;
-
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
-     * @var ContactTracker
-     */
-    private $contactTracker;
-
-    public function __construct(
-        StatRepository $statRepository,
-        ContactFinder $contactFinder,
-        LeadModel $leadModel,
-        EventDispatcherInterface $dispatcher,
-        LoggerInterface $logger,
-        ContactTracker $contactTracker
-    ) {
-        $this->statRepo         = $statRepository;
-        $this->contactFinder    = $contactFinder;
-        $this->leadModel        = $leadModel;
-        $this->dispatcher       = $dispatcher;
-        $this->logger           = $logger;
-        $this->contactTracker   = $contactTracker;
+    public function __construct(private StatRepository $statRepo, private ContactFinder $contactFinder, private LeadModel $leadModel, private EventDispatcherInterface $dispatcher, private LoggerInterface $logger, private ContactTracker $contactTracker)
+    {
     }
 
     public function process(Message $message)
@@ -73,7 +31,7 @@ class Reply implements ProcessorInterface
         try {
             $parser       = new Parser($message);
             $repliedEmail = $parser->parse();
-        } catch (ReplyNotFound $exception) {
+        } catch (ReplyNotFound) {
             // No hash found so bail as we won't consider this a reply
             $this->logger->debug('MONITORED EMAIL: No hash ID found in the email body');
 
@@ -141,9 +99,7 @@ class Reply implements ProcessorInterface
     protected function createReply(Stat $stat, $messageId)
     {
         $replies = $stat->getReplies()->filter(
-            function (EmailReply $reply) use ($messageId) {
-                return $reply->getMessageId() === $messageId;
-            }
+            fn(EmailReply $reply) => $reply->getMessageId() === $messageId
         );
 
         if (!$replies->count()) {

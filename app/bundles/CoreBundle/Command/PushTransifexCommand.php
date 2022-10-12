@@ -18,19 +18,11 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class PushTransifexCommand extends Command
 {
-    private TransifexFactory $transifexFactory;
-    private TranslatorInterface $translator;
-    private CoreParametersHelper $coreParametersHelper;
-
     public function __construct(
-        TransifexFactory $transifexFactory,
-        TranslatorInterface $translator,
-        CoreParametersHelper $coreParametersHelper
+        private TransifexFactory $transifexFactory,
+        private TranslatorInterface $translator,
+        private CoreParametersHelper $coreParametersHelper
     ) {
-        $this->transifexFactory     = $transifexFactory;
-        $this->translator           = $translator;
-        $this->coreParametersHelper = $coreParametersHelper;
-
         parent::__construct();
     }
 
@@ -64,7 +56,7 @@ EOT
 
         try {
             $transifex = $this->transifexFactory->getTransifex();
-        } catch (BadConfigurationException $e) {
+        } catch (BadConfigurationException) {
             $output->writeln($this->translator->trans('mautic.core.command.transifex_no_credentials'));
 
             return 1;
@@ -73,7 +65,7 @@ EOT
         foreach ($files as $bundle => $stringFiles) {
             foreach ($stringFiles as $file) {
                 $name  = $bundle.' '.str_replace('.ini', '', basename($file));
-                $alias = $this->stringURLUnicodeSlug($name);
+                $alias = static::stringURLUnicodeSlug($name);
                 $output->writeln($this->translator->trans('mautic.core.command.transifex_processing_resource', ['%resource%' => $name]));
 
                 /** @var Resources $resourcesConnector */

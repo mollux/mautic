@@ -11,49 +11,18 @@ use Monolog\Logger;
 
 class DeviceTracker
 {
-    /**
-     * @var DeviceCreatorServiceInterface
-     */
-    private $deviceCreatorService;
-
-    /**
-     * @var DeviceDetectorFactoryInterface
-     */
-    private $deviceDetectorFactory;
-
-    /**
-     * @var DeviceTrackingServiceInterface
-     */
-    private $deviceTrackingService;
-
-    /**
-     * @var Logger
-     */
-    private $logger;
-
-    /**
-     * @var bool
-     */
-    private $deviceWasChanged = false;
+    private bool $deviceWasChanged = false;
 
     /**
      * @var LeadDevice[]
      */
-    private $trackedDevice = [];
+    private array $trackedDevice = [];
 
     /**
      * DeviceTracker constructor.
      */
-    public function __construct(
-        DeviceCreatorServiceInterface $deviceCreatorService,
-        DeviceDetectorFactoryInterface $deviceDetectorFactory,
-        DeviceTrackingServiceInterface $deviceTrackingService,
-        Logger $logger
-    ) {
-        $this->deviceCreatorService  = $deviceCreatorService;
-        $this->deviceDetectorFactory = $deviceDetectorFactory;
-        $this->deviceTrackingService = $deviceTrackingService;
-        $this->logger                = $logger;
+    public function __construct(private DeviceCreatorServiceInterface $deviceCreatorService, private DeviceDetectorFactoryInterface $deviceDetectorFactory, private DeviceTrackingServiceInterface $deviceTrackingService, private Logger $logger)
+    {
     }
 
     /**

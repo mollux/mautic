@@ -20,18 +20,12 @@ class GlobalSearchEvent extends Event
     protected $searchString;
 
     /**
-     * @var \Symfony\Bundle\FrameworkBundle\Translation\Translator
-     */
-    protected $translator;
-
-    /**
      * @param string                                                 $searchString
      * @param \Symfony\Bundle\FrameworkBundle\Translation\Translator $translator
      */
-    public function __construct($searchString, $translator)
+    public function __construct($searchString, protected $translator)
     {
         $this->searchString = strtolower(trim(strip_tags($searchString)));
-        $this->translator   = $translator;
     }
 
     /**

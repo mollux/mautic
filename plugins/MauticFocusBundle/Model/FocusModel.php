@@ -25,52 +25,10 @@ use Symfony\Contracts\EventDispatcher\Event;
 class FocusModel extends FormModel
 {
     /**
-     * @var EventDispatcherInterface
-     */
-    protected $dispatcher;
-
-    /**
-     * @var \Mautic\FormBundle\Model\FormModel
-     */
-    protected $formModel;
-
-    /**
-     * @var TrackableModel
-     */
-    protected $trackableModel;
-
-    /**
-     * @var TemplatingHelper
-     */
-    protected $templating;
-
-    /**
-     * @var FieldModel
-     */
-    protected $leadFieldModel;
-
-    /**
-     * @var ContactTracker
-     */
-    protected $contactTracker;
-
-    /**
      * FocusModel constructor.
      */
-    public function __construct(
-        \Mautic\FormBundle\Model\FormModel $formModel,
-        TrackableModel $trackableModel,
-        TemplatingHelper $templating,
-        EventDispatcherInterface $dispatcher,
-        FieldModel $leadFieldModel,
-        ContactTracker $contactTracker
-    ) {
-        $this->formModel      = $formModel;
-        $this->trackableModel = $trackableModel;
-        $this->templating     = $templating;
-        $this->dispatcher     = $dispatcher;
-        $this->leadFieldModel = $leadFieldModel;
-        $this->contactTracker = $contactTracker;
+    public function __construct(protected \Mautic\FormBundle\Model\FormModel $formModel, protected TrackableModel $trackableModel, protected TemplatingHelper $templating, protected EventDispatcherInterface $dispatcher, protected FieldModel $leadFieldModel, protected ContactTracker $contactTracker)
+    {
     }
 
     /**
@@ -171,7 +129,7 @@ class FocusModel extends FormModel
     public function generateJavascript(Focus $focus, $isPreview = false, $byPassCache = false)
     {
         // If cached is not an array, rebuild to support the new format
-        $cached = json_decode($focus->getCache(), true);
+        $cached = json_decode($focus->getCache(), true, 512, JSON_THROW_ON_ERROR);
         if ($isPreview || $byPassCache || empty($cached) || !isset($cached['js'])) {
             $focusArray = $focus->toArray();
 
@@ -208,7 +166,7 @@ class FocusModel extends FormModel
             ];
 
             if (!$byPassCache) {
-                $focus->setCache(json_encode($cached));
+                $focus->setCache(json_encode($cached, JSON_THROW_ON_ERROR));
                 $this->saveEntity($focus);
             }
         }
@@ -313,12 +271,12 @@ class FocusModel extends FormModel
     /**
      * Add a stat entry.
      *
-     * @param mixed                                         $type
      * @param null                                          $data
      * @param array<int|string|array<int|string>>|Lead|null $lead
      */
-    public function addStat(Focus $focus, $type, $data = null, $lead = null): ?Stat
+    public function addStat(Focus $focus, mixed $type, $data = null, $lead = null): ?Stat
     {
+        $typeId = null;
         if (empty($lead)) {
             return null;
         }

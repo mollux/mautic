@@ -13,29 +13,14 @@ class ContactDeduper
 {
     use DeduperTrait;
 
-    /**
-     * @var ContactMerger
-     */
-    private $contactMerger;
-
-    /**
-     * @var LeadRepository
-     */
-    private $leadRepository;
-
-    /**
-     * @var bool
-     */
-    private $mergeNewerIntoOlder = false;
+    private bool $mergeNewerIntoOlder = false;
 
     /**
      * DedupModel constructor.
      */
-    public function __construct(FieldModel $fieldModel, ContactMerger $contactMerger, LeadRepository $leadRepository)
+    public function __construct(FieldModel $fieldModel, private ContactMerger $contactMerger, private LeadRepository $leadRepository)
     {
         $this->fieldModel     = $fieldModel;
-        $this->contactMerger  = $contactMerger;
-        $this->leadRepository = $leadRepository;
     }
 
     /**
@@ -77,7 +62,7 @@ class ContactDeduper
                             // Advance the progress bar for the deleted contacts that are no longer in the total count
                             $progress->advance();
                         }
-                    } catch (SameContactException $exception) {
+                    } catch (SameContactException) {
                     }
 
                     $loser = $winner;

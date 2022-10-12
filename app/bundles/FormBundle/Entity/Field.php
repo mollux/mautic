@@ -12,115 +12,55 @@ use Mautic\LeadBundle\Entity\Lead;
 
 class Field
 {
-    /**
-     * @var int
-     */
-    private $id;
+    private ?int $id = null;
 
-    /**
-     * @var string
-     */
-    private $label;
+    private ?string $label = null;
 
-    /**
-     * @var bool
-     */
-    private $showLabel = true;
+    private bool $showLabel = true;
 
-    /**
-     * @var string
-     */
-    private $alias;
+    private ?string $alias = null;
 
-    /**
-     * @var string
-     */
-    private $type;
+    private ?string $type = null;
 
-    /**
-     * @var bool
-     */
-    private $isCustom = false;
+    private bool $isCustom = false;
 
-    /**
-     * @var array
-     */
-    private $customParameters = [];
+    private array $customParameters = [];
 
-    /**
-     * @var string
-     */
-    private $defaultValue;
+    private ?string $defaultValue = null;
 
-    /**
-     * @var bool
-     */
-    private $isRequired = false;
+    private bool $isRequired = false;
 
-    /**
-     * @var string
-     */
-    private $validationMessage;
+    private ?string $validationMessage = null;
 
-    /**
-     * @var string
-     */
-    private $helpMessage;
+    private ?string $helpMessage = null;
 
-    /**
-     * @var int
-     */
-    private $order = 0;
+    private int $order = 0;
 
-    /**
-     * @var array
-     */
-    private $properties = [];
+    private array $properties = [];
 
-    /**
-     * @var array
-     */
-    private $validation = [];
+    private array $validation = [];
 
     /**
      * @var array<string,mixed>
      */
-    private $conditions = [];
+    private array $conditions = [];
 
-    /**
-     * @var Form
-     */
-    private $form;
+    private ?\Mautic\FormBundle\Entity\Form $form = null;
 
-    /**
-     * @var string
-     */
-    private $labelAttributes;
+    private ?string $labelAttributes = null;
 
-    /**
-     * @var string
-     */
-    private $inputAttributes;
+    private ?string $inputAttributes = null;
 
     /**
      * @var string
      */
     private $containerAttributes;
 
-    /**
-     * @var string
-     */
-    private $leadField;
+    private ?string $leadField = null;
 
-    /**
-     * @var bool
-     */
-    private $saveResult = true;
+    private bool $saveResult = true;
 
-    /**
-     * @var bool
-     */
-    private $isAutoFill = false;
+    private bool $isAutoFill = false;
 
     /**
      * @var array
@@ -129,25 +69,13 @@ class Field
 
     private $sessionId;
 
-    /**
-     * @var bool
-     */
-    private $showWhenValueExists;
+    private ?bool $showWhenValueExists = null;
 
-    /**
-     * @var int
-     */
-    private $showAfterXSubmissions;
+    private ?int $showAfterXSubmissions = null;
 
-    /**
-     * @var bool
-     */
-    private $alwaysDisplay;
+    private ?bool $alwaysDisplay = null;
 
-    /**
-     * @var string
-     */
-    private $parent;
+    private ?string $parent = null;
 
     /**
      * Reset properties on clone.
@@ -163,7 +91,7 @@ class Field
         $builder = new ClassMetadataBuilder($metadata);
 
         $builder->setTable('form_fields')
-            ->setCustomRepositoryClass('Mautic\FormBundle\Entity\FieldRepository')
+            ->setCustomRepositoryClass(\Mautic\FormBundle\Entity\FieldRepository::class)
             ->addIndex(['type'], 'form_field_type_search');
 
         $builder->addId();
@@ -772,10 +700,7 @@ class Field
         return $this->sessionId;
     }
 
-    /**
-     * @param mixed $sessionId
-     */
-    public function setSessionId($sessionId)
+    public function setSessionId(mixed $sessionId)
     {
         $this->sessionId = $sessionId;
     }
@@ -788,10 +713,7 @@ class Field
         return $this->leadField;
     }
 
-    /**
-     * @param mixed $leadField
-     */
-    public function setLeadField($leadField)
+    public function setLeadField(mixed $leadField)
     {
         $this->leadField = $leadField;
     }
@@ -804,10 +726,7 @@ class Field
         return $this->saveResult;
     }
 
-    /**
-     * @param mixed $saveResult
-     */
-    public function setSaveResult($saveResult)
+    public function setSaveResult(mixed $saveResult)
     {
         $this->saveResult = $saveResult;
     }
@@ -820,10 +739,7 @@ class Field
         return $this->isAutoFill;
     }
 
-    /**
-     * @param mixed $isAutoFill
-     */
-    public function setIsAutoFill($isAutoFill)
+    public function setIsAutoFill(mixed $isAutoFill)
     {
         $this->isAutoFill = $isAutoFill;
     }

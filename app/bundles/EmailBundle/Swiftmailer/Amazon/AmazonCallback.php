@@ -25,17 +25,8 @@ class AmazonCallback
      */
     public const SNS_ADDRESS = 'no-reply@sns.amazonaws.com';
 
-    private TranslatorInterface $translator;
-    private LoggerInterface $logger;
-    private Client $httpClient;
-    private TransportCallback $transportCallback;
-
-    public function __construct(TranslatorInterface $translator, LoggerInterface $logger, Client $httpClient, TransportCallback $transportCallback)
+    public function __construct(private TranslatorInterface $translator, private LoggerInterface $logger, private Client $httpClient, private TransportCallback $transportCallback)
     {
-        $this->translator        = $translator;
-        $this->logger            = $logger;
-        $this->transportCallback = $transportCallback;
-        $this->httpClient        = $httpClient;
     }
 
     /**
@@ -90,7 +81,7 @@ class AmazonCallback
                     $this->logger->error('Callback to SubscribeURL from Amazon SNS failed, reason: '.$reason);
             break;
             case 'Notification':
-                $message = json_decode($payload['Message'], true);
+                $message = json_decode($payload['Message'], true, 512, JSON_THROW_ON_ERROR);
 
                 $this->processJsonPayload($message, $message['notificationType']);
             break;
@@ -145,7 +136,7 @@ class AmazonCallback
             break;
             default:
                 $this->logger->warning("Received SES webhook of type '$payload[Type]' but couldn't understand payload");
-                $this->logger->debug('SES webhook payload: '.json_encode($payload));
+                $this->logger->debug('SES webhook payload: '.json_encode($payload, JSON_THROW_ON_ERROR));
             break;
         }
     }
@@ -203,6 +194,6 @@ class AmazonCallback
      */
     public function getSnsPayload($body)
     {
-        return json_decode(strtok($body, "\n"), true);
+        return json_decode(strtok($body, "\n"), true, 512, JSON_THROW_ON_ERROR);
     }
 }

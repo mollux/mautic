@@ -6,14 +6,8 @@ use Mautic\PageBundle\Model\PageModel;
 
 class TokenHelper
 {
-    /**
-     * @var PageModel
-     */
-    protected $model;
-
-    public function __construct(PageModel $model)
+    public function __construct(protected PageModel $model)
     {
-        $this->model = $model;
     }
 
     /**

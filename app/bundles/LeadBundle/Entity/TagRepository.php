@@ -26,7 +26,7 @@ class TagRepository extends CommonRepository
             ->having(sprintf('(%s)', $havingQb->getSQL()).' = 0');
         $delete = $qb->execute()->fetch();
 
-        if (count($delete)) {
+        if (is_countable($delete) ? count($delete) : 0) {
             $qb->resetQueryParts();
             $qb->delete(MAUTIC_TABLE_PREFIX.'lead_tags')
                 ->where(
@@ -68,9 +68,7 @@ class TagRepository extends CommonRepository
      */
     public function removeMinusFromTags(array $tags)
     {
-        return array_map(function ($val) {
-            return (0 === strpos($val, '-')) ? substr($val, 1) : $val;
-        }, $tags);
+        return array_map(fn($val) => (str_starts_with($val, '-')) ? substr($val, 1) : $val, $tags);
     }
 
     /**

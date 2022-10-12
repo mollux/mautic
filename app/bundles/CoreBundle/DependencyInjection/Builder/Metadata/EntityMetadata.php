@@ -8,24 +8,12 @@ use Symfony\Component\Finder\Finder;
 
 class EntityMetadata
 {
-    /**
-     * @var BundleMetadata
-     */
-    private $metadata;
+    private array $ormConfig = [];
 
-    /**
-     * @var array
-     */
-    private $ormConfig = [];
+    private array $serializerConfig = [];
 
-    /**
-     * @var array
-     */
-    private $serializerConfig = [];
-
-    public function __construct(BundleMetadata $metadata)
+    public function __construct(private BundleMetadata $metadata)
     {
-        $this->metadata = $metadata;
     }
 
     public function build(): void

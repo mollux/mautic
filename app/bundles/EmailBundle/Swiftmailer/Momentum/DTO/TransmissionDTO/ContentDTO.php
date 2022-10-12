@@ -10,55 +10,26 @@ use Mautic\EmailBundle\Swiftmailer\Momentum\DTO\TransmissionDTO\ContentDTO\FromD
  */
 final class ContentDTO implements \JsonSerializable
 {
-    /**
-     * @var string
-     */
-    private $subject;
+    private ?string $html = null;
 
-    /**
-     * @var FromDTO
-     */
-    private $from = [];
+    private ?string $inlineCss = null;
 
-    /**
-     * @var string|null
-     */
-    private $html;
+    private ?string $text = null;
 
-    /**
-     * @var string|null
-     */
-    private $inlineCss;
+    private ?string $replyTo = null;
 
-    /**
-     * @var string|null
-     */
-    private $text;
+    private array $headers = [];
 
-    /**
-     * @var string|null
-     */
-    private $replyTo;
-
-    /**
-     * @var array
-     */
-    private $headers = [];
-
-    /**
-     * @var array
-     */
-    private $attachments = [];
+    private array $attachments = [];
 
     /**
      * ContentDTO constructor.
      *
      * @param $subject
+     * @param string $subject
      */
-    public function __construct($subject, FromDTO $from)
+    public function __construct(private $subject, private FromDTO $from)
     {
-        $this->subject = $subject;
-        $this->from    = $from;
     }
 
     /**

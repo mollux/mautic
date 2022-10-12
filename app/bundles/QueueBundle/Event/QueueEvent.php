@@ -10,45 +10,13 @@ use Mautic\CoreBundle\Event\CommonEvent;
 class QueueEvent extends CommonEvent
 {
     /**
-     * @var int|null
-     */
-    private $messages;
-
-    /**
-     * @var array
-     */
-    private $payload;
-
-    /**
-     * @var string
-     */
-    private $protocol;
-
-    /**
-     * @var string
-     */
-    private $queueName;
-
-    /**
-     * @var int|null
-     */
-    private $timeout;
-
-    /**
      * QueueEvent constructor.
      *
      * @param string   $protocol
      * @param string   $queueName
-     * @param int|null $messages
-     * @param int|null $timeout
      */
-    public function __construct($protocol, $queueName, array $payload = [], $messages = null, $timeout = null)
+    public function __construct(private $protocol, private $queueName, private array $payload = [], private ?int $messages = null, private ?int $timeout = null)
     {
-        $this->messages  = $messages;
-        $this->payload   = $payload;
-        $this->protocol  = $protocol;
-        $this->queueName = $queueName;
-        $this->timeout   = $timeout;
     }
 
     /**
@@ -59,12 +27,9 @@ class QueueEvent extends CommonEvent
         return $this->messages;
     }
 
-    /**
-     * @return string|array
-     */
-    public function getPayload($returnArray = false)
+    public function getPayload($returnArray = false): string|array
     {
-        return ($returnArray) ? $this->payload : json_encode($this->payload);
+        return ($returnArray) ? $this->payload : json_encode($this->payload, JSON_THROW_ON_ERROR);
     }
 
     /**

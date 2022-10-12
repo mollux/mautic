@@ -206,7 +206,7 @@ class NotificationType extends AbstractType
     {
         $resolver->setDefaults(
             [
-                'data_class' => 'Mautic\NotificationBundle\Entity\Notification',
+                'data_class' => \Mautic\NotificationBundle\Entity\Notification::class,
             ]
         );
 

@@ -17,28 +17,10 @@ use Symfony\Component\HttpFoundation\Request;
 class QueueService
 {
     /**
-     * @var CoreParametersHelper
-     */
-    private $coreParametersHelper;
-
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $eventDispatcher;
-
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
      * QueueService constructor.
      */
-    public function __construct(CoreParametersHelper $coreParametersHelper, EventDispatcherInterface $eventDispatcher, LoggerInterface $logger)
+    public function __construct(private CoreParametersHelper $coreParametersHelper, private EventDispatcherInterface $eventDispatcher, private LoggerInterface $logger)
     {
-        $this->coreParametersHelper = $coreParametersHelper;
-        $this->eventDispatcher      = $eventDispatcher;
-        $this->logger               = $logger;
     }
 
     /**
@@ -79,7 +61,7 @@ class QueueService
      */
     public function dispatchConsumerEventFromPayload($payload)
     {
-        $payload    = json_decode($payload, true);
+        $payload    = json_decode($payload, true, 512, JSON_THROW_ON_ERROR);
         $logPayload = $payload;
         unset($logPayload['request']);
 

@@ -15,6 +15,6 @@ class Length extends SymfonyLength
      */
     public function validatedBy()
     {
-        return \get_class($this).'Validator';
+        return $this::class.'Validator';
     }
 }

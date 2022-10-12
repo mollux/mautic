@@ -7,30 +7,16 @@ use Psr\Log\LoggerInterface;
 
 class ResultsPaginator
 {
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
-     * @var array
-     */
-    private $results;
+    private ?array $results = null;
 
     /**
      * @var int
      */
     private $totalRecords = 0;
 
-    /**
-     * @var int
-     */
-    private $recordCount = 0;
+    private int $recordCount = 0;
 
-    /**
-     * @var int
-     */
-    private $retryCount = 0;
+    private int $retryCount = 0;
 
     /**
      * @var string|null
@@ -38,17 +24,10 @@ class ResultsPaginator
     private $nextRecordsUrl;
 
     /**
-     * @var string
-     */
-    private $salesforceBaseUrl;
-
-    /**
      * @param string $salesforceBaseUrl
      */
-    public function __construct(LoggerInterface $logger, $salesforceBaseUrl)
+    public function __construct(private LoggerInterface $logger, private $salesforceBaseUrl)
     {
-        $this->logger            = $logger;
-        $this->salesforceBaseUrl = $salesforceBaseUrl;
     }
 
     /**
@@ -64,7 +43,7 @@ class ResultsPaginator
 
         $this->results      = $results;
         $this->totalRecords = $results['totalSize'];
-        $this->recordCount += count($results['records']);
+        $this->recordCount += is_countable($results['records']) ? count($results['records']) : 0;
 
         return $this;
     }
@@ -80,7 +59,7 @@ class ResultsPaginator
             $this->retryCount     = 0;
             $this->nextRecordsUrl = $this->results['nextRecordsUrl'];
 
-            if (false === strpos($this->nextRecordsUrl, $this->salesforceBaseUrl)) {
+            if (!str_contains($this->nextRecordsUrl, $this->salesforceBaseUrl)) {
                 $this->nextRecordsUrl = $this->salesforceBaseUrl.$this->nextRecordsUrl;
             }
 

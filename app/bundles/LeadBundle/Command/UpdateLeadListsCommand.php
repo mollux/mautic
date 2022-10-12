@@ -17,17 +17,10 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class UpdateLeadListsCommand extends ModeratedCommand
 {
     public const NAME = 'mautic:segments:update';
-    private TranslatorInterface $translator;
-    private ListModel $listModel;
-    private LoggerInterface $logger;
 
-    public function __construct(ListModel $listModel, TranslatorInterface $translator, PathsHelper $pathsHelper, LoggerInterface $logger)
+    public function __construct(private ListModel $listModel, private TranslatorInterface $translator, PathsHelper $pathsHelper, private LoggerInterface $logger)
     {
         parent::__construct($pathsHelper);
-
-        $this->listModel  = $listModel;
-        $this->translator = $translator;
-        $this->logger     = $logger;
     }
 
     protected function configure()

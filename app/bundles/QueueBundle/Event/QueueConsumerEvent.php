@@ -10,19 +10,13 @@ use Mautic\QueueBundle\Queue\QueueConsumerResults;
  */
 class QueueConsumerEvent extends CommonEvent
 {
-    /**
-     * @var array
-     */
-    private $payload;
+    private string $result;
 
     /**
-     * @var string
+     * @param mixed[] $payload
      */
-    private $result;
-
-    public function __construct($payload = [])
+    public function __construct(private $payload = [])
     {
-        $this->payload = $payload;
         $this->result  = QueueConsumerResults::DO_NOT_ACKNOWLEDGE;
     }
 

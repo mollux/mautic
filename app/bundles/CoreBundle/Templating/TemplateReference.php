@@ -51,7 +51,7 @@ class TemplateReference extends BaseTemplateReference
             try {
                 $theme    = $this->themeHelper->getTheme($this->themeOverride);
                 $themeDir = $theme->getThemePath();
-            } catch (\Exception $e) {
+            } catch (\Exception) {
             }
         } else {
             $theme    = $this->themeHelper->getTheme();

@@ -14,14 +14,8 @@ use Symfony\Component\Validator\Constraints\NotBlank;
  */
 class MobileNotificationSendType extends AbstractType
 {
-    /**
-     * @var RouterInterface
-     */
-    protected $router;
-
-    public function __construct(RouterInterface $router)
+    public function __construct(protected RouterInterface $router)
     {
-        $this->router = $router;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
