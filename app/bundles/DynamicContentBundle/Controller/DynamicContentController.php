@@ -222,8 +222,8 @@ class DynamicContentController extends FormController
     /**
      * Generate's edit form and processes post data.
      *
-     * @param            $objectId
-     * @param bool|false $ignorePost
+     * @param      $objectId
+     * @param bool $ignorePost
      *
      * @return array|JsonResponse|RedirectResponse|Response
      */

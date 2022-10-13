@@ -21,7 +21,7 @@ class FieldToOrderTransformer implements DataTransformerInterface
     /**
      * Transforms an object to an integer (order).
      *
-     * @param LeadField|null $order
+     * @param LeadField $order
      *
      * @return string
      */

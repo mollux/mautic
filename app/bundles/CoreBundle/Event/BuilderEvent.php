@@ -231,7 +231,7 @@ class BuilderEvent extends Event
      * Check if tokens have been requested.
      * Pass in string or array of tokens to filter against if filterType == token.
      *
-     * @param string|array|null $tokenKeys
+     * @param string|array $tokenKeys
      *
      * @return bool
      */

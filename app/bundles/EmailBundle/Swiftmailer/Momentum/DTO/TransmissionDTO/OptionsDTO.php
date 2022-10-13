@@ -42,7 +42,7 @@ final class OptionsDTO implements \JsonSerializable
     }
 
     /**
-     * @param string|null $startTime
+     * @param string $startTime
      *
      * @return OptionsDTO
      */
@@ -54,7 +54,7 @@ final class OptionsDTO implements \JsonSerializable
     }
 
     /**
-     * @param bool|null $openTracking
+     * @param bool $openTracking
      *
      * @return OptionsDTO
      */
@@ -66,7 +66,7 @@ final class OptionsDTO implements \JsonSerializable
     }
 
     /**
-     * @param bool|null $clickTracking
+     * @param bool $clickTracking
      *
      * @return OptionsDTO
      */

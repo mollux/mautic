@@ -122,13 +122,13 @@ class MessageQueueModel extends FormModel
     /**
      * Adds messages to the queue.
      *
-     * @param array    $leads
-     * @param string   $channel
-     * @param int      $channelId
-     * @param int      $maxAttempts
-     * @param int      $priority
-     * @param int|null $campaignEventId
-     * @param array    $options
+     * @param array  $leads
+     * @param string $channel
+     * @param int    $channelId
+     * @param int    $maxAttempts
+     * @param int    $priority
+     * @param int    $campaignEventId
+     * @param array  $options
      *
      * @return bool
      */

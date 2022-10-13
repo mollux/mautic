@@ -49,11 +49,11 @@ class FlashBag
     }
 
     /**
-     * @param string     $message
-     * @param array|null $messageVars
-     * @param string     $level
-     * @param string     $domain
-     * @param bool       $addNotification
+     * @param string $message
+     * @param array  $messageVars
+     * @param string $level
+     * @param string $domain
+     * @param bool   $addNotification
      */
     public function add($message, $messageVars = [], $level = self::LEVEL_NOTICE, $domain = 'flashes', $addNotification = false)
     {

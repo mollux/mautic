@@ -75,7 +75,7 @@ class ContactSegmentService
     }
 
     /**
-     * @param array|null $batchLimiters for debug purpose only
+     * @param array $batchLimiters for debug purpose only
      *
      * @return array
      *
@@ -174,7 +174,7 @@ class ContactSegmentService
     }
 
     /**
-     * @param int|null $limit
+     * @param int $limit
      *
      * @return array
      *
@@ -229,7 +229,7 @@ class ContactSegmentService
     }
 
     /**
-     * @param int|null $limit
+     * @param int $limit
      *
      * @return QueryBuilder
      *

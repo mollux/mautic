@@ -28,8 +28,8 @@ class Client
     }
 
     /**
-     * @param string      $url
-     * @param string|null $secret
+     * @param string $url
+     * @param string $secret
      *
      * @return ResponseInterface
      */

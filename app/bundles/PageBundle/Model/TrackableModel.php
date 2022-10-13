@@ -83,9 +83,9 @@ class TrackableModel extends AbstractCommonModel
     }
 
     /**
-     * @param array      $clickthrough
-     * @param bool|false $shortenUrl   If true, use the configured shortener service to shorten the URLs
-     * @param array      $utmTags
+     * @param array $clickthrough
+     * @param bool  $shortenUrl   If true, use the configured shortener service to shorten the URLs
+     * @param array $utmTags
      *
      * @return string
      */
@@ -226,11 +226,11 @@ class TrackableModel extends AbstractCommonModel
     /**
      * Extract URLs from content and return as trackables.
      *
-     * @param mixed      $content
-     * @param null       $channel
-     * @param null       $channelId
-     * @param bool|false $usingClickthrough Set to false if not using a clickthrough parameter. This is to ensure that URLs are built correctly with ?
-     *                                      or & for URLs tracked that include query parameters
+     * @param mixed $content
+     * @param null  $channel
+     * @param null  $channelId
+     * @param bool  $usingClickthrough Set to false if not using a clickthrough parameter. This is to ensure that URLs are built correctly with ?
+     *                                 or & for URLs tracked that include query parameters
      *
      * @return array[mixed $content, array $trackables]
      */

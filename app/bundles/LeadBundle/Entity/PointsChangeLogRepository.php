@@ -12,7 +12,7 @@ class PointsChangeLogRepository extends CommonRepository
     /**
      * Get a lead's point log.
      *
-     * @param int|null $leadId
+     * @param int $leadId
      *
      * @return array
      */

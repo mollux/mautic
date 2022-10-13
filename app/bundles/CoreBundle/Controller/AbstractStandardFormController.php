@@ -1086,7 +1086,7 @@ abstract class AbstractStandardFormController extends AbstractFormController
     }
 
     /**
-     * @param string|null $name
+     * @param string $name
      */
     protected function setListFilters($name = null)
     {

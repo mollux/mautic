@@ -112,7 +112,7 @@ class TagRepository extends CommonRepository
     {
         $tag = new Tag($name, true);
 
-        /** @var Tag|null $existingTag */
+        /** @var Tag $existingTag */
         $existingTag = $this->findOneBy(
             [
                 'tag' => $tag->getTag(),

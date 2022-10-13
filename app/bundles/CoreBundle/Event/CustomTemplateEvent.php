@@ -17,8 +17,8 @@ class CustomTemplateEvent extends AbstractCustomRequestEvent
     protected $vars;
 
     /**
-     * @param Request     $request
-     * @param string|null $template
+     * @param Request $request
+     * @param string  $template
      */
     public function __construct(Request $request = null, $template = null, array $vars = [])
     {
@@ -41,7 +41,7 @@ class CustomTemplateEvent extends AbstractCustomRequestEvent
     }
 
     /**
-     * @param string|null $template
+     * @param string $template
      *
      * @return CustomTemplateEvent
      */

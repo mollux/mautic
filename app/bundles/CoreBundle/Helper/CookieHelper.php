@@ -49,7 +49,7 @@ class CookieHelper implements EventSubscriberInterface
     }
 
     /**
-     * @param int|string|float|bool|object|null $value
+     * @param int|string|float|bool|object $value
      */
     public function setCookie(string $name, $value, ?int $expire = 1800, ?string $path = null, ?string $domain = null, ?bool $secure = null, ?bool $httponly = null): void
     {

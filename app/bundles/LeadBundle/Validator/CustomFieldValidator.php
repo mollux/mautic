@@ -57,7 +57,7 @@ class CustomFieldValidator
      */
     private function getFieldByAlias(string $alias): LeadField
     {
-        /** @var LeadField|null */
+        /** @var LeadField */
         $field = $this->fieldModel->getEntityByAlias($alias);
 
         if (!$field) {

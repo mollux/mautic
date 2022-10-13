@@ -38,9 +38,9 @@ class DecisionExecutioner implements EventInterface
     }
 
     /**
-     * @param mixed       $passthrough
-     * @param string|null $channel
-     * @param int|null    $channelId
+     * @param mixed  $passthrough
+     * @param string $channel
+     * @param int    $channelId
      *
      * @throws CannotProcessEventException
      * @throws DecisionNotApplicableException

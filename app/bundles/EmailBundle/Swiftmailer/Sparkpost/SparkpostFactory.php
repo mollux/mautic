@@ -18,9 +18,9 @@ final class SparkpostFactory implements SparkpostFactoryInterface
     }
 
     /**
-     * @param string   $host
-     * @param string   $apiKey
-     * @param int|null $port
+     * @param string $host
+     * @param string $apiKey
+     * @param int    $port
      *
      * @return SparkPost
      */

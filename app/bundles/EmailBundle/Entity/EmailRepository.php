@@ -136,15 +136,15 @@ class EmailRepository extends CommonRepository
     }
 
     /**
-     * @param int            $emailId
-     * @param int[]|null     $variantIds
-     * @param int[]|null     $listIds
-     * @param bool           $countOnly
-     * @param int|null       $limit
-     * @param int|null       $minContactId
-     * @param int|null       $maxContactId
-     * @param bool           $countWithMaxMin
-     * @param \DateTime|null $maxDate
+     * @param int       $emailId
+     * @param int[]     $variantIds
+     * @param int[]     $listIds
+     * @param bool      $countOnly
+     * @param int       $limit
+     * @param int       $minContactId
+     * @param int       $maxContactId
+     * @param bool      $countWithMaxMin
+     * @param \DateTime $maxDate
      *
      * @return QueryBuilder|int|array
      */
@@ -271,14 +271,14 @@ class EmailRepository extends CommonRepository
     }
 
     /**
-     * @param int        $emailId
-     * @param int[]|null $variantIds
-     * @param int[]|null $listIds
-     * @param bool       $countOnly
-     * @param int|null   $limit
-     * @param int|null   $minContactId
-     * @param int|null   $maxContactId
-     * @param bool       $countWithMaxMin
+     * @param int   $emailId
+     * @param int[] $variantIds
+     * @param int[] $listIds
+     * @param bool  $countOnly
+     * @param int   $limit
+     * @param int   $minContactId
+     * @param int   $maxContactId
+     * @param bool  $countWithMaxMin
      *
      * @return array|int
      */
@@ -325,13 +325,13 @@ class EmailRepository extends CommonRepository
     }
 
     /**
-     * @param string      $search
-     * @param int         $limit
-     * @param int         $start
-     * @param bool        $viewOther
-     * @param bool        $topLevel
-     * @param string|null $emailType
-     * @param int|null    $variantParentId
+     * @param string $search
+     * @param int    $limit
+     * @param int    $start
+     * @param bool   $viewOther
+     * @param bool   $topLevel
+     * @param string $emailType
+     * @param int    $variantParentId
      *
      * @return array
      */
@@ -518,10 +518,10 @@ class EmailRepository extends CommonRepository
     /**
      * Up the read/sent counts.
      *
-     * @param int        $id
-     * @param string     $type
-     * @param int        $increaseBy
-     * @param bool|false $variant
+     * @param int    $id
+     * @param string $type
+     * @param int    $increaseBy
+     * @param bool   $variant
      */
     public function upCount($id, $type = 'sent', $increaseBy = 1, $variant = false)
     {
@@ -557,7 +557,7 @@ class EmailRepository extends CommonRepository
     }
 
     /**
-     * @param int|null $id
+     * @param int $id
      *
      * @return \Doctrine\ORM\Internal\Hydration\IterableResult
      */

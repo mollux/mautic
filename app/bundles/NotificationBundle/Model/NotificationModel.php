@@ -103,10 +103,10 @@ class NotificationModel extends FormModel implements AjaxLookupModelInterface
     /**
      * {@inheritdoc}
      *
-     * @param Notification|null $entity
-     * @param FormFactory       $formFactory
-     * @param string|null       $action
-     * @param array             $options
+     * @param Notification $entity
+     * @param FormFactory  $formFactory
+     * @param string       $action
+     * @param array        $options
      *
      * @return mixed
      *

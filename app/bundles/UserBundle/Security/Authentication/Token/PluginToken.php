@@ -19,8 +19,8 @@ class PluginToken extends AbstractToken implements GuardTokenInterface
     private ?Response $response;
 
     /**
-     * @param UserInterface|string|null $user
-     * @param array<string>             $roles
+     * @param UserInterface|string $user
+     * @param array<string>        $roles
      */
     public function __construct(
         ?string $providerKey,

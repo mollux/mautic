@@ -544,7 +544,7 @@ class SalesforceApi extends CrmApi
     /**
      * @param $isRetry
      *
-     * @return string|false
+     * @return string
      *
      * @throws ApiErrorException
      * @throws RetryRequestException

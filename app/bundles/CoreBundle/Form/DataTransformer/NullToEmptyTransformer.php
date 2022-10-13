@@ -9,7 +9,7 @@ class NullToEmptyTransformer implements DataTransformerInterface
     /**
      * Does not transform anything.
      *
-     * @param string|null $value
+     * @param string $value
      *
      * @return string
      */

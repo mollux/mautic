@@ -41,9 +41,9 @@ interface ThemeHelperInterface
     public function exists($theme);
 
     /**
-     * @param string      $theme      original theme dir name
-     * @param string      $newName
-     * @param string|null $newDirName if not set then it will be generated from the $newName param
+     * @param string $theme      original theme dir name
+     * @param string $newName
+     * @param string $newDirName if not set then it will be generated from the $newName param
      *
      * @throws FileExistsException
      * @throws FileNotFoundException

@@ -10,7 +10,7 @@ class ExportOption
     private $reportId;
 
     /**
-     * @param int|null $reportId
+     * @param int $reportId
      */
     public function __construct($reportId)
     {

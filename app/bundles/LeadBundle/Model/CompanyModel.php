@@ -254,7 +254,7 @@ class CompanyModel extends CommonFormModel implements AjaxLookupModelInterface
     /**
      * Populates custom field values for updating the company.
      *
-     * @param bool|false $overwriteWithBlank
+     * @param bool $overwriteWithBlank
      */
     public function setFieldValues(Company $company, array $data, $overwriteWithBlank = false)
     {

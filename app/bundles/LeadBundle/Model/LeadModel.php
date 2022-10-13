@@ -363,7 +363,7 @@ class LeadModel extends FormModel
      *
      * @param Lead                                $entity
      * @param \Symfony\Component\Form\FormFactory $formFactory
-     * @param string|null                         $action
+     * @param string                              $action
      * @param array                               $options
      *
      * @return \Symfony\Component\Form\Form
@@ -554,9 +554,9 @@ class LeadModel extends FormModel
     /**
      * Populates custom field values for updating the lead. Also retrieves social media data.
      *
-     * @param bool|false $overwriteWithBlank
-     * @param bool|true  $fetchSocialProfiles
-     * @param bool|false $bindWithForm        Send $data through the Lead form and only use valid data (should be used with request data)
+     * @param bool      $overwriteWithBlank
+     * @param bool|true $fetchSocialProfiles
+     * @param bool      $bindWithForm        Send $data through the Lead form and only use valid data (should be used with request data)
      *
      * @return array
      *
@@ -1521,7 +1521,7 @@ class LeadModel extends FormModel
     /**
      * Update a leads tags.
      *
-     * @param bool|false $removeOrphans
+     * @param bool $removeOrphans
      */
     public function setTags(Lead $lead, array $tags, $removeOrphans = false)
     {

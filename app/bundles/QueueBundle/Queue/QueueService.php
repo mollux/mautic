@@ -61,9 +61,9 @@ class QueueService
     }
 
     /**
-     * @param string   $queueName
-     * @param int|null $messages
-     * @param int|null $timeout
+     * @param string $queueName
+     * @param int    $messages
+     * @param int    $timeout
      */
     public function consumeFromQueue($queueName, $messages = null, $timeout = null)
     {

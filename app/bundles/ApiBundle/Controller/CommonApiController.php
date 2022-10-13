@@ -946,7 +946,7 @@ class CommonApiController extends AbstractFOSRestController implements MauticCon
 
     /**
      * @param array<mixed[]> $results
-     * @param callable|null  $callback
+     * @param callable       $callback
      *
      * @return array($entities, $totalCount)
      */

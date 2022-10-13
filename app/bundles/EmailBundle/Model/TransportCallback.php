@@ -58,10 +58,10 @@ class TransportCallback
     }
 
     /**
-     * @param string   $address
-     * @param string   $comments
-     * @param int      $dncReason
-     * @param int|null $channelId
+     * @param string $address
+     * @param string $comments
+     * @param int    $dncReason
+     * @param int    $channelId
      */
     public function addFailureByAddress($address, $comments, $dncReason = DNC::BOUNCED, $channelId = null)
     {
@@ -76,10 +76,10 @@ class TransportCallback
     }
 
     /**
-     * @param          $id
-     * @param          $comments
-     * @param int      $dncReason
-     * @param int|null $channelId
+     * @param     $id
+     * @param     $comments
+     * @param int $dncReason
+     * @param int $channelId
      */
     public function addFailureByContactId($id, $comments, $dncReason = DNC::BOUNCED, $channelId = null)
     {

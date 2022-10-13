@@ -994,7 +994,7 @@ class Event implements ChannelInterface
     /**
      * Set the value of triggerRestrictedStartHour.
      *
-     * @param \DateTime|null $triggerRestrictedStartHour
+     * @param \DateTime $triggerRestrictedStartHour
      *
      * @return self
      */
@@ -1026,7 +1026,7 @@ class Event implements ChannelInterface
     /**
      * Set the value of triggerRestrictedStopHour.
      *
-     * @param \DateTime|null $triggerRestrictedStopHour
+     * @param \DateTime $triggerRestrictedStopHour
      *
      * @return self
      */

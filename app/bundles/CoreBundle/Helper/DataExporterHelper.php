@@ -11,7 +11,7 @@ class DataExporterHelper
      *
      * Overwrite in your controller if required.
      *
-     * @param int|null $start
+     * @param int $start
      *
      * @return array
      */

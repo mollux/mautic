@@ -66,7 +66,7 @@ class HitRepository extends CommonRepository
     /**
      * Get a lead's page hits.
      *
-     * @param int|null $leadId
+     * @param int $leadId
      *
      * @return array
      */

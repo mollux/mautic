@@ -151,8 +151,8 @@ class FocusModel extends FormModel
     /**
      * {@inheritdoc}
      *
-     * @param Focus      $entity
-     * @param bool|false $unlock
+     * @param Focus $entity
+     * @param bool  $unlock
      */
     public function saveEntity($entity, $unlock = true)
     {

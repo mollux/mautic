@@ -7,10 +7,10 @@ namespace Mautic\IntegrationsBundle\Sync\Exception;
 class FieldNotFoundException extends \Exception
 {
     /**
-     * @param                 $field
-     * @param                 $object
-     * @param int             $code
-     * @param \Exception|null $previous
+     * @param            $field
+     * @param            $object
+     * @param int        $code
+     * @param \Exception $previous
      */
     public function __construct($field, $object, $code = 0, ?\Throwable $previous = null)
     {

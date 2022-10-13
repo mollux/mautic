@@ -28,7 +28,7 @@ final class FromDTO implements \JsonSerializable
     }
 
     /**
-     * @param string|null $name
+     * @param string $name
      *
      * @return FromDTO
      */

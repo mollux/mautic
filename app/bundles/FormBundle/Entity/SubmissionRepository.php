@@ -453,13 +453,13 @@ class SubmissionRepository extends CommonRepository
     /**
      * Compare a form result value with defined value for defined lead.
      *
-     * @param int         $lead         ID
-     * @param int         $form         ID
-     * @param string      $formAlias
-     * @param int         $field        alias
-     * @param string      $value        to compare with
-     * @param string      $operatorExpr for WHERE clause
-     * @param string|null $type
+     * @param int    $lead         ID
+     * @param int    $form         ID
+     * @param string $formAlias
+     * @param int    $field        alias
+     * @param string $value        to compare with
+     * @param string $operatorExpr for WHERE clause
+     * @param string $type
      *
      * @return bool
      */

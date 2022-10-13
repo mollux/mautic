@@ -62,13 +62,13 @@ class ContactLimiter
     /**
      * ContactLimiter constructor.
      *
-     * @param int      $batchLimit
-     * @param int|null $contactId
-     * @param int|null $minContactId
-     * @param int|null $maxContactId
-     * @param int|null $threadId
-     * @param int|null $maxThreads
-     * @param int|null $campaignLimit
+     * @param int $batchLimit
+     * @param int $contactId
+     * @param int $minContactId
+     * @param int $maxContactId
+     * @param int $threadId
+     * @param int $maxThreads
+     * @param int $campaignLimit
      */
     public function __construct(
         $batchLimit,

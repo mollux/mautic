@@ -1833,9 +1833,9 @@ class MailHelper
     /**
      * Create an email stat.
      *
-     * @param bool|true   $persist
-     * @param string|null $emailAddress
-     * @param null        $listId
+     * @param bool|true $persist
+     * @param string    $emailAddress
+     * @param null      $listId
      *
      * @return Stat
      */

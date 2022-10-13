@@ -1362,7 +1362,7 @@ class Asset extends FormEntity
     }
 
     /**
-     * @param string|null $downloadUrl
+     * @param string $downloadUrl
      *
      * @return Asset
      */

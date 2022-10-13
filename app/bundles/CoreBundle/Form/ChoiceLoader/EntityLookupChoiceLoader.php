@@ -108,8 +108,8 @@ class EntityLookupChoiceLoader implements ChoiceLoaderInterface
     }
 
     /**
-     * @param array|null $data
-     * @param bool       $includeNew
+     * @param array $data
+     * @param bool  $includeNew
      *
      * @return array
      */

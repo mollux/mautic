@@ -584,12 +584,12 @@ class LeadRepository extends CommonRepository implements CustomFieldRepositoryIn
     /**
      * Get contacts for a specific channel entity.
      *
-     * @param array      $args             same as getEntity/getEntities
-     * @param string     $joinTable
-     * @param int        $entityId
-     * @param array      $filters
-     * @param string     $entityColumnName
-     * @param array|null $additionalJoins  [ ['type' => 'join|leftJoin', 'from_alias' => '', 'table' => '', 'condition' => ''], ... ]
+     * @param array  $args             same as getEntity/getEntities
+     * @param string $joinTable
+     * @param int    $entityId
+     * @param array  $filters
+     * @param string $entityColumnName
+     * @param array  $additionalJoins  [ ['type' => 'join|leftJoin', 'from_alias' => '', 'table' => '', 'condition' => ''], ... ]
      */
     public function getEntityContacts(
         $args,

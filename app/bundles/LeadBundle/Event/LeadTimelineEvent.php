@@ -112,10 +112,10 @@ class LeadTimelineEvent extends Event
     ];
 
     /**
-     * @param int         $page
-     * @param int         $limit       Limit per type
-     * @param bool        $forTimeline
-     * @param string|null $siteDomain
+     * @param int    $page
+     * @param int    $limit       Limit per type
+     * @param bool   $forTimeline
+     * @param string $siteDomain
      */
     public function __construct(
         Lead $lead = null,

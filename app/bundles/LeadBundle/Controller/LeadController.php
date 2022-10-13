@@ -577,8 +577,8 @@ class LeadController extends FormController
     /**
      * Generates edit form.
      *
-     * @param            $objectId
-     * @param bool|false $ignorePost
+     * @param      $objectId
+     * @param bool $ignorePost
      *
      * @return array|JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */

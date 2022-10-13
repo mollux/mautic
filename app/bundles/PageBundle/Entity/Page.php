@@ -656,7 +656,7 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
     }
 
     /**
-     * @param bool|null $isPreferenceCenter
+     * @param bool $isPreferenceCenter
      *
      * @return Page
      */
@@ -678,7 +678,7 @@ class Page extends FormEntity implements TranslationEntityInterface, VariantEnti
     }
 
     /**
-     * @param bool|null $noIndex
+     * @param bool $noIndex
      */
     public function setNoIndex($noIndex)
     {

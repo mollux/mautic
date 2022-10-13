@@ -47,7 +47,7 @@ class FormAuthenticator extends AbstractFormLoginAuthenticator implements Passwo
     private UrlGeneratorInterface $urlGenerator;
 
     /**
-     * @var string|null After upgrade to Symfony 5.2 we should use Passport system to store the authenticatingService
+     * @var string After upgrade to Symfony 5.2 we should use Passport system to store the authenticatingService
      */
     private ?string $authenticatingService = null;
 

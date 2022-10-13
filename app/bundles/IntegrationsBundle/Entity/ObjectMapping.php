@@ -143,7 +143,7 @@ class ObjectMapping
     }
 
     /**
-     * @return int|null ?int
+     * @return int ?int
      */
     public function getId()
     {
@@ -279,7 +279,7 @@ class ObjectMapping
     }
 
     /**
-     * @param \DateTimeInterface|null $lastSyncDate
+     * @param \DateTimeInterface $lastSyncDate
      *
      * @return ObjectMapping
      *
@@ -358,7 +358,7 @@ class ObjectMapping
     }
 
     /**
-     * @param string|null $integrationReferenceId
+     * @param string $integrationReferenceId
      *
      * @return ObjectMapping
      */

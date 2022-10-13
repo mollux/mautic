@@ -912,11 +912,11 @@ class Mailbox
     }
 
     /**
-     * @param            $partStructure
-     * @param            $partNum
-     * @param bool|true  $markAsSeen
-     * @param bool|false $isDsn
-     * @param bool|false $isFbl
+     * @param           $partStructure
+     * @param           $partNum
+     * @param bool|true $markAsSeen
+     * @param bool      $isDsn
+     * @param bool      $isFbl
      */
     protected function initMailPart(Message $mail, $partStructure, $partNum, $markAsSeen = true, $isDsn = false, $isFbl = false)
     {

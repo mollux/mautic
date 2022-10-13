@@ -165,8 +165,8 @@ class ApiMetadataDriver implements DriverInterface
     /**
      * Create properties.
      *
-     * @param bool|false $addToListGroup
-     * @param bool|false $useGetter
+     * @param bool $addToListGroup
+     * @param bool $useGetter
      *
      * @return $this
      */

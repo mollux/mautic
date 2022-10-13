@@ -32,8 +32,8 @@ class CustomContentEvent extends Event
     protected $templates = [];
 
     /**
-     * @param string      $viewName
-     * @param string|null $context
+     * @param string $viewName
+     * @param string $context
      */
     public function __construct($viewName, $context = null, array $vars = [])
     {
@@ -45,8 +45,8 @@ class CustomContentEvent extends Event
     /**
      * Check if the context is applicable.
      *
-     * @param string      $viewName
-     * @param string|null $context
+     * @param string $viewName
+     * @param string $context
      *
      * @return bool
      */

@@ -11,14 +11,14 @@ interface ConfigFormInterface extends IntegrationInterface
     /**
      * Return the name/class of the form type to override the default or just return NULL to use the default.
      *
-     * @return string|null Name of the form type service
+     * @return string Name of the form type service
      */
     public function getConfigFormName(): ?string;
 
     /**
      * Return the template to use from the controller. Return null to use the default.
      *
-     * @return string|null Name of the template like SomethingBundle:Config:form.html.php
+     * @return string Name of the template like SomethingBundle:Config:form.html.php
      */
     public function getConfigFormContentTemplate(): ?string;
 }

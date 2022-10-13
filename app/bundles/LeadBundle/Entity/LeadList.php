@@ -167,7 +167,7 @@ class LeadList extends FormEntity
     }
 
     /**
-     * @param string|null $name
+     * @param string $name
      *
      * @return LeadList
      */
@@ -188,7 +188,7 @@ class LeadList extends FormEntity
     }
 
     /**
-     * @param string|null $description
+     * @param string $description
      *
      * @return LeadList
      */
@@ -238,7 +238,7 @@ class LeadList extends FormEntity
     }
 
     /**
-     * @param string|null $publicName
+     * @param string $publicName
      *
      * @return LeadList
      */
@@ -316,7 +316,7 @@ class LeadList extends FormEntity
     }
 
     /**
-     * @param string|null $alias
+     * @param string $alias
      *
      * @return LeadList
      */

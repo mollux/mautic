@@ -53,7 +53,7 @@ abstract class AbstractTokenHttpTransport extends AbstractTokenArrayTransport im
     abstract protected function handlePostResponse($response, $curlInfo);
 
     /**
-     * @param string|null $username
+     * @param string $username
      */
     public function setUsername($username)
     {
@@ -69,7 +69,7 @@ abstract class AbstractTokenHttpTransport extends AbstractTokenArrayTransport im
     }
 
     /**
-     * @param string|null $password
+     * @param string $password
      */
     public function setPassword($password)
     {
@@ -93,7 +93,7 @@ abstract class AbstractTokenHttpTransport extends AbstractTokenArrayTransport im
     }
 
     /**
-     * @param string|null $apiKey
+     * @param string $apiKey
      *
      * @return AbstractTokenHttpTransport
      */

@@ -784,7 +784,7 @@ class Form extends FormEntity
     }
 
     /**
-     * @param bool|null $noIndex
+     * @param bool $noIndex
      */
     public function setNoIndex($noIndex)
     {

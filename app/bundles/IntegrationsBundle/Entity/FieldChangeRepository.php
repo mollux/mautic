@@ -61,8 +61,8 @@ class FieldChangeRepository extends CommonRepository
     }
 
     /**
-     * @param int|null $afterObjectId
-     * @param int      $objectCount
+     * @param int $afterObjectId
+     * @param int $objectCount
      *
      * @return array
      */

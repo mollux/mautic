@@ -96,11 +96,11 @@ class AssetsHelper
     /**
      * Set asset url path.
      *
-     * @param string      $path
-     * @param string|null $packageName
-     * @param string|null $version
-     * @param bool|false  $absolute
-     * @param bool|false  $ignorePrefix
+     * @param string $path
+     * @param string $packageName
+     * @param string $version
+     * @param bool   $absolute
+     * @param bool   $ignorePrefix
      *
      * @return string
      */
@@ -437,7 +437,7 @@ class AssetsHelper
     /**
      * Output system scripts.
      *
-     * @param bool|false $includeEditor
+     * @param bool $includeEditor
      */
     public function outputSystemScripts($includeEditor = false)
     {

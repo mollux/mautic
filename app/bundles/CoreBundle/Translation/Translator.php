@@ -66,9 +66,9 @@ class Translator implements TranslatorInterface, WarmableInterface, TranslatorBa
     /**
      * Check if the specified message ID exists.
      *
-     * @param string      $id     The message id (may also be an object that can be cast to string)
-     * @param string|null $domain The domain for the message or null to use the default
-     * @param string|null $locale The locale or null to use the default
+     * @param string $id     The message id (may also be an object that can be cast to string)
+     * @param string $domain The domain for the message or null to use the default
+     * @param string $locale The locale or null to use the default
      *
      * @return bool true if the message has a translation, false otherwise
      */

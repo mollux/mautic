@@ -11,7 +11,7 @@ class StagesChangeLogRepository extends CommonRepository
     /**
      * Get a lead's stage log.
      *
-     * @param int|null $leadId
+     * @param int $leadId
      *
      * @return array
      */

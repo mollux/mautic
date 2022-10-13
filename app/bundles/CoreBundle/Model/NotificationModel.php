@@ -80,7 +80,7 @@ class NotificationModel extends FormModel
      * @param string    $header    Header for message
      * @param string    $iconClass Font Awesome CSS class for the icon (e.g. fa-eye)
      * @param \DateTime $datetime  Date the item was created
-     * @param User|null $user      User object; defaults to current user
+     * @param User      $user      User object; defaults to current user
      */
     public function addNotification(
         $message,

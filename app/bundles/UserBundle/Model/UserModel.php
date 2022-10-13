@@ -85,8 +85,8 @@ class UserModel extends FormModel
     /**
      * Checks for a new password and rehashes if necessary.
      *
-     * @param string     $submittedPassword
-     * @param bool|false $validate
+     * @param string $submittedPassword
+     * @param bool   $validate
      *
      * @return string
      */

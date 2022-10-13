@@ -62,7 +62,7 @@ class Responses
     }
 
     /**
-     * @param string|null $type
+     * @param string $type
      *
      * @return array
      */
@@ -76,7 +76,7 @@ class Responses
     }
 
     /**
-     * @param string|null $type
+     * @param string $type
      *
      * @return array
      */

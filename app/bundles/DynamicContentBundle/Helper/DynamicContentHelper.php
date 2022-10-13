@@ -120,8 +120,8 @@ class DynamicContentHelper
     }
 
     /**
-     * @param string    $content
-     * @param Lead|null $lead
+     * @param string $content
+     * @param Lead   $lead
      *
      * @return array
      */

@@ -17,7 +17,7 @@ use Mautic\PluginBundle\Entity\Plugin;
 abstract class AbstractPluginBundle extends PluginBundleBase
 {
     /**
-     * @param array|null $metadata
+     * @param array $metadata
      *
      * @throws Exception
      */

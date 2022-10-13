@@ -113,8 +113,8 @@ class StatsEvent extends Event
     /**
      * Returns if event is for this table.
      *
-     * @param                       $table
-     * @param EntityRepository|null $repository
+     * @param                  $table
+     * @param EntityRepository $repository
      *
      * @return bool
      */

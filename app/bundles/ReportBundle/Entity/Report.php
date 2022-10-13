@@ -532,7 +532,7 @@ class Report extends FormEntity implements SchedulerInterface
     }
 
     /**
-     * @param string|null $toAddress
+     * @param string $toAddress
      */
     public function setToAddress($toAddress)
     {
@@ -550,7 +550,7 @@ class Report extends FormEntity implements SchedulerInterface
     }
 
     /**
-     * @param string|null $scheduleUnit
+     * @param string $scheduleUnit
      */
     public function setScheduleUnit($scheduleUnit)
     {
@@ -568,7 +568,7 @@ class Report extends FormEntity implements SchedulerInterface
     }
 
     /**
-     * @param string|null $scheduleDay
+     * @param string $scheduleDay
      */
     public function setScheduleDay($scheduleDay)
     {
@@ -586,7 +586,7 @@ class Report extends FormEntity implements SchedulerInterface
     }
 
     /**
-     * @param string|null $scheduleMonthFrequency
+     * @param string $scheduleMonthFrequency
      */
     public function setScheduleMonthFrequency($scheduleMonthFrequency)
     {

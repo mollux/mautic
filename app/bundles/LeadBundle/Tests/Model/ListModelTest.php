@@ -84,7 +84,7 @@ class ListModelTest extends TestCase
     /**
      * @dataProvider sourceTypeTestDataProvider
      *
-     * @param string|null $sourceType
+     * @param string $sourceType
      */
     public function testGetSourceLists(array $getLookupResultsReturn, $sourceType, array $expected): void
     {

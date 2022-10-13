@@ -19,7 +19,7 @@ class SecondsConversionTransformer implements DataTransformerInterface
     /**
      * Converts to format.
      *
-     * @param string|null $value
+     * @param string $value
      *
      * @return string
      */

@@ -40,7 +40,7 @@ class EmailToUserAccessor
     /**
      * Gets array of User ids formated for EmailModel.
      *
-     * @param User|null $owner If Owner is passed in and config is setted for it, adds owner to returned array
+     * @param User $owner If Owner is passed in and config is setted for it, adds owner to returned array
      *
      * @return array
      */

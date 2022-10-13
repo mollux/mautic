@@ -33,7 +33,7 @@ class DoNotContact
      * @param int       $contactId
      * @param string    $channel
      * @param bool|true $persist
-     * @param int|null  $reason
+     * @param int       $reason
      *
      * @return bool
      */

@@ -12,7 +12,7 @@ use Mautic\LeadBundle\Entity\LeadDevice;
 interface DeviceCreatorServiceInterface
 {
     /**
-     * @return LeadDevice|null Null is returned if device can't be detected
+     * @return LeadDevice Null is returned if device can't be detected
      */
     public function getCurrentFromDetector(DeviceDetector $deviceDetector, Lead $assignedLead);
 }

@@ -60,9 +60,9 @@ class RedirectRepository extends CommonRepository
     /**
      * Up the hit count.
      *
-     * @param            $id
-     * @param int        $increaseBy
-     * @param bool|false $unique
+     * @param      $id
+     * @param int  $increaseBy
+     * @param bool $unique
      */
     public function upHitCount($id, $increaseBy = 1, $unique = false)
     {
@@ -80,11 +80,11 @@ class RedirectRepository extends CommonRepository
     }
 
     /**
-     * @param int      $limit
-     * @param int|null $createdByUserId
-     * @param int|null $companyId
-     * @param int|null $campaignId
-     * @param int|null $segmentId
+     * @param int $limit
+     * @param int $createdByUserId
+     * @param int $companyId
+     * @param int $campaignId
+     * @param int $segmentId
      *
      * @return array
      */

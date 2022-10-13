@@ -433,7 +433,7 @@ class ReportController extends FormController
     /**
      * Generates new form and processes post data.
      *
-     * @param \Mautic\ReportBundle\Entity\Report|null $entity
+     * @param \Mautic\ReportBundle\Entity\Report $entity
      *
      * @return HttpFoundation\JsonResponse|HttpFoundation\RedirectResponse|HttpFoundation\Response
      */

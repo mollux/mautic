@@ -81,7 +81,7 @@ class IpAddress
     /**
      * IpAddress constructor.
      *
-     * @param string|null $ipAddress
+     * @param string $ipAddress
      */
     public function __construct($ipAddress = null)
     {

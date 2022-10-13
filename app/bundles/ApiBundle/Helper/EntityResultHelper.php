@@ -8,7 +8,7 @@ class EntityResultHelper
 {
     /**
      * @param array<mixed>|Paginator<mixed> $results
-     * @param callable|null                 $callback
+     * @param callable                      $callback
      *
      * @return array<mixed>|\ArrayObject<int,mixed>
      */

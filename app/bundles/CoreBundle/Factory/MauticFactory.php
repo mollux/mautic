@@ -375,7 +375,7 @@ class MauticFactory
     /**
      * Get Symfony's logger.
      *
-     * @param bool|false $system
+     * @param bool $system
      *
      * @return \Monolog\Logger
      */
@@ -426,7 +426,7 @@ class MauticFactory
     /**
      * Get's an array of details for Mautic core bundles.
      *
-     * @param bool|false $includePlugins
+     * @param bool $includePlugins
      *
      * @return array|mixed
      */

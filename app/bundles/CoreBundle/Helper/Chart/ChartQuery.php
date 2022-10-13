@@ -65,7 +65,7 @@ class ChartQuery extends AbstractChart
      *
      * @see \Mautic\CoreBundle\Helper\Chart\DateRangeUnitTrait::getTimeUnitFromDateRange()
      *
-     * @param string|null $unit
+     * @param string $unit
      */
     public function __construct(Connection $connection, \DateTime $dateFrom, \DateTime $dateTo, $unit = null)
     {

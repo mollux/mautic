@@ -63,11 +63,11 @@ class StatRepository extends CommonRepository
     }
 
     /**
-     * @param int      $limit
-     * @param int|null $createdByUserId
-     * @param int|null $companyId
-     * @param int|null $campaignId
-     * @param int|null $segmentId
+     * @param int $limit
+     * @param int $createdByUserId
+     * @param int $companyId
+     * @param int $campaignId
+     * @param int $segmentId
      *
      * @return array
      */
@@ -164,8 +164,8 @@ class StatRepository extends CommonRepository
     }
 
     /**
-     * @param array<int,int|string>|int|null      $emailIds
-     * @param array<int,int|string>|int|true|null $listId
+     * @param array<int,int|string>|int      $emailIds
+     * @param array<int,int|string>|int|true $listId
      *
      * @return array
      */
@@ -201,9 +201,9 @@ class StatRepository extends CommonRepository
     }
 
     /**
-     * @param array<int,int|string>|int|null      $emailIds
-     * @param array<int,int|string>|int|true|null $listId
-     * @param bool                                $combined
+     * @param array<int,int|string>|int      $emailIds
+     * @param array<int,int|string>|int|true $listId
+     * @param bool                           $combined
      *
      * @return array|int
      */
@@ -213,9 +213,9 @@ class StatRepository extends CommonRepository
     }
 
     /**
-     * @param array<int,int|string>|int|null $emailIds
-     * @param array<int,int|string>|int|null $listId
-     * @param bool                           $combined
+     * @param array<int,int|string>|int $emailIds
+     * @param array<int,int|string>|int $listId
+     * @param bool                      $combined
      *
      * @return array|int
      */
@@ -225,9 +225,9 @@ class StatRepository extends CommonRepository
     }
 
     /**
-     * @param array<int,int|string>|int|null      $emailIds
-     * @param array<int,int|string>|int|true|null $listId
-     * @param bool                                $combined
+     * @param array<int,int|string>|int      $emailIds
+     * @param array<int,int|string>|int|true $listId
+     * @param bool                           $combined
      *
      * @return array|int
      */
@@ -237,10 +237,10 @@ class StatRepository extends CommonRepository
     }
 
     /**
-     * @param string                              $column
-     * @param array<int,int|string>|int|null      $emailIds
-     * @param array<int,int|string>|int|true|null $listId
-     * @param bool                                $combined
+     * @param string                         $column
+     * @param array<int,int|string>|int      $emailIds
+     * @param array<int,int|string>|int|true $listId
+     * @param bool                           $combined
      *
      * @return array|int
      */

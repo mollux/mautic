@@ -724,7 +724,7 @@ class PageModel extends FormModel
     }
 
     /**
-     * @param Redirect|Page|null $page
+     * @param Redirect|Page $page
      *
      * @return array
      */
@@ -756,7 +756,7 @@ class PageModel extends FormModel
      * Get array of page builder tokens from bundles subscribed PageEvents::PAGE_ON_BUILD.
      *
      * @param array|string $requestedComponents all | tokens | abTestWinnerCriteria
-     * @param string|null  $tokenFilter
+     * @param string       $tokenFilter
      *
      * @return array
      */

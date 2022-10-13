@@ -85,8 +85,8 @@ class IntegrationHelper
      * @param array|string $specificIntegrations
      * @param array        $withFeatures
      * @param bool         $alphabetical
-     * @param int|null     $pluginFilter
-     * @param bool|false   $publishedOnly
+     * @param int          $pluginFilter
+     * @param bool         $publishedOnly
      *
      * @return mixed
      *

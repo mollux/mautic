@@ -64,7 +64,7 @@ class CampaignEventHelper
     }
 
     /**
-     * @return array|false
+     * @return array
      */
     public function sendTweetAction(Lead $lead, array $event)
     {

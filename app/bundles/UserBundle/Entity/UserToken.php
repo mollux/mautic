@@ -139,7 +139,7 @@ class UserToken
     }
 
     /**
-     * @param \DateTime|null $expiration
+     * @param \DateTime $expiration
      *
      * @return UserToken
      */

@@ -572,7 +572,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface
      * Get array of page builder tokens from bundles subscribed PageEvents::PAGE_ON_BUILD.
      *
      * @param array|string $requestedComponents all | tokens | abTestWinnerCriteria
-     * @param string|null  $tokenFilter
+     * @param string       $tokenFilter
      *
      * @return array
      */
@@ -585,11 +585,11 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface
     }
 
     /**
-     * @param          $limit
-     * @param array    $options
-     * @param int|null $companyId
-     * @param int|null $campaignId
-     * @param int|null $segmentId
+     * @param       $limit
+     * @param array $options
+     * @param int   $companyId
+     * @param int   $campaignId
+     * @param int   $segmentId
      *
      * @return array
      */
@@ -648,11 +648,11 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface
     }
 
     /**
-     * @param int      $limit
-     * @param array    $options
-     * @param int|null $companyId
-     * @param int|null $campaignId
-     * @param int|null $segmentId
+     * @param int   $limit
+     * @param array $options
+     * @param int   $companyId
+     * @param int   $campaignId
+     * @param int   $segmentId
      *
      * @return array
      */
@@ -1898,9 +1898,9 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface
     /**
      * Get line chart data of emails sent and read.
      *
-     * @param string|null $unit          {@link php.net/manual/en/function.date.php#refsect1-function.date-parameters}
-     * @param string|null $dateFormat
-     * @param bool        $canViewOthers
+     * @param string $unit          {@link php.net/manual/en/function.date.php#refsect1-function.date-parameters}
+     * @param string $dateFormat
+     * @param bool   $canViewOthers
      *
      * @return array
      *

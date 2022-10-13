@@ -346,9 +346,9 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
     /**
      * Merge api keys.
      *
-     * @param            $mergeKeys
-     * @param            $withKeys
-     * @param bool|false $return    Returns the key array rather than setting them
+     * @param      $mergeKeys
+     * @param      $withKeys
+     * @param bool $return    Returns the key array rather than setting them
      *
      * @return void|array
      */
@@ -1738,10 +1738,10 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
     /**
      * Create or update existing Mautic lead from the integration's profile data.
      *
-     * @param mixed      $data        Profile data from integration
-     * @param bool|true  $persist     Set to false to not persist lead to the database in this method
-     * @param array|null $socialCache
-     * @param mixed|null $identifiers
+     * @param mixed     $data        Profile data from integration
+     * @param bool|true $persist     Set to false to not persist lead to the database in this method
+     * @param array     $socialCache
+     * @param mixed     $identifiers
      *
      * @return Lead
      */
@@ -2387,9 +2387,9 @@ abstract class AbstractIntegration implements UnifiedIntegrationInterface
     }
 
     /**
-     * @param CommonEntity|null $entity
-     * @param array             $params
-     * @param bool              $ignoreEntityChanges
+     * @param CommonEntity $entity
+     * @param array        $params
+     * @param bool         $ignoreEntityChanges
      *
      * @return bool|\DateTime|null
      */

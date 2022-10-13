@@ -308,9 +308,9 @@ abstract class AbstractCommonModel
     }
 
     /**
-     * @param string      $alias
-     * @param string|null $categoryAlias
-     * @param string|null $lang
+     * @param string $alias
+     * @param string $categoryAlias
+     * @param string $lang
      *
      * @return object|null
      */

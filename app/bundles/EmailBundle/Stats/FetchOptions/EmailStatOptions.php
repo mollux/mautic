@@ -68,7 +68,7 @@ class EmailStatOptions extends FetchOptions
     }
 
     /**
-     * @param int|null $companyId
+     * @param int $companyId
      *
      * @return $this;
      */
@@ -88,7 +88,7 @@ class EmailStatOptions extends FetchOptions
     }
 
     /**
-     * @param int|null $campaignId
+     * @param int $campaignId
      *
      * @return $this;
      */
@@ -108,7 +108,7 @@ class EmailStatOptions extends FetchOptions
     }
 
     /**
-     * @param int|null $segmentId
+     * @param int $segmentId
      *
      * @return $this;
      */

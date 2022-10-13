@@ -76,7 +76,7 @@ class RequestTraitTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider boolProvider
      *
-     * @param string|int|bool|null $value
+     * @param string|int|bool $value
      */
     public function testCleanFieldsBoolean(?bool $expected, $value): void
     {

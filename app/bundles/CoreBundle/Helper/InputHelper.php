@@ -30,7 +30,7 @@ class InputHelper
      * Do not convert null to false.
      * Do not convert invalid values to false, but return null.
      *
-     * @param bool|int|string|null $value
+     * @param bool|int|string $value
      *
      * @return bool|null
      */
@@ -173,8 +173,8 @@ class InputHelper
     /**
      * Cleans value by HTML-escaping '"<>& and characters with ASCII value less than 32.
      *
-     * @param            $value
-     * @param bool|false $urldecode
+     * @param      $value
+     * @param bool $urldecode
      *
      * @return mixed|string
      */
@@ -196,8 +196,8 @@ class InputHelper
     /**
      * Strips tags.
      *
-     * @param            $value
-     * @param bool|false $urldecode
+     * @param      $value
+     * @param bool $urldecode
      *
      * @return mixed
      */
@@ -213,10 +213,10 @@ class InputHelper
     /**
      * Strips non-alphanumeric characters.
      *
-     * @param            $value
-     * @param bool|false $urldecode
-     * @param bool|false $convertSpacesTo
-     * @param array      $allowedCharacters
+     * @param       $value
+     * @param bool  $urldecode
+     * @param bool  $convertSpacesTo
+     * @param array $allowedCharacters
      *
      * @return string
      */
@@ -271,8 +271,8 @@ class InputHelper
     /**
      * Returns raw value.
      *
-     * @param            $value
-     * @param bool|false $urldecode
+     * @param      $value
+     * @param bool $urldecode
      *
      * @return string
      */
@@ -288,12 +288,12 @@ class InputHelper
     /**
      * Removes all characters except those allowed in URLs.
      *
-     * @param            $value
-     * @param bool|false $urldecode
-     * @param null       $allowedProtocols
-     * @param null       $defaultProtocol
-     * @param array      $removeQuery
-     * @param bool|false $ignoreFragment
+     * @param       $value
+     * @param bool  $urldecode
+     * @param null  $allowedProtocols
+     * @param null  $defaultProtocol
+     * @param array $removeQuery
+     * @param bool  $ignoreFragment
      *
      * @return mixed|string
      */
@@ -358,8 +358,8 @@ class InputHelper
     /**
      * Removes all characters except those allowed in emails.
      *
-     * @param            $value
-     * @param bool|false $urldecode
+     * @param      $value
+     * @param bool $urldecode
      *
      * @return mixed
      */
@@ -378,8 +378,8 @@ class InputHelper
     /**
      * Returns a clean array.
      *
-     * @param            $value
-     * @param bool|false $urldecode
+     * @param      $value
+     * @param bool $urldecode
      *
      * @return array|mixed|string
      */

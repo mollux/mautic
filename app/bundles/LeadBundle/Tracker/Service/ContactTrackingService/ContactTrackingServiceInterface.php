@@ -17,7 +17,7 @@ interface ContactTrackingServiceInterface
     public function getTrackedLead();
 
     /**
-     * @return string|null Unique identifier
+     * @return string Unique identifier
      */
     public function getTrackedIdentifier();
 }

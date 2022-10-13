@@ -475,7 +475,7 @@ class LeadEventLog implements ChannelInterface
     }
 
     /**
-     * @param int|null $channelId
+     * @param int $channelId
      *
      * @return LeadEventLog
      */

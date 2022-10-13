@@ -166,7 +166,7 @@ class SendEmailToContact
     }
 
     /**
-     * @param int|null $id
+     * @param int $id
      *
      * @return $this
      */

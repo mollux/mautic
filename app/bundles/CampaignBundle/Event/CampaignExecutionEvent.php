@@ -67,7 +67,7 @@ class CampaignExecutionEvent extends Event
     protected $channelId;
 
     /**
-     * @param bool|mixed[]|string|null $result
+     * @param bool|mixed[]|string $result
      */
     public function __construct(array $args, $result, LeadEventLog $log = null)
     {
@@ -150,7 +150,7 @@ class CampaignExecutionEvent extends Event
     }
 
     /**
-     * @param bool|mixed[]|string|null $result
+     * @param bool|mixed[]|string $result
      *
      * @return $this
      */
@@ -164,7 +164,7 @@ class CampaignExecutionEvent extends Event
     /**
      * Set the result to failed.
      *
-     * @param string|null $reason
+     * @param string $reason
      *
      * @return $this
      */
@@ -218,8 +218,8 @@ class CampaignExecutionEvent extends Event
     }
 
     /**
-     * @param string          $channel
-     * @param string|int|null $channelId
+     * @param string     $channel
+     * @param string|int $channelId
      *
      * @return $this
      */

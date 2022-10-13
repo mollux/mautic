@@ -8,23 +8,22 @@ use Mautic\LeadBundle\Entity\LeadRepository;
 trait EntityContactsTrait
 {
     /**
-     * @param string|int              $entityId
-     * @param int                     $page
-     * @param string                  $permission
-     * @param string                  $sessionVar
-     * @param string                  $entityJoinTable    Table to join to obtain list of related contacts or a DBAL QueryBuilder object defining custom joins
-     * @param string|null             $dncChannel         Channel for this entity to get do not contact records for
-     * @param string|null             $entityIdColumnName If the entity ID in $joinTable is not "id", set the column name here
-     * @param array|null              $contactFilter      Array of additional filters for the getEntityContactsWithFields() function
-     * @param array|null              $additionalJoins    [ ['type' => 'join|leftJoin', 'from_alias' => '', 'table' => '', 'condition' => ''], ... ]
-     * @param string|null             $contactColumnName  Column of the contact in the join table
-     * @param array|null              $routeParameters
-     * @param string|null             $paginationTarget   DOM selector for injecting new content when pagination is used
-     * @param string|null             $orderBy            optional OrderBy column, to be used to increase performance with joins
-     * @param string|null             $orderByDir         optional $orderBy direction, to be used to increase performance with joins
-     * @param int|null                $count              optional $count if already known to avoid an extra query
-     * @param \DateTimeInterface|null $dateFrom           optionally limit to leads added between From and To dates
-     * @param \DateTimeInterface|null $dateTo             optionally limit to leads added between From and To dates
+     * @param string|int         $entityId
+     * @param int                $page
+     * @param string             $permission
+     * @param string             $sessionVar
+     * @param string             $entityJoinTable    Table to join to obtain list of related contacts or a DBAL QueryBuilder object defining custom joins
+     * @param string             $dncChannel         Channel for this entity to get do not contact records for
+     * @param string             $entityIdColumnName If the entity ID in $joinTable is not "id", set the column name here
+     * @param array              $contactFilter      Array of additional filters for the getEntityContactsWithFields() function
+     * @param array              $additionalJoins    [ ['type' => 'join|leftJoin', 'from_alias' => '', 'table' => '', 'condition' => ''], ... ]
+     * @param string             $contactColumnName  Column of the contact in the join table
+     * @param string             $paginationTarget   DOM selector for injecting new content when pagination is used
+     * @param string             $orderBy            optional OrderBy column, to be used to increase performance with joins
+     * @param string             $orderByDir         optional $orderBy direction, to be used to increase performance with joins
+     * @param int                $count              optional $count if already known to avoid an extra query
+     * @param \DateTimeInterface $dateFrom           optionally limit to leads added between From and To dates
+     * @param \DateTimeInterface $dateTo             optionally limit to leads added between From and To dates
      *
      * @return mixed
      */

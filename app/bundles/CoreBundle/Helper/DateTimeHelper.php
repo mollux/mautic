@@ -204,9 +204,9 @@ class DateTimeHelper
     /**
      * Gets a difference.
      *
-     * @param string     $compare
-     * @param null       $format
-     * @param bool|false $resetTime
+     * @param string $compare
+     * @param null   $format
+     * @param bool   $resetTime
      *
      * @return bool|\DateInterval|string
      */
@@ -231,8 +231,8 @@ class DateTimeHelper
     /**
      * Add to datetime.
      *
-     * @param            $intervalString
-     * @param bool|false $clone          If true, return a new \DateTime rather than update current one
+     * @param      $intervalString
+     * @param bool $clone          If true, return a new \DateTime rather than update current one
      *
      * @return \DateTimeInterface
      */
@@ -253,8 +253,8 @@ class DateTimeHelper
     /**
      * Subtract from datetime.
      *
-     * @param            $intervalString
-     * @param bool|false $clone          If true, return a new \DateTime rather than update current one
+     * @param      $intervalString
+     * @param bool $clone          If true, return a new \DateTime rather than update current one
      *
      * @return \DateTimeInterface
      */
@@ -309,8 +309,8 @@ class DateTimeHelper
     /**
      * Modify datetime.
      *
-     * @param            $string
-     * @param bool|false $clone  If true, return a new \DateTime rather than update current one
+     * @param      $string
+     * @param bool $clone  If true, return a new \DateTime rather than update current one
      *
      * @return \DateTimeInterface
      */

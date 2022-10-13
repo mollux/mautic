@@ -107,10 +107,10 @@ class RealTimeExecutioner
     }
 
     /**
-     * @param string      $type
-     * @param mixed       $passthrough
-     * @param string|null $channel
-     * @param int|null    $channelId
+     * @param string $type
+     * @param mixed  $passthrough
+     * @param string $channel
+     * @param int    $channelId
      *
      * @return Responses
      *
@@ -204,9 +204,9 @@ class RealTimeExecutioner
     }
 
     /**
-     * @param mixed       $passthrough
-     * @param string|null $channel
-     * @param int|null    $channelId
+     * @param mixed  $passthrough
+     * @param string $channel
+     * @param int    $channelId
      *
      * @throws DecisionNotApplicableException
      * @throws Exception\CannotProcessEventException

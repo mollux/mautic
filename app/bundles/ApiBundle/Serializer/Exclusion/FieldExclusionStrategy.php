@@ -28,8 +28,8 @@ class FieldExclusionStrategy implements ExclusionStrategyInterface
     private $path;
 
     /**
-     * @param int         $level
-     * @param string|null $path
+     * @param int    $level
+     * @param string $path
      */
     public function __construct(array $fields, $level = 3, $path = null)
     {

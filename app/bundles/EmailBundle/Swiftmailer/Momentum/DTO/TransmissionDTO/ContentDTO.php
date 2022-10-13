@@ -62,7 +62,7 @@ final class ContentDTO implements \JsonSerializable
     }
 
     /**
-     * @param string|null $html
+     * @param string $html
      *
      * @return ContentDTO
      */
@@ -74,7 +74,7 @@ final class ContentDTO implements \JsonSerializable
     }
 
     /**
-     * @param string|null $inlineCss
+     * @param string $inlineCss
      *
      * @return ContentDTO
      */
@@ -86,7 +86,7 @@ final class ContentDTO implements \JsonSerializable
     }
 
     /**
-     * @param string|null $text
+     * @param string $text
      *
      * @return ContentDTO
      */

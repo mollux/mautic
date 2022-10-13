@@ -132,9 +132,9 @@ abstract class AbstractTokenArrayTransport implements TokenTransportInterface
     /**
      * Converts \Swift_Message into associative array.
      *
-     * @param array      $search            If the mailer requires tokens in another format than Mautic's, pass array of Mautic tokens to replace
-     * @param array      $replace           If the mailer requires tokens in another format than Mautic's, pass array of replacement tokens
-     * @param bool|false $binaryAttachments True to convert file attachments to binary
+     * @param array $search            If the mailer requires tokens in another format than Mautic's, pass array of Mautic tokens to replace
+     * @param array $replace           If the mailer requires tokens in another format than Mautic's, pass array of replacement tokens
+     * @param bool  $binaryAttachments True to convert file attachments to binary
      *
      * @return array|\Swift_Message
      */

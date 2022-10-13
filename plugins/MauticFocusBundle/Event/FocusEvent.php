@@ -11,7 +11,7 @@ use MauticPlugin\MauticFocusBundle\Entity\Focus;
 class FocusEvent extends CommonEvent
 {
     /**
-     * @param bool|false $isNew
+     * @param bool $isNew
      */
     public function __construct(Focus $focus, $isNew = false)
     {

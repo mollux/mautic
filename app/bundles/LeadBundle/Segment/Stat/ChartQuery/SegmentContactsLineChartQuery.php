@@ -49,7 +49,7 @@ class SegmentContactsLineChartQuery extends ChartQuery
     private $statsFromEventLog;
 
     /**
-     * @param string|null $unit
+     * @param string $unit
      *
      * @throws SegmentNotFoundException
      */

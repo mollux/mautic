@@ -96,7 +96,7 @@ trait OperatorListTrait
     /**
      * @deprecated to be removed in Mautic 3. Use FilterOperatorProvider::getAllOperators() instead.
      *
-     * @param string|null $operator
+     * @param string $operator
      *
      * @return array<string,array<string,string>>|array<string,string>
      */
@@ -108,8 +108,8 @@ trait OperatorListTrait
     }
 
     /**
-     * @param string|mixed[]|null $type
-     * @param mixed[]             $overrideHiddenTypes
+     * @param string|mixed[] $type
+     * @param mixed[]        $overrideHiddenTypes
      *
      * @return mixed[]
      */
@@ -182,7 +182,7 @@ trait OperatorListTrait
      *
      * Normalize type operator.
      *
-     * @param string|null $type
+     * @param string $type
      *
      * @return void
      */

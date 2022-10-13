@@ -222,8 +222,8 @@ class ColumnSchemaHelper
     /**
      * Determine if a table exists.
      *
-     * @param            $table
-     * @param bool|false $throwException
+     * @param      $table
+     * @param bool $throwException
      *
      * @return bool
      *

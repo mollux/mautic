@@ -519,7 +519,7 @@ class CommonController extends AbstractController implements MauticController
     /**
      * Updates list filters, order, limit.
      *
-     * @param string|null $name
+     * @param string $name
      */
     protected function setListFilters($name = null)
     {
@@ -629,11 +629,11 @@ class CommonController extends AbstractController implements MauticController
     }
 
     /**
-     * @param string      $message
-     * @param array|null  $messageVars
-     * @param string|null $level
-     * @param string|null $domain
-     * @param bool|null   $addNotification
+     * @param string $message
+     * @param array  $messageVars
+     * @param string $level
+     * @param string $domain
+     * @param bool   $addNotification
      */
     public function addFlash($message, $messageVars = [], $level = FlashBag::LEVEL_NOTICE, $domain = 'flashes', $addNotification = false)
     {
@@ -746,7 +746,7 @@ class CommonController extends AbstractController implements MauticController
      *
      * Overwrite in your controller if required.
      *
-     * @param int|null $start
+     * @param int $start
      *
      * @return array
      */

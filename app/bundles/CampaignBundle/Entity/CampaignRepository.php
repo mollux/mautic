@@ -164,7 +164,7 @@ class CampaignRepository extends CommonRepository
     /**
      * Get array of list IDs assigned to this campaign.
      *
-     * @param int|null $id
+     * @param int $id
      *
      * @return array
      */
@@ -509,10 +509,10 @@ class CampaignRepository extends CommonRepository
     /**
      * Get lead data of a campaign.
      *
-     * @param            $campaignId
-     * @param int        $start
-     * @param bool|false $limit
-     * @param array      $select
+     * @param       $campaignId
+     * @param int   $start
+     * @param bool  $limit
+     * @param array $select
      *
      * @return mixed
      */

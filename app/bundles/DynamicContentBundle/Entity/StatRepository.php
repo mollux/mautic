@@ -107,7 +107,7 @@ class StatRepository extends CommonRepository
     /**
      * Get a lead's dynamic content stat.
      *
-     * @param int|null $leadId
+     * @param int $leadId
      *
      * @return array
      *

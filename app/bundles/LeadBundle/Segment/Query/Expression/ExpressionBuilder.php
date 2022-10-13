@@ -377,8 +377,8 @@ class ExpressionBuilder
     /**
      * Quotes a given input parameter.
      *
-     * @param mixed       $input the parameter to be quoted
-     * @param string|null $type  the type of the parameter
+     * @param mixed  $input the parameter to be quoted
+     * @param string $type  the type of the parameter
      *
      * @return string
      */

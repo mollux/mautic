@@ -118,7 +118,7 @@ class CampaignController extends AbstractStandardFormController
     /**
      * @param string|int $objectId
      * @param int        $page
-     * @param int|null   $count
+     * @param int        $count
      *
      * @return JsonResponse|RedirectResponse|Response
      */
@@ -499,9 +499,9 @@ class CampaignController extends AbstractStandardFormController
     }
 
     /**
-     * @param object    $entity
-     * @param string    $action
-     * @param bool|null $persistConnections
+     * @param object $entity
+     * @param string $action
+     * @param bool   $persistConnections
      */
     protected function afterEntitySave($entity, Form $form, $action, $persistConnections = null)
     {

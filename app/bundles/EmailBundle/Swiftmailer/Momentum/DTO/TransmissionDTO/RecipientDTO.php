@@ -48,7 +48,7 @@ final class RecipientDTO implements \JsonSerializable
     }
 
     /**
-     * @param string|null $returnPath
+     * @param string $returnPath
      *
      * @return RecipientDTO
      */

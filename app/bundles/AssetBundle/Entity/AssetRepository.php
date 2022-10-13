@@ -30,10 +30,10 @@ class AssetRepository extends CommonRepository
     }
 
     /**
-     * @param string     $search
-     * @param int        $limit
-     * @param int        $start
-     * @param bool|false $viewOther
+     * @param string $search
+     * @param int    $limit
+     * @param int    $start
+     * @param bool   $viewOther
      *
      * @return array
      */
@@ -180,9 +180,9 @@ class AssetRepository extends CommonRepository
     }
 
     /**
-     * @param            $id
-     * @param int        $increaseBy
-     * @param bool|false $unique
+     * @param      $id
+     * @param int  $increaseBy
+     * @param bool $unique
      */
     public function upDownloadCount($id, $increaseBy = 1, $unique = false)
     {

@@ -115,10 +115,10 @@ class CampaignModel extends CommonFormModel
     /**
      * {@inheritdoc}
      *
-     * @param object      $entity
-     * @param object      $formFactory
-     * @param string|null $action
-     * @param array       $options
+     * @param object $entity
+     * @param object $formFactory
+     * @param string $action
+     * @param array  $options
      *
      * @return mixed
      *
@@ -699,9 +699,9 @@ class CampaignModel extends CommonFormModel
     /**
      * Get line chart data of hits.
      *
-     * @param string|null $unit       {@link php.net/manual/en/function.date.php#refsect1-function.date-parameters}
-     * @param string      $dateFormat
-     * @param array       $filter
+     * @param string $unit       {@link php.net/manual/en/function.date.php#refsect1-function.date-parameters}
+     * @param string $dateFormat
+     * @param array  $filter
      *
      * @return array
      */

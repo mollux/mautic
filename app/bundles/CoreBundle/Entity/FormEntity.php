@@ -270,7 +270,7 @@ class FormEntity extends CommonEntity
     }
 
     /**
-     * @param User|int|null $createdBy
+     * @param User|int $createdBy
      *
      * @return $this
      */

@@ -863,9 +863,9 @@ class Field
     /**
      * Decide if the field should be displayed based on thr progressive profiling conditions.
      *
-     * @param array|null $submissions
-     * @param Lead       $lead
-     * @param Form       $form
+     * @param array $submissions
+     * @param Lead  $lead
+     * @param Form  $form
      *
      * @return bool
      */

@@ -258,7 +258,7 @@ class Stat
     }
 
     /**
-     * @param \DateTime|null $dateRead
+     * @param \DateTime $dateRead
      */
     public function setDateRead($dateRead)
     {
@@ -274,7 +274,7 @@ class Stat
     }
 
     /**
-     * @param \DateTime|null $dateSent
+     * @param \DateTime $dateSent
      */
     public function setDateSent($dateSent)
     {
@@ -310,9 +310,6 @@ class Stat
         return $this->ipAddress;
     }
 
-    /**
-     * @param IpAddress|null $ip
-     */
     public function setIpAddress(IpAddress $ip)
     {
         $this->ipAddress = $ip;
@@ -364,7 +361,7 @@ class Stat
     }
 
     /**
-     * @param string|null $trackingHash
+     * @param string $trackingHash
      */
     public function setTrackingHash($trackingHash)
     {
@@ -380,7 +377,7 @@ class Stat
     }
 
     /**
-     * @param LeadList|null $list
+     * @param LeadList $list
      */
     public function setList($list)
     {
@@ -444,7 +441,7 @@ class Stat
     }
 
     /**
-     * @param string|null $emailAddress
+     * @param string $emailAddress
      */
     public function setEmailAddress($emailAddress)
     {
@@ -476,7 +473,7 @@ class Stat
     }
 
     /**
-     * @param string|null $source
+     * @param string $source
      */
     public function setSource($source)
     {
@@ -492,7 +489,7 @@ class Stat
     }
 
     /**
-     * @param int|null $sourceId
+     * @param int $sourceId
      */
     public function setSourceId($sourceId)
     {
@@ -566,7 +563,7 @@ class Stat
     }
 
     /**
-     * @param \DateTime|null $lastOpened
+     * @param \DateTime $lastOpened
      *
      * @return Stat
      */

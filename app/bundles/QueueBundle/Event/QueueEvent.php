@@ -37,10 +37,10 @@ class QueueEvent extends CommonEvent
     /**
      * QueueEvent constructor.
      *
-     * @param string   $protocol
-     * @param string   $queueName
-     * @param int|null $messages
-     * @param int|null $timeout
+     * @param string $protocol
+     * @param string $queueName
+     * @param int    $messages
+     * @param int    $timeout
      */
     public function __construct($protocol, $queueName, array $payload = [], $messages = null, $timeout = null)
     {

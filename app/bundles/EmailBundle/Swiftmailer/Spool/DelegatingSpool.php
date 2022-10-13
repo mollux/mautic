@@ -47,7 +47,7 @@ class DelegatingSpool extends \Swift_FileSpool
     }
 
     /**
-     * @param string[]|null $failedRecipients
+     * @param string[] $failedRecipients
      *
      * @throws \Swift_IoException
      */

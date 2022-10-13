@@ -119,7 +119,7 @@ class Notification
     }
 
     /**
-     * @param string|null $type
+     * @param string $type
      */
     public function setType($type)
     {
@@ -135,7 +135,7 @@ class Notification
     }
 
     /**
-     * @param string|null $message
+     * @param string $message
      */
     public function setMessage($message)
     {
@@ -151,7 +151,7 @@ class Notification
     }
 
     /**
-     * @param \DateTime|null $dateAdded
+     * @param \DateTime $dateAdded
      */
     public function setDateAdded($dateAdded)
     {
@@ -167,7 +167,7 @@ class Notification
     }
 
     /**
-     * @param string|null $iconClass
+     * @param string $iconClass
      */
     public function setIconClass($iconClass)
     {
@@ -183,7 +183,7 @@ class Notification
     }
 
     /**
-     * @param bool|null $isRead
+     * @param bool $isRead
      */
     public function setIsRead($isRead)
     {
@@ -199,7 +199,7 @@ class Notification
     }
 
     /**
-     * @param string|null $header
+     * @param string $header
      */
     public function setHeader($header)
     {

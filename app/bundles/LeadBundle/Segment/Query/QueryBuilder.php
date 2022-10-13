@@ -271,9 +271,9 @@ class QueryBuilder extends \Doctrine\DBAL\Query\QueryBuilder
      *         ->setParameter(':user_id', 1);
      * </code>
      *
-     * @param string|int  $key   the parameter position or name
-     * @param mixed       $value the parameter value
-     * @param string|null $type  one of the PDO::PARAM_* constants
+     * @param string|int $key   the parameter position or name
+     * @param mixed      $value the parameter value
+     * @param string     $type  one of the PDO::PARAM_* constants
      *
      * @return $this this QueryBuilder instance
      */
@@ -623,8 +623,8 @@ class QueryBuilder extends \Doctrine\DBAL\Query\QueryBuilder
      *         ->from('users', 'u')
      * </code>
      *
-     * @param string      $from  the table
-     * @param string|null $alias the alias of the table
+     * @param string $from  the table
+     * @param string $alias the alias of the table
      *
      * @return $this this QueryBuilder instance
      */
@@ -1083,7 +1083,7 @@ class QueryBuilder extends \Doctrine\DBAL\Query\QueryBuilder
     /**
      * Resets SQL parts.
      *
-     * @param array|null $queryPartNames
+     * @param array $queryPartNames
      *
      * @return $this this QueryBuilder instance
      */

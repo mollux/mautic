@@ -127,8 +127,8 @@ abstract class AbstractModalFormController extends AbstractStandardFormControlle
     }
 
     /**
-     * @param array       $args
-     * @param string|null $action
+     * @param array  $args
+     * @param string $action
      *
      * @return mixed
      */

@@ -313,9 +313,9 @@ class AssetModel extends FormModel
     /**
      * Increase the download count.
      *
-     * @param            $asset
-     * @param int        $increaseBy
-     * @param bool|false $unique
+     * @param      $asset
+     * @param int  $increaseBy
+     * @param bool $unique
      */
     public function upDownloadCount($asset, $increaseBy = 1, $unique = false)
     {
@@ -496,8 +496,8 @@ class AssetModel extends FormModel
     /**
      * Determine the max upload size based on PHP restrictions and config.
      *
-     * @param string     $unit          If '', determine the best unit based on the number
-     * @param bool|false $humanReadable Return as a human readable filesize
+     * @param string $unit          If '', determine the best unit based on the number
+     * @param bool   $humanReadable Return as a human readable filesize
      *
      * @return float
      */

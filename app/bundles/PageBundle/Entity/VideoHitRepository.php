@@ -16,7 +16,7 @@ class VideoHitRepository extends CommonRepository
     /**
      * Get video hit info for lead timeline.
      *
-     * @param int|null $leadId
+     * @param int $leadId
      *
      * @return array
      */

@@ -55,7 +55,7 @@ class LeadEventLogRepository extends CommonRepository
     /**
      * Get a lead's page event log.
      *
-     * @param int|null $leadId
+     * @param int $leadId
      *
      * @return array
      */

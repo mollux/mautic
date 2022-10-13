@@ -223,8 +223,8 @@ class FieldController extends FormController
     /**
      * Generate's edit form and processes post data.
      *
-     * @param            $objectId
-     * @param bool|false $ignorePost
+     * @param      $objectId
+     * @param bool $ignorePost
      *
      * @return array|\Symfony\Component\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */

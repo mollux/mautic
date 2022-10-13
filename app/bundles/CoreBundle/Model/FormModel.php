@@ -318,7 +318,7 @@ class FormModel extends AbstractCommonModel
      *
      * @param object                              $entity
      * @param \Symfony\Component\Form\FormFactory $formFactory
-     * @param string|null                         $action
+     * @param string                              $action
      * @param array                               $options
      *
      * @return \Symfony\Component\Form\Form

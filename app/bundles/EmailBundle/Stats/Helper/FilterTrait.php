@@ -13,8 +13,8 @@ trait FilterTrait
     protected $connection;
 
     /**
-     * @param int|null $companyId
-     * @param string   $fromAlias
+     * @param int    $companyId
+     * @param string $fromAlias
      */
     protected function addCompanyFilter(QueryBuilder $q, $companyId = null, $fromAlias = 't')
     {
@@ -37,8 +37,8 @@ trait FilterTrait
     }
 
     /**
-     * @param int|null $campaignId
-     * @param string   $fromAlias
+     * @param int    $campaignId
+     * @param string $fromAlias
      */
     protected function addCampaignFilter(QueryBuilder $q, $campaignId = null, $fromAlias = 't')
     {
@@ -49,8 +49,8 @@ trait FilterTrait
     }
 
     /**
-     * @param int|null $campaignId
-     * @param string   $fromAlias
+     * @param int    $campaignId
+     * @param string $fromAlias
      */
     protected function addCampaignFilterForEmailSource(QueryBuilder $q, $campaignId = null, $fromAlias = 't')
     {
@@ -61,8 +61,8 @@ trait FilterTrait
     }
 
     /**
-     * @param int|null $segmentId
-     * @param string   $fromAlias
+     * @param int    $segmentId
+     * @param string $fromAlias
      */
     protected function addSegmentFilter(QueryBuilder $q, $segmentId = null, $fromAlias = 't')
     {

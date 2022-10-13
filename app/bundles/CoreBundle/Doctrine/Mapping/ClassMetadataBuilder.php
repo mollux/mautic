@@ -240,7 +240,7 @@ class ClassMetadataBuilder extends OrmClassMetadataBuilder
     /**
      * Added dateAdded column.
      *
-     * @param bool|false $nullable
+     * @param bool $nullable
      *
      * @return $this
      */
@@ -261,10 +261,10 @@ class ClassMetadataBuilder extends OrmClassMetadataBuilder
     /**
      * Add a contact column.
      *
-     * @param bool|false $nullable
-     * @param string     $onDelete
-     * @param bool|false $isPrimaryKey
-     * @param null       $inversedBy
+     * @param bool   $nullable
+     * @param string $onDelete
+     * @param bool   $isPrimaryKey
+     * @param null   $inversedBy
      *
      * @return $this
      */
@@ -290,10 +290,10 @@ class ClassMetadataBuilder extends OrmClassMetadataBuilder
     /**
      * Add a lead column.
      *
-     * @param bool|false $nullable
-     * @param string     $onDelete
-     * @param bool|false $isPrimaryKey
-     * @param null       $inversedBy
+     * @param bool   $nullable
+     * @param string $onDelete
+     * @param bool   $isPrimaryKey
+     * @param null   $inversedBy
      *
      * @deprecated Use addContact instead; existing implementations will need a migration to rename lead_id to contact_id
      *
@@ -340,9 +340,9 @@ class ClassMetadataBuilder extends OrmClassMetadataBuilder
     /**
      * Add a nullable field.
      *
-     * @param string      $name
-     * @param string      $type
-     * @param string|null $columnName
+     * @param string $name
+     * @param string $type
+     * @param string $columnName
      *
      * @return $this
      */

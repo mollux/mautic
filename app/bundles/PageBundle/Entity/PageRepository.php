@@ -235,10 +235,10 @@ class PageRepository extends CommonRepository
     /**
      * Up the hit count.
      *
-     * @param            $id
-     * @param int        $increaseBy
-     * @param bool|false $unique
-     * @param bool|false $variant
+     * @param      $id
+     * @param int  $increaseBy
+     * @param bool $unique
+     * @param bool $variant
      */
     public function upHitCount($id, $increaseBy = 1, $unique = false, $variant = false)
     {

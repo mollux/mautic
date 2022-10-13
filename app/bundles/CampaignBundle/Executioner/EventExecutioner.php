@@ -467,8 +467,6 @@ class EventExecutioner
     }
 
     /**
-     * @param Counter|null $counter
-     *
      * @throws Dispatcher\Exception\LogNotProcessedException
      * @throws Dispatcher\Exception\LogPassedAndFailedException
      * @throws Exception\CannotProcessEventException
@@ -489,8 +487,6 @@ class EventExecutioner
     }
 
     /**
-     * @param Counter|null $counter
-     *
      * @throws Dispatcher\Exception\LogNotProcessedException
      * @throws Dispatcher\Exception\LogPassedAndFailedException
      * @throws Exception\CannotProcessEventException
