@@ -4,6 +4,7 @@ namespace Mautic\PluginBundle\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Mautic\CoreBundle\Controller\FormController;
+use Mautic\CoreBundle\Helper\BundleHelper;
 use Mautic\CoreBundle\Helper\InputHelper;
 use Mautic\PluginBundle\Event\PluginIntegrationAuthRedirectEvent;
 use Mautic\PluginBundle\Event\PluginIntegrationEvent;
@@ -24,7 +25,7 @@ class PluginController extends FormController
     /**
      * @return JsonResponse|Response
      */
-    public function indexAction(Request $request)
+    public function indexAction(Request $request, BundleHelper $bundleHelper)
     {
         if (!$this->security->isGranted('plugin:plugins:manage')) {
             return $this->accessDenied();
@@ -78,7 +79,10 @@ class PluginController extends FormController
         }
 
         $nonIntegrationPlugins = array_diff_key($plugins, $foundPlugins);
+        $pluginBundles = $bundleHelper->getPluginBundles();
+
         foreach ($nonIntegrationPlugins as $plugin) {
+            $plugin['path'] = $pluginBundles[$plugin["bundle"]]["relative"];
             $integrations[$plugin['name']] = [
                 'name'        => $plugin['bundle'],
                 'display'     => $plugin['name'],

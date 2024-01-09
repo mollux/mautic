@@ -599,7 +599,7 @@ class IntegrationHelper
 
         if (is_array($integration)) {
             // A bundle so check for an icon
-            $icon = $pluginPath.'/'.$integration['bundle'].'/Assets/img/icon.png';
+            $icon = $integration['path'].'/Assets/img/icon.png';
         } elseif ($integration instanceof Plugin) {
             // A bundle so check for an icon
             $icon = $pluginPath.'/'.$integration->getBundle().'/Assets/img/icon.png';

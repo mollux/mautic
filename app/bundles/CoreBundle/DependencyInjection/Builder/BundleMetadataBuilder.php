@@ -2,9 +2,11 @@
 
 namespace Mautic\CoreBundle\DependencyInjection\Builder;
 
+use Symfony\Component\Filesystem\Filesystem;
 use Mautic\CoreBundle\DependencyInjection\Builder\Metadata\ConfigMetadata;
 use Mautic\CoreBundle\DependencyInjection\Builder\Metadata\EntityMetadata;
 use Mautic\CoreBundle\DependencyInjection\Builder\Metadata\PermissionClassMetadata;
+use ReflectionClass;
 
 class BundleMetadataBuilder
 {
@@ -86,7 +88,11 @@ class BundleMetadataBuilder
 
     private function buildPluginMetadata(string $namespace, string $symfonyBundle): array
     {
-        $relativePath  = $this->paths['plugins'].'/'.$symfonyBundle;
+        $reflector    = new ReflectionClass($namespace);
+        $filesystem   = new Filesystem();
+        $namespaceDir = \dirname($reflector->getFileName());
+        $relativePath = \rtrim($filesystem->makePathRelative($namespaceDir, $this->paths['root']), '/');
+
         $metadataArray = $this->getMetadata(true, $namespace, $symfonyBundle, $symfonyBundle, $relativePath);
 
         $metadata = new BundleMetadata($metadataArray);

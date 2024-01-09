@@ -135,6 +135,7 @@ class ParameterLoader
             ->depth('== 0')
             ->in(__DIR__.'/../../../bundles/*/Config')
             ->in(__DIR__.'/../../../../plugins/*/Config')
+            ->in(__DIR__.'/../../../../custom/plugins/*/Config')
             ->name('config.php');
 
         /** @var \SplFileInfo $file */

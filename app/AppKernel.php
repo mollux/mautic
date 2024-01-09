@@ -162,8 +162,9 @@ class AppKernel extends Kernel
             new Mautic\CacheBundle\MauticCacheBundle(),
         ];
 
+        $a = $this->getParameterLoader()->getParameterBag()->get('custom_plugins_dir');
         // dynamically register Mautic Plugin Bundles
-        $searchPath = $this->getApplicationDir().'/plugins';
+        $searchPath = [$this->getApplicationDir().'/plugins', $this->getApplicationDir().'/custom/plugins'];
         $finder     = new \Symfony\Component\Finder\Finder();
         $finder->files()
             ->followLinks()

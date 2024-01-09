@@ -2,13 +2,14 @@
 
 $paths = [
     // customizable
-    'themes'       => 'themes',
-    'assets'       => 'app/assets',
-    'media'        => 'media',
-    'asset_prefix' => '',
-    'plugins'      => 'plugins',
-    'translations' => 'translations',
-    'local_config' => '%kernel.project_dir%/config/local.php',
+    'themes'         => 'themes',
+    'assets'         => 'app/assets',
+    'media'          => 'media',
+    'asset_prefix'   => '',
+    'plugins'        => 'plugins',
+    'custom_plugins' => 'custom/plugins',
+    'translations'   => 'translations',
+    'local_config'   => '%kernel.project_dir%/config/local.php',
 ];
 
 // allow easy overrides of the above

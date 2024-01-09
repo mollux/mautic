@@ -81,7 +81,10 @@
   },
   "autoload": {
     "psr-4": {
-      "MauticPlugin\\": "plugins/"
+      "MauticPlugin\\": [
+        "plugins/",
+        "custom/plugins/"
+      ]
     }
   },
   "repositories": [
